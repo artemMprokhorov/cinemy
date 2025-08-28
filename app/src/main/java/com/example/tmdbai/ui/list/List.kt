@@ -1,3 +1,72 @@
+package com.example.tmdbai.ui.list
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.activity.compose.BackHandler
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.tmdbai.ui.theme.Alpha02
+import com.example.tmdbai.ui.theme.Alpha03
+import com.example.tmdbai.ui.theme.Alpha06
+import com.example.tmdbai.ui.theme.Alpha07
+import com.example.tmdbai.ui.theme.Alpha08
+import com.example.tmdbai.ui.theme.AppBackground
+import com.example.tmdbai.ui.theme.ButtonContainer
+import com.example.tmdbai.ui.theme.Dimens1
+import com.example.tmdbai.ui.theme.Dimens100
+import com.example.tmdbai.ui.theme.Dimens12
+import com.example.tmdbai.ui.theme.Dimens140
+import com.example.tmdbai.ui.theme.Dimens16
+import com.example.tmdbai.ui.theme.Dimens20
+import com.example.tmdbai.ui.theme.Dimens24
+import com.example.tmdbai.ui.theme.Dimens32
+import com.example.tmdbai.ui.theme.Dimens4
+import com.example.tmdbai.ui.theme.Dimens40
+import com.example.tmdbai.ui.theme.Dimens8
+import com.example.tmdbai.ui.theme.MoviePosterBlue
+import com.example.tmdbai.ui.theme.MoviePosterBrown
+import com.example.tmdbai.ui.theme.MoviePosterDarkBlue
+import com.example.tmdbai.ui.theme.MoviePosterGreen
+import com.example.tmdbai.ui.theme.MoviePosterNavy
+import com.example.tmdbai.ui.theme.TextSecondary
+import com.example.tmdbai.ui.theme.TextTertiary
+import com.example.tmdbai.ui.theme.Typography12
+import com.example.tmdbai.ui.theme.Typography14
+import com.example.tmdbai.ui.theme.Typography20
+import com.example.tmdbai.ui.theme.Typography24
+import com.example.tmdbai.ui.theme.Typography8
+
 data class Movie(
     val title: String,
     val description: String,
@@ -6,33 +75,39 @@ data class Movie(
 )
 
 @Composable
-fun MoviesListScreen() {
+fun MovieListScreen(
+    onMovieClick: (String) -> Unit = {},
+    onBackPressed: () -> Unit = {}
+) {
+    BackHandler {
+        onBackPressed()
+    }
     val movies = remember {
         listOf(
             Movie(
                 title = "The Midnight Bloom",
                 description = "A young botanist discovers a rare, bioluminescent flower with the power to heal any ailment, but must protect it from those who seek to exploit its magic.",
-                posterColor = Color(0xFF4A90A4)
+                posterColor = MoviePosterBlue
             ),
             Movie(
                 title = "Echoes of the Past",
                 description = "A historian uncovers a hidden diary revealing a forgotten chapter of the city's history, leading to a quest for a lost artifact.",
-                posterColor = Color(0xFF8B7355)
+                posterColor = MoviePosterBrown
             ),
             Movie(
                 title = "The Last Starfarer",
                 description = "In a distant future, a lone pilot embarks on a perilous journey to the edge of the galaxy to deliver a message that could save humanity.",
-                posterColor = Color(0xFF2C5F6F)
+                posterColor = MoviePosterDarkBlue
             ),
             Movie(
                 title = "Whispers of the Wind",
                 description = "A reclusive artist living in a remote mountain village finds inspiration in the wind's whispers, creating breathtaking sculptures that capture the essence of nature.",
-                posterColor = Color(0xFF5A7C65)
+                posterColor = MoviePosterGreen
             ),
             Movie(
                 title = "The Silent Guardian",
                 description = "A mysterious figure watches over a bustling metropolis, silently intervening to protect its citizens from unseen threats.",
-                posterColor = Color(0xFF4F6B8E)
+                posterColor = MoviePosterNavy
             )
         )
     }
@@ -40,43 +115,43 @@ fun MoviesListScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF1B2631))
+            .background(AppBackground)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = Dimens24)
         ) {
             // Header
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 20.dp),
+                    .padding(vertical = Dimens20),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Movies",
-                    fontSize = 24.sp,
+                    fontSize = Typography24,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
-                
+
                 Icon(
                     imageVector = Icons.Default.Search,
                     contentDescription = "Search",
                     tint = Color.White,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(Dimens24)
                 )
             }
 
             // Movies list
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(32.dp),
-                contentPadding = PaddingValues(bottom = 24.dp)
+                verticalArrangement = Arrangement.spacedBy(Dimens32),
+                contentPadding = PaddingValues(bottom = Dimens24)
             ) {
                 items(movies) { movie ->
-                    MovieItem(movie = movie)
+                    MovieItem(movie = movie, onMovieClick = onMovieClick)
                 }
             }
         }
@@ -84,10 +159,13 @@ fun MoviesListScreen() {
 }
 
 @Composable
-fun MovieItem(movie: Movie) {
+fun MovieItem(
+    movie: Movie,
+    onMovieClick: (String) -> Unit = {}
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(20.dp)
+        horizontalArrangement = Arrangement.spacedBy(Dimens20)
     ) {
         // Left content
         Column(
@@ -96,52 +174,52 @@ fun MovieItem(movie: Movie) {
             // Trending tag
             Text(
                 text = "Trending",
-                fontSize = 12.sp,
-                color = Color(0xFF9E9E9E),
-                modifier = Modifier.padding(bottom = 8.dp)
+                fontSize = Typography12,
+                color = TextSecondary,
+                modifier = Modifier.padding(bottom = Dimens8)
             )
-            
+
             // Movie title
             Text(
                 text = movie.title,
-                fontSize = 20.sp,
+                fontSize = Typography20,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
-                modifier = Modifier.padding(bottom = 12.dp)
+                modifier = Modifier.padding(bottom = Dimens12)
             )
-            
+
             // Movie description
             Text(
                 text = movie.description,
-                fontSize = 14.sp,
-                color = Color(0xFFB0BEC5),
-                lineHeight = 20.sp,
-                modifier = Modifier.padding(bottom = 16.dp)
+                fontSize = Typography14,
+                color = TextTertiary,
+                lineHeight = Typography20,
+                modifier = Modifier.padding(bottom = Dimens16)
             )
-            
+
             // More Details button
             Button(
-                onClick = { /* Handle more details */ },
+                onClick = { onMovieClick(movie.title) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF37474F)
+                    containerColor = ButtonContainer
                 ),
-                shape = RoundedCornerShape(8.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                shape = RoundedCornerShape(Dimens8),
+                contentPadding = PaddingValues(horizontal = Dimens16, vertical = Dimens8)
             ) {
                 Text(
                     text = "More Details",
                     color = Color.White,
-                    fontSize = 14.sp
+                    fontSize = Typography14
                 )
             }
         }
-        
+
         // Movie poster
         MoviePoster(
             color = movie.posterColor,
             modifier = Modifier
-                .width(100.dp)
-                .height(140.dp)
+                .width(Dimens100)
+                .height(Dimens140)
         )
     }
 }
@@ -153,34 +231,34 @@ fun MoviePoster(
 ) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(Dimens12))
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        color.copy(alpha = 0.8f),
+                        color.copy(alpha = Alpha08),
                         color
                     )
                 )
             )
             .border(
-                width = 1.dp,
-                color = Color.White.copy(alpha = 0.2f),
-                shape = RoundedCornerShape(12.dp)
+                width = Dimens1,
+                color = Color.White.copy(alpha = Alpha02),
+                shape = RoundedCornerShape(Dimens12)
             )
     ) {
         // Placeholder for movie poster image
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp),
+                .padding(Dimens8),
             contentAlignment = Alignment.Center
         ) {
             // Simple movie icon placeholder
             Box(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(Dimens40)
                     .background(
-                        Color.White.copy(alpha = 0.3f),
+                        Color.White.copy(alpha = Alpha03),
                         CircleShape
                     ),
                 contentAlignment = Alignment.Center
@@ -188,44 +266,44 @@ fun MoviePoster(
                 Icon(
                     imageVector = Icons.Default.PlayArrow,
                     contentDescription = "Play",
-                    tint = Color.White.copy(alpha = 0.8f),
-                    modifier = Modifier.size(20.dp)
+                    tint = Color.White.copy(alpha = Alpha08),
+                    modifier = Modifier.size(Dimens20)
                 )
             }
         }
-        
+
         // Gradient overlay at bottom for text readability
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(40.dp)
+                .height(Dimens40)
                 .align(Alignment.BottomCenter)
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
-                            Color.Black.copy(alpha = 0.6f)
+                            Color.Black.copy(alpha = Alpha06)
                         )
                     )
                 )
         )
-        
+
         // Movie title on poster (small text)
         Text(
             text = "POSTER",
-            fontSize = 8.sp,
-            color = Color.White.copy(alpha = 0.7f),
+            fontSize = Typography8,
+            color = Color.White.copy(alpha = Alpha07),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(4.dp)
+                .padding(Dimens4)
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun MoviesListScreenPreview() {
+fun MovieListScreenPreview() {
     MaterialTheme {
-        MoviesListScreen()
+        MovieListScreen()
     }
 }
