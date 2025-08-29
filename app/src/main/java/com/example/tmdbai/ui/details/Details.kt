@@ -1,8 +1,11 @@
 package com.example.tmdbai.ui.details
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.activity.compose.BackHandler
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,7 +31,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import com.example.tmdbai.ui.theme.DetailsBackground
 import com.example.tmdbai.ui.theme.DetailsDarkSlate
 import com.example.tmdbai.ui.theme.DetailsMintGreen
@@ -49,21 +50,27 @@ import com.example.tmdbai.ui.theme.Dimens400
 import com.example.tmdbai.ui.theme.Dimens500
 import com.example.tmdbai.ui.theme.Dimens8
 import com.example.tmdbai.ui.theme.Dimens80
+import com.example.tmdbai.ui.theme.LetterSpacing2
+import com.example.tmdbai.ui.theme.TextSecondary
 import com.example.tmdbai.ui.theme.TextTertiary
+import com.example.tmdbai.ui.theme.Typography12
 import com.example.tmdbai.ui.theme.Typography14
 import com.example.tmdbai.ui.theme.Typography16
+import com.example.tmdbai.ui.theme.Typography20
 import com.example.tmdbai.ui.theme.Typography24
 import com.example.tmdbai.ui.theme.Typography28
 import com.example.tmdbai.ui.theme.Typography32
 import com.example.tmdbai.ui.theme.Typography5
 import com.example.tmdbai.ui.theme.Typography6
 import com.example.tmdbai.ui.theme.Typography8
-import com.example.tmdbai.ui.theme.LetterSpacing2
 
 data class MovieDetail(
     val title: String,
     val description: String,
-    val posterUrl: String? = null
+    val posterUrl: String? = null,
+    val rating: String = "",
+    val voteCount: String = "",
+    val releaseDate: String = ""
 )
 
 @Composable
@@ -74,11 +81,14 @@ fun MovieDetailsScreen(
     BackHandler {
         onBackClick()
     }
-    
+
     val movieDetail = remember {
         MovieDetail(
             title = "The Shawshank Redemption",
-            description = "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."
+            description = "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+            rating = "9.3",
+            voteCount = "2,500,000",
+            releaseDate = "1994-09-22"
         )
     }
 
@@ -151,8 +161,63 @@ fun MovieDetailsScreen(
                         text = movieDetail.description,
                         fontSize = Typography16,
                         color = TextTertiary,
-                        lineHeight = Typography24
+                        lineHeight = Typography24,
+                        modifier = Modifier.padding(bottom = Dimens24)
                     )
+
+                    // Movie details
+                    Row(
+                        modifier = Modifier.padding(bottom = Dimens24),
+                        horizontalArrangement = Arrangement.spacedBy(Dimens32)
+                    ) {
+                        // Rating
+                        Column {
+                            Text(
+                                text = "Rating",
+                                fontSize = Typography12,
+                                color = TextSecondary,
+                                modifier = Modifier.padding(bottom = Dimens8)
+                            )
+                            Text(
+                                text = movieDetail.rating,
+                                fontSize = Typography20,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        // Vote Count
+                        Column {
+                            Text(
+                                text = "Vote Count",
+                                fontSize = Typography12,
+                                color = TextSecondary,
+                                modifier = Modifier.padding(bottom = Dimens8)
+                            )
+                            Text(
+                                text = movieDetail.voteCount,
+                                fontSize = Typography20,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        // Release Date
+                        Column {
+                            Text(
+                                text = "Release Date",
+                                fontSize = Typography12,
+                                color = TextSecondary,
+                                modifier = Modifier.padding(bottom = Dimens8)
+                            )
+                            Text(
+                                text = movieDetail.releaseDate,
+                                fontSize = Typography20,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
                 }
             }
         }

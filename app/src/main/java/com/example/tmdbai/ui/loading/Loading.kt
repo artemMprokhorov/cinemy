@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +27,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -36,16 +40,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tmdbai.ui.theme.Alpha03
 import com.example.tmdbai.ui.theme.Alpha06
+import com.example.tmdbai.ui.theme.Dimens0
+import com.example.tmdbai.ui.theme.Dimens1
+import com.example.tmdbai.ui.theme.Dimens10
 import com.example.tmdbai.ui.theme.Dimens100
 import com.example.tmdbai.ui.theme.Dimens12
 import com.example.tmdbai.ui.theme.Dimens120
 import com.example.tmdbai.ui.theme.Dimens16
 import com.example.tmdbai.ui.theme.Dimens2
+import com.example.tmdbai.ui.theme.Dimens3
 import com.example.tmdbai.ui.theme.Dimens20
+import com.example.tmdbai.ui.theme.Dimens30
+import com.example.tmdbai.ui.theme.Dimens280
 import com.example.tmdbai.ui.theme.Dimens300
 import com.example.tmdbai.ui.theme.Dimens32
+import com.example.tmdbai.ui.theme.Dimens35
 import com.example.tmdbai.ui.theme.Dimens4
 import com.example.tmdbai.ui.theme.Dimens40
+import com.example.tmdbai.ui.theme.Dimens45
+import com.example.tmdbai.ui.theme.Dimens50
 import com.example.tmdbai.ui.theme.Dimens6
 import com.example.tmdbai.ui.theme.Dimens8
 import com.example.tmdbai.ui.theme.Dimens80
@@ -54,6 +67,7 @@ import com.example.tmdbai.ui.theme.DimensNegative15
 import com.example.tmdbai.ui.theme.DimensNegative20
 import com.example.tmdbai.ui.theme.DimensNegative40
 import com.example.tmdbai.ui.theme.DimensNegative5
+import com.example.tmdbai.ui.theme.DimensNegative80
 import com.example.tmdbai.ui.theme.DimensNegative8
 import com.example.tmdbai.ui.theme.FilmStripBackground
 import com.example.tmdbai.ui.theme.FilmStripHole
@@ -67,24 +81,198 @@ import com.example.tmdbai.ui.theme.ReelCenter
 import com.example.tmdbai.ui.theme.ReelDark
 import com.example.tmdbai.ui.theme.ReelLight
 import com.example.tmdbai.ui.theme.Typography18
-import com.example.tmdbai.ui.theme.Dimens0
-import com.example.tmdbai.ui.theme.Dimens2
-import com.example.tmdbai.ui.theme.Dimens10
-import com.example.tmdbai.ui.theme.Dimens20
-import com.example.tmdbai.ui.theme.Dimens30
-import com.example.tmdbai.ui.theme.Dimens35
-import com.example.tmdbai.ui.theme.Dimens45
-import com.example.tmdbai.ui.theme.Dimens50
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlinx.coroutines.delay
+
+@Composable
+fun Clapperboard(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+    ) {
+        // Top section with pattern (clapper sticks area)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(Dimens20)
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFF2A2A2A), // Dark grey
+                            Color(0xFF1A1A1A), // Black
+                            Color(0xFF2A2A2A), // Dark grey
+                            Color(0xFF1A1A1A)  // Black
+                        )
+                    )
+                )
+        ) {
+            // Three dots on the left (hinge/bolt)
+            Row(
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = Dimens8),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Dimens2)
+            ) {
+                repeat(3) {
+                    Box(
+                        modifier = Modifier
+                            .size(Dimens3)
+                            .background(Color.Black, CircleShape)
+                    )
+                }
+            }
+        }
+        
+        // Main slate area
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .background(
+                    Color(0xFF3A3A3A), // Dark grey background
+                    RoundedCornerShape(
+                        bottomStart = Dimens8,
+                        bottomEnd = Dimens8
+                    )
+                )
+                .padding(Dimens12)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(Dimens8)
+            ) {
+                // PROD.NO. row
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "PROD.NO.",
+                        color = Color.White,
+                        fontSize = Typography18,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(Dimens1)
+                        .background(Color(0xFF666666))
+                )
+                
+                // SCENE, TAKE, ROLL row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "SCENE",
+                        color = Color.White,
+                        fontSize = Typography18,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "TAKE",
+                        color = Color.White,
+                        fontSize = Typography18,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "ROLL",
+                        color = Color.White,
+                        fontSize = Typography18,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(Dimens1)
+                        .background(Color(0xFF666666))
+                )
+                
+                // DATE, SOUND row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "DATE",
+                        color = Color.White,
+                        fontSize = Typography18,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "SOUND",
+                        color = Color.White,
+                        fontSize = Typography18,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(Dimens1)
+                        .background(Color(0xFF666666))
+                )
+                
+                // PROD.CO. row
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "PROD.CO.",
+                        color = Color.White,
+                        fontSize = Typography18,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(Dimens1)
+                        .background(Color(0xFF666666))
+                )
+                
+                // DIRECTOR row
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "DIRECTOR",
+                        color = Color.White,
+                        fontSize = Typography18,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(Dimens1)
+                        .background(Color(0xFF666666))
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun MovieLoadingScreen(
     progress: Float = Alpha03,
     onLoadingComplete: () -> Unit = {}
 ) {
+    var currentProgress by remember { mutableStateOf(0f) }
+    
     LaunchedEffect(key1 = true) {
-        kotlinx.coroutines.delay(5000) // 5 seconds
+        val totalDuration = 5000L // 5 seconds
+        val updateInterval = 50L // Update every 50ms for smooth animation
+        val progressIncrement = updateInterval.toFloat() / totalDuration.toFloat()
+        
+        while (currentProgress < 1f) {
+            delay(updateInterval)
+            currentProgress += progressIncrement
+            if (currentProgress > 1f) currentProgress = 1f
+        }
         onLoadingComplete()
     }
     val infiniteTransition = rememberInfiniteTransition(label = "loading")
@@ -117,148 +305,13 @@ fun MovieLoadingScreen(
                 .fillMaxWidth()
                 .height(Dimens300)
                 .align(Alignment.Center)
-                .offset(y = DimensNegative40)
         ) {
-            // Film strip background
-            Box(
+            // Film Clapperboard
+            Clapperboard(
                 modifier = Modifier
-                    .fillMaxWidth(Alpha06)
-                    .height(Dimens40)
-                    .align(Alignment.BottomCenter)
-                    .background(
-                        FilmStripBackground,
-                        RoundedCornerShape(Dimens4)
-                    )
-            ) {
-                // Film strip holes
-                val HOLE_COUNT = 8
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    repeat(HOLE_COUNT) {
-                        Box(
-                            modifier = Modifier
-                                .size(Dimens8)
-                                .background(
-                                    FilmStripHole,
-                                    CircleShape
-                                )
-                        )
-                    }
-                }
-            }
-
-            // Film reel
-            Box(
-                modifier = Modifier
-                    .size(Dimens120)
-                    .align(Alignment.CenterStart)
-                    .offset(x = Dimens20, y = DimensNegative20)
-                    .rotate(rotation)
-            ) {
-                // Outer reel
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            brush = Brush.radialGradient(
-                                colors = listOf(
-                                    ReelLight,
-                                    ReelDark
-                                )
-                            ),
-                            shape = CircleShape
-                        )
-                ) {
-                    // Center hole
-                    Box(
-                        modifier = Modifier
-                            .size(Dimens40)
-                            .align(Alignment.Center)
-                            .background(ReelCenter, CircleShape)
-                    )
-
-                    // Reel holes
-                    val REEL_HOLE_COUNT = 6
-                    val angles = listOf(0f, 60f, 120f, 180f, 240f, 300f)
-                    angles.forEach { angle ->
-                        Box(
-                            modifier = Modifier
-                                .size(Dimens16)
-                                .align(Alignment.Center)
-                                .offset(
-                                    x = (35 * cos(Math.toRadians(angle.toDouble()))).dp,
-                                    y = (35 * sin(Math.toRadians(angle.toDouble()))).dp
-                                )
-                                .background(ReelCenter, CircleShape)
-                        )
-                    }
-                }
-            }
-
-            // Popcorn container
-            Box(
-                modifier = Modifier
-                    .width(Dimens80)
-                    .height(Dimens100)
-                    .align(Alignment.CenterEnd)
-                    .offset(x = DimensNegative20, y = DimensNegative10)
-            ) {
-                // Container
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(Dimens80)
-                        .align(Alignment.BottomCenter)
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    LoadingRed,
-                                    LoadingRedDark
-                                )
-                            )
-                        )
-                ) {
-                    // Red and white stripes
-                    val STRIPE_COUNT = 4
-                    repeat(STRIPE_COUNT) { index ->
-                        if (index % 2 == 1) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(Dimens20)
-                                    .offset(y = (index * 20).dp)
-                                    .background(Color.White)
-                            )
-                        }
-                    }
-                }
-
-                                    // Popcorn pieces
-                    val POPCORN_COUNT = 6
-                    val popcornPositions = listOf(
-                        Pair(Dimens10, Dimens0),
-                        Pair(Dimens30, DimensNegative5),
-                        Pair(Dimens50, Dimens2),
-                        Pair(Dimens20, DimensNegative8),
-                        Pair(Dimens45, DimensNegative10),
-                        Pair(Dimens35, DimensNegative15)
-                    )
-
-                popcornPositions.forEach { (x, y) ->
-                    Box(
-                        modifier = Modifier
-                            .size(Dimens12)
-                            .offset(x = x, y = y)
-                            .background(
-                                LoadingOrange,
-                                RoundedCornerShape(Dimens6)
-                            )
-                    )
-                }
-            }
+                    .size(Dimens280)
+                    .align(Alignment.Center)
+            )
         }
 
         // Loading section at bottom
@@ -289,7 +342,7 @@ fun MovieLoadingScreen(
                 // Progress indicator
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(progress)
+                        .fillMaxWidth(currentProgress)
                         .fillMaxHeight()
                         .background(
                             LoadingBlue,

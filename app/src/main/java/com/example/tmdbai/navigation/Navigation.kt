@@ -33,7 +33,7 @@ fun AppNavigation(navController: NavHostController) {
                 }
             )
         }
-        
+
         composable(Screen.Loading.route) {
             MovieLoadingScreen(
                 onLoadingComplete = {
@@ -43,7 +43,7 @@ fun AppNavigation(navController: NavHostController) {
                 }
             )
         }
-        
+
         composable(Screen.List.route) {
             MovieListScreen(
                 onMovieClick = { movieId ->
@@ -55,7 +55,7 @@ fun AppNavigation(navController: NavHostController) {
                 }
             )
         }
-        
+
         composable(Screen.Details.route) { backStackEntry ->
             val movieId = backStackEntry.arguments?.getString("movieId") ?: ""
             MovieDetailsScreen(

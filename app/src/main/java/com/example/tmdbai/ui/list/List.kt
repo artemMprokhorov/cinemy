@@ -1,5 +1,6 @@
 package com.example.tmdbai.ui.list
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -26,9 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.activity.compose.BackHandler
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -71,7 +70,10 @@ data class Movie(
     val title: String,
     val description: String,
     val posterColor: Color,
-    val posterImageUrl: String? = null
+    val posterImageUrl: String? = null,
+    val rating: String = "",
+    val voteCount: String = "",
+    val releaseDate: String = ""
 )
 
 @Composable
@@ -87,27 +89,42 @@ fun MovieListScreen(
             Movie(
                 title = "The Midnight Bloom",
                 description = "A young botanist discovers a rare, bioluminescent flower with the power to heal any ailment, but must protect it from those who seek to exploit its magic.",
-                posterColor = MoviePosterBlue
+                posterColor = MoviePosterBlue,
+                rating = "8.5",
+                voteCount = "1,234",
+                releaseDate = "2024-03-15"
             ),
             Movie(
                 title = "Echoes of the Past",
                 description = "A historian uncovers a hidden diary revealing a forgotten chapter of the city's history, leading to a quest for a lost artifact.",
-                posterColor = MoviePosterBrown
+                posterColor = MoviePosterBrown,
+                rating = "7.8",
+                voteCount = "856",
+                releaseDate = "2024-02-28"
             ),
             Movie(
                 title = "The Last Starfarer",
                 description = "In a distant future, a lone pilot embarks on a perilous journey to the edge of the galaxy to deliver a message that could save humanity.",
-                posterColor = MoviePosterDarkBlue
+                posterColor = MoviePosterDarkBlue,
+                rating = "9.1",
+                voteCount = "2,567",
+                releaseDate = "2024-01-10"
             ),
             Movie(
                 title = "Whispers of the Wind",
                 description = "A reclusive artist living in a remote mountain village finds inspiration in the wind's whispers, creating breathtaking sculptures that capture the essence of nature.",
-                posterColor = MoviePosterGreen
+                posterColor = MoviePosterGreen,
+                rating = "8.2",
+                voteCount = "1,789",
+                releaseDate = "2024-04-05"
             ),
             Movie(
                 title = "The Silent Guardian",
                 description = "A mysterious figure watches over a bustling metropolis, silently intervening to protect its citizens from unseen threats.",
-                posterColor = MoviePosterNavy
+                posterColor = MoviePosterNavy,
+                rating = "7.9",
+                voteCount = "1,432",
+                releaseDate = "2024-03-22"
             )
         )
     }
@@ -196,6 +213,60 @@ fun MovieItem(
                 lineHeight = Typography20,
                 modifier = Modifier.padding(bottom = Dimens16)
             )
+
+            // Movie details row
+            Row(
+                modifier = Modifier.padding(bottom = Dimens16),
+                horizontalArrangement = Arrangement.spacedBy(Dimens16)
+            ) {
+                // Rating
+                Column {
+                    Text(
+                        text = "Rating",
+                        fontSize = Typography12,
+                        color = TextSecondary,
+                        modifier = Modifier.padding(bottom = Dimens4)
+                    )
+                    Text(
+                        text = movie.rating,
+                        fontSize = Typography14,
+                        color = Color.White,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+
+                // Vote Count
+                Column {
+                    Text(
+                        text = "Votes",
+                        fontSize = Typography12,
+                        color = TextSecondary,
+                        modifier = Modifier.padding(bottom = Dimens4)
+                    )
+                    Text(
+                        text = movie.voteCount,
+                        fontSize = Typography14,
+                        color = Color.White,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+
+                // Release Date
+                Column {
+                    Text(
+                        text = "Release",
+                        fontSize = Typography12,
+                        color = TextSecondary,
+                        modifier = Modifier.padding(bottom = Dimens4)
+                    )
+                    Text(
+                        text = movie.releaseDate,
+                        fontSize = Typography14,
+                        color = Color.White,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
 
             // More Details button
             Button(

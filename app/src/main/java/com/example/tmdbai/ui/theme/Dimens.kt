@@ -5,6 +5,7 @@ import androidx.compose.ui.unit.dp
 // Small dimensions (1-8dp)
 val Dimens1 = 1.dp
 val Dimens2 = 2.dp
+val Dimens3 = 3.dp
 val Dimens4 = 4.dp
 val Dimens6 = 6.dp
 val Dimens8 = 8.dp
@@ -46,3 +47,4 @@ val DimensNegative10 = (-10).dp
 val DimensNegative15 = (-15).dp
 val DimensNegative20 = (-20).dp
 val DimensNegative40 = (-40).dp
+val DimensNegative80 = (-80).dp
