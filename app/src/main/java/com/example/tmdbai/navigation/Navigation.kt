@@ -4,14 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.tmdbai.ui.details.MovieDetailsScreen
-import com.example.tmdbai.ui.list.MovieListScreen
-import com.example.tmdbai.ui.loading.MovieLoadingScreen
+import com.example.tmdbai.ui.moviedetail.MovieDetailScreen
+import com.example.tmdbai.ui.movieslist.MoviesListScreen
 import com.example.tmdbai.ui.splash.MovieAppSplashScreen
 
 sealed class Screen(val route: String) {
     object Splash : Screen("splash")
-    object Loading : Screen("loading")
     object List : Screen("list")
     object Details : Screen("details/{movieId}") {
         fun createRoute(movieId: String) = "details/$movieId"
@@ -27,27 +25,17 @@ fun AppNavigation(navController: NavHostController) {
         composable(Screen.Splash.route) {
             MovieAppSplashScreen(
                 onSplashComplete = {
-                    navController.navigate(Screen.Loading.route) {
+                    navController.navigate(Screen.List.route) {
                         popUpTo(Screen.Splash.route) { inclusive = true }
                     }
                 }
             )
         }
 
-        composable(Screen.Loading.route) {
-            MovieLoadingScreen(
-                onLoadingComplete = {
-                    navController.navigate(Screen.List.route) {
-                        popUpTo(Screen.Loading.route) { inclusive = true }
-                    }
-                }
-            )
-        }
-
         composable(Screen.List.route) {
-            MovieListScreen(
+            MoviesListScreen(
                 onMovieClick = { movieId ->
-                    navController.navigate(Screen.Details.createRoute(movieId))
+                    navController.navigate(Screen.Details.createRoute(movieId.toString()))
                 },
                 onBackPressed = {
                     // Close the app when back is pressed on List screen
@@ -57,8 +45,8 @@ fun AppNavigation(navController: NavHostController) {
         }
 
         composable(Screen.Details.route) { backStackEntry ->
-            val movieId = backStackEntry.arguments?.getString("movieId") ?: ""
-            MovieDetailsScreen(
+            val movieId = backStackEntry.arguments?.getString("movieId")?.toIntOrNull() ?: 1
+            MovieDetailScreen(
                 movieId = movieId,
                 onBackClick = {
                     navController.popBackStack()
