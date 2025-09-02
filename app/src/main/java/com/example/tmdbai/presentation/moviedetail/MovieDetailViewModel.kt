@@ -56,7 +56,7 @@ class MovieDetailViewModel(
 
             when (result) {
                 is Result.Success -> {
-                    val movieDetails = result.data as MovieDetails
+                    val movieDetails = result.data
                     _state.value = _state.value.copy(
                         movieDetails = movieDetails,
                         isLoading = false,

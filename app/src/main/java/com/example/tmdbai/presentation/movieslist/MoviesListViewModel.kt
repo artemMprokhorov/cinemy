@@ -107,7 +107,7 @@ class MoviesListViewModel(
 
             when (result) {
                 is Result.Success -> {
-                    val movieListResponse = result.data as MovieListResponse
+                    val movieListResponse = result.data
                     _state.value = _state.value.copy(
                         movies = movieListResponse.movies,
                         isLoading = false,
