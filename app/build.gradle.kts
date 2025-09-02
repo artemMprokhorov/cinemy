@@ -328,17 +328,3 @@ tasks.whenTaskAdded {
         dependsOn("generateVersionInfo")
     }
 }
-
-// Copy APK to project root for convenience
-tasks.register<Copy>("copyReleaseApk") {
-    from("build/outputs/apk/production/release")
-    into("../")
-    include("*.apk")
-    rename { "TmdbAi-${getVersionName()}-release.apk" }
-}
-
-tasks.whenTaskAdded {
-    if (name == "assembleProductionRelease") {
-        finalizedBy("copyReleaseApk")
-    }
-}
