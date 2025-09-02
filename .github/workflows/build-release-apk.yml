@@ -3,11 +3,11 @@ name: Build and Release APK
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ master, develop ]
     tags:
       - 'v*'
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
   workflow_dispatch:
     inputs:
       version_name:
@@ -60,7 +60,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run unit tests
-        run: ./gradlew testDebugUnitTest
+        run: ./gradlew testProductionDebugUnitTest
 
       - name: Run instrumentation tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -111,20 +111,20 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build debug APK
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleProductionDebug
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
           name: debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          path: app/build/outputs/apk/production/debug/*.apk
           retention-days: 7
 
   build-release:
     name: Build Release APK
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
 
     steps:
       - name: Checkout code
@@ -188,7 +188,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           VERSION_NAME: ${{ env.VERSION_NAME }}
           VERSION_CODE: ${{ env.VERSION_CODE }}
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleProductionRelease
 
       - name: Build release AAB (for Play Store)
         env:
@@ -197,18 +197,18 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           VERSION_NAME: ${{ env.VERSION_NAME }}
           VERSION_CODE: ${{ env.VERSION_CODE }}
-        run: ./gradlew bundleRelease
+        run: ./gradlew bundleProductionRelease
 
       # Проверка подписи APK
       - name: Verify APK signature
         run: |
-          $ANDROID_HOME/build-tools/${{ env.BUILD_TOOLS_VERSION }}/aapt dump badging app/build/outputs/apk/release/app-release.apk
+          $ANDROID_HOME/build-tools/${{ env.BUILD_TOOLS_VERSION }}/aapt dump badging app/build/outputs/apk/production/release/app-production-release.apk
 
       - name: Get APK info
         id: apk_info
         run: |
-          APK_SIZE=$(stat -c%s app/build/outputs/apk/release/app-release.apk | numfmt --to=iec)
-          AAB_SIZE=$(stat -c%s app/build/outputs/bundle/release/app-release.aab | numfmt --to=iec)
+          APK_SIZE=$(stat -c%s app/build/outputs/apk/production/release/app-production-release.apk | numfmt --to=iec)
+          AAB_SIZE=$(stat -c%s app/build/outputs/bundle/production/release/app-production-release.aab | numfmt --to=iec)
           
           echo "apk_size=$APK_SIZE" >> $GITHUB_OUTPUT
           echo "aab_size=$AAB_SIZE" >> $GITHUB_OUTPUT
@@ -216,17 +216,17 @@ jobs:
       # Создание имен файлов с версией
       - name: Rename APK and AAB files
         run: |
-          mv app/build/outputs/apk/release/app-release.apk \
-             app/build/outputs/apk/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
+          mv app/build/outputs/apk/production/release/app-production-release.apk \
+             app/build/outputs/apk/production/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
           
-          mv app/build/outputs/bundle/release/app-release.aab \
-             app/build/outputs/bundle/release/TmdbAi-${{ env.VERSION_NAME }}-release.aab
+          mv app/build/outputs/bundle/production/release/app-production-release.aab \
+             app/build/outputs/bundle/production/release/TmdbAi-${{ env.VERSION_NAME }}-release.aab
 
       - name: Upload release APK
         uses: actions/upload-artifact@v4
         with:
           name: release-apk-${{ env.VERSION_NAME }}
-          path: app/build/outputs/apk/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
+          path: app/build/outputs/apk/production/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
           retention-days: 30
 
       - name: Upload release AAB
@@ -307,7 +307,7 @@ jobs:
     name: Security Scan
     runs-on: ubuntu-latest
     needs: build-release
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
+    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
 
     steps:
       - name: Checkout code
