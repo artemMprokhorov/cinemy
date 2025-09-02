@@ -1,0 +1,43 @@
+# GitHub Actions Configuration for TmdbAi
+# This file configures the CI/CD pipeline and automation
+
+# Workflow permissions
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: read
+
+# Environment configurations
+environments:
+  development:
+    name: Development
+    url: https://dev-api.example.com
+  staging:
+    name: Staging
+    url: https://staging-api.example.com
+  production:
+    name: Production
+    url: https://api.example.com
+
+# Branch protection rules (configure in repository settings)
+# - Require status checks to pass before merging
+# - Require branches to be up to date before merging
+# - Require pull request reviews before merging
+# - Require conversation resolution before merging
+
+# Required status checks
+# - build-and-test
+# - security-checks
+# - code-quality
+# - build-verification
+
+# Auto-merge configuration
+# - Enable auto-merge for dependency updates
+# - Require all checks to pass
+# - Require at least one review
+
+# Notification settings
+# - Build success/failure notifications
+# - Security alert notifications
+# - Dependency update notifications

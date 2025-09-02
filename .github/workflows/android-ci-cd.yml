@@ -1,0 +1,256 @@
+name: Android CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  release:
+    types: [ published ]
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.jvmargs=-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError
+
+jobs:
+  # Build and test job
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.5
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Generate version info
+        run: |
+          echo "VERSION_NAME=${{ github.ref_name }}-${{ github.run_number }}" >> $GITHUB_ENV
+          echo "VERSION_CODE=${{ github.run_number }}" >> $GITHUB_ENV
+          echo "GITHUB_SHA=${{ github.sha }}" >> $GITHUB_ENV
+
+      - name: Create version.properties
+        run: |
+          echo "VERSION_NAME=${{ env.VERSION_NAME }}" > version.properties
+          echo "VERSION_CODE=${{ env.VERSION_CODE }}" >> version.properties
+          echo "GITHUB_SHA=${{ env.GITHUB_SHA }}" >> version.properties
+
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Build development APK
+        run: ./gradlew assembleDevelopmentDebug
+
+      - name: Build staging APK
+        run: ./gradlew assembleStagingDebug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload development APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-development-debug
+          path: app/build/outputs/apk/development/debug/app-development-debug.apk
+
+      - name: Upload staging APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-staging-debug
+          path: app/build/outputs/apk/staging/debug/app-staging-debug.apk
+
+  # Release build job
+  release-build:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' || (github.ref == 'refs/heads/main' && github.event_name == 'push')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.5
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Generate version info
+        run: |
+          if [ "${{ github.event_name }}" == "release" ]; then
+            echo "VERSION_NAME=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+            echo "VERSION_CODE=${{ github.event.release.id }}" >> $GITHUB_ENV
+          else
+            echo "VERSION_NAME=${{ github.ref_name }}-${{ github.run_number }}" >> $GITHUB_ENV
+            echo "VERSION_CODE=${{ github.run_number }}" >> $GITHUB_ENV
+          fi
+          echo "GITHUB_SHA=${{ github.sha }}" >> $GITHUB_ENV
+
+      - name: Create version.properties
+        run: |
+          echo "VERSION_NAME=${{ env.VERSION_NAME }}" > version.properties
+          echo "VERSION_CODE=${{ env.VERSION_CODE }}" >> version.properties
+          echo "GITHUB_SHA=${{ env.GITHUB_SHA }}" >> version.properties
+
+      - name: Setup signing
+        uses: r0adkll/sign-android-release@v1
+        id: sign
+        with:
+          releaseDirectory: app/build/outputs/apk/production/release
+          signingKeyBase64: ${{ secrets.KEYSTORE_BASE64 }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Build production release APK
+        run: ./gradlew assembleProductionRelease
+
+      - name: Build production release bundle
+        run: ./gradlew bundleProductionRelease
+
+      - name: Upload signed APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-production-release-signed
+          path: app/build/outputs/apk/production/release/app-production-release-signed.apk
+
+      - name: Upload release bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-production-release-bundle
+          path: app/build/outputs/bundle/production/release/app-production-release.aab
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        if: github.event_name == 'release'
+        with:
+          files: |
+            app/build/outputs/apk/production/release/app-production-release-signed.apk
+            app/build/outputs/bundle/production/release/app-production-release.aab
+          body: |
+            ## Release ${{ github.event.release.tag_name }}
+            
+            **Version:** ${{ env.VERSION_NAME }}
+            **Build:** ${{ env.VERSION_CODE }}
+            **Commit:** ${{ env.GITHUB_SHA }}
+            
+            ### Downloads
+            - **APK:** `app-production-release-signed.apk`
+            - **Bundle:** `app-production-release.aab`
+            
+            ### Changes
+            ${{ github.event.release.body }}
+
+  # Security and quality checks
+  security-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.5
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run lint checks
+        run: ./gradlew lint
+
+      - name: Run dependency check
+        run: ./gradlew dependencyInsight --configuration implementation
+
+      - name: Check for vulnerable dependencies
+        uses: snyk/actions-gradle@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+
+  # Documentation generation
+  docs:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.5
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Generate documentation
+        run: ./gradlew generateVersionInfo
+
+      - name: Upload documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-docs
+          path: app/src/main/assets/version.json

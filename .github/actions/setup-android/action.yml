@@ -1,0 +1,59 @@
+name: 'Setup Android Development Environment'
+description: 'Setup Android SDK, Gradle, and development tools'
+
+inputs:
+  java-version:
+    description: 'Java version to use'
+    required: false
+    default: '17'
+  gradle-version:
+    description: 'Gradle version to use'
+    required: false
+    default: '8.5'
+  android-sdk-version:
+    description: 'Android SDK version to use'
+    required: false
+    default: '34'
+  cache-gradle:
+    description: 'Whether to cache Gradle packages'
+    required: false
+    default: 'true'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: 'temurin'
+        cache: ${{ inputs.cache-gradle == 'true' && 'gradle' || 'maven' }}
+
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        gradle-version: ${{ inputs.gradle-version }}
+
+    - name: Grant execute permission for gradlew
+      shell: bash
+      run: chmod +x gradlew
+
+    - name: Cache Gradle packages
+      if: inputs.cache-gradle == 'true'
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      with:
+        sdk-platform: ${{ inputs.android-sdk-version }}
+        sdk-build-tools: ${{ inputs.android-sdk-version }}.0.0
+        sdk-ndk: 25.1.8937393
+        sdk-cmake: 3.22.1
+        sdk-licenses: true
