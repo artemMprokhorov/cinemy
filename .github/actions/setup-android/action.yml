@@ -9,11 +9,11 @@ inputs:
   gradle-version:
     description: 'Gradle version to use'
     required: false
-    default: '8.5'
+    default: '8.6'
   android-sdk-version:
     description: 'Android SDK version to use'
     required: false
-    default: '34'
+    default: '36'
   cache-gradle:
     description: 'Whether to cache Gradle packages'
     required: false

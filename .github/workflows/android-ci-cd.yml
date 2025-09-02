@@ -31,7 +31,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 8.5
+          gradle-version: 8.6
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -109,7 +109,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 8.5
+          gradle-version: 8.6
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -206,7 +206,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 8.5
+          gradle-version: 8.6
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -241,7 +241,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 8.5
+          gradle-version: 8.6
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew

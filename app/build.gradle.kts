@@ -31,12 +31,12 @@ fun getVersionCode(): Int {
 
 android {
     namespace = "com.example.tmdbai"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.tmdbai"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 36
         versionCode = getVersionCode()
         versionName = getVersionName()
 
