@@ -170,6 +170,15 @@ android {
         kotlinCompilerExtensionVersion = "1.5.8"
     }
     
+    // Enable Kotlin serialization
+    kotlin {
+        sourceSets.all {
+            languageSettings {
+                languageVersion = "1.9"
+            }
+        }
+    }
+    
     // Testing configuration
     testOptions {
         unitTests {
@@ -204,8 +213,8 @@ android {
 }
 
 dependencies {
-    // Jetpack Compose BOM
-    implementation(platform("androidx.compose:compose-bom:2024.02.00"))
+    // Jetpack Compose BOM - Latest version
+    implementation(platform(libs.androidx.compose.bom))
     
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
@@ -219,38 +228,39 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation("androidx.compose.material:material-icons-extended")
     
-    // Navigation Compose
+    // Navigation Compose 2.8+ with type-safe routes
     implementation(libs.androidx.navigation.compose)
-    implementation("androidx.navigation:navigation-runtime-ktx:2.7.6")
+    implementation("androidx.navigation:navigation-runtime-ktx:2.8.2")
     
     // ViewModel & State Management
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
     
-    // Dependency Injection - Koin
-    implementation("io.insert-koin:koin-android:3.5.3")
-    implementation("io.insert-koin:koin-androidx-compose:3.5.3")
-    implementation("io.insert-koin:koin-core:3.5.3")
+    // Dependency Injection - Koin (using version catalog)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.core)
     
-    // Coroutines & Reactive Programming
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    // Coroutines & Reactive Programming (using version catalog)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
     
-    // Networking - Ktor for MCP protocol
-    implementation("io.ktor:ktor-client-android:2.3.7")
-    implementation("io.ktor:ktor-client-content-negotiation:2.3.7")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
-    implementation("io.ktor:ktor-client-logging:2.3.7")
-    implementation("io.ktor:ktor-client-auth:2.3.7")
+    // Networking - Ktor for MCP protocol (using version catalog)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.auth)
     
-    // Image Loading - Coil
-    implementation("io.coil-kt:coil-compose:2.5.0")
-    implementation("io.coil-kt:coil-gif:2.5.0")
-    implementation("io.coil-kt:coil-svg:2.5.0")
+    // Image Loading - Coil (using version catalog)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
+    implementation(libs.coil.svg)
     
-    // JSON Processing - Gson for backward compatibility
+    // JSON Processing - Kotlinx Serialization for MCP (using version catalog)
+    implementation(libs.kotlinx.serialization.json)
+    // Keep Gson for backward compatibility during migration
     implementation("com.google.code.gson:gson:2.10.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     
     // Date/Time
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
@@ -258,32 +268,32 @@ dependencies {
     // Splash Screen
     implementation("androidx.core:core-splashscreen:1.0.1")
     
-    // SystemUI Controller
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
+    // SystemUI Controller (using version catalog)
+    implementation(libs.accompanist.systemuicontroller)
     
-    // Permissions
-    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+    // Permissions (using version catalog)
+    implementation(libs.accompanist.permissions)
     
     // Pull to Refresh
     implementation("androidx.compose.material:material:1.6.1")
     
-    // Paging for movie lists
-    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
-    implementation("androidx.paging:paging-compose:3.2.1")
+    // Paging for movie lists (using version catalog)
+    implementation(libs.paging.runtime.ktx)
+    implementation(libs.paging.compose)
     
-    // DataStore for preferences
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    // DataStore for preferences (using version catalog)
+    implementation(libs.datastore.preferences)
     
-    // Timber for logging
-    implementation("com.jakewharton.timber:timber:5.0.1")
+    // Timber for logging (using version catalog)
+    implementation(libs.timber)
     
-    // Testing dependencies
+    // Testing dependencies (using version catalog)
     testImplementation(libs.junit)
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-    testImplementation("io.mockk:mockk:1.13.8")
-    testImplementation("app.cash.turbine:turbine:1.0.0")
-    testImplementation("io.insert-koin:koin-test:3.5.3")
-    testImplementation("io.insert-koin:koin-test-junit4:3.5.3")
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.turbine)
+    testImplementation(libs.koin.test)
+    testImplementation(libs.koin.test.junit4)
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     
     // Android testing
@@ -291,8 +301,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation("androidx.navigation:navigation-testing:2.7.6")
-    androidTestImplementation("io.insert-koin:koin-test:3.5.3")
+    androidTestImplementation("androidx.navigation:navigation-testing:2.8.2")
+    androidTestImplementation(libs.koin.test)
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
     
