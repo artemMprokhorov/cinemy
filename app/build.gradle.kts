@@ -228,9 +228,9 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation("androidx.compose.material:material-icons-extended")
     
-    // Navigation Compose 2.8+ with type-safe routes
+    // Navigation Compose 2.9+ with type-safe routes (latest stable with AGP 8.6.0)
     implementation(libs.androidx.navigation.compose)
-    implementation("androidx.navigation:navigation-runtime-ktx:2.8.2")
+    implementation("androidx.navigation:navigation-runtime-ktx:2.9.3")
     
     // ViewModel & State Management
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
@@ -301,7 +301,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation("androidx.navigation:navigation-testing:2.8.2")
+    androidTestImplementation("androidx.navigation:navigation-testing:2.9.3")
     androidTestImplementation(libs.koin.test)
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
