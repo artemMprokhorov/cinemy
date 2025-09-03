@@ -19,22 +19,18 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tmdbai.data.model.MovieDetails
@@ -46,30 +42,27 @@ import com.example.tmdbai.ui.theme.Alpha06
 import com.example.tmdbai.ui.theme.AppBackground
 import com.example.tmdbai.ui.theme.Dimens12
 import com.example.tmdbai.ui.theme.Dimens16
-import com.example.tmdbai.ui.theme.Dimens20
 import com.example.tmdbai.ui.theme.Dimens24
 import com.example.tmdbai.ui.theme.Dimens32
-import com.example.tmdbai.ui.theme.Dimens8
-import com.example.tmdbai.ui.theme.Dimens200
 import com.example.tmdbai.ui.theme.Dimens48
-import com.example.tmdbai.ui.theme.Dimens6
-import com.example.tmdbai.ui.theme.Dimens2
-import com.example.tmdbai.ui.theme.Dimens4
 import com.example.tmdbai.ui.theme.Dimens100
+import com.example.tmdbai.ui.theme.Dimens200
+import com.example.tmdbai.ui.theme.Dimens8
+import com.example.tmdbai.ui.theme.Dimens6
+import com.example.tmdbai.ui.theme.Dimens4
+import com.example.tmdbai.ui.theme.Dimens2
 import com.example.tmdbai.ui.theme.MoviePosterBlue
 import com.example.tmdbai.ui.theme.MoviePosterBrown
 import com.example.tmdbai.ui.theme.MoviePosterDarkBlue
 import com.example.tmdbai.ui.theme.MoviePosterGreen
 import com.example.tmdbai.ui.theme.MoviePosterNavy
-import com.example.tmdbai.ui.theme.TextSecondary
-import com.example.tmdbai.ui.theme.TextTertiary
-import com.example.tmdbai.ui.theme.Typography12
-import com.example.tmdbai.ui.theme.Typography14
-import com.example.tmdbai.ui.theme.Typography16
-import com.example.tmdbai.ui.theme.Typography20
-import com.example.tmdbai.ui.theme.Typography24
-import com.example.tmdbai.ui.theme.Typography32
 import org.koin.androidx.compose.koinViewModel
+
+// Import the new server-driven UI components
+import com.example.tmdbai.ui.components.ConfigurableButton
+import com.example.tmdbai.ui.components.ConfigurableText
+import com.example.tmdbai.ui.components.ConfigurableTextByType
+import com.example.tmdbai.ui.components.TextType
 
 @Composable
 fun MovieDetailScreen(
@@ -84,7 +77,7 @@ fun MovieDetailScreen(
     val state by viewModel.state.collectAsState()
     
     // Load movie details when the screen is first displayed
-    androidx.compose.runtime.LaunchedEffect(movieId) {
+    LaunchedEffect(movieId) {
         viewModel.processIntent(MovieDetailIntent.LoadMovieDetails(movieId))
     }
     
@@ -97,7 +90,7 @@ fun MovieDetailScreen(
     ) {
         when {
             state.isLoading -> {
-                LoadingContent()
+                LoadingContent(uiConfig = state.uiConfig)
             }
             state.error != null -> {
                 ErrorContent(
@@ -119,15 +112,15 @@ fun MovieDetailScreen(
 }
 
 @Composable
-private fun LoadingContent() {
+private fun LoadingContent(uiConfig: UiConfiguration? = null) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = "Loading movie details...",
-            color = Color.White,
-            fontSize = Typography20
+        ConfigurableTextByType(
+            textType = TextType.LOADING_TEXT,
+            uiConfig = uiConfig,
+            style = MaterialTheme.typography.headlineMedium
         )
     }
 }
@@ -165,26 +158,20 @@ private fun ErrorContent(
         
         Spacer(modifier = Modifier.height(Dimens32))
         
-        Text(
+        ConfigurableText(
             text = error,
-            color = Color.White,
-            fontSize = Typography16,
-            textAlign = TextAlign.Center
+            style = MaterialTheme.typography.bodyLarge,
+            uiConfig = uiConfig,
+            modifier = Modifier.fillMaxWidth()
         )
         
         Spacer(modifier = Modifier.height(Dimens24))
         
-        Button(
+        ConfigurableButton(
+            text = uiConfig?.texts?.retryButton ?: "Retry",
             onClick = onRetry,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = uiConfig?.buttons?.primaryButtonColor ?: MoviePosterBlue
-            )
-        ) {
-            Text(
-                text = uiConfig?.texts?.retryButton ?: "Retry",
-                color = uiConfig?.buttons?.buttonTextColor ?: Color.White
-            )
-        }
+            uiConfig = uiConfig
+        )
     }
 }
 
@@ -221,11 +208,10 @@ private fun MovieDetailContent(
             
             Spacer(modifier = Modifier.width(Dimens8))
             
-            Text(
+            ConfigurableText(
                 text = "Movie Details",
-                fontSize = Typography20,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
+                style = MaterialTheme.typography.titleLarge,
+                uiConfig = uiConfig
             )
         }
         
@@ -259,11 +245,10 @@ private fun MovieDetailContent(
             modifier = Modifier.padding(Dimens16)
         ) {
             // Title
-            Text(
+            ConfigurableText(
                 text = movieDetails.title,
-                fontSize = Typography32,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
+                style = MaterialTheme.typography.headlineLarge,
+                uiConfig = uiConfig
             )
             
             Spacer(modifier = Modifier.height(Dimens8))
@@ -272,49 +257,46 @@ private fun MovieDetailContent(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
+                ConfigurableText(
                     text = "★ ${movieDetails.rating}",
-                    fontSize = Typography16,
-                    color = TextTertiary
+                    style = MaterialTheme.typography.bodyMedium,
+                    uiConfig = uiConfig
                 )
                 
                 Spacer(modifier = Modifier.width(Dimens16))
                 
-                Text(
+                ConfigurableText(
                     text = movieDetails.releaseDate,
-                    fontSize = Typography16,
-                    color = TextTertiary
+                    style = MaterialTheme.typography.bodyMedium,
+                    uiConfig = uiConfig
                 )
             }
             
             Spacer(modifier = Modifier.height(Dimens16))
             
             // Description
-            Text(
+            ConfigurableText(
                 text = "Overview",
-                fontSize = Typography20,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
+                style = MaterialTheme.typography.titleLarge,
+                uiConfig = uiConfig
             )
             
             Spacer(modifier = Modifier.height(Dimens8))
             
-            Text(
+            ConfigurableText(
                 text = movieDetails.description,
-                fontSize = Typography16,
-                color = TextSecondary,
-                lineHeight = Typography20
+                style = MaterialTheme.typography.bodyMedium,
+                uiConfig = uiConfig
             )
             
             Spacer(modifier = Modifier.height(Dimens24))
             
             // Genres
             if (movieDetails.genres.isNotEmpty()) {
-                Text(
+                ConfigurableText(
                     text = "Genres",
-                    fontSize = Typography20,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    style = MaterialTheme.typography.titleLarge,
+                    uiConfig = uiConfig
                 )
                 
                 Spacer(modifier = Modifier.height(Dimens8))
@@ -323,10 +305,10 @@ private fun MovieDetailContent(
                     horizontalArrangement = Arrangement.spacedBy(Dimens8)
                 ) {
                     movieDetails.genres.forEach { genre ->
-                        Text(
+                        ConfigurableText(
                             text = genre.name,
-                            fontSize = Typography14,
-                            color = Color.White,
+                            style = MaterialTheme.typography.bodySmall,
+                            uiConfig = uiConfig,
                             modifier = Modifier
                                 .background(
                                     uiConfig?.buttons?.secondaryButtonColor ?: MoviePosterDarkBlue,
@@ -342,20 +324,19 @@ private fun MovieDetailContent(
             
             // Production Companies
             if (movieDetails.productionCompanies.isNotEmpty()) {
-                Text(
+                ConfigurableText(
                     text = "Production Companies",
-                    fontSize = Typography20,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    style = MaterialTheme.typography.titleLarge,
+                    uiConfig = uiConfig
                 )
                 
                 Spacer(modifier = Modifier.height(Dimens8))
                 
                 movieDetails.productionCompanies.forEach { company ->
-                    Text(
+                    ConfigurableText(
                         text = "• ${company.name}",
-                        fontSize = Typography14,
-                        color = TextSecondary,
+                        style = MaterialTheme.typography.bodySmall,
+                        uiConfig = uiConfig,
                         modifier = Modifier.padding(vertical = Dimens2)
                     )
                 }
@@ -364,19 +345,18 @@ private fun MovieDetailContent(
             }
             
             // Additional Details
-            Text(
+            ConfigurableText(
                 text = "Additional Details",
-                fontSize = Typography20,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
+                style = MaterialTheme.typography.titleLarge,
+                uiConfig = uiConfig
             )
             
             Spacer(modifier = Modifier.height(Dimens8))
             
-            DetailRow("Vote Count", movieDetails.voteCount.toString())
-            DetailRow("Runtime", "${movieDetails.runtime ?: "N/A"} minutes")
-            DetailRow("Budget", "$${movieDetails.budget}")
-            DetailRow("Revenue", "$${movieDetails.revenue}")
+            DetailRow("Vote Count", movieDetails.voteCount.toString(), uiConfig)
+            DetailRow("Runtime", "${movieDetails.runtime ?: "N/A"} minutes", uiConfig)
+            DetailRow("Budget", "$${movieDetails.budget}", uiConfig)
+            DetailRow("Revenue", "$${movieDetails.revenue}", uiConfig)
             
             Spacer(modifier = Modifier.height(Dimens32))
         }
@@ -386,25 +366,25 @@ private fun MovieDetailContent(
 @Composable
 private fun DetailRow(
     label: String,
-    value: String
+    value: String,
+    uiConfig: UiConfiguration? = null
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = Dimens4)
     ) {
-        Text(
+        ConfigurableText(
             text = "$label:",
-            fontSize = Typography14,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
+            style = MaterialTheme.typography.bodyMedium,
+            uiConfig = uiConfig,
             modifier = Modifier.width(Dimens100)
         )
         
-        Text(
+        ConfigurableText(
             text = value,
-            fontSize = Typography14,
-            color = TextSecondary
+            style = MaterialTheme.typography.bodyMedium,
+            uiConfig = uiConfig
         )
     }
 }

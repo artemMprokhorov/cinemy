@@ -1,18 +1,14 @@
 package com.example.tmdbai.ui.movieslist
 
 import androidx.compose.material.ExperimentalMaterialApi
-
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,17 +19,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
-
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -43,10 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tmdbai.data.model.Movie
@@ -54,34 +44,23 @@ import com.example.tmdbai.data.model.UiConfiguration
 import com.example.tmdbai.presentation.movieslist.MoviesListIntent
 import com.example.tmdbai.presentation.movieslist.MoviesListState
 import com.example.tmdbai.presentation.movieslist.MoviesListViewModel
-import com.example.tmdbai.ui.theme.Alpha06
 import com.example.tmdbai.ui.theme.AppBackground
-import com.example.tmdbai.ui.theme.ButtonContainer
-import com.example.tmdbai.ui.theme.Dimens1
-import com.example.tmdbai.ui.theme.Dimens100
 import com.example.tmdbai.ui.theme.Dimens12
-import com.example.tmdbai.ui.theme.Dimens140
 import com.example.tmdbai.ui.theme.Dimens16
-import com.example.tmdbai.ui.theme.Dimens20
 import com.example.tmdbai.ui.theme.Dimens24
 import com.example.tmdbai.ui.theme.Dimens32
-import com.example.tmdbai.ui.theme.Dimens4
 import com.example.tmdbai.ui.theme.Dimens40
 import com.example.tmdbai.ui.theme.Dimens8
 import com.example.tmdbai.ui.theme.MoviePosterBlue
-import com.example.tmdbai.ui.theme.MoviePosterBrown
 import com.example.tmdbai.ui.theme.MoviePosterDarkBlue
-import com.example.tmdbai.ui.theme.MoviePosterGreen
-import com.example.tmdbai.ui.theme.MoviePosterNavy
-import com.example.tmdbai.ui.theme.TextSecondary
-import com.example.tmdbai.ui.theme.TextTertiary
-import com.example.tmdbai.ui.theme.Typography12
-import com.example.tmdbai.ui.theme.Typography14
-import com.example.tmdbai.ui.theme.Typography16
-import com.example.tmdbai.ui.theme.Typography20
-import com.example.tmdbai.ui.theme.Typography24
-import com.example.tmdbai.ui.theme.Typography8
 import org.koin.androidx.compose.koinViewModel
+
+// Import the new server-driven UI components
+import com.example.tmdbai.ui.components.ConfigurableButton
+import com.example.tmdbai.ui.components.ConfigurableText
+import com.example.tmdbai.ui.components.ConfigurableMovieCard
+import com.example.tmdbai.ui.components.ConfigurableTextByType
+import com.example.tmdbai.ui.components.TextType
 
 @Composable
 fun MoviesListScreen(
@@ -104,7 +83,7 @@ fun MoviesListScreen(
     ) {
         when {
             state.isLoading -> {
-                LoadingContent()
+                LoadingContent(uiConfig = state.uiConfig)
             }
             state.error != null -> {
                 ErrorContent(
@@ -125,15 +104,15 @@ fun MoviesListScreen(
 }
 
 @Composable
-private fun LoadingContent() {
+private fun LoadingContent(uiConfig: UiConfiguration? = null) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = "Loading movies...",
-            color = Color.White,
-            fontSize = Typography20
+        ConfigurableTextByType(
+            textType = TextType.LOADING_TEXT,
+            uiConfig = uiConfig,
+            style = MaterialTheme.typography.headlineMedium
         )
     }
 }
@@ -151,26 +130,21 @@ private fun ErrorContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
+        ConfigurableText(
             text = error,
-            color = Color.White,
-            fontSize = Typography16,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            style = MaterialTheme.typography.bodyLarge,
+            uiConfig = uiConfig,
+            modifier = Modifier.fillMaxWidth()
         )
         
         Spacer(modifier = Modifier.height(Dimens24))
         
-        Button(
+        ConfigurableButton(
+            text = uiConfig?.texts?.retryButton ?: "Retry",
             onClick = onRetry,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = uiConfig?.buttons?.primaryButtonColor ?: MoviePosterBlue
-            )
-        ) {
-            Text(
-                text = uiConfig?.texts?.retryButton ?: "Retry",
-                color = uiConfig?.buttons?.buttonTextColor ?: Color.White
-            )
-        }
+            uiConfig = uiConfig,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 
@@ -263,12 +237,12 @@ private fun SearchBar(
             .padding(Dimens16),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        androidx.compose.material3.OutlinedTextField(
+        OutlinedTextField(
             value = query,
             onValueChange = onQueryChange,
             placeholder = { Text("Search movies...") },
             modifier = Modifier.weight(1f),
-            colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+            colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = uiConfig?.colors?.primary ?: MoviePosterBlue,
                 unfocusedBorderColor = Color.Gray,
                 focusedTextColor = Color.White,
@@ -278,25 +252,22 @@ private fun SearchBar(
         
         Spacer(modifier = Modifier.width(Dimens8))
         
-        Button(
+        ConfigurableButton(
+            text = "🔍",
             onClick = { onSearch(query) },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = uiConfig?.buttons?.primaryButtonColor ?: MoviePosterBlue
-            )
-        ) {
-            Icon(Icons.Default.Search, contentDescription = "Search")
-        }
+            uiConfig = uiConfig,
+            modifier = Modifier.size(Dimens40)
+        )
         
         Spacer(modifier = Modifier.width(Dimens8))
         
-        Button(
+        ConfigurableButton(
+            text = "Clear",
             onClick = onClear,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = uiConfig?.buttons?.secondaryButtonColor ?: MoviePosterDarkBlue
-            )
-        ) {
-            Text("Clear")
-        }
+            uiConfig = uiConfig,
+            isSecondary = true,
+            modifier = Modifier.size(Dimens40)
+        )
     }
 }
 
@@ -306,86 +277,14 @@ private fun MovieItem(
     uiConfig: UiConfiguration?,
     onClick: () -> Unit
 ) {
-    val posterColors = uiConfig?.colors?.moviePosterColors ?: listOf(
-        MoviePosterBlue, MoviePosterBrown, MoviePosterGreen, MoviePosterNavy, MoviePosterDarkBlue
-    )
-    val posterColor = posterColors[movie.id % posterColors.size]
-    
-    Row(
+    ConfigurableMovieCard(
+        movie = movie,
+        onClick = onClick,
+        uiConfig = uiConfig,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(Dimens12),
-        verticalAlignment = Alignment.Top
-    ) {
-        // Movie Poster
-        Box(
-            modifier = Modifier
-                .size(Dimens100, Dimens140)
-                .clip(RoundedCornerShape(Dimens12))
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            posterColor,
-                            posterColor.copy(alpha = Alpha06)
-                        )
-                    )
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Default.PlayArrow,
-                contentDescription = "Play",
-                modifier = Modifier.size(Dimens32),
-                tint = Color.White
-            )
-        }
-        
-        Spacer(modifier = Modifier.width(Dimens16))
-        
-        // Movie Info
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = movie.title,
-                fontSize = Typography20,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                maxLines = 2
-            )
-            
-            Spacer(modifier = Modifier.height(Dimens8))
-            
-            Text(
-                text = movie.description,
-                fontSize = Typography14,
-                color = TextSecondary,
-                maxLines = 3
-            )
-            
-            Spacer(modifier = Modifier.height(Dimens12))
-            
-            // Rating and Release Date
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "★ ${movie.rating}",
-                    fontSize = Typography12,
-                    color = TextTertiary
-                )
-                
-                Spacer(modifier = Modifier.width(Dimens16))
-                
-                Text(
-                    text = movie.releaseDate,
-                    fontSize = Typography12,
-                    color = TextTertiary
-                )
-            }
-        }
-    }
+            .padding(Dimens12)
+    )
 }
 
 @Composable
@@ -404,31 +303,26 @@ private fun PaginationControls(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Button(
+        ConfigurableButton(
+            text = "Previous",
             onClick = onPrevious,
             enabled = hasPrevious,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = uiConfig?.buttons?.secondaryButtonColor ?: MoviePosterDarkBlue
-            )
-        ) {
-            Text("Previous")
-        }
-        
-        Text(
-            text = "Page $currentPage",
-            color = Color.White,
-            fontSize = Typography14
+            uiConfig = uiConfig,
+            isSecondary = true
         )
         
-        Button(
+        ConfigurableText(
+            text = "Page $currentPage",
+            style = MaterialTheme.typography.bodyMedium,
+            uiConfig = uiConfig
+        )
+        
+        ConfigurableButton(
+            text = "Next",
             onClick = onNext,
             enabled = hasNext,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = uiConfig?.buttons?.primaryButtonColor ?: MoviePosterBlue
-            )
-        ) {
-            Text("Next")
-        }
+            uiConfig = uiConfig
+        )
     }
 }
 
