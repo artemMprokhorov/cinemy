@@ -2,6 +2,8 @@ package com.example.tmdbai.data.mcp
 
 import com.example.tmdbai.data.remote.api.MovieApiService
 import com.example.tmdbai.data.remote.dto.*
+import com.example.tmdbai.data.model.*
+import com.example.tmdbai.data.mapper.MovieMapper
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import java.io.IOException
@@ -9,6 +11,7 @@ import java.io.IOException
 class McpClient : MovieApiService {
     
     private val gson = Gson()
+    private val mcpHttpClient = McpHttpClient()
     
     override suspend fun getPopularMovies(page: Int): McpResponseDto<McpMovieListResponseDto> {
         return simulateNetworkCall {
@@ -114,6 +117,117 @@ class McpClient : MovieApiService {
             
             McpMovieListResponseDto(mockMovies, pagination)
         }
+    }
+    
+    /**
+     * Business method: Get popular movies using MCP HTTP client
+     */
+    suspend fun getPopularMoviesViaMcp(): Result<MoviesResponse> {
+        return runCatching {
+            val response = mcpHttpClient.sendMcpRequest<McpResponseDto<McpMovieListResponseDto>>(
+                method = "get_popular_movies",
+                params = mapOf("page" to 1)
+            )
+            
+            when (response) {
+                is Result.Success -> {
+                    val mcpResponse = response.data
+                    if (mcpResponse.success && mcpResponse.data != null) {
+                        val movieListResponse = MovieMapper.mapMcpMovieListResponseDtoToMovieListResponse(mcpResponse.data)
+                        val uiConfig = mcpResponse.uiConfig?.let { MovieMapper.mapUiConfigurationDtoToUiConfiguration(it) }
+                        Result.Success(
+                            data = MoviesResponse(
+                                movies = movieListResponse.movies,
+                                pagination = movieListResponse.pagination,
+                                uiConfig = uiConfig
+                            )
+                        )
+                    } else {
+                        Result.Error(mcpResponse.error ?: "Failed to fetch popular movies")
+                    }
+                }
+                is Result.Error -> Result.Error(response.message)
+                is Result.Loading -> Result.Loading
+            }
+        }.getOrElse { exception ->
+            Result.Error("Error fetching popular movies: ${exception.message ?: "Unknown error"}")
+        }
+    }
+    
+    /**
+     * Business method: Get movie details using MCP HTTP client
+     */
+    suspend fun getMovieDetailsViaMcp(movieId: Int): Result<MovieDetailsResponse> {
+        return runCatching {
+            val response = mcpHttpClient.sendMcpRequest<McpResponseDto<MovieDetailsDto>>(
+                method = "get_movie_details",
+                params = mapOf("movie_id" to movieId)
+            )
+            
+            when (response) {
+                is Result.Success -> {
+                    val mcpResponse = response.data
+                    if (mcpResponse.success && mcpResponse.data != null) {
+                        val movieDetails = MovieMapper.mapMovieDetailsDtoToMovieDetails(mcpResponse.data)
+                        val uiConfig = mcpResponse.uiConfig?.let { MovieMapper.mapUiConfigurationDtoToUiConfiguration(it) }
+                        Result.Success(
+                            data = MovieDetailsResponse(
+                                movieDetails = movieDetails,
+                                uiConfig = uiConfig
+                            )
+                        )
+                    } else {
+                        Result.Error(mcpResponse.error ?: "Failed to fetch movie details")
+                    }
+                }
+                is Result.Error -> Result.Error(response.message)
+                is Result.Loading -> Result.Loading
+            }
+        }.getOrElse { exception ->
+            Result.Error("Error fetching movie details: ${exception.message ?: "Unknown error"}")
+        }
+    }
+    
+    /**
+     * Business method: Search movies using MCP HTTP client
+     */
+    suspend fun searchMoviesViaMcp(query: String): Result<MoviesResponse> {
+        return runCatching {
+            val response = mcpHttpClient.sendMcpRequest<McpResponseDto<McpMovieListResponseDto>>(
+                method = "search_movies",
+                params = mapOf("query" to query, "page" to 1)
+            )
+            
+            when (response) {
+                is Result.Success -> {
+                    val mcpResponse = response.data
+                    if (mcpResponse.success && mcpResponse.data != null) {
+                        val movieListResponse = MovieMapper.mapMcpMovieListResponseDtoToMovieListResponse(mcpResponse.data)
+                        val uiConfig = mcpResponse.uiConfig?.let { MovieMapper.mapUiConfigurationDtoToUiConfiguration(it) }
+                        Result.Success(
+                            data = MoviesResponse(
+                                movies = movieListResponse.movies,
+                                pagination = movieListResponse.pagination,
+                                uiConfig = uiConfig
+                            )
+                        )
+                    } else {
+                        Result.Error(mcpResponse.error ?: "Failed to search movies")
+                    }
+                }
+                is Result.Error -> Result.Error(response.message)
+                is Result.Loading -> Result.Loading
+            }
+        }.getOrElse { exception ->
+            Result.Error("Error searching movies: ${exception.message ?: "Unknown error"}")
+        }
+    }
+    
+    /**
+     * Clean up resources
+     */
+    fun close() {
+        mcpHttpClient.close()
     }
     
     private suspend fun <T> simulateNetworkCall(block: () -> T): McpResponseDto<T> {

@@ -96,3 +96,15 @@ sealed class Result<out T> {
     data class Error(val message: String, val uiConfig: UiConfiguration? = null) : Result<Nothing>()
     object Loading : Result<Nothing>()
 }
+
+// Response models for MCP client with UiConfig
+data class MoviesResponse(
+    val movies: List<Movie>,
+    val pagination: Pagination,
+    val uiConfig: UiConfiguration? = null
+)
+
+data class MovieDetailsResponse(
+    val movieDetails: MovieDetails,
+    val uiConfig: UiConfiguration? = null
+)
