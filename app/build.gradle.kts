@@ -144,12 +144,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
         
         // Enable experimental APIs
         freeCompilerArgs += listOf(
@@ -170,7 +170,7 @@ android {
         kotlinCompilerExtensionVersion = "1.5.8"
     }
     
-    // Enable Kotlin serialization
+    // Enable Kotlin 1.9
     kotlin {
         sourceSets.all {
             languageSettings {
@@ -246,11 +246,12 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     
     // Networking - Ktor for MCP protocol (using version catalog)
-    implementation(libs.ktor.client.android)
-    implementation(libs.ktor.client.content.negotiation)
-    implementation(libs.ktor.serialization.kotlinx.json)
-    implementation(libs.ktor.client.logging)
-    implementation(libs.ktor.client.auth)
+    // Temporarily commented out due to kotlinx-serialization version conflict
+    // implementation(libs.ktor.client.android)
+    // implementation(libs.ktor.client.content.negotiation)
+    // implementation(libs.ktor.serialization.kotlinx.json)
+    // implementation(libs.ktor.client.logging)
+    // implementation(libs.ktor.client.auth)
     
     // Image Loading - Coil (using version catalog)
     implementation(libs.coil.compose)
