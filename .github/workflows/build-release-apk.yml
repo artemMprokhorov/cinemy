@@ -202,12 +202,12 @@ jobs:
       # Проверка подписи APK
       - name: Verify APK signature
         run: |
-          $ANDROID_HOME/build-tools/${{ env.BUILD_TOOLS_VERSION }}/aapt dump badging app/build/outputs/apk/production/release/app-production-release.apk
+          $ANDROID_HOME/build-tools/${{ env.BUILD_TOOLS_VERSION }}/aapt dump badging app/build/outputs/apk/production/release/app-production-release-unsigned.apk
 
       - name: Get APK info
         id: apk_info
         run: |
-          APK_SIZE=$(stat -c%s app/build/outputs/apk/production/release/app-production-release.apk | numfmt --to=iec)
+          APK_SIZE=$(stat -c%s app/build/outputs/apk/production/release/app-production-release-unsigned.apk | numfmt --to=iec)
           AAB_SIZE=$(stat -c%s app/build/outputs/bundle/production/release/app-production-release.aab | numfmt --to=iec)
           
           echo "apk_size=$APK_SIZE" >> $GITHUB_OUTPUT
@@ -216,7 +216,7 @@ jobs:
       # Создание имен файлов с версией
       - name: Rename APK and AAB files
         run: |
-          mv app/build/outputs/apk/production/release/app-production-release.apk \
+          mv app/build/outputs/apk/production/release/app-production-release-unsigned.apk \
              app/build/outputs/apk/production/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
           
           mv app/build/outputs/bundle/production/release/app-production-release.aab \
