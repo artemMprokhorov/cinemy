@@ -208,7 +208,7 @@ jobs:
         id: apk_info
         run: |
           APK_SIZE=$(stat -c%s app/build/outputs/apk/production/release/app-production-release-unsigned.apk | numfmt --to=iec)
-          AAB_SIZE=$(stat -c%s app/build/outputs/bundle/production/release/app-production-release.aab | numfmt --to=iec)
+          AAB_SIZE=$(stat -c%s app/build/outputs/bundle/productionRelease/app-production-release.aab | numfmt --to=iec)
           
           echo "apk_size=$APK_SIZE" >> $GITHUB_OUTPUT
           echo "aab_size=$AAB_SIZE" >> $GITHUB_OUTPUT
@@ -219,8 +219,8 @@ jobs:
           mv app/build/outputs/apk/production/release/app-production-release-unsigned.apk \
              app/build/outputs/apk/production/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
           
-          mv app/build/outputs/bundle/production/release/app-production-release.aab \
-             app/build/outputs/bundle/production/release/TmdbAi-${{ env.VERSION_NAME }}-release.aab
+          mv app/build/outputs/bundle/productionRelease/app-production-release.aab \
+             app/build/outputs/bundle/productionRelease/TmdbAi-${{ env.VERSION_NAME }}-release.aab
 
       - name: Upload release APK
         uses: actions/upload-artifact@v4
@@ -233,7 +233,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: release-aab-${{ env.VERSION_NAME }}
-          path: app/build/outputs/bundle/release/TmdbAi-${{ env.VERSION_NAME }}-release.aab
+          path: app/build/outputs/bundle/productionRelease/TmdbAi-${{ env.VERSION_NAME }}-release.aab
           retention-days: 30
 
       - name: Upload mapping files
@@ -276,8 +276,8 @@ jobs:
             **Installation:** Download the APK file and install on your Android device.
             **Requirements:** Android 7.0+ (API level 24)
           files: |
-            app/build/outputs/apk/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
-            app/build/outputs/bundle/release/TmdbAi-${{ env.VERSION_NAME }}-release.aab
+            app/build/outputs/apk/production/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
+            app/build/outputs/bundle/productionRelease/TmdbAi-${{ env.VERSION_NAME }}-release.aab
           draft: false
           prerelease: false
         env:
