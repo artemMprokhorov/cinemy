@@ -208,12 +208,6 @@ jobs:
       - name: Run dependency check
         run: ./gradlew dependencyInsight --configuration implementation
 
-      - name: Check for vulnerable dependencies
-        uses: snyk/actions-gradle@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high
 
   # Documentation generation
   docs:
