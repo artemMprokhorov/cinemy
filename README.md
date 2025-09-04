@@ -111,33 +111,41 @@ TmdbAi - это современное Android-приложение для по�
    TMDB_BASE_URL=https://api.themoviedb.org/3/
    ```
 
-3. **Сборка проекта**
-   ```bash
-   # Development версия
-   ./gradlew assembleDevelopmentDebug
-   
-   # Или Production версия
-   ./gradlew assembleProductionDebug
-   ```
+## 🔧 Setup and Installation
 
-4. **Установка на устройство**
-   ```bash
-   # Development версия
-   ./gradlew installDevelopmentDebug
-   
-   # Или Production версия
-   ./gradlew installProductionDebug
-   ```
+### **Build Variants (Simplified)**
 
-5. **Запуск приложения**
-   ```bash
-   adb shell am start -n com.example.tmdbai/.MainActivity
-   ```
+| Variant | Purpose | Data Source |
+|---------|---------|-------------|
+| **dummyDebug** | Development | Mock data only |
+| **prodDebug** | Testing | Real backend + fallback |
+| **prodRelease** | Production | Real backend only |
 
-### Build Variants
-- **development** - Отладочная версия с логированием
-- **staging** - Тестовая версия
-- **production** - Продакшн версия
+### **Quick Start**
+
+#### Development (Mock Data):
+```bash
+git clone https://github.com/artemMprokhorov/TmdbAi.git
+cd TmdbAi
+./gradlew installDummyDebug
+```
+
+#### Production Testing:
+```bash
+# Edit app/build.gradle.kts MCP_SERVER_URL first
+./gradlew installProdDebug
+```
+
+### **Backend Configuration**
+Update `MCP_SERVER_URL` in `app/build.gradle.kts`:
+```kotlin
+buildConfigField("String", "MCP_SERVER_URL", "\"https://your-backend.ngrok.io\"")
+```
+
+### **Connection Status**
+- 🔵 Blue: Demo data (dummy variant)
+- 🟠 Orange: Backend unavailable
+- 🟢 Green: Connected to backend
 
 ## 📁 Структура проекта
 

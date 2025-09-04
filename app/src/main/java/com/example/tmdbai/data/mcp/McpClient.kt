@@ -4,6 +4,7 @@ import com.example.tmdbai.data.remote.api.MovieApiService
 import com.example.tmdbai.data.remote.dto.*
 import com.example.tmdbai.data.model.*
 import com.example.tmdbai.data.mapper.MovieMapper
+import com.example.tmdbai.data.mcp.models.McpRequest
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import java.io.IOException
@@ -14,17 +15,56 @@ class McpClient : MovieApiService {
     private val mcpHttpClient = McpHttpClient()
     
     override suspend fun getPopularMovies(page: Int): McpResponseDto<McpMovieListResponseDto> {
-        return simulateNetworkCall {
-            val mockMovies = generateMockMovies()
+        val request = McpRequest(
+            method = "getPopularMovies",
+            params = mapOf("page" to page.toString())
+        )
+        
+        val response = mcpHttpClient.sendRequest<Map<String, Any>>(request)
+        
+        return if (response.success && response.data != null) {
+            // Convert the response data to DTO format
+            val data = response.data
+            val movies = (data["movies"] as? List<Map<String, Any>>)?.map { movieData ->
+                MovieDto(
+                    id = (movieData["id"] as? Number)?.toInt() ?: 0,
+                    title = movieData["title"] as? String ?: "",
+                    description = movieData["description"] as? String ?: "",
+                    posterPath = movieData["posterPath"] as? String,
+                    backdropPath = movieData["backdropPath"] as? String,
+                    rating = (movieData["rating"] as? Number)?.toDouble() ?: 0.0,
+                    voteCount = (movieData["voteCount"] as? Number)?.toInt() ?: 0,
+                    releaseDate = movieData["releaseDate"] as? String ?: "",
+                    genreIds = (movieData["genreIds"] as? List<Number>)?.map { it.toInt() } ?: emptyList(),
+                    popularity = (movieData["popularity"] as? Number)?.toDouble() ?: 0.0,
+                    adult = movieData["adult"] as? Boolean ?: false
+                )
+            } ?: emptyList()
+            
+            val paginationData = data["pagination"] as? Map<String, Any>
             val pagination = PaginationDto(
-                page = page,
-                totalPages = 10,
-                totalResults = 100,
-                hasNext = page < 10,
-                hasPrevious = page > 1
+                page = (paginationData?.get("page") as? Number)?.toInt() ?: page,
+                totalPages = (paginationData?.get("totalPages") as? Number)?.toInt() ?: 1,
+                totalResults = (paginationData?.get("totalResults") as? Number)?.toInt() ?: 0,
+                hasNext = paginationData?.get("hasNext") as? Boolean ?: false,
+                hasPrevious = paginationData?.get("hasPrevious") as? Boolean ?: false
             )
             
-            McpMovieListResponseDto(mockMovies, pagination)
+            McpResponseDto(
+                success = true,
+                data = McpMovieListResponseDto(movies, pagination),
+                uiConfig = generateMockUiConfig(),
+                error = null,
+                meta = generateMockMeta()
+            )
+        } else {
+            McpResponseDto(
+                success = false,
+                data = null,
+                uiConfig = generateMockUiConfig(),
+                error = response.error ?: "Failed to fetch popular movies",
+                meta = generateMockMeta()
+            )
         }
     }
     
@@ -59,47 +99,130 @@ class McpClient : MovieApiService {
     }
     
     override suspend fun searchMovies(query: String, page: Int): McpResponseDto<McpMovieListResponseDto> {
-        return simulateNetworkCall {
-            val mockMovies = generateMockMovies().filter { 
-                it.title.contains(query, ignoreCase = true) || 
-                it.description.contains(query, ignoreCase = true)
-            }
+        val request = McpRequest(
+            method = "searchMovies",
+            params = mapOf(
+                "query" to query,
+                "page" to page.toString()
+            )
+        )
+        
+        val response = mcpHttpClient.sendRequest<Map<String, Any>>(request)
+        
+        return if (response.success && response.data != null) {
+            // Convert the response data to DTO format
+            val data = response.data
+            val movies = (data["movies"] as? List<Map<String, Any>>)?.map { movieData ->
+                MovieDto(
+                    id = (movieData["id"] as? Number)?.toInt() ?: 0,
+                    title = movieData["title"] as? String ?: "",
+                    description = movieData["description"] as? String ?: "",
+                    posterPath = movieData["posterPath"] as? String,
+                    backdropPath = movieData["backdropPath"] as? String,
+                    rating = (movieData["rating"] as? Number)?.toDouble() ?: 0.0,
+                    voteCount = (movieData["voteCount"] as? Number)?.toInt() ?: 0,
+                    releaseDate = movieData["releaseDate"] as? String ?: "",
+                    genreIds = (movieData["genreIds"] as? List<Number>)?.map { it.toInt() } ?: emptyList(),
+                    popularity = (movieData["popularity"] as? Number)?.toDouble() ?: 0.0,
+                    adult = movieData["adult"] as? Boolean ?: false
+                )
+            } ?: emptyList()
+            
+            val paginationData = data["pagination"] as? Map<String, Any>
             val pagination = PaginationDto(
-                page = page,
-                totalPages = 3,
-                totalResults = mockMovies.size,
-                hasNext = false,
-                hasPrevious = page > 1
+                page = (paginationData?.get("page") as? Number)?.toInt() ?: page,
+                totalPages = (paginationData?.get("totalPages") as? Number)?.toInt() ?: 1,
+                totalResults = (paginationData?.get("totalResults") as? Number)?.toInt() ?: 0,
+                hasNext = paginationData?.get("hasNext") as? Boolean ?: false,
+                hasPrevious = paginationData?.get("hasPrevious") as? Boolean ?: false
             )
             
-            McpMovieListResponseDto(mockMovies, pagination)
+            val searchQuery = data["searchQuery"] as? String ?: query
+            
+            McpResponseDto(
+                success = true,
+                data = McpMovieListResponseDto(movies, pagination, searchQuery),
+                uiConfig = generateMockUiConfig(),
+                error = null,
+                meta = generateMockMeta()
+            )
+        } else {
+            McpResponseDto(
+                success = false,
+                data = null,
+                uiConfig = generateMockUiConfig(),
+                error = response.error ?: "Failed to search movies",
+                meta = generateMockMeta()
+            )
         }
     }
     
     override suspend fun getMovieDetails(movieId: Int): McpResponseDto<MovieDetailsDto> {
-        return simulateNetworkCall {
-            MovieDetailsDto(
-                id = movieId,
-                title = "The Midnight Bloom",
-                description = "A young botanist discovers a rare, bioluminescent flower with the power to heal any ailment, but must protect it from those who seek to exploit its magic.",
-                posterPath = "/poster_path.jpg",
-                backdropPath = "/backdrop_path.jpg",
-                rating = 8.5,
-                voteCount = 1234,
-                releaseDate = "2024-03-15",
-                runtime = 120,
-                genres = listOf(
-                    GenreDto(1, "Drama"),
-                    GenreDto(2, "Fantasy"),
-                    GenreDto(3, "Adventure")
-                ),
-                productionCompanies = listOf(
-                    ProductionCompanyDto(1, "/logo1.png", "Fantasy Films", "US"),
-                    ProductionCompanyDto(2, "/logo2.png", "Nature Studios", "US")
-                ),
-                budget = 50000000,
-                revenue = 150000000,
-                status = "Released"
+        val request = McpRequest(
+            method = "getMovieDetails",
+            params = mapOf("movieId" to movieId.toString())
+        )
+        
+        val response = mcpHttpClient.sendRequest<Map<String, Any>>(request)
+        
+        return if (response.success && response.data != null) {
+            // Convert the response data to DTO format
+            val data = response.data
+            val movieDetailsData = data["movieDetails"] as? Map<String, Any>
+            
+            if (movieDetailsData != null) {
+                val movieDetails = MovieDetailsDto(
+                    id = (movieDetailsData["id"] as? Number)?.toInt() ?: movieId,
+                    title = movieDetailsData["title"] as? String ?: "",
+                    description = movieDetailsData["description"] as? String ?: "",
+                    posterPath = movieDetailsData["posterPath"] as? String,
+                    backdropPath = movieDetailsData["backdropPath"] as? String,
+                    rating = (movieDetailsData["rating"] as? Number)?.toDouble() ?: 0.0,
+                    voteCount = (movieDetailsData["voteCount"] as? Number)?.toInt() ?: 0,
+                    releaseDate = movieDetailsData["releaseDate"] as? String ?: "",
+                    runtime = (movieDetailsData["runtime"] as? Number)?.toInt() ?: 0,
+                    genres = (movieDetailsData["genres"] as? List<Map<String, Any>>)?.map { genreData ->
+                        GenreDto(
+                            id = (genreData["id"] as? Number)?.toInt() ?: 0,
+                            name = genreData["name"] as? String ?: ""
+                        )
+                    } ?: emptyList(),
+                    productionCompanies = (movieDetailsData["productionCompanies"] as? List<Map<String, Any>>)?.map { companyData ->
+                        ProductionCompanyDto(
+                            id = (companyData["id"] as? Number)?.toInt() ?: 0,
+                            logoPath = companyData["logoPath"] as? String,
+                            name = companyData["name"] as? String ?: "",
+                            originCountry = companyData["originCountry"] as? String ?: ""
+                        )
+                    } ?: emptyList(),
+                    budget = (movieDetailsData["budget"] as? Number)?.toLong() ?: 0,
+                    revenue = (movieDetailsData["revenue"] as? Number)?.toLong() ?: 0,
+                    status = movieDetailsData["status"] as? String ?: ""
+                )
+                
+                McpResponseDto(
+                    success = true,
+                    data = movieDetails,
+                    uiConfig = generateMockUiConfig(),
+                    error = null,
+                    meta = generateMockMeta()
+                )
+            } else {
+                McpResponseDto(
+                    success = false,
+                    data = null,
+                    uiConfig = generateMockUiConfig(),
+                    error = "Invalid movie details data",
+                    meta = generateMockMeta()
+                )
+            }
+        } else {
+            McpResponseDto(
+                success = false,
+                data = null,
+                uiConfig = generateMockUiConfig(),
+                error = response.error ?: "Failed to fetch movie details",
+                meta = generateMockMeta()
             )
         }
     }
@@ -124,27 +247,50 @@ class McpClient : MovieApiService {
      */
     suspend fun getPopularMoviesViaMcp(page: Int): Result<MovieListResponse> {
         return runCatching {
-            val response = mcpHttpClient.sendMcpRequest<McpResponseDto<McpMovieListResponseDto>>(
+            val request = McpRequest(
                 method = "getPopularMovies",
-                params = mapOf("page" to page)
+                params = mapOf("page" to page.toString())
             )
             
-            when (response) {
-                is Result.Success -> {
-                    val mcpResponse = response.data
-                    if (mcpResponse.success && mcpResponse.data != null) {
-                        val movieListResponse = MovieMapper.mapMcpMovieListResponseDtoToMovieListResponse(mcpResponse.data)
-                        val uiConfig = mcpResponse.uiConfig?.let { MovieMapper.mapUiConfigurationDtoToUiConfiguration(it) }
-                        Result.Success(
-                            data = movieListResponse,
-                            uiConfig = uiConfig
-                        )
-                    } else {
-                        Result.Error(mcpResponse.error ?: "Failed to fetch popular movies")
-                    }
-                }
-                is Result.Error -> Result.Error(response.message)
-                is Result.Loading -> Result.Loading
+            val response = mcpHttpClient.sendRequest<Map<String, Any>>(request)
+            
+            if (response.success && response.data != null) {
+                val data = response.data
+                val movies = (data["movies"] as? List<Map<String, Any>>)?.map { movieData ->
+                    MovieDto(
+                        id = (movieData["id"] as? Number)?.toInt() ?: 0,
+                        title = movieData["title"] as? String ?: "",
+                        description = movieData["description"] as? String ?: "",
+                        posterPath = movieData["posterPath"] as? String,
+                        backdropPath = movieData["backdropPath"] as? String,
+                        rating = (movieData["rating"] as? Number)?.toDouble() ?: 0.0,
+                        voteCount = (movieData["voteCount"] as? Number)?.toInt() ?: 0,
+                        releaseDate = movieData["releaseDate"] as? String ?: "",
+                        genreIds = (movieData["genreIds"] as? List<Number>)?.map { it.toInt() } ?: emptyList(),
+                        popularity = (movieData["popularity"] as? Number)?.toDouble() ?: 0.0,
+                        adult = movieData["adult"] as? Boolean ?: false
+                    )
+                } ?: emptyList()
+                
+                val paginationData = data["pagination"] as? Map<String, Any>
+                val pagination = PaginationDto(
+                    page = (paginationData?.get("page") as? Number)?.toInt() ?: page,
+                    totalPages = (paginationData?.get("totalPages") as? Number)?.toInt() ?: 1,
+                    totalResults = (paginationData?.get("totalResults") as? Number)?.toInt() ?: 0,
+                    hasNext = paginationData?.get("hasNext") as? Boolean ?: false,
+                    hasPrevious = paginationData?.get("hasPrevious") as? Boolean ?: false
+                )
+                
+                val movieListResponse = MovieMapper.mapMcpMovieListResponseDtoToMovieListResponse(
+                    McpMovieListResponseDto(movies, pagination)
+                )
+                
+                Result.Success(
+                    data = movieListResponse,
+                    uiConfig = null
+                )
+            } else {
+                Result.Error(response.error ?: "Failed to fetch popular movies")
             }
         }.getOrElse { exception ->
             Result.Error("Error fetching popular movies: ${exception.message ?: "Unknown error"}")
@@ -156,74 +302,106 @@ class McpClient : MovieApiService {
      */
     suspend fun getMovieDetailsViaMcp(movieId: Int): Result<MovieDetailsResponse> {
         return runCatching {
-            val response = mcpHttpClient.sendMcpRequest<McpResponseDto<MovieDetailsDto>>(
+            val request = McpRequest(
                 method = "getMovieDetails",
-                params = mapOf("movieId" to movieId)
+                params = mapOf("movieId" to movieId.toString())
             )
             
-            when (response) {
-                is Result.Success -> {
-                    val mcpResponse = response.data
-                    if (mcpResponse.success && mcpResponse.data != null) {
-                        val movieDetails = MovieMapper.mapMovieDetailsDtoToMovieDetails(mcpResponse.data)
-                        val uiConfig = mcpResponse.uiConfig?.let { MovieMapper.mapUiConfigurationDtoToUiConfiguration(it) }
-                        Result.Success(
-                            data = MovieDetailsResponse(
-                                success = true,
-                                data = MovieDetailsData(movieDetails = movieDetails),
-                                uiConfig = uiConfig ?: UiConfiguration(
-                                    colors = ColorScheme(
-                                        primary = androidx.compose.ui.graphics.Color.Blue,
-                                        secondary = androidx.compose.ui.graphics.Color.Gray,
-                                        background = androidx.compose.ui.graphics.Color.Black,
-                                        surface = androidx.compose.ui.graphics.Color.DarkGray,
-                                        onPrimary = androidx.compose.ui.graphics.Color.White,
-                                        onSecondary = androidx.compose.ui.graphics.Color.White,
-                                        onBackground = androidx.compose.ui.graphics.Color.White,
-                                        onSurface = androidx.compose.ui.graphics.Color.White,
-                                        moviePosterColors = emptyList()
-                                    ),
-                                    texts = TextConfiguration(
-                                        appTitle = "Movies",
-                                        loadingText = "Loading...",
-                                        errorMessage = "Error",
-                                        noMoviesFound = "No movies found",
-                                        retryButton = "Retry",
-                                        backButton = "Back",
-                                        playButton = "Play"
-                                    ),
-                                    buttons = ButtonConfiguration(
-                                        primaryButtonColor = androidx.compose.ui.graphics.Color.Blue,
-                                        secondaryButtonColor = androidx.compose.ui.graphics.Color.Gray,
-                                        buttonTextColor = androidx.compose.ui.graphics.Color.White,
-                                        buttonCornerRadius = 8
-                                    )
-                                ),
-                                error = null,
-                                meta = Meta(
-                                    timestamp = System.currentTimeMillis().toString(),
-                                    method = "getMovieDetails",
-                                    searchQuery = null,
-                                    movieId = movieId,
-                                    resultsCount = null,
-                                    aiGenerated = true,
-                                    geminiColors = GeminiColors(
-                                        primary = "#2C5F6F",
-                                        secondary = "#4A90A4",
-                                        accent = "#FFD700"
-                                    ),
-                                    avgRating = null,
-                                    movieRating = movieDetails.rating,
-                                    version = "2.0.0"
-                                )
+            val response = mcpHttpClient.sendRequest<Map<String, Any>>(request)
+            
+            if (response.success && response.data != null) {
+                val data = response.data
+                val movieDetailsData = data["movieDetails"] as? Map<String, Any>
+                
+                if (movieDetailsData != null) {
+                    val movieDetails = MovieDetailsDto(
+                        id = (movieDetailsData["id"] as? Number)?.toInt() ?: movieId,
+                        title = movieDetailsData["title"] as? String ?: "",
+                        description = movieDetailsData["description"] as? String ?: "",
+                        posterPath = movieDetailsData["posterPath"] as? String,
+                        backdropPath = movieDetailsData["backdropPath"] as? String,
+                        rating = (movieDetailsData["rating"] as? Number)?.toDouble() ?: 0.0,
+                        voteCount = (movieDetailsData["voteCount"] as? Number)?.toInt() ?: 0,
+                        releaseDate = movieDetailsData["releaseDate"] as? String ?: "",
+                        runtime = (movieDetailsData["runtime"] as? Number)?.toInt() ?: 0,
+                        genres = (movieDetailsData["genres"] as? List<Map<String, Any>>)?.map { genreData ->
+                            GenreDto(
+                                id = (genreData["id"] as? Number)?.toInt() ?: 0,
+                                name = genreData["name"] as? String ?: ""
                             )
-                        )
-                    } else {
-                        Result.Error(mcpResponse.error ?: "Failed to fetch movie details")
-                    }
+                        } ?: emptyList(),
+                        productionCompanies = (movieDetailsData["productionCompanies"] as? List<Map<String, Any>>)?.map { companyData ->
+                            ProductionCompanyDto(
+                                id = (companyData["id"] as? Number)?.toInt() ?: 0,
+                                logoPath = companyData["logoPath"] as? String,
+                                name = companyData["name"] as? String ?: "",
+                                originCountry = companyData["originCountry"] as? String ?: ""
+                            )
+                        } ?: emptyList(),
+                        budget = (movieDetailsData["budget"] as? Number)?.toLong() ?: 0,
+                        revenue = (movieDetailsData["revenue"] as? Number)?.toLong() ?: 0,
+                        status = movieDetailsData["status"] as? String ?: ""
+                    )
+                    
+                    val domainMovieDetails = MovieMapper.mapMovieDetailsDtoToMovieDetails(movieDetails)
+                    
+                    Result.Success(
+                        data = MovieDetailsResponse(
+                            success = true,
+                            data = MovieDetailsData(movieDetails = domainMovieDetails),
+                            uiConfig = UiConfiguration(
+                                colors = ColorScheme(
+                                    primary = androidx.compose.ui.graphics.Color.Blue,
+                                    secondary = androidx.compose.ui.graphics.Color.Gray,
+                                    background = androidx.compose.ui.graphics.Color.Black,
+                                    surface = androidx.compose.ui.graphics.Color.DarkGray,
+                                    onPrimary = androidx.compose.ui.graphics.Color.White,
+                                    onSecondary = androidx.compose.ui.graphics.Color.White,
+                                    onBackground = androidx.compose.ui.graphics.Color.White,
+                                    onSurface = androidx.compose.ui.graphics.Color.White,
+                                    moviePosterColors = emptyList()
+                                ),
+                                texts = TextConfiguration(
+                                    appTitle = "Movies",
+                                    loadingText = "Loading...",
+                                    errorMessage = "Error",
+                                    noMoviesFound = "No movies found",
+                                    retryButton = "Retry",
+                                    backButton = "Back",
+                                    playButton = "Play"
+                                ),
+                                buttons = ButtonConfiguration(
+                                    primaryButtonColor = androidx.compose.ui.graphics.Color.Blue,
+                                    secondaryButtonColor = androidx.compose.ui.graphics.Color.Gray,
+                                    buttonTextColor = androidx.compose.ui.graphics.Color.White,
+                                    buttonCornerRadius = 8
+                                )
+                            ),
+                            error = null,
+                            meta = Meta(
+                                timestamp = System.currentTimeMillis().toString(),
+                                method = "getMovieDetails",
+                                searchQuery = null,
+                                movieId = movieId,
+                                resultsCount = null,
+                                aiGenerated = true,
+                                geminiColors = GeminiColors(
+                                    primary = "#2C5F6F",
+                                    secondary = "#4A90A4",
+                                    accent = "#FFD700"
+                                ),
+                                avgRating = null,
+                                movieRating = domainMovieDetails.rating,
+                                version = "2.0.0"
+                            )
+                        ),
+                        uiConfig = null
+                    )
+                } else {
+                    Result.Error("Invalid movie details data")
                 }
-                is Result.Error -> Result.Error(response.message)
-                is Result.Loading -> Result.Loading
+            } else {
+                Result.Error(response.error ?: "Failed to fetch movie details")
             }
         }.getOrElse { exception ->
             Result.Error("Error fetching movie details: ${exception.message ?: "Unknown error"}")
@@ -235,27 +413,55 @@ class McpClient : MovieApiService {
      */
     suspend fun searchMoviesViaMcp(query: String, page: Int): Result<MovieListResponse> {
         return runCatching {
-            val response = mcpHttpClient.sendMcpRequest<McpResponseDto<McpMovieListResponseDto>>(
+            val request = McpRequest(
                 method = "searchMovies",
-                params = mapOf("query" to query, "page" to page)
+                params = mapOf(
+                    "query" to query,
+                    "page" to page.toString()
+                )
             )
             
-            when (response) {
-                is Result.Success -> {
-                    val mcpResponse = response.data
-                    if (mcpResponse.success && mcpResponse.data != null) {
-                        val movieListResponse = MovieMapper.mapMcpMovieListResponseDtoToMovieListResponse(mcpResponse.data)
-                        val uiConfig = mcpResponse.uiConfig?.let { MovieMapper.mapUiConfigurationDtoToUiConfiguration(it) }
-                        Result.Success(
-                            data = movieListResponse,
-                            uiConfig = uiConfig
-                        )
-                    } else {
-                        Result.Error(mcpResponse.error ?: "Failed to search movies")
-                    }
-                }
-                is Result.Error -> Result.Error(response.message)
-                is Result.Loading -> Result.Loading
+            val response = mcpHttpClient.sendRequest<Map<String, Any>>(request)
+            
+            if (response.success && response.data != null) {
+                val data = response.data
+                val movies = (data["movies"] as? List<Map<String, Any>>)?.map { movieData ->
+                    MovieDto(
+                        id = (movieData["id"] as? Number)?.toInt() ?: 0,
+                        title = movieData["title"] as? String ?: "",
+                        description = movieData["description"] as? String ?: "",
+                        posterPath = movieData["posterPath"] as? String,
+                        backdropPath = movieData["backdropPath"] as? String,
+                        rating = (movieData["rating"] as? Number)?.toDouble() ?: 0.0,
+                        voteCount = (movieData["voteCount"] as? Number)?.toInt() ?: 0,
+                        releaseDate = movieData["releaseDate"] as? String ?: "",
+                        genreIds = (movieData["genreIds"] as? List<Number>)?.map { it.toInt() } ?: emptyList(),
+                        popularity = (movieData["popularity"] as? Number)?.toDouble() ?: 0.0,
+                        adult = movieData["adult"] as? Boolean ?: false
+                    )
+                } ?: emptyList()
+                
+                val paginationData = data["pagination"] as? Map<String, Any>
+                val pagination = PaginationDto(
+                    page = (paginationData?.get("page") as? Number)?.toInt() ?: page,
+                    totalPages = (paginationData?.get("totalPages") as? Number)?.toInt() ?: 1,
+                    totalResults = (paginationData?.get("totalResults") as? Number)?.toInt() ?: 0,
+                    hasNext = paginationData?.get("hasNext") as? Boolean ?: false,
+                    hasPrevious = paginationData?.get("hasPrevious") as? Boolean ?: false
+                )
+                
+                val searchQuery = data["searchQuery"] as? String ?: query
+                
+                val movieListResponse = MovieMapper.mapMcpMovieListResponseDtoToMovieListResponse(
+                    McpMovieListResponseDto(movies, pagination, searchQuery)
+                )
+                
+                Result.Success(
+                    data = movieListResponse,
+                    uiConfig = null
+                )
+            } else {
+                Result.Error(response.error ?: "Failed to search movies")
             }
         }.getOrElse { exception ->
             Result.Error("Error searching movies: ${exception.message ?: "Unknown error"}")

@@ -22,12 +22,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import com.example.tmdbai.BuildConfig
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -96,6 +101,31 @@ fun MoviesListScreen(
             },
             uiConfig = state.uiConfig
         )
+        
+        // NEW: Connection status bar
+        ConnectionStatusBar(
+            state = state,
+            onRetry = { viewModel.processIntent(MoviesListIntent.RetryConnection) },
+            onRefresh = { viewModel.processIntent(MoviesListIntent.RefreshData) },
+            onDismissError = { viewModel.processIntent(MoviesListIntent.DismissError) }
+        )
+        
+        // Debug indicator for mock data
+        if (BuildConfig.DEBUG && BuildConfig.USE_MOCK_DATA) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.Yellow.copy(alpha = 0.3f))
+            ) {
+                Text(
+                    text = "🔧 Using Mock Data - ${BuildConfig.FLAVOR_NAME} ${BuildConfig.BUILD_TYPE}",
+                    modifier = Modifier.padding(8.dp),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Black
+                )
+            }
+        }
         
         // Search metadata display
         state.searchMetadata?.let { metadata ->
@@ -356,6 +386,110 @@ private fun MovieItem(
     )
 }
 
+@Composable
+private fun ConnectionStatusBar(
+    state: MoviesListState,
+    onRetry: () -> Unit,
+    onRefresh: () -> Unit,
+    onDismissError: () -> Unit
+) {
+    // Status indicator bar
+    AnimatedVisibility(
+        visible = state.statusMessage.isNotEmpty() || state.error != null
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = when (state.connectionStatus) {
+                    MoviesListState.ConnectionStatus.Connected -> Color(0xFF4CAF50).copy(alpha = 0.1f)
+                    MoviesListState.ConnectionStatus.Disconnected -> Color(0xFFFF9800).copy(alpha = 0.1f)
+                    MoviesListState.ConnectionStatus.MockOnly -> Color(0xFF2196F3).copy(alpha = 0.1f)
+                    else -> Color(0xFF9E9E9E).copy(alpha = 0.1f)
+                }
+            )
+        ) {
+            Row(
+                modifier = Modifier.padding(12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    // Status message
+                    if (state.statusMessage.isNotEmpty()) {
+                        Text(
+                            text = state.statusMessage,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    
+                    // Error message
+                    state.error?.let { error ->
+                        Text(
+                            text = error,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                    
+                    // Last sync time
+                    state.lastSyncTime?.let { time ->
+                        Text(
+                            text = "Last updated: ${formatSyncTime(time)}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                
+                // Action buttons
+                Row {
+                    if (state.canRetry) {
+                        IconButton(onClick = onRetry) {
+                            Icon(
+                                Icons.Default.Refresh,
+                                contentDescription = "Retry",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                    
+                    IconButton(onClick = onRefresh) {
+                        Icon(
+                            Icons.Default.Sync,
+                            contentDescription = "Refresh",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    
+                    if (state.error != null) {
+                        IconButton(onClick = onDismissError) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = "Dismiss",
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable 
+private fun formatSyncTime(timestamp: Long): String {
+    val now = System.currentTimeMillis()
+    val diff = now - timestamp
+    return when {
+        diff < 60_000 -> "just now"
+        diff < 3600_000 -> "${diff / 60_000}m ago"
+        diff < 86400_000 -> "${diff / 3600_000}h ago"
+        else -> "${diff / 86400_000}d ago"
+    }
+}
 
 @Preview(showBackground = true)
 @Composable

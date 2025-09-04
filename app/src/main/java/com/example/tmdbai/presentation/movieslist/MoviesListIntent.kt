@@ -16,4 +16,10 @@ sealed class MoviesListIntent : CommonIntent {
     
     data class NavigateToDetails(val movieId: Int) : MoviesListIntent()
     object RetryLastOperation : MoviesListIntent()
+    
+    // NEW: Enhanced error handling intents
+    object RetryConnection : MoviesListIntent()
+    object RefreshData : MoviesListIntent()
+    object CheckConnectionStatus : MoviesListIntent()
+    object DismissError : MoviesListIntent()
 }

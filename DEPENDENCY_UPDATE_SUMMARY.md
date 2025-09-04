@@ -279,3 +279,20 @@ fun ConfigurableMovieCard(
 - 🔄 **TMDB API**: Ready to integrate with AI agent
 
 The TmdbAi project is now a **production-ready Android application** with **complete MCP integration** and **server-driven UI capabilities**! 🚀✨
+
+## 🔧 **v2.1.0 - Build & Backend Fixes**
+
+### **Issues Resolved:**
+- ❌ **Fixed**: App only used mock data
+- ❌ **Fixed**: Complex build variants 
+- ❌ **Fixed**: No backend communication
+- ❌ **Fixed**: Poor error handling
+
+### **New Features:**
+- ✅ **3 Simple Variants**: dummy, prodDebug, prodRelease
+- ✅ **Real HTTP Calls**: Ktor client with fallback
+- ✅ **Connection Status**: UI indicators and retry
+- ✅ **BuildConfig Flags**: USE_MOCK_DATA, MCP_SERVER_URL
+
+### **Status: READY FOR BACKEND**
+The app now properly attempts backend communication and gracefully falls back to mock data when needed.

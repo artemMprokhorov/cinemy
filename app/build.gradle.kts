@@ -1,32 +1,8 @@
-import java.util.Properties
-import java.io.FileInputStream
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlinx.serialization)
     id("kotlin-parcelize")
-}
-
-// Reading version from file (created in GitHub Actions)
-val versionPropsFile = file("../version.properties")
-val versionProps = Properties()
-
-if (versionPropsFile.exists()) {
-    versionProps.load(FileInputStream(versionPropsFile))
-}
-
-// Version functions
-fun getVersionName(): String {
-    return versionProps.getProperty("VERSION_NAME") 
-        ?: System.getenv("VERSION_NAME") 
-        ?: "1.0.0-dev"
-}
-
-fun getVersionCode(): Int {
-    return versionProps.getProperty("VERSION_CODE")?.toIntOrNull() 
-        ?: System.getenv("VERSION_CODE")?.toIntOrNull() 
-        ?: 1
 }
 
 android {
@@ -37,178 +13,86 @@ android {
         applicationId = "com.example.tmdbai"
         minSdk = 24
         targetSdk = 36
-        versionCode = getVersionCode()
-        versionName = getVersionName()
-
+        versionCode = 1
+        versionName = "2.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
-        // Compose configuration
         vectorDrawables {
             useSupportLibrary = true
         }
-
-        // Build config fields for debugging
-        buildConfigField("String", "BUILD_TIME", "\"${System.currentTimeMillis()}\"")
-        buildConfigField("String", "GIT_SHA", "\"${System.getenv("GITHUB_SHA") ?: "unknown"}\"")
-        buildConfigField("String", "VERSION_NAME", "\"${getVersionName()}\"")
-        buildConfigField("int", "VERSION_CODE", "${getVersionCode()}")
-        
-        // MCP Server URL configuration
-        buildConfigField("String", "MCP_SERVER_URL", "\"https://your-ngrok-url.ngrok.io\"")
-        buildConfigField("String", "TMDB_BASE_URL", "\"https://api.themoviedb.org/3/\"")
     }
 
-    // Signing configuration
-    signingConfigs {
-        create("release") {
-            keyAlias = System.getenv("KEY_ALIAS") ?: "tmdbai"
-            keyPassword = System.getenv("KEY_PASSWORD") ?: ""
-            storeFile = file("tmdbai-release-key.jks")
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
-            
-            // Enable V1 and V2 signing for compatibility
-            enableV1Signing = true
-            enableV2Signing = true
-            enableV3Signing = true
-            enableV4Signing = true
-        }
-    }
-
+    // SIMPLIFIED: Only 2 build types
     buildTypes {
         debug {
-            isMinifyEnabled = false
             isDebuggable = true
             applicationIdSuffix = ".debug"
-            versionNameSuffix = "-debug"
-            
-            // Build config for debug
-            buildConfigField("boolean", "DEBUG_MODE", "true")
-            buildConfigField("String", "BUILD_TYPE", "\"debug\"")
+            buildConfigField("String", "BUILD_TYPE", "\"DEBUG\"")
         }
-        
         release {
             isMinifyEnabled = true
-            isDebuggable = false
             isShrinkResources = true
-            
-            // ProGuard/R8 settings
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            
-            // Build config for release
-            buildConfigField("boolean", "DEBUG_MODE", "false")
-            buildConfigField("String", "BUILD_TYPE", "\"release\"")
-            
-            // Packaging settings
-            packaging {
-                resources {
-                    excludes += "/META-INF/{AL2.0,LGPL2.1}"
-                    excludes += "/META-INF/*.kotlin_module"
-                    excludes += "/META-INF/DEPENDENCIES"
-                    excludes += "/META-INF/LICENSE*"
-                    excludes += "/META-INF/NOTICE*"
-                }
-            }
+            buildConfigField("String", "BUILD_TYPE", "\"RELEASE\"")
         }
     }
 
-    // Flavors for different configurations
+    // SIMPLIFIED: Only 2 flavors  
     flavorDimensions += "environment"
     productFlavors {
-        create("development") {
+        create("dummy") {
             dimension = "environment"
-            applicationIdSuffix = ".dev"
-            versionNameSuffix = "-dev"
+            applicationIdSuffix = ".dummy"
+            versionNameSuffix = "-dummy"
             
-            buildConfigField("String", "API_BASE_URL", "\"https://dev-api.example.com/\"")
-            buildConfigField("boolean", "ENABLE_LOGGING", "true")
+            buildConfigField("Boolean", "USE_MOCK_DATA", "true")
+            buildConfigField("String", "MCP_SERVER_URL", "\"\"")
+            buildConfigField("String", "FLAVOR_NAME", "\"Dummy\"")
+            
+            resValue("string", "app_name", "TmdbAi Dummy")
         }
         
-        create("staging") {
+        create("prod") {
             dimension = "environment"
-            applicationIdSuffix = ".staging"
-            versionNameSuffix = "-staging"
             
-            buildConfigField("String", "API_BASE_URL", "\"https://staging-api.example.com/\"")
-            buildConfigField("boolean", "ENABLE_LOGGING", "true")
+            buildConfigField("Boolean", "USE_MOCK_DATA", "false")
+            buildConfigField("String", "MCP_SERVER_URL", "\"https://grand-beagle-reliably.ngrok-free.app/webhook/tmdbai-enhanced\"")
+            buildConfigField("String", "FLAVOR_NAME", "\"Production\"")
+            
+            resValue("string", "app_name", "TmdbAi")
         }
-        
-        create("production") {
-            dimension = "environment"
-            
-            buildConfigField("String", "API_BASE_URL", "\"https://api.example.com/\"")
-            buildConfigField("boolean", "ENABLE_LOGGING", "false")
+    }
+    
+    // Filter out dummyRelease variant to have only 3 variants total
+    variantFilter {
+        if (name == "dummyRelease") {
+            ignore = true
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    
-    kotlinOptions {
-        jvmTarget = "17"
-        
-        // Enable experimental APIs
-        freeCompilerArgs += listOf(
-            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
-            "-opt-in=kotlinx.serialization.ExperimentalSerializationApi"
-        )
-    }
+    // Remove all signing configs for simplicity
+    // Remove all version management complexity
+    // Remove all GitHub Actions complexity
     
     buildFeatures {
         compose = true
         buildConfig = true
-        viewBinding = false
-        dataBinding = false
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    
+    kotlinOptions {
+        jvmTarget = "11"
     }
     
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
-    }
-    
-    // Enable Kotlin 1.9
-    kotlin {
-        sourceSets.all {
-            languageSettings {
-                languageVersion = "1.9"
-            }
-        }
-    }
-    
-    // Testing configuration
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-            isReturnDefaultValues = true
-        }
-        
-        animationsDisabled = true
-    }
-    
-    // Lint configuration
-    lint {
-        abortOnError = false
-        checkReleaseBuilds = true
-        disable += setOf("MissingTranslation", "ExtraTranslation")
-        warningsAsErrors = true
-        baseline = file("lint-baseline.xml")
-    }
-    
-    // Bundle configuration for Play Store
-    bundle {
-        language {
-            enableSplit = false
-        }
-        density {
-            enableSplit = true
-        }
-        abi {
-            enableSplit = true
-        }
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 }
 
@@ -311,31 +195,4 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.12")
-}
-
-// Tasks for automation
-tasks.register("generateVersionInfo") {
-    doLast {
-        val versionFile = file("src/main/assets/version.json")
-        versionFile.parentFile.mkdirs()
-        
-        val versionInfo = mapOf(
-            "versionName" to getVersionName(),
-            "versionCode" to getVersionCode(),
-            "buildTime" to System.currentTimeMillis(),
-            "gitSha" to (System.getenv("GITHUB_SHA") ?: "unknown"),
-            "buildType" to (findProperty("buildType") ?: "unknown")
-        )
-        
-        versionFile.writeText(
-            groovy.json.JsonBuilder(versionInfo).toPrettyString()
-        )
-    }
-}
-
-// Automatically generate version before build
-tasks.whenTaskAdded {
-    if (name.contains("assemble") || name.contains("bundle")) {
-        dependsOn("generateVersionInfo")
-    }
 }

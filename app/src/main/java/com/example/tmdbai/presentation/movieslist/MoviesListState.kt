@@ -24,10 +24,37 @@ data class MoviesListState(
     val searchMetadata: SearchInfo? = null,
     val screenMode: ScreenMode = ScreenMode.POPULAR,
     
+    // NEW: Connection and data source status
+    val isUsingMockData: Boolean = false,
+    val connectionStatus: ConnectionStatus = ConnectionStatus.Unknown,
+    val lastSyncTime: Long? = null,
+    
+    // Enhanced error handling
+    val canRetry: Boolean = false,
+    val retryCount: Int = 0,
+    
     val uiConfig: UiConfiguration? = null,
     val meta: Meta? = null
 ) {
     enum class ScreenMode {
         POPULAR, SEARCH
     }
+    
+    enum class ConnectionStatus {
+        Unknown,
+        Connected,      // Real backend working
+        Disconnected,   // Network/backend issues
+        MockOnly        // Intentionally using mock data
+    }
+    
+    val statusMessage: String
+        get() = when {
+            isUsingMockData && connectionStatus == ConnectionStatus.MockOnly -> 
+                "Using demo data"
+            isUsingMockData && connectionStatus == ConnectionStatus.Disconnected -> 
+                "Backend unavailable - showing demo data"  
+            connectionStatus == ConnectionStatus.Connected -> 
+                "Connected to live data"
+            else -> ""
+        }
 }

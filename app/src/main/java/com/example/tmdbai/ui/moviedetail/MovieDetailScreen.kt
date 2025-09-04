@@ -189,7 +189,11 @@ private fun MovieDetailContent(
     val posterColors = uiConfig?.colors?.moviePosterColors ?: listOf(
         MoviePosterBlue, MoviePosterBrown, MoviePosterGreen, MoviePosterNavy, MoviePosterDarkBlue
     )
-    val posterColor = posterColors[movieDetails.id % posterColors.size]
+    val posterColor = if (posterColors.isNotEmpty()) {
+        posterColors[movieDetails.id % posterColors.size]
+    } else {
+        MoviePosterBlue // Default color if list is empty
+    }
     
     Column(
         modifier = Modifier

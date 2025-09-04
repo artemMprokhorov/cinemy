@@ -1,7 +1,5 @@
 package com.example.tmdbai.data.mcp.models
 
-import com.google.gson.annotations.SerializedName
-
 /**
  * Represents an MCP (Model Context Protocol) response
  * 
@@ -11,12 +9,8 @@ import com.google.gson.annotations.SerializedName
  * @param message Additional information about the response
  */
 data class McpResponse<T>(
-    @SerializedName("success")
     val success: Boolean,
-    @SerializedName("data")
     val data: T? = null,
-    @SerializedName("error")
     val error: String? = null,
-    @SerializedName("message")
     val message: String = ""
 )
