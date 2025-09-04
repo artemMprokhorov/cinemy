@@ -273,6 +273,36 @@ class MovieRepositoryImpl(
 - **Error Handling**: Consistent error handling across all operations
 - **Type Safety**: Full type safety maintained throughout the chain
 
+### **Repository Layer Integration (v2.0.0)**
+
+#### Enhanced MCP Methods
+- ✅ **getPopularMovies**: Trending movies with pagination metadata
+- ✅ **searchMovies**: Movie search with query metadata and results info
+- ✅ **getMovieDetails**: Complete movie details with production data
+
+#### Repository Implementation
+- ✅ **Type-Safe Returns**: `MovieListResponse` and `MovieDetailsResponse`
+- ✅ **UI Configuration**: Dynamic theming in all operations
+- ✅ **Error Handling**: Comprehensive error management with user messages
+- ✅ **Mock Development**: Contract-compliant mock responses for testing
+
+#### API Contract Alignment
+```kotlin
+// Repository interface now matches API contracts exactly
+interface MovieRepository {
+    suspend fun getPopularMovies(page: Int = 1): Result<MovieListResponse>
+    suspend fun searchMovies(query: String, page: Int = 1): Result<MovieListResponse>
+    suspend fun getMovieDetails(movieId: Int): Result<MovieDetailsResponse>
+}
+
+// MCP client methods map directly to API contracts
+class McpClient {
+    suspend fun getPopularMovies(page: Int): Result<MovieListResponse>
+    suspend fun searchMovies(query: String, page: Int): Result<MovieListResponse>
+    suspend fun getMovieDetails(movieId: Int): Result<MovieDetailsResponse>
+}
+```
+
 ## 🎨 **SERVER-DRIVEN UI INTEGRATION**
 
 ### **UI Configuration Flow**

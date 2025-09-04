@@ -65,7 +65,7 @@ fun ConfigurableMovieCard(
         Column(
             modifier = Modifier.padding(12.dp)
         ) {
-            // Movie poster
+            // Movie poster with backdrop support
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -73,9 +73,13 @@ fun ConfigurableMovieCard(
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
-                movie.posterPath?.let { posterPath ->
+                // Try backdrop first, then poster
+                val imagePath = movie.backdropPath?.let { "https://image.tmdb.org/t/p/w500$it" }
+                    ?: movie.posterPath?.let { "https://image.tmdb.org/t/p/w500$it" }
+                
+                imagePath?.let { path ->
                     AsyncImage(
-                        model = posterPath,
+                        model = path,
                         contentDescription = "Poster for ${movie.title}",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
@@ -107,7 +111,7 @@ fun ConfigurableMovieCard(
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         ConfigurableText(
-                            text = "★ ${movie.rating}",
+                            text = "★ ${movie.rating} (${movie.voteCount})",
                             style = MaterialTheme.typography.labelSmall,
                             uiConfig = uiConfig,
                             color = Color.White,
@@ -159,12 +163,31 @@ fun ConfigurableMovieCard(
                     )
                 }
                 
-                // Vote count
+                // Adult content indicator
+                if (movie.adult) {
+                    Surface(
+                        color = Color.Red,
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        ConfigurableText(
+                            text = "18+",
+                            style = MaterialTheme.typography.labelSmall,
+                            uiConfig = uiConfig,
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                        )
+                    }
+                }
+            }
+            
+            // Popularity indicator
+            if (movie.popularity > 0) {
+                Spacer(modifier = Modifier.height(4.dp))
                 ConfigurableText(
-                    text = "${movie.voteCount} votes",
+                    text = "Popularity: ${String.format("%.1f", movie.popularity)}",
                     style = MaterialTheme.typography.labelSmall,
                     uiConfig = uiConfig,
-                    color = textColor.copy(alpha = 0.6f)
+                    color = textColor.copy(alpha = 0.5f)
                 )
             }
         }

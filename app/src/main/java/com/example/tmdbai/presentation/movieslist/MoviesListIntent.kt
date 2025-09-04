@@ -8,15 +8,12 @@ import com.example.tmdbai.presentation.commons.CommonIntent
  */
 sealed class MoviesListIntent : CommonIntent {
     object LoadPopularMovies : MoviesListIntent()
-    object LoadTopRatedMovies : MoviesListIntent()
-    object LoadNowPlayingMovies : MoviesListIntent()
+    object LoadMoreMovies : MoviesListIntent()
+    
+    // Search intents
     data class SearchMovies(val query: String) : MoviesListIntent()
-    object LoadNextPage : MoviesListIntent()
-    object LoadPreviousPage : MoviesListIntent()
-    data class MovieClicked(val movieId: Int) : MoviesListIntent()
     object ClearSearch : MoviesListIntent()
-    object ToggleSearchMode : MoviesListIntent()
-    object Retry : MoviesListIntent()
-    object Refresh : MoviesListIntent()
-    object BackPressed : MoviesListIntent()
+    
+    data class NavigateToDetails(val movieId: Int) : MoviesListIntent()
+    object RetryLastOperation : MoviesListIntent()
 }

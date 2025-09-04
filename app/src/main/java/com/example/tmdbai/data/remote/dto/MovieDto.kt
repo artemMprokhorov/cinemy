@@ -23,7 +23,9 @@ data class MovieDto(
     @SerializedName("genre_ids")
     val genreIds: List<Int> = emptyList(),
     @SerializedName("popularity")
-    val popularity: Double = 0.0
+    val popularity: Double,
+    @SerializedName("adult")
+    val adult: Boolean
 )
 
 data class MovieListResponseDto(
@@ -78,10 +80,12 @@ data class GenreDto(
 data class ProductionCompanyDto(
     @SerializedName("id")
     val id: Int,
+    @SerializedName("logo_path")
+    val logoPath: String?,
     @SerializedName("name")
     val name: String,
-    @SerializedName("logo_path")
-    val logoPath: String?
+    @SerializedName("origin_country")
+    val originCountry: String
 )
 
 // UI Configuration DTOs
@@ -91,7 +95,9 @@ data class UiConfigurationDto(
     @SerializedName("texts")
     val texts: TextConfigurationDto,
     @SerializedName("buttons")
-    val buttons: ButtonConfigurationDto
+    val buttons: ButtonConfigurationDto,
+    @SerializedName("search_info")
+    val searchInfo: SearchInfoDto? = null
 )
 
 data class ColorSchemeDto(
@@ -143,6 +149,51 @@ data class ButtonConfigurationDto(
     val buttonCornerRadius: Int
 )
 
+data class SearchInfoDto(
+    @SerializedName("query")
+    val query: String,
+    @SerializedName("result_count")
+    val resultCount: Int,
+    @SerializedName("avg_rating")
+    val avgRating: Double,
+    @SerializedName("rating_type")
+    val ratingType: String,
+    @SerializedName("color_based")
+    val colorBased: Boolean
+)
+
+data class MetaDto(
+    @SerializedName("timestamp")
+    val timestamp: String,
+    @SerializedName("method")
+    val method: String,
+    @SerializedName("search_query")
+    val searchQuery: String? = null,
+    @SerializedName("movie_id")
+    val movieId: Int? = null,
+    @SerializedName("results_count")
+    val resultsCount: Int? = null,
+    @SerializedName("ai_generated")
+    val aiGenerated: Boolean,
+    @SerializedName("gemini_colors")
+    val geminiColors: GeminiColorsDto,
+    @SerializedName("avg_rating")
+    val avgRating: Double? = null,
+    @SerializedName("movie_rating")
+    val movieRating: Double? = null,
+    @SerializedName("version")
+    val version: String
+)
+
+data class GeminiColorsDto(
+    @SerializedName("primary")
+    val primary: String,
+    @SerializedName("secondary")
+    val secondary: String,
+    @SerializedName("accent")
+    val accent: String
+)
+
 // MCP Response DTOs
 data class McpResponseDto<T>(
     @SerializedName("success")
@@ -150,18 +201,20 @@ data class McpResponseDto<T>(
     @SerializedName("data")
     val data: T?,
     @SerializedName("ui_config")
-    val uiConfig: UiConfigurationDto?,
+    val uiConfig: UiConfigurationDto,
     @SerializedName("error")
-    val error: String?,
-    @SerializedName("message")
-    val message: String?
+    val error: String? = null,
+    @SerializedName("meta")
+    val meta: MetaDto
 )
 
 data class McpMovieListResponseDto(
     @SerializedName("movies")
     val movies: List<MovieDto>,
     @SerializedName("pagination")
-    val pagination: PaginationDto
+    val pagination: PaginationDto,
+    @SerializedName("search_query")
+    val searchQuery: String = ""
 )
 
 data class PaginationDto(

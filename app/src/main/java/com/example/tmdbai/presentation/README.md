@@ -44,12 +44,15 @@ This implementation **fully complies with MVI (Model-View-Intent) architecture p
 - **Sealed Classes**: Type-safe intent definitions
 - **Comprehensive Coverage**: All user interactions captured
 - **Interface Inheritance**: Proper `CommonIntent` interface structure
-- **Examples**: `LoadPopularMovies`, `SearchMovies`, `Retry`, `Refresh`
+- **Search Support**: Complete search functionality with `SearchMovies`, `ClearSearch`
+- **Examples**: `LoadPopularMovies`, `SearchMovies`, `LoadMoreMovies`, `RetryLastOperation`
 
 #### **4. STATE (UI State Management)**
 - **Immutable State**: Data classes with default values
 - **StateFlow**: Reactive state management
 - **Comprehensive State**: All UI state in single object
+- **Search State**: Complete search state management with metadata
+- **Screen Modes**: Support for POPULAR and SEARCH screen modes
 - **UI Configuration**: Dynamic theming support
 
 #### **5. VIEWMODEL (Business Logic)**

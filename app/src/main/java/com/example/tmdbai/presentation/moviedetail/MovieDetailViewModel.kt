@@ -56,12 +56,13 @@ class MovieDetailViewModel(
 
             when (result) {
                 is Result.Success -> {
-                    val movieDetails = result.data
+                    val response = result.data
                     _state.value = _state.value.copy(
-                        movieDetails = movieDetails,
+                        movieDetails = response.data.movieDetails,
                         isLoading = false,
                         error = null,
-                        uiConfig = result.uiConfig
+                        uiConfig = response.uiConfig,
+                        meta = response.meta
                     )
                 }
                 is Result.Error -> {

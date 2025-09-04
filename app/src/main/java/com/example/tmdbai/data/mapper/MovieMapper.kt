@@ -18,7 +18,8 @@ object MovieMapper {
             voteCount = dto.voteCount,
             releaseDate = dto.releaseDate,
             genreIds = dto.genreIds,
-            popularity = dto.popularity
+            popularity = dto.popularity,
+            adult = dto.adult
         )
     }
     
@@ -32,7 +33,7 @@ object MovieMapper {
             rating = dto.rating,
             voteCount = dto.voteCount,
             releaseDate = dto.releaseDate,
-            runtime = dto.runtime,
+            runtime = dto.runtime ?: 0,
             genres = dto.genres.map { mapGenreDtoToGenre(it) },
             productionCompanies = dto.productionCompanies.map { mapProductionCompanyDtoToProductionCompany(it) },
             budget = dto.budget,
@@ -51,15 +52,65 @@ object MovieMapper {
     fun mapProductionCompanyDtoToProductionCompany(dto: ProductionCompanyDto): ProductionCompany {
         return ProductionCompany(
             id = dto.id,
+            logoPath = dto.logoPath,
             name = dto.name,
-            logoPath = dto.logoPath
+            originCountry = dto.originCountry
         )
     }
     
     fun mapMcpMovieListResponseDtoToMovieListResponse(dto: McpMovieListResponseDto): MovieListResponse {
         return MovieListResponse(
-            movies = dto.movies.map { mapMovieDtoToMovie(it) },
-            pagination = mapPaginationDtoToPagination(dto.pagination)
+            success = true,
+            data = MovieListData(
+                movies = dto.movies.map { mapMovieDtoToMovie(it) },
+                pagination = mapPaginationDtoToPagination(dto.pagination),
+                searchQuery = dto.searchQuery
+            ),
+            uiConfig = UiConfiguration(
+                colors = ColorScheme(
+                    primary = androidx.compose.ui.graphics.Color.Blue,
+                    secondary = androidx.compose.ui.graphics.Color.Gray,
+                    background = androidx.compose.ui.graphics.Color.Black,
+                    surface = androidx.compose.ui.graphics.Color.DarkGray,
+                    onPrimary = androidx.compose.ui.graphics.Color.White,
+                    onSecondary = androidx.compose.ui.graphics.Color.White,
+                    onBackground = androidx.compose.ui.graphics.Color.White,
+                    onSurface = androidx.compose.ui.graphics.Color.White,
+                    moviePosterColors = emptyList()
+                ),
+                texts = TextConfiguration(
+                    appTitle = "Movies",
+                    loadingText = "Loading...",
+                    errorMessage = "Error",
+                    noMoviesFound = "No movies found",
+                    retryButton = "Retry",
+                    backButton = "Back",
+                    playButton = "Play"
+                ),
+                buttons = ButtonConfiguration(
+                    primaryButtonColor = androidx.compose.ui.graphics.Color.Blue,
+                    secondaryButtonColor = androidx.compose.ui.graphics.Color.Gray,
+                    buttonTextColor = androidx.compose.ui.graphics.Color.White,
+                    buttonCornerRadius = 8
+                )
+            ),
+            error = null,
+            meta = Meta(
+                timestamp = System.currentTimeMillis().toString(),
+                method = "getPopularMovies",
+                searchQuery = null,
+                movieId = null,
+                resultsCount = dto.movies.size,
+                aiGenerated = true,
+                geminiColors = GeminiColors(
+                    primary = "#2C5F6F",
+                    secondary = "#4A90A4",
+                    accent = "#FFD700"
+                ),
+                avgRating = null,
+                movieRating = null,
+                version = "2.0.0"
+            )
         )
     }
     
@@ -77,7 +128,8 @@ object MovieMapper {
         return UiConfiguration(
             colors = mapColorSchemeDtoToColorScheme(dto.colors),
             texts = mapTextConfigurationDtoToTextConfiguration(dto.texts),
-            buttons = mapButtonConfigurationDtoToButtonConfiguration(dto.buttons)
+            buttons = mapButtonConfigurationDtoToButtonConfiguration(dto.buttons),
+            searchInfo = dto.searchInfo?.let { mapSearchInfoDtoToSearchInfo(it) }
         )
     }
     
@@ -113,6 +165,39 @@ object MovieMapper {
             secondaryButtonColor = Color(android.graphics.Color.parseColor(dto.secondaryButtonColor)),
             buttonTextColor = Color(android.graphics.Color.parseColor(dto.buttonTextColor)),
             buttonCornerRadius = dto.buttonCornerRadius
+        )
+    }
+    
+    fun mapSearchInfoDtoToSearchInfo(dto: SearchInfoDto): SearchInfo {
+        return SearchInfo(
+            query = dto.query,
+            resultCount = dto.resultCount,
+            avgRating = dto.avgRating,
+            ratingType = dto.ratingType,
+            colorBased = dto.colorBased
+        )
+    }
+    
+    fun mapMetaDtoToMeta(dto: MetaDto): Meta {
+        return Meta(
+            timestamp = dto.timestamp,
+            method = dto.method,
+            searchQuery = dto.searchQuery,
+            movieId = dto.movieId,
+            resultsCount = dto.resultsCount,
+            aiGenerated = dto.aiGenerated,
+            geminiColors = mapGeminiColorsDtoToGeminiColors(dto.geminiColors),
+            avgRating = dto.avgRating,
+            movieRating = dto.movieRating,
+            version = dto.version
+        )
+    }
+    
+    fun mapGeminiColorsDtoToGeminiColors(dto: GeminiColorsDto): GeminiColors {
+        return GeminiColors(
+            primary = dto.primary,
+            secondary = dto.secondary,
+            accent = dto.accent
         )
     }
     

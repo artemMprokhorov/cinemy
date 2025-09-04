@@ -21,7 +21,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -74,31 +77,44 @@ fun MoviesListScreen(
     
     val state by viewModel.state.collectAsState()
     
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 state.uiConfig?.colors?.background ?: AppBackground
             )
     ) {
+        // Search Header
+        SearchHeader(
+            searchQuery = state.searchQuery,
+            screenMode = state.screenMode,
+            onSearchQueryChange = { query ->
+                viewModel.processIntent(MoviesListIntent.SearchMovies(query))
+            },
+            onClearSearch = {
+                viewModel.processIntent(MoviesListIntent.ClearSearch)
+            },
+            uiConfig = state.uiConfig
+        )
+        
+        // Search metadata display
+        state.searchMetadata?.let { metadata ->
+            SearchMetadataCard(metadata, state.uiConfig)
+        }
+        
+        // Main content
         when {
-            state.isLoading -> {
-                LoadingContent(uiConfig = state.uiConfig)
-            }
-            state.error != null -> {
-                ErrorContent(
-                    error = state.error!!,
-                    uiConfig = state.uiConfig,
-                    onRetry = { viewModel.processIntent(MoviesListIntent.Retry) }
-                )
-            }
-            else -> {
-                MoviesContent(
-                    state = state,
-                    onMovieClick = onMovieClick,
-                    onIntent = { viewModel.processIntent(it) }
-                )
-            }
+            state.isLoading && state.movies.isEmpty() -> LoadingContent(uiConfig = state.uiConfig)
+            state.error != null && state.movies.isEmpty() -> ErrorContent(
+                error = state.error!!,
+                uiConfig = state.uiConfig,
+                onRetry = { viewModel.processIntent(MoviesListIntent.RetryLastOperation) }
+            )
+            else -> MoviesContent(
+                state = state,
+                onMovieClick = onMovieClick,
+                onIntent = { viewModel.processIntent(it) }
+            )
         }
     }
 }
@@ -155,12 +171,10 @@ private fun MoviesContent(
     onMovieClick: (Int) -> Unit,
     onIntent: (MoviesListIntent) -> Unit
 ) {
-    var searchQuery by remember { mutableStateOf("") }
-    
     // Pull to refresh state
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.isLoading,
-        onRefresh = { onIntent(MoviesListIntent.Refresh) }
+        onRefresh = { onIntent(MoviesListIntent.LoadPopularMovies) }
     )
     
     Box(
@@ -168,43 +182,42 @@ private fun MoviesContent(
             .fillMaxSize()
             .pullRefresh(pullRefreshState)
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
+        // Movies List
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = Dimens16, vertical = Dimens8),
+            verticalArrangement = Arrangement.spacedBy(Dimens16)
         ) {
-            // Search Bar
-            if (state.isSearchMode) {
-                SearchBar(
-                    query = searchQuery,
-                    onQueryChange = { searchQuery = it },
-                    onSearch = { onIntent(MoviesListIntent.SearchMovies(it)) },
-                    onClear = { onIntent(MoviesListIntent.ClearSearch) },
-                    uiConfig = state.uiConfig
+            items(state.movies) { movie ->
+                MovieItem(
+                    movie = movie,
+                    uiConfig = state.uiConfig,
+                    onClick = { onMovieClick(movie.id) }
                 )
             }
             
-            // Movies List
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = Dimens16, vertical = Dimens8),
-                verticalArrangement = Arrangement.spacedBy(Dimens16)
-            ) {
-                items(state.movies) { movie ->
-                    MovieItem(
-                        movie = movie,
-                        uiConfig = state.uiConfig,
-                        onClick = { onMovieClick(movie.id) }
+            // Load more button
+            if (state.hasMore && !state.isLoading) {
+                item {
+                    LoadMoreButton(
+                        onLoadMore = { onIntent(MoviesListIntent.LoadMoreMovies) },
+                        uiConfig = state.uiConfig
                     )
                 }
-                
-                // Pagination
-                if (state.hasNextPage || state.hasPreviousPage) {
-                    item {
-                        PaginationControls(
-                            hasNext = state.hasNextPage,
-                            hasPrevious = state.hasPreviousPage,
-                            currentPage = state.currentPage,
-                            onNext = { onIntent(MoviesListIntent.LoadNextPage) },
-                            onPrevious = { onIntent(MoviesListIntent.LoadPreviousPage) },
+            }
+            
+            // Loading indicator for pagination
+            if (state.isLoading && state.movies.isNotEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(Dimens16),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        ConfigurableText(
+                            text = "Loading more movies...",
+                            style = MaterialTheme.typography.bodyMedium,
                             uiConfig = state.uiConfig
                         )
                     }
@@ -224,49 +237,105 @@ private fun MoviesContent(
 }
 
 @Composable
-private fun SearchBar(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    onSearch: (String) -> Unit,
-    onClear: () -> Unit,
+private fun SearchHeader(
+    searchQuery: String,
+    screenMode: MoviesListState.ScreenMode,
+    onSearchQueryChange: (String) -> Unit,
+    onClearSearch: () -> Unit,
     uiConfig: UiConfiguration?
 ) {
-    Row(
+    var query by remember { mutableStateOf(searchQuery) }
+    
+    OutlinedTextField(
+        value = query,
+        onValueChange = { 
+            query = it
+            if (it.length > 2) onSearchQueryChange(it)
+        },
+        label = { Text("Search movies...") },
+        singleLine = true,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = uiConfig?.colors?.primary ?: MoviePosterBlue,
+            unfocusedBorderColor = Color.Gray,
+            focusedTextColor = Color.White,
+            unfocusedTextColor = Color.White
+        ),
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                IconButton(onClick = {
+                    query = ""
+                    onClearSearch()
+                }) {
+                    Icon(Icons.Default.Clear, "Clear")
+                }
+            }
+        }
+    )
+}
+
+@Composable
+private fun SearchMetadataCard(
+    metadata: com.example.tmdbai.data.model.SearchInfo,
+    uiConfig: UiConfiguration?
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = uiConfig?.colors?.surface ?: Color.White
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            ConfigurableText(
+                text = "Search Results for: ${metadata.query}",
+                style = MaterialTheme.typography.titleMedium,
+                uiConfig = uiConfig
+            )
+            
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                ConfigurableText(
+                    text = "${metadata.resultCount} results found",
+                    style = MaterialTheme.typography.bodyMedium,
+                    uiConfig = uiConfig
+                )
+                
+                ConfigurableText(
+                    text = "Avg Rating: ${metadata.avgRating}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    uiConfig = uiConfig
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LoadMoreButton(
+    onLoadMore: () -> Unit,
+    uiConfig: UiConfiguration?
+) {
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(Dimens16),
-        verticalAlignment = Alignment.CenterVertically
+        contentAlignment = Alignment.Center
     ) {
-        OutlinedTextField(
-            value = query,
-            onValueChange = onQueryChange,
-            placeholder = { Text("Search movies...") },
-            modifier = Modifier.weight(1f),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = uiConfig?.colors?.primary ?: MoviePosterBlue,
-                unfocusedBorderColor = Color.Gray,
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White
-            )
-        )
-        
-        Spacer(modifier = Modifier.width(Dimens8))
-        
         ConfigurableButton(
-            text = "🔍",
-            onClick = { onSearch(query) },
+            text = "Load More Movies",
+            onClick = onLoadMore,
             uiConfig = uiConfig,
-            modifier = Modifier.size(Dimens40)
-        )
-        
-        Spacer(modifier = Modifier.width(Dimens8))
-        
-        ConfigurableButton(
-            text = "Clear",
-            onClick = onClear,
-            uiConfig = uiConfig,
-            isSecondary = true,
-            modifier = Modifier.size(Dimens40)
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
@@ -287,44 +356,6 @@ private fun MovieItem(
     )
 }
 
-@Composable
-private fun PaginationControls(
-    hasNext: Boolean,
-    hasPrevious: Boolean,
-    currentPage: Int,
-    onNext: () -> Unit,
-    onPrevious: () -> Unit,
-    uiConfig: UiConfiguration?
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(Dimens16),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        ConfigurableButton(
-            text = "Previous",
-            onClick = onPrevious,
-            enabled = hasPrevious,
-            uiConfig = uiConfig,
-            isSecondary = true
-        )
-        
-        ConfigurableText(
-            text = "Page $currentPage",
-            style = MaterialTheme.typography.bodyMedium,
-            uiConfig = uiConfig
-        )
-        
-        ConfigurableButton(
-            text = "Next",
-            onClick = onNext,
-            enabled = hasNext,
-            uiConfig = uiConfig
-        )
-    }
-}
 
 @Preview(showBackground = true)
 @Composable

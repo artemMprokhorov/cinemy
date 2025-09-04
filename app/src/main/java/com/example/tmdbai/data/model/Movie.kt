@@ -12,7 +12,8 @@ data class Movie(
     val voteCount: Int,
     val releaseDate: String,
     val genreIds: List<Int> = emptyList(),
-    val popularity: Double = 0.0
+    val popularity: Double,
+    val adult: Boolean
 )
 
 data class MovieDetails(
@@ -24,11 +25,11 @@ data class MovieDetails(
     val rating: Double,
     val voteCount: Int,
     val releaseDate: String,
-    val runtime: Int?,
-    val genres: List<Genre>,
-    val productionCompanies: List<ProductionCompany>,
-    val budget: Long,
-    val revenue: Long,
+    val runtime: Int,
+    val genres: List<Genre> = emptyList(),
+    val productionCompanies: List<ProductionCompany> = emptyList(),
+    val budget: Long = 0,
+    val revenue: Long = 0,
     val status: String
 )
 
@@ -39,13 +40,23 @@ data class Genre(
 
 data class ProductionCompany(
     val id: Int,
+    val logoPath: String?,
     val name: String,
-    val logoPath: String?
+    val originCountry: String
 )
 
 data class MovieListResponse(
+    val success: Boolean,
+    val data: MovieListData,
+    val uiConfig: UiConfiguration,
+    val error: String? = null,
+    val meta: Meta
+)
+
+data class MovieListData(
     val movies: List<Movie>,
-    val pagination: Pagination
+    val pagination: Pagination,
+    val searchQuery: String = ""
 )
 
 data class Pagination(
@@ -59,7 +70,8 @@ data class Pagination(
 data class UiConfiguration(
     val colors: ColorScheme,
     val texts: TextConfiguration,
-    val buttons: ButtonConfiguration
+    val buttons: ButtonConfiguration,
+    val searchInfo: SearchInfo? = null
 )
 
 data class ColorScheme(
@@ -91,6 +103,33 @@ data class ButtonConfiguration(
     val buttonCornerRadius: Int
 )
 
+data class SearchInfo(
+    val query: String,
+    val resultCount: Int,
+    val avgRating: Double,
+    val ratingType: String,
+    val colorBased: Boolean
+)
+
+data class Meta(
+    val timestamp: String,
+    val method: String,
+    val searchQuery: String? = null,
+    val movieId: Int? = null,
+    val resultsCount: Int? = null,
+    val aiGenerated: Boolean,
+    val geminiColors: GeminiColors,
+    val avgRating: Double? = null,
+    val movieRating: Double? = null,
+    val version: String
+)
+
+data class GeminiColors(
+    val primary: String,
+    val secondary: String,
+    val accent: String
+)
+
 sealed class Result<out T> {
     data class Success<T>(val data: T, val uiConfig: UiConfiguration? = null) : Result<T>()
     data class Error(val message: String, val uiConfig: UiConfiguration? = null) : Result<Nothing>()
@@ -105,6 +144,13 @@ data class MoviesResponse(
 )
 
 data class MovieDetailsResponse(
-    val movieDetails: MovieDetails,
-    val uiConfig: UiConfiguration? = null
+    val success: Boolean,
+    val data: MovieDetailsData,
+    val uiConfig: UiConfiguration,
+    val error: String? = null,
+    val meta: Meta
+)
+
+data class MovieDetailsData(
+    val movieDetails: MovieDetails
 )

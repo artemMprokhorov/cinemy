@@ -19,12 +19,6 @@ class MoviesListViewModel(
     private val _state = MutableStateFlow(MoviesListState())
     val state: StateFlow<MoviesListState> = _state.asStateFlow()
 
-    private var currentMovieType: MovieType = MovieType.POPULAR
-
-    enum class MovieType {
-        POPULAR, TOP_RATED, NOW_PLAYING, SEARCH
-    }
-
     init {
         // Load popular movies by default
         processIntent(MoviesListIntent.LoadPopularMovies)
@@ -32,89 +26,36 @@ class MoviesListViewModel(
 
     fun processIntent(intent: MoviesListIntent) {
         when (intent) {
-            is MoviesListIntent.LoadPopularMovies -> {
-                currentMovieType = MovieType.POPULAR
-                loadMovies()
-            }
-            is MoviesListIntent.LoadTopRatedMovies -> {
-                currentMovieType = MovieType.TOP_RATED
-                loadMovies()
-            }
-            is MoviesListIntent.LoadNowPlayingMovies -> {
-                currentMovieType = MovieType.NOW_PLAYING
-                loadMovies()
-            }
-            is MoviesListIntent.SearchMovies -> {
-                currentMovieType = MovieType.SEARCH
-                _state.value = _state.value.copy(
-                    searchQuery = intent.query,
-                    currentPage = 1
-                )
-                loadMovies()
-            }
-            is MoviesListIntent.LoadNextPage -> {
-                if (_state.value.hasNextPage) {
-                    _state.value = _state.value.copy(currentPage = _state.value.currentPage + 1)
-                    loadMovies()
-                }
-            }
-            is MoviesListIntent.LoadPreviousPage -> {
-                if (_state.value.hasPreviousPage) {
-                    _state.value = _state.value.copy(currentPage = _state.value.currentPage - 1)
-                    loadMovies()
-                }
-            }
-            is MoviesListIntent.MovieClicked -> {
+            is MoviesListIntent.LoadPopularMovies -> loadPopularMovies()
+            is MoviesListIntent.SearchMovies -> searchMovies(intent.query)
+            is MoviesListIntent.ClearSearch -> clearSearch()
+            is MoviesListIntent.LoadMoreMovies -> loadMoreMovies()
+            is MoviesListIntent.NavigateToDetails -> {
                 // This will be handled by the UI layer for navigation
             }
-            is MoviesListIntent.ClearSearch -> {
-                _state.value = _state.value.copy(
-                    searchQuery = "",
-                    isSearchMode = false,
-                    currentPage = 1
-                )
-                currentMovieType = MovieType.POPULAR
-                loadMovies()
-            }
-            is MoviesListIntent.ToggleSearchMode -> {
-                _state.value = _state.value.copy(
-                    isSearchMode = !_state.value.isSearchMode
-                )
-            }
-            is MoviesListIntent.Retry -> {
-                loadMovies()
-            }
-            is MoviesListIntent.Refresh -> {
-                _state.value = _state.value.copy(currentPage = 1)
-                loadMovies()
-            }
-            is MoviesListIntent.BackPressed -> {
-                // This will be handled by the UI layer
-            }
+            is MoviesListIntent.RetryLastOperation -> retryLastOperation()
         }
     }
 
-    private fun loadMovies() {
+    private fun loadPopularMovies(page: Int = 1) {
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true, error = null)
+            _state.value = _state.value.copy(
+                isLoading = true,
+                error = null,
+                screenMode = MoviesListState.ScreenMode.POPULAR
+            )
 
-            val result = when (currentMovieType) {
-                MovieType.POPULAR -> movieRepository.getPopularMovies(_state.value.currentPage)
-                MovieType.TOP_RATED -> movieRepository.getTopRatedMovies(_state.value.currentPage)
-                MovieType.NOW_PLAYING -> movieRepository.getNowPlayingMovies(_state.value.currentPage)
-                MovieType.SEARCH -> movieRepository.searchMovies(_state.value.searchQuery, _state.value.currentPage)
-            }
-
-            when (result) {
+            when (val result = movieRepository.getPopularMovies(page)) {
                 is Result.Success -> {
-                    val movieListResponse = result.data
+                    val response = result.data
                     _state.value = _state.value.copy(
-                        movies = movieListResponse.movies,
                         isLoading = false,
-                        error = null,
-                        uiConfig = result.uiConfig,
-                        hasNextPage = movieListResponse.pagination.hasNext,
-                        hasPreviousPage = movieListResponse.pagination.hasPrevious
+                        movies = response.data.movies,
+                        pagination = response.data.pagination,
+                        currentPage = page,
+                        hasMore = response.data.pagination.hasNext,
+                        uiConfig = response.uiConfig,
+                        meta = response.meta
                     )
                 }
                 is Result.Error -> {
@@ -128,6 +69,74 @@ class MoviesListViewModel(
                     _state.value = _state.value.copy(isLoading = true)
                 }
             }
+        }
+    }
+
+    private fun searchMovies(query: String, page: Int = 1) {
+        if (query.isBlank()) return
+        
+        viewModelScope.launch {
+            _state.value = _state.value.copy(
+                isSearching = true,
+                searchQuery = query,
+                screenMode = MoviesListState.ScreenMode.SEARCH
+            )
+
+            when (val result = movieRepository.searchMovies(query, page)) {
+                is Result.Success -> {
+                    val response = result.data
+                    _state.value = _state.value.copy(
+                        isSearching = false,
+                        movies = response.data.movies,
+                        pagination = response.data.pagination,
+                        currentPage = page,
+                        hasMore = response.data.pagination.hasNext,
+                        searchMetadata = response.uiConfig.searchInfo,
+                        uiConfig = response.uiConfig,
+                        meta = response.meta
+                    )
+                }
+                is Result.Error -> {
+                    _state.value = _state.value.copy(
+                        isSearching = false,
+                        error = result.message,
+                        uiConfig = result.uiConfig
+                    )
+                }
+                is Result.Loading -> {
+                    _state.value = _state.value.copy(isSearching = true)
+                }
+            }
+        }
+    }
+
+    private fun clearSearch() {
+        _state.value = _state.value.copy(
+            searchQuery = "",
+            isSearching = false,
+            searchMetadata = null,
+            screenMode = MoviesListState.ScreenMode.POPULAR,
+            currentPage = 1
+        )
+        loadPopularMovies()
+    }
+
+    private fun loadMoreMovies() {
+        val currentState = _state.value
+        if (currentState.hasMore && !currentState.isLoading) {
+            val nextPage = currentState.currentPage + 1
+            when (currentState.screenMode) {
+                MoviesListState.ScreenMode.POPULAR -> loadPopularMovies(nextPage)
+                MoviesListState.ScreenMode.SEARCH -> searchMovies(currentState.searchQuery, nextPage)
+            }
+        }
+    }
+
+    private fun retryLastOperation() {
+        val currentState = _state.value
+        when (currentState.screenMode) {
+            MoviesListState.ScreenMode.POPULAR -> loadPopularMovies(currentState.currentPage)
+            MoviesListState.ScreenMode.SEARCH -> searchMovies(currentState.searchQuery, currentState.currentPage)
         }
     }
 }

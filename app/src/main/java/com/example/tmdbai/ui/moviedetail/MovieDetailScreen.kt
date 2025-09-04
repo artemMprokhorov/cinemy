@@ -13,12 +13,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tmdbai.data.model.MovieDetails
@@ -258,7 +263,7 @@ private fun MovieDetailContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 ConfigurableText(
-                    text = "★ ${movieDetails.rating}",
+                    text = "★ ${movieDetails.rating} (${movieDetails.voteCount} votes)",
                     style = MaterialTheme.typography.bodyMedium,
                     uiConfig = uiConfig
                 )
@@ -267,6 +272,25 @@ private fun MovieDetailContent(
                 
                 ConfigurableText(
                     text = movieDetails.releaseDate,
+                    style = MaterialTheme.typography.bodyMedium,
+                    uiConfig = uiConfig
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(Dimens8))
+            
+            // Runtime and Status
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                ConfigurableText(
+                    text = "Runtime: ${movieDetails.runtime} minutes",
+                    style = MaterialTheme.typography.bodyMedium,
+                    uiConfig = uiConfig
+                )
+                ConfigurableText(
+                    text = "Status: ${movieDetails.status}",
                     style = MaterialTheme.typography.bodyMedium,
                     uiConfig = uiConfig
                 )
@@ -301,20 +325,55 @@ private fun MovieDetailContent(
                 
                 Spacer(modifier = Modifier.height(Dimens8))
                 
-                Row(
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(Dimens8)
                 ) {
-                    movieDetails.genres.forEach { genre ->
+                    items(movieDetails.genres) { genre ->
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = uiConfig?.buttons?.secondaryButtonColor ?: MoviePosterDarkBlue
+                            )
+                        ) {
+                            ConfigurableText(
+                                text = genre.name,
+                                style = MaterialTheme.typography.bodySmall,
+                                uiConfig = uiConfig,
+                                modifier = Modifier.padding(horizontal = Dimens12, vertical = Dimens6)
+                            )
+                        }
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(Dimens24))
+            }
+            
+            // Budget and Revenue (if available)
+            if (movieDetails.budget > 0 || movieDetails.revenue > 0) {
+                ConfigurableText(
+                    text = "Financial Information",
+                    style = MaterialTheme.typography.titleLarge,
+                    uiConfig = uiConfig
+                )
+                
+                Spacer(modifier = Modifier.height(Dimens8))
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    if (movieDetails.budget > 0) {
                         ConfigurableText(
-                            text = genre.name,
-                            style = MaterialTheme.typography.bodySmall,
-                            uiConfig = uiConfig,
-                            modifier = Modifier
-                                .background(
-                                    uiConfig?.buttons?.secondaryButtonColor ?: MoviePosterDarkBlue,
-                                    RoundedCornerShape(Dimens12)
-                                )
-                                .padding(horizontal = Dimens12, vertical = Dimens6)
+                            text = "Budget: $${movieDetails.budget / 1_000_000}M",
+                            style = MaterialTheme.typography.bodyMedium,
+                            uiConfig = uiConfig
+                        )
+                    }
+                    if (movieDetails.revenue > 0) {
+                        ConfigurableText(
+                            text = "Revenue: $${movieDetails.revenue / 1_000_000}M",
+                            style = MaterialTheme.typography.bodyMedium,
+                            uiConfig = uiConfig
                         )
                     }
                 }
@@ -332,13 +391,49 @@ private fun MovieDetailContent(
                 
                 Spacer(modifier = Modifier.height(Dimens8))
                 
-                movieDetails.productionCompanies.forEach { company ->
-                    ConfigurableText(
-                        text = "• ${company.name}",
-                        style = MaterialTheme.typography.bodySmall,
-                        uiConfig = uiConfig,
-                        modifier = Modifier.padding(vertical = Dimens2)
-                    )
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens8)
+                ) {
+                    items(movieDetails.productionCompanies) { company ->
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(Dimens8)
+                        ) {
+                            // Company logo placeholder (would need actual image loading)
+                            Box(
+                                modifier = Modifier
+                                    .size(60.dp)
+                                    .background(
+                                        uiConfig?.colors?.surface ?: Color.Gray,
+                                        RoundedCornerShape(Dimens8)
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                ConfigurableText(
+                                    text = company.name.take(2).uppercase(),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    uiConfig = uiConfig
+                                )
+                            }
+                            
+                            Spacer(modifier = Modifier.height(Dimens4))
+                            
+                            ConfigurableText(
+                                text = company.name,
+                                style = MaterialTheme.typography.bodySmall,
+                                uiConfig = uiConfig
+                            )
+                            
+                            if (company.originCountry.isNotEmpty()) {
+                                ConfigurableText(
+                                    text = company.originCountry,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    uiConfig = uiConfig
+                                )
+                            }
+                        }
+                    }
                 }
                 
                 Spacer(modifier = Modifier.height(Dimens24))
@@ -354,9 +449,8 @@ private fun MovieDetailContent(
             Spacer(modifier = Modifier.height(Dimens8))
             
             DetailRow("Vote Count", movieDetails.voteCount.toString(), uiConfig)
-            DetailRow("Runtime", "${movieDetails.runtime ?: "N/A"} minutes", uiConfig)
-            DetailRow("Budget", "$${movieDetails.budget}", uiConfig)
-            DetailRow("Revenue", "$${movieDetails.revenue}", uiConfig)
+            DetailRow("Runtime", "${movieDetails.runtime} minutes", uiConfig)
+            DetailRow("Status", movieDetails.status, uiConfig)
             
             Spacer(modifier = Modifier.height(Dimens32))
         }

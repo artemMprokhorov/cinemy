@@ -213,6 +213,33 @@ User Action → Intent → ViewModel → Repository → MCP Client
 - [ ] Многоязычность
 - [ ] Аналитика и метрики
 
+## 📋 Changelog
+
+### **v2.0.0** - Enhanced Data Models & API Alignment
+**Date**: September 2025  
+**Status**: ✅ **COMPLETED**
+
+#### 🚀 **Data Layer Enhancements**
+- **Enhanced Movie Model**: Added backdrop, vote count, popularity, adult flag
+- **MovieDetails Model**: Complete details with runtime and companies
+- **Production Data**: Budget and revenue information
+- **Search Metadata**: Enhanced search result information
+- **AI Metadata**: Backend generation tracking
+
+#### 🔧 **Technical Improvements**
+- **API Contract Alignment**: Models now match new API contracts exactly
+- **Enhanced DTOs**: Updated data transfer objects with new fields
+- **Search Support**: Complete search metadata and result tracking
+- **Production Info**: Full production company and financial data
+- **Backward Compatibility**: Maintained existing MCP integration
+
+#### 🎨 **UI Layer Enhancements**
+- **Search Functionality**: Complete search UI with real-time query handling
+- **Search Metadata**: Display search results information and statistics
+- **Enhanced Movie Cards**: Support for backdrop images, vote counts, and adult content indicators
+- **Movie Details**: Comprehensive display of runtime, status, budget, revenue, and production companies
+- **Server-Driven UI**: Maintained dynamic theming and configuration support
+
 ## 🎨 UI/UX особенности
 
 - **Material Design 3** - Современный дизайн

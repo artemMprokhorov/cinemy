@@ -26,6 +26,10 @@ This data layer serves as the **Model** component in the MVI (Model-View-Intent)
 
 #### **1. Domain Models (Model State)**
 - **Clean Models**: `Movie`, `MovieDetails`, `Genre`, `ProductionCompany`
+- **Enhanced Movie Model**: Added `backdropPath`, `voteCount`, `popularity`, `adult` fields
+- **Complete MovieDetails**: Runtime, genres, production companies, budget, revenue
+- **Search Metadata**: `SearchInfo` for search-specific UI configuration
+- **AI Metadata**: `Meta` and `GeminiColors` for backend AI generation tracking
 - **Result Handling**: Sealed `Result<T>` class for type-safe state management
 - **UI Configuration**: `UiConfiguration` models for dynamic theming
 - **Pagination**: `Pagination` and `MovieListResponse` for list management
@@ -103,6 +107,26 @@ when (result) {
 - `Result<T>` sealed class for handling success/error states
 - `UiConfiguration` models for dynamic UI theming
 
+#### **Updated Domain Models (v2.0.0)**
+
+##### Core Models
+- **Movie**: Enhanced with backdrop, vote count, popularity, adult flag
+- **MovieDetails**: Complete movie details with runtime, genres, companies
+- **Genre**: Movie genre information
+- **ProductionCompany**: Production company details with origin country
+
+##### Response Models  
+- **MovieListResponse**: Paginated movie lists with search metadata
+- **MovieDetailsResponse**: Detailed movie information wrapper
+- **Meta**: API response metadata with AI generation info
+- **SearchInfo**: Search-specific UI configuration
+
+##### Enhanced Features
+- **Complete Pagination**: Full TMDB pagination support
+- **Search Metadata**: Query info and result statistics
+- **Production Data**: Budget, revenue, production companies
+- **AI Metadata**: Backend AI generation tracking
+
 ### 4. Mappers (`mapper/MovieMapper.kt`)
 
 - Converts between DTOs and domain models
@@ -114,12 +138,32 @@ when (result) {
 #### Interface (`MovieRepository.kt`)
 - Defines repository contract with suspend functions
 - Returns `Result<T>` sealed class for error handling
+- **Enhanced Methods**: `getPopularMovies`, `searchMovies`, `getMovieDetails`
+- **API Contract Alignment**: Methods match new API contracts exactly
 
 #### Implementation (`MovieRepositoryImpl.kt`)
 - Implements repository interface
 - Uses MCP client for data fetching
 - Handles error mapping and UI configuration extraction
 - Provides clean API for the presentation layer
+
+#### **Repository Layer Updates (v2.0.0)**
+
+##### Enhanced Repository Interface
+- **getPopularMovies**: Returns `MovieListResponse` with full pagination
+- **searchMovies**: Returns `MovieListResponse` with search metadata  
+- **getMovieDetails**: Returns `MovieDetailsResponse` with complete details
+
+##### MCP Integration Enhancements
+- **Method Mapping**: Direct mapping to API contract methods
+- **Parameter Handling**: Proper query and pagination parameters
+- **Response Processing**: Complete response wrapper handling
+- **Error Handling**: Enhanced error messages and UI config preservation
+
+##### Mock Data Alignment
+- **Contract Compliance**: Mock responses match API contracts exactly
+- **Development Testing**: Full feature testing without backend
+- **UI Configuration**: Dynamic theming data in all responses
 
 ### 6. Dependency Injection (`di/DataModule.kt`)
 

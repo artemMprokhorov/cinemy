@@ -94,8 +94,8 @@ class McpClient : MovieApiService {
                     GenreDto(3, "Adventure")
                 ),
                 productionCompanies = listOf(
-                    ProductionCompanyDto(1, "Fantasy Films", "/logo1.png"),
-                    ProductionCompanyDto(2, "Nature Studios", "/logo2.png")
+                    ProductionCompanyDto(1, "/logo1.png", "Fantasy Films", "US"),
+                    ProductionCompanyDto(2, "/logo2.png", "Nature Studios", "US")
                 ),
                 budget = 50000000,
                 revenue = 150000000,
@@ -122,11 +122,11 @@ class McpClient : MovieApiService {
     /**
      * Business method: Get popular movies using MCP HTTP client
      */
-    suspend fun getPopularMoviesViaMcp(): Result<MoviesResponse> {
+    suspend fun getPopularMoviesViaMcp(page: Int): Result<MovieListResponse> {
         return runCatching {
             val response = mcpHttpClient.sendMcpRequest<McpResponseDto<McpMovieListResponseDto>>(
-                method = "get_popular_movies",
-                params = mapOf("page" to 1)
+                method = "getPopularMovies",
+                params = mapOf("page" to page)
             )
             
             when (response) {
@@ -136,11 +136,8 @@ class McpClient : MovieApiService {
                         val movieListResponse = MovieMapper.mapMcpMovieListResponseDtoToMovieListResponse(mcpResponse.data)
                         val uiConfig = mcpResponse.uiConfig?.let { MovieMapper.mapUiConfigurationDtoToUiConfiguration(it) }
                         Result.Success(
-                            data = MoviesResponse(
-                                movies = movieListResponse.movies,
-                                pagination = movieListResponse.pagination,
-                                uiConfig = uiConfig
-                            )
+                            data = movieListResponse,
+                            uiConfig = uiConfig
                         )
                     } else {
                         Result.Error(mcpResponse.error ?: "Failed to fetch popular movies")
@@ -160,8 +157,8 @@ class McpClient : MovieApiService {
     suspend fun getMovieDetailsViaMcp(movieId: Int): Result<MovieDetailsResponse> {
         return runCatching {
             val response = mcpHttpClient.sendMcpRequest<McpResponseDto<MovieDetailsDto>>(
-                method = "get_movie_details",
-                params = mapOf("movie_id" to movieId)
+                method = "getMovieDetails",
+                params = mapOf("movieId" to movieId)
             )
             
             when (response) {
@@ -172,8 +169,53 @@ class McpClient : MovieApiService {
                         val uiConfig = mcpResponse.uiConfig?.let { MovieMapper.mapUiConfigurationDtoToUiConfiguration(it) }
                         Result.Success(
                             data = MovieDetailsResponse(
-                                movieDetails = movieDetails,
-                                uiConfig = uiConfig
+                                success = true,
+                                data = MovieDetailsData(movieDetails = movieDetails),
+                                uiConfig = uiConfig ?: UiConfiguration(
+                                    colors = ColorScheme(
+                                        primary = androidx.compose.ui.graphics.Color.Blue,
+                                        secondary = androidx.compose.ui.graphics.Color.Gray,
+                                        background = androidx.compose.ui.graphics.Color.Black,
+                                        surface = androidx.compose.ui.graphics.Color.DarkGray,
+                                        onPrimary = androidx.compose.ui.graphics.Color.White,
+                                        onSecondary = androidx.compose.ui.graphics.Color.White,
+                                        onBackground = androidx.compose.ui.graphics.Color.White,
+                                        onSurface = androidx.compose.ui.graphics.Color.White,
+                                        moviePosterColors = emptyList()
+                                    ),
+                                    texts = TextConfiguration(
+                                        appTitle = "Movies",
+                                        loadingText = "Loading...",
+                                        errorMessage = "Error",
+                                        noMoviesFound = "No movies found",
+                                        retryButton = "Retry",
+                                        backButton = "Back",
+                                        playButton = "Play"
+                                    ),
+                                    buttons = ButtonConfiguration(
+                                        primaryButtonColor = androidx.compose.ui.graphics.Color.Blue,
+                                        secondaryButtonColor = androidx.compose.ui.graphics.Color.Gray,
+                                        buttonTextColor = androidx.compose.ui.graphics.Color.White,
+                                        buttonCornerRadius = 8
+                                    )
+                                ),
+                                error = null,
+                                meta = Meta(
+                                    timestamp = System.currentTimeMillis().toString(),
+                                    method = "getMovieDetails",
+                                    searchQuery = null,
+                                    movieId = movieId,
+                                    resultsCount = null,
+                                    aiGenerated = true,
+                                    geminiColors = GeminiColors(
+                                        primary = "#2C5F6F",
+                                        secondary = "#4A90A4",
+                                        accent = "#FFD700"
+                                    ),
+                                    avgRating = null,
+                                    movieRating = movieDetails.rating,
+                                    version = "2.0.0"
+                                )
                             )
                         )
                     } else {
@@ -191,11 +233,11 @@ class McpClient : MovieApiService {
     /**
      * Business method: Search movies using MCP HTTP client
      */
-    suspend fun searchMoviesViaMcp(query: String): Result<MoviesResponse> {
+    suspend fun searchMoviesViaMcp(query: String, page: Int): Result<MovieListResponse> {
         return runCatching {
             val response = mcpHttpClient.sendMcpRequest<McpResponseDto<McpMovieListResponseDto>>(
-                method = "search_movies",
-                params = mapOf("query" to query, "page" to 1)
+                method = "searchMovies",
+                params = mapOf("query" to query, "page" to page)
             )
             
             when (response) {
@@ -205,11 +247,8 @@ class McpClient : MovieApiService {
                         val movieListResponse = MovieMapper.mapMcpMovieListResponseDtoToMovieListResponse(mcpResponse.data)
                         val uiConfig = mcpResponse.uiConfig?.let { MovieMapper.mapUiConfigurationDtoToUiConfiguration(it) }
                         Result.Success(
-                            data = MoviesResponse(
-                                movies = movieListResponse.movies,
-                                pagination = movieListResponse.pagination,
-                                uiConfig = uiConfig
-                            )
+                            data = movieListResponse,
+                            uiConfig = uiConfig
                         )
                     } else {
                         Result.Error(mcpResponse.error ?: "Failed to search movies")
@@ -242,21 +281,37 @@ class McpClient : MovieApiService {
             
             val data = block()
             val uiConfig = generateMockUiConfig()
+            val meta = generateMockMeta()
             
             McpResponseDto(
                 success = true,
                 data = data,
                 uiConfig = uiConfig,
                 error = null,
-                message = "Success"
+                meta = meta
             )
         }.getOrElse { exception ->
             McpResponseDto(
                 success = false,
                 data = null,
-                uiConfig = null,
+                uiConfig = generateMockUiConfig(),
                 error = exception.message ?: "Unknown error",
-                message = "Failed to fetch data"
+                meta = MetaDto(
+                    timestamp = System.currentTimeMillis().toString(),
+                    method = "unknown",
+                    searchQuery = null,
+                    movieId = null,
+                    resultsCount = null,
+                    aiGenerated = false,
+                    geminiColors = GeminiColorsDto(
+                        primary = "#FF0000",
+                        secondary = "#FF0000",
+                        accent = "#FF0000"
+                    ),
+                    avgRating = null,
+                    movieRating = null,
+                    version = "2.0.0"
+                )
             )
         }
     }
@@ -273,7 +328,8 @@ class McpClient : MovieApiService {
                 releaseDate = "2024-03-15",
                 backdropPath = "/backdrop1.jpg",
                 genreIds = listOf(1, 2, 3),
-                popularity = 85.5
+                popularity = 85.5,
+                adult = false
             ),
             MovieDto(
                 id = 2,
@@ -285,7 +341,8 @@ class McpClient : MovieApiService {
                 releaseDate = "2024-02-20",
                 backdropPath = "/backdrop2.jpg",
                 genreIds = listOf(4, 5),
-                popularity = 72.3
+                popularity = 72.3,
+                adult = false
             ),
             MovieDto(
                 id = 3,
@@ -297,7 +354,8 @@ class McpClient : MovieApiService {
                 releaseDate = "2024-01-10",
                 backdropPath = "/backdrop3.jpg",
                 genreIds = listOf(6, 7, 8),
-                popularity = 95.2
+                popularity = 95.2,
+                adult = false
             ),
             MovieDto(
                 id = 4,
@@ -309,7 +367,8 @@ class McpClient : MovieApiService {
                 releaseDate = "2024-04-05",
                 backdropPath = "/backdrop4.jpg",
                 genreIds = listOf(9, 10),
-                popularity = 78.9
+                popularity = 78.9,
+                adult = false
             ),
             MovieDto(
                 id = 5,
@@ -321,7 +380,8 @@ class McpClient : MovieApiService {
                 releaseDate = "2024-05-12",
                 backdropPath = "/backdrop5.jpg",
                 genreIds = listOf(11, 12),
-                popularity = 65.4
+                popularity = 65.4,
+                adult = false
             )
         )
     }
@@ -362,7 +422,33 @@ class McpClient : MovieApiService {
                 secondaryButtonColor = "#4A90A4",
                 buttonTextColor = "#FFFFFF",
                 buttonCornerRadius = 8
+            ),
+            searchInfo = SearchInfoDto(
+                query = "popular movies",
+                resultCount = 5,
+                avgRating = 8.2,
+                ratingType = "TMDB",
+                colorBased = true
             )
+        )
+    }
+    
+    private fun generateMockMeta(): MetaDto {
+        return MetaDto(
+            timestamp = System.currentTimeMillis().toString(),
+            method = "getPopularMovies",
+            searchQuery = null,
+            movieId = null,
+            resultsCount = 5,
+            aiGenerated = true,
+            geminiColors = GeminiColorsDto(
+                primary = "#2C5F6F",
+                secondary = "#4A90A4",
+                accent = "#FFD700"
+            ),
+            avgRating = 8.2,
+            movieRating = null,
+            version = "2.0.0"
         )
     }
 }
