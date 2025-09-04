@@ -154,8 +154,6 @@ jobs:
       - name: Build production release APK
         run: ./gradlew assembleProductionRelease
 
-      - name: Build production release bundle
-        run: ./gradlew bundleProductionRelease
 
       - name: Upload signed APK
         uses: actions/upload-artifact@v4
@@ -163,11 +161,6 @@ jobs:
           name: app-production-release-signed
           path: app/build/outputs/apk/production/release/app-production-release-signed.apk
 
-      - name: Upload release bundle
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-production-release-bundle
-          path: app/build/outputs/bundle/productionRelease/app-production-release.aab
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
@@ -175,7 +168,6 @@ jobs:
         with:
           files: |
             app/build/outputs/apk/production/release/app-production-release-signed.apk
-            app/build/outputs/bundle/productionRelease/app-production-release.aab
           body: |
             ## Release ${{ github.event.release.tag_name }}
             
@@ -185,7 +177,6 @@ jobs:
             
             ### Downloads
             - **APK:** `app-production-release-signed.apk`
-            - **Bundle:** `app-production-release.aab`
             
             ### Changes
             ${{ github.event.release.body }}
