@@ -72,7 +72,7 @@ class McpHttpClient(private val context: Context) {
                     Log.d("MCP", "Trying endpoint: $url")
                     
                     val response = httpClient.post(url) {
-                        contentType(ContentType.Application.Json)
+                contentType(ContentType.Application.Json)
                         setBody(requestBody)
                     }
 
