@@ -8,9 +8,9 @@ package com.example.tmdbai.navigation
  */
 
 sealed class Screen(val route: String) {
-    object Splash : Screen("splash")
-    object MoviesList : Screen("movies_list")
-    data class MovieDetail(val movieId: Int) : Screen("movie_detail/{movieId}") {
-        fun createRoute() = "movie_detail/$movieId"
+    object Splash : Screen(NavigationConstants.ROUTE_SPLASH)
+    object MoviesList : Screen(NavigationConstants.ROUTE_MOVIES_LIST)
+    data class MovieDetail(val movieId: Int) : Screen(NavigationConstants.ROUTE_MOVIE_DETAIL) {
+        fun createRoute() = "${NavigationConstants.ROUTE_MOVIE_DETAIL.replace("{${NavigationConstants.PARAM_MOVIE_ID}}", movieId.toString())}"
     }
 }

@@ -40,14 +40,14 @@ fun AppNavigation(navController: NavHostController) {
         }
 
         composable(
-            route = Screen.MovieDetail(0).route,
+            route = Screen.MovieDetail(NavigationConstants.DEFAULT_MOVIE_ID_FOR_ROUTE).route,
             arguments = listOf(
-                navArgument("movieId") {
+                navArgument(NavigationConstants.NAV_ARG_MOVIE_ID) {
                     type = NavType.IntType
                 }
             )
         ) { backStackEntry ->
-            val movieId = backStackEntry.arguments?.getInt("movieId") ?: 1
+            val movieId = backStackEntry.arguments?.getInt(NavigationConstants.NAV_ARG_MOVIE_ID) ?: NavigationConstants.DEFAULT_MOVIE_ID
             val movieDetailViewModel: MovieDetailViewModel = koinViewModel()
             MovieDetailScreen(
                 movieId = movieId,
