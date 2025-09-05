@@ -231,6 +231,23 @@ User Action → Intent → ViewModel → Repository → MCP Client
 
 ## 📋 Changelog
 
+### **v2.3.1** - Edge-to-Edge Display Fix
+**Date**: December 2024  
+**Status**: ✅ **COMPLETED**
+
+#### 🎨 **UI/UX Improvements**
+- **Edge-to-Edge Display**: Fixed edge-to-edge implementation to work on all supported Android versions
+- **VersionUtils Update**: Changed API requirement from Android 14+ (API 34) to Android 5+ (API 21)
+- **System Bars Padding**: Added proper `systemBarsPadding()` to all main UI screens
+- **Status Bar Integration**: Content now properly extends behind status bar with correct padding
+- **Cross-Platform Support**: Edge-to-edge now works on Android 5.0+ devices
+
+#### 🔧 **Technical Changes**
+- **VersionUtils.kt**: Added `ANDROID_5` constant and updated `safeEnableEdgeToEdge()` method
+- **UI Screens**: Updated `MoviesListScreen.kt`, `MovieDetailScreen.kt`, and `Splash.kt`
+- **Window Insets**: Proper handling of system bars across all screens
+- **Build Compatibility**: Maintains compatibility with older Android versions
+
 ### **v2.3.0** - Constants Refactoring & Dummy Repository
 **Date**: December 2024  
 **Status**: ✅ **COMPLETED**

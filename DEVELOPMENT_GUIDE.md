@@ -3,7 +3,7 @@
 **TmdbAi - Руководство по разработке**  
 **Дата создания**: 2024-12-19  
 **Дата обновления**: 2024-12-19  
-**Версия**: 2.3.0
+**Версия**: 2.3.1
 
 ## 🚀 Настройка среды разработки
 
@@ -73,6 +73,67 @@ adb shell am start -n com.example.tmdbai.dummy.debug/com.example.tmdbai.MainActi
 ./gradlew installProdDebug
 adb shell am start -n com.example.tmdbai.debug/com.example.tmdbai.MainActivity
 ```
+
+## 🎨 Edge-to-Edge Display
+
+### 📱 Настройка Edge-to-Edge
+
+Проект поддерживает полноэкранный режим (edge-to-edge) на всех версиях Android 5.0+:
+
+#### 1. **VersionUtils Configuration**
+```kotlin
+// VersionUtils.kt
+object Versions {
+    const val ANDROID_5 = Build.VERSION_CODES.LOLLIPOP // API 21 - Minimum for edge-to-edge
+}
+
+fun safeEnableEdgeToEdge(activity: ComponentActivity) {
+    if (Build.VERSION.SDK_INT >= Versions.ANDROID_5) {
+        activity.enableEdgeToEdge()
+    }
+}
+```
+
+#### 2. **MainActivity Setup**
+```kotlin
+// MainActivity.kt
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    
+    // Enable edge-to-edge on supported versions
+    VersionUtils.safeEnableEdgeToEdge(this)
+    
+    setContent {
+        // Your UI content
+    }
+}
+```
+
+#### 3. **UI Screen Implementation**
+```kotlin
+// All main screens should use systemBarsPadding()
+Box(
+    modifier = Modifier
+        .fillMaxSize()
+        .background(SplashBackground)
+        .systemBarsPadding() // ← This is crucial for proper edge-to-edge
+) {
+    // Your content
+}
+```
+
+### ✅ **Best Practices**
+
+1. **Always use `systemBarsPadding()`** on main containers
+2. **Test on different Android versions** (API 21+)
+3. **Verify content doesn't overlap** with system bars
+4. **Use `VersionUtils.safeEnableEdgeToEdge()`** for compatibility
+
+### 🚨 **Common Issues**
+
+- **Content overlapping status bar**: Missing `systemBarsPadding()`
+- **Not working on older devices**: Check API level requirements
+- **Inconsistent behavior**: Ensure all screens use the same pattern
 
 ## 📏 Правила работы с кодом
 
