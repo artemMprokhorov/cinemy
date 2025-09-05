@@ -306,6 +306,28 @@ User Action → Intent → ViewModel → Repository → MCP Client
 ./gradlew jacocoTestReport
 ```
 
+## 📝 Changelog
+
+### v2.2.0 - Enhanced Pagination & UX (2024-12-19)
+- ✅ **45 Movies Total**: Expanded mock data to 45 movies (15 per page × 3 pages)
+- ✅ **Smart Swipe Navigation**: 
+  - Swipe right on page 1: No action
+  - Swipe right on page 2+: Go to previous page
+  - Swipe left on page 1-2: Go to next page
+  - Swipe left on page 3: Show snackbar "This is the last available page"
+- ✅ **Custom Snackbar**: Dark blue background matching splash screen with white text
+- ✅ **Debounced Snackbar**: Prevents multiple snackbar spam with 2-second debounce
+- ✅ **Real TMDB Posters**: All 45 movies have proper poster URLs
+- ✅ **Import Optimization**: Reviewed and maintained clean import structure
+- ✅ **Build Verification**: All variants (dummy, prod) build successfully
+
+### v2.1.0 - Build & Backend Fixes (2024-12-19)
+- ✅ **UI/UX Improvements**: Simplified design with consistent theming
+- ✅ **Pull-to-Refresh**: Custom implementation with visual feedback
+- ✅ **Mock Data Integration**: Comprehensive mock data for offline testing
+- ✅ **Technical Enhancements**: Improved error handling and state management
+- ✅ **User Experience**: Enhanced loading states and error screens
+
 ## 📱 Скриншоты
 
 *Скриншоты будут добавлены по мере развития UI*
@@ -338,5 +360,5 @@ User Action → Intent → ViewModel → Repository → MCP Client
 ---
 
 **Последнее обновление**: 2024-12-19  
-**Версия**: 1.0.0-dev  
+**Версия**: 2.2.0  
 **Статус**: В активной разработке

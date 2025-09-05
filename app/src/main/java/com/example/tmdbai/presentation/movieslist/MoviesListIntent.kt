@@ -18,4 +18,8 @@ sealed class MoviesListIntent : CommonIntent {
     object RefreshData : MoviesListIntent()
     object CheckConnectionStatus : MoviesListIntent()
     object DismissError : MoviesListIntent()
+    
+    // NEW: Pagination navigation intents
+    object NextPage : MoviesListIntent()
+    object PreviousPage : MoviesListIntent()
 }

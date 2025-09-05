@@ -194,7 +194,8 @@ private fun MovieDetailsContent(
             // Title
             Text(
                 text = movieDetails.title,
-                style = MaterialTheme.typography.headlineMedium
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color.White
             )
 
             // Rating
@@ -203,34 +204,38 @@ private fun MovieDetailsContent(
             ) {
                 Text(
                     text = "Rating: ${movieDetails.rating}/10",
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.White
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = "(${movieDetails.voteCount} votes)",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = Color.White
                 )
             }
 
             // Release date
             Text(
                 text = "Release Date: ${movieDetails.releaseDate}",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White
             )
 
             // Description
             Text(
                 text = movieDetails.description,
                 style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Justify
+                textAlign = TextAlign.Justify,
+                color = Color.White
             )
 
             // Genres
             if (movieDetails.genres.isNotEmpty()) {
                 Text(
                     text = "Genres: ${movieDetails.genres.joinToString(", ") { it.name }}",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White
                 )
             }
 
@@ -238,7 +243,8 @@ private fun MovieDetailsContent(
             if (movieDetails.runtime > 0) {
                 Text(
                     text = "Runtime: ${movieDetails.runtime} minutes",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White
                 )
             }
         }

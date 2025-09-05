@@ -39,6 +39,10 @@ class MoviesListViewModel(
             is MoviesListIntent.RefreshData,
             is MoviesListIntent.CheckConnectionStatus,
             is MoviesListIntent.DismissError -> processConnectionIntent(intent)
+            
+            // NEW: Pagination navigation cases
+            is MoviesListIntent.NextPage -> navigateToNextPage()
+            is MoviesListIntent.PreviousPage -> navigateToPreviousPage()
         }
     }
 
@@ -154,6 +158,24 @@ class MoviesListViewModel(
                     connectionStatus = MoviesListState.ConnectionStatus.Disconnected
                 )
             }
+        }
+    }
+    
+    private fun navigateToNextPage() {
+        val currentState = _state.value
+        val pagination = currentState.pagination
+        
+        if (pagination != null && pagination.hasNext && !currentState.isLoading) {
+            loadPopularMovies(pagination.page + 1)
+        }
+    }
+    
+    private fun navigateToPreviousPage() {
+        val currentState = _state.value
+        val pagination = currentState.pagination
+        
+        if (pagination != null && pagination.hasPrevious && !currentState.isLoading) {
+            loadPopularMovies(pagination.page - 1)
         }
     }
 }

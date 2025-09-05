@@ -149,7 +149,8 @@ class McpHttpClient(private val context: Context) {
         return when (request.method) {
             "getPopularMovies" -> {
                 if (useAssetsData) {
-                    loadMockDataFromAssets("mock_movies.json") as McpResponse<T>
+                    val page = request.params["page"]?.toIntOrNull() ?: 1
+                    loadMockDataFromAssetsWithPagination("mock_movies.json", page) as McpResponse<T>
                 } else {
                     createMockPopularResponse() as McpResponse<T>
                 }
@@ -308,6 +309,51 @@ class McpHttpClient(private val context: Context) {
                 data = jsonResponse["data"],
                 error = jsonResponse["error"] as? String,
                 message = "Mock data loaded from assets: $fileName"
+            )
+        } catch (e: IOException) {
+            Log.e("MCP", "Failed to load mock data from assets: $fileName", e)
+            McpResponse<Any>(
+                success = false,
+                data = null,
+                error = "Failed to load mock data from assets: ${e.message}",
+                message = "Asset loading failed"
+            )
+        }
+    }
+    
+    private fun loadMockDataFromAssetsWithPagination(fileName: String, page: Int): McpResponse<Any> {
+        return try {
+            Log.d("MCP", "Loading mock data from assets: $fileName, page: $page")
+            val jsonString = context.assets.open(fileName).bufferedReader().use { it.readText() }
+            val jsonResponse = parseJsonResponse(jsonString)
+            
+            // Create paginated response based on page
+            val allMovies = (jsonResponse["data"] as? Map<String, Any>)?.get("movies") as? List<Map<String, Any>> ?: emptyList()
+            val moviesPerPage = 15
+            val startIndex = (page - 1) * moviesPerPage
+            val endIndex = minOf(startIndex + moviesPerPage, allMovies.size)
+            val pageMovies = allMovies.subList(startIndex, endIndex)
+            
+            val totalPages = 3 // We have 3 pages of mock data
+            val hasNext = page < totalPages
+            val hasPrevious = page > 1
+            
+            val paginatedData = mapOf(
+                "movies" to pageMovies,
+                "pagination" to mapOf(
+                    "page" to page,
+                    "totalPages" to totalPages,
+                    "totalResults" to allMovies.size,
+                    "hasNext" to hasNext,
+                    "hasPrevious" to hasPrevious
+                )
+            )
+            
+            McpResponse<Any>(
+                success = jsonResponse["success"] as? Boolean ?: true,
+                data = paginatedData,
+                error = jsonResponse["error"] as? String,
+                message = "Mock data loaded from assets: $fileName, page: $page"
             )
         } catch (e: IOException) {
             Log.e("MCP", "Failed to load mock data from assets: $fileName", e)
