@@ -145,21 +145,21 @@ jobs:
         uses: r0adkll/sign-android-release@v1
         id: sign
         with:
-          releaseDirectory: app/build/outputs/apk/production/release
+          releaseDirectory: app/build/outputs/apk/prod/release
           signingKeyBase64: ${{ secrets.KEYSTORE_BASE64 }}
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
       - name: Build production release APK
-        run: ./gradlew assembleProductionRelease
+        run: ./gradlew assembleProdRelease
 
 
       - name: Upload signed APK
         uses: actions/upload-artifact@v4
         with:
           name: app-production-release-signed
-          path: app/build/outputs/apk/production/release/app-production-release-signed.apk
+          path: app/build/outputs/apk/prod/release/app-prod-release-signed.apk
 
 
       - name: Create Release
@@ -167,7 +167,7 @@ jobs:
         if: github.event_name == 'release'
         with:
           files: |
-            app/build/outputs/apk/production/release/app-production-release-signed.apk
+            app/build/outputs/apk/prod/release/app-prod-release-signed.apk
           body: |
             ## Release ${{ github.event.release.tag_name }}
             

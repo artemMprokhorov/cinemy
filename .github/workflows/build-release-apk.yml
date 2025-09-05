@@ -60,7 +60,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run unit tests
-        run: ./gradlew testProductionDebugUnitTest
+        run: ./gradlew testProdDebugUnitTest
 
 
   build-debug:
@@ -94,13 +94,13 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build debug APK
-        run: ./gradlew assembleProductionDebug
+        run: ./gradlew assembleProdDebug
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
           name: debug-apk
-          path: app/build/outputs/apk/production/debug/*.apk
+          path: app/build/outputs/apk/prod/debug/*.apk
           retention-days: 7
 
   build-release:
@@ -175,32 +175,32 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           VERSION_NAME: ${{ env.VERSION_NAME }}
           VERSION_CODE: ${{ env.VERSION_CODE }}
-        run: ./gradlew assembleProductionRelease
+        run: ./gradlew assembleProdRelease
 
 
       # Проверка подписи APK
       - name: Verify APK signature
         run: |
-          $ANDROID_HOME/build-tools/${{ env.BUILD_TOOLS_VERSION }}/aapt dump badging app/build/outputs/apk/production/release/app-production-release-unsigned.apk
+          $ANDROID_HOME/build-tools/${{ env.BUILD_TOOLS_VERSION }}/aapt dump badging app/build/outputs/apk/prod/release/app-prod-release-unsigned.apk
 
       - name: Get APK info
         id: apk_info
         run: |
-          APK_SIZE=$(stat -c%s app/build/outputs/apk/production/release/app-production-release-unsigned.apk | numfmt --to=iec)
+          APK_SIZE=$(stat -c%s app/build/outputs/apk/prod/release/app-prod-release-unsigned.apk | numfmt --to=iec)
           
           echo "apk_size=$APK_SIZE" >> $GITHUB_OUTPUT
 
       # Создание имен файлов с версией
       - name: Rename APK file
         run: |
-          mv app/build/outputs/apk/production/release/app-production-release-unsigned.apk \
-             app/build/outputs/apk/production/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
+          mv app/build/outputs/apk/prod/release/app-prod-release-unsigned.apk \
+             app/build/outputs/apk/prod/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
 
       - name: Upload release APK
         uses: actions/upload-artifact@v4
         with:
           name: release-apk-${{ env.VERSION_NAME }}
-          path: app/build/outputs/apk/production/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
+          path: app/build/outputs/apk/prod/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
           retention-days: 30
 
 
@@ -243,7 +243,7 @@ jobs:
             **Installation:** Download the APK file and install on your Android device.
             **Requirements:** Android 7.0+ (API level 24)
           files: |
-            app/build/outputs/apk/production/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
+            app/build/outputs/apk/prod/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
           draft: false
           prerelease: false
         env:

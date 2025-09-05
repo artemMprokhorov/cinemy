@@ -130,7 +130,7 @@ jobs:
         run: ./gradlew assembleStagingDebug
 
       - name: Build production debug APK
-        run: ./gradlew assembleProductionDebug
+        run: ./gradlew assembleProdDebug
 
   # Comment PR with results
   comment-pr:
