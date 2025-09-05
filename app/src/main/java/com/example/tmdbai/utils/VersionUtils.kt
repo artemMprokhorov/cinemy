@@ -39,7 +39,7 @@ object VersionUtils {
  * @return true if edge-to-edge is supported, false otherwise
  */
 fun supportsEdgeToEdge(): Boolean {
-    return Build.VERSION.SDK_INT >= Versions.ANDROID_14
+    return Build.VERSION.SDK_INT >= VersionUtils.Versions.ANDROID_14
 }
 
 /**
@@ -65,5 +65,4 @@ fun getAndroidVersionName(): String {
  */
 fun getApiLevel(): Int {
     return Build.VERSION.SDK_INT
-}
 }
