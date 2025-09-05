@@ -11,6 +11,23 @@
     <string name="no_image">No Image</string>
     <string name="previous_button">Previous</string>
     <string name="next_button">Next</string>
+    <string name="adult_content_indicator">18+</string>
+    <string name="popularity_label">Popularity: %1$.1f</string>
+    <string name="app_title">Movie App</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="pull_progress_animation">pull_progress</string>
+    <string name="movie_details">movie details</string>
+    <string name="pull_to_reload">Pull to reload</string>
+    <string name="rating_label">Rating: %1$.1f/10</string>
+    <string name="votes_label">(%1$d votes)</string>
+    <string name="release_date_label">Release Date: %1$s</string>
+    <string name="genres_label">Genres: %1$s</string>
+    <string name="runtime_label">Runtime: %1$d minutes</string>
+    <string name="popular_title">Popular</string>
+    <string name="last_page_message">This is the last available page</string>
+    <string name="pull_to_refresh_try_again">Pull to refresh to try again</string>
+    <string name="page_info">Page %1$d of %2$d</string>
+    <string name="splash_subtitle">Discover new films from TMDB</string>
 
     <!-- Error Messages -->
     <string name="error_unknown">Unknown error</string>

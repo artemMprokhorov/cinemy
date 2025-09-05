@@ -44,8 +44,15 @@ import com.example.tmdbai.presentation.moviedetail.MovieDetailIntent
 import com.example.tmdbai.presentation.moviedetail.MovieDetailState
 import com.example.tmdbai.presentation.moviedetail.MovieDetailViewModel
 import com.example.tmdbai.ui.components.PullToReloadArrow
+import com.example.tmdbai.ui.theme.Dimens12
+import com.example.tmdbai.ui.theme.Dimens16
+import com.example.tmdbai.ui.theme.Dimens100
+import com.example.tmdbai.ui.theme.Dimens400
+import com.example.tmdbai.ui.theme.Dimens8
 import com.example.tmdbai.ui.theme.SplashBackground
 import com.example.tmdbai.ui.theme.TmdbAiTheme
+
+private const val MIN_RUNTIME = 0
 
 @Composable
 fun MovieDetailScreen(
@@ -108,7 +115,7 @@ private fun MovieDetailContent(
                             color = Color.White,
                             style = MaterialTheme.typography.headlineMedium
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(Dimens16))
                         CircularProgressIndicator(
                             color = Color.White
                         )
@@ -125,26 +132,26 @@ private fun MovieDetailContent(
                         modifier = Modifier.verticalScroll(rememberScrollState()),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Spacer(modifier = Modifier.height(100.dp))
+                        Spacer(modifier = Modifier.height(Dimens100))
                         Text(
                             text = stringResource(R.string.error_generic),
                             color = Color.White,
                             style = MaterialTheme.typography.headlineLarge
                         )
                         Text(
-                            text = "movie details",
+                            text = stringResource(R.string.movie_details),
                             color = Color.White,
                             style = MaterialTheme.typography.headlineLarge
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(Dimens16))
                         PullToReloadArrow()
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(Dimens16))
                         Text(
-                            text = "Pull to reload",
+                            text = stringResource(R.string.pull_to_reload),
                             color = Color.White,
                             style = MaterialTheme.typography.headlineMedium
                         )
-                        Spacer(modifier = Modifier.height(100.dp))
+                        Spacer(modifier = Modifier.height(Dimens100))
                     }
                 }
             }
@@ -179,17 +186,17 @@ private fun MovieDetailsContent(
             contentDescription = movieDetails.title,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(400.dp)
-                .padding(horizontal = 16.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .height(Dimens400)
+                .padding(horizontal = Dimens16)
+                .clip(RoundedCornerShape(Dimens8))
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(Dimens16))
 
         // Movie details
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            modifier = Modifier.padding(Dimens16),
+            verticalArrangement = Arrangement.spacedBy(Dimens12)
         ) {
             // Title
             Text(
@@ -203,13 +210,13 @@ private fun MovieDetailsContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Rating: ${movieDetails.rating}/10",
+                    text = stringResource(R.string.rating_label, movieDetails.rating),
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.White
                 )
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(Dimens16))
                 Text(
-                    text = "(${movieDetails.voteCount} votes)",
+                    text = stringResource(R.string.votes_label, movieDetails.voteCount),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White
                 )
@@ -217,7 +224,7 @@ private fun MovieDetailsContent(
 
             // Release date
             Text(
-                text = "Release Date: ${movieDetails.releaseDate}",
+                text = stringResource(R.string.release_date_label, movieDetails.releaseDate),
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White
             )
@@ -233,16 +240,16 @@ private fun MovieDetailsContent(
             // Genres
             if (movieDetails.genres.isNotEmpty()) {
                 Text(
-                    text = "Genres: ${movieDetails.genres.joinToString(", ") { it.name }}",
+                    text = stringResource(R.string.genres_label, movieDetails.genres.joinToString(", ") { it.name }),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White
                 )
             }
 
             // Runtime
-            if (movieDetails.runtime > 0) {
+            if (movieDetails.runtime > MIN_RUNTIME) {
                 Text(
-                    text = "Runtime: ${movieDetails.runtime} minutes",
+                    text = stringResource(R.string.runtime_label, movieDetails.runtime),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White
                 )

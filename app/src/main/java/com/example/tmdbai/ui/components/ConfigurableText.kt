@@ -5,7 +5,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import com.example.tmdbai.R
 import com.example.tmdbai.data.model.UiConfiguration
 
 /**
@@ -81,7 +83,7 @@ fun ConfigurableTextByType(
         TextType.RETRY_BUTTON -> uiConfig?.texts?.retryButton
         TextType.BACK_BUTTON -> uiConfig?.texts?.backButton
         TextType.PLAY_BUTTON -> uiConfig?.texts?.playButton
-    } ?: textType.defaultText
+    } ?: stringResource(textType.defaultTextRes)
 
     ConfigurableText(
         text = textContent,
@@ -96,12 +98,12 @@ fun ConfigurableTextByType(
 /**
  * Enum defining the types of text that can be configured via UiConfig
  */
-enum class TextType(val defaultText: String) {
-    APP_TITLE("Movie App"),
-    LOADING_TEXT("Loading..."),
-    ERROR_MESSAGE("Something went wrong"),
-    NO_MOVIES_FOUND("No movies found"),
-    RETRY_BUTTON("Retry"),
-    BACK_BUTTON("Back"),
-    PLAY_BUTTON("Play")
+enum class TextType(val defaultTextRes: Int) {
+    APP_TITLE(R.string.app_title),
+    LOADING_TEXT(R.string.loading_text),
+    ERROR_MESSAGE(R.string.something_went_wrong),
+    NO_MOVIES_FOUND(R.string.no_movies_found),
+    RETRY_BUTTON(R.string.retry_button),
+    BACK_BUTTON(R.string.back_button),
+    PLAY_BUTTON(R.string.play_button)
 }

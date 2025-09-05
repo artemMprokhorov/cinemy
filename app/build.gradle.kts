@@ -51,6 +51,7 @@ android {
             buildConfigField("Boolean", "USE_MOCK_DATA", "true")
             buildConfigField("String", "MCP_SERVER_URL", "\"\"")
             buildConfigField("String", "FLAVOR_NAME", "\"Dummy\"")
+            buildConfigField("String", "TMDB_IMAGE_BASE_URL", "\"https://image.tmdb.org/t/p/\"")
 
             resValue("string", "app_name", "TmdbAi Dummy")
         }
@@ -65,6 +66,7 @@ android {
                 "\"https://grand-beagle-reliably.ngrok-free.app/webhook/tmdbai-enhanced\""
             )
             buildConfigField("String", "FLAVOR_NAME", "\"Production\"")
+            buildConfigField("String", "TMDB_IMAGE_BASE_URL", "\"https://image.tmdb.org/t/p/\"")
 
             resValue("string", "app_name", "TmdbAi")
         }

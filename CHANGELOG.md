@@ -10,6 +10,30 @@
 
 ## 📅 **Version History**
 
+### **v2.3.1** - UI Layer Constants Refactoring
+**Date**: December 2024  
+**Status**: ✅ **RELEASED**
+
+#### 🎨 **UI Layer Constants System**
+- **Floats.kt**: Created comprehensive float constants file (Float0, Float01, Float02, etc.)
+- **Alpha.kt → Floats.kt**: Renamed and expanded alpha values to cover all float calculations
+- **ImageConfig.kt**: Centralized TMDB image URL configuration (renamed from BuildConfig.kt)
+- **UIConstants.kt**: Added animation constants and UI behavior constants
+- **String Resources**: Extracted animation labels and UI text to strings.xml
+
+#### 🔧 **Component Refactoring**
+- **PullToReloadIndicator**: All hardcoded float values extracted to constants
+- **ConfigurableMovieCard**: Dimensions, alpha values, and UI text extracted to constants
+- **ConfigurableButton**: All hardcoded values replaced with constants
+- **ConfigurableText**: TextType enum default texts moved to string resources
+- **Edge-to-Edge**: Applied systemBarsPadding() to main UI screens
+
+#### 📱 **UI Improvements**
+- **No Hardcoded Values**: Complete elimination of hardcoded values in UI layer
+- **Internationalization**: All UI text properly externalized to string resources
+- **Consistent Naming**: Float constants follow consistent naming convention
+- **Maintainability**: Centralized constants for easy maintenance and updates
+
 ### **v2.3.0** - Constants Refactoring & Dummy Repository
 **Date**: December 2024  
 **Status**: ✅ **RELEASED**

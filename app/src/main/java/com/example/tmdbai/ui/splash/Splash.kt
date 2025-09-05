@@ -16,9 +16,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.tmdbai.R
 import com.example.tmdbai.ui.theme.Dimens32
 import com.example.tmdbai.ui.theme.Dimens8
 import com.example.tmdbai.ui.theme.SplashBackground
@@ -26,13 +28,14 @@ import com.example.tmdbai.ui.theme.TextSecondary
 import com.example.tmdbai.ui.theme.Typography16
 import com.example.tmdbai.ui.theme.Typography32
 
+private const val SPLASH_DISPLAY_DURATION_MS = 3000L
 
 @Composable
 fun MovieAppSplashScreen(
     onSplashComplete: () -> Unit = {}
 ) {
     LaunchedEffect(key1 = true) {
-        kotlinx.coroutines.delay(3000) // 3 seconds
+        kotlinx.coroutines.delay(SPLASH_DISPLAY_DURATION_MS) // 3 seconds
         onSplashComplete()
     }
     Box(
@@ -49,7 +52,7 @@ fun MovieAppSplashScreen(
         ) {
             // App title
             Text(
-                text = "Movie App",
+                text = stringResource(R.string.app_title),
                 fontSize = Typography32,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
@@ -60,7 +63,7 @@ fun MovieAppSplashScreen(
 
             // Subtitle
             Text(
-                text = "Discover new films from TMDB",
+                text = stringResource(R.string.splash_subtitle),
                 fontSize = Typography16,
                 color = TextSecondary,
                 fontFamily = FontFamily.Default

@@ -10,8 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.tmdbai.data.model.UiConfiguration
-import com.example.tmdbai.ui.theme.Alpha12
-import com.example.tmdbai.ui.theme.Alpha38
+import com.example.tmdbai.ui.theme.Float12
+import com.example.tmdbai.ui.theme.Float38
 import com.example.tmdbai.ui.theme.Dimens16
 import com.example.tmdbai.ui.theme.Dimens8
 
@@ -59,8 +59,8 @@ fun ConfigurableButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = buttonColor,
             contentColor = textColor,
-            disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = Alpha12),
-            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = Alpha38)
+            disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = Float12),
+            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = Float38)
         ),
         shape = RoundedCornerShape(cornerRadius)
     ) {

@@ -26,6 +26,7 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -53,9 +54,18 @@ import com.example.tmdbai.presentation.movieslist.MoviesListState
 import com.example.tmdbai.presentation.movieslist.MoviesListViewModel
 import com.example.tmdbai.ui.components.ConfigurableMovieCard
 import com.example.tmdbai.ui.components.PullToReloadArrow
+import com.example.tmdbai.ui.theme.Dimens8
+import com.example.tmdbai.ui.theme.Dimens12
+import com.example.tmdbai.ui.theme.Dimens16
+import com.example.tmdbai.ui.theme.Dimens88
+import com.example.tmdbai.ui.theme.Dimens100
+import com.example.tmdbai.ui.theme.Float02
 import com.example.tmdbai.ui.theme.SplashBackground
 import com.example.tmdbai.ui.theme.TmdbAiTheme
 import kotlinx.coroutines.launch
+
+private const val SWIPE_THRESHOLD = 50
+private const val SNACKBAR_DEBOUNCE_MS = 2000
 
 @Composable
 fun MoviesListScreen(
@@ -101,7 +111,7 @@ private fun MoviesListContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp)
+                .padding(start = Dimens16, end = Dimens16)
         ) {
             // Content
             when {
@@ -118,7 +128,7 @@ private fun MoviesListContent(
                                 color = Color.White,
                                 style = MaterialTheme.typography.headlineMedium
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(Dimens16))
                             CircularProgressIndicator(
                                 color = Color.White
                             )
@@ -135,26 +145,26 @@ private fun MoviesListContent(
                             modifier = Modifier.verticalScroll(rememberScrollState()),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Spacer(modifier = Modifier.height(100.dp))
+                            Spacer(modifier = Modifier.height(Dimens100))
                             Text(
                                 text = stringResource(R.string.error_generic),
                                 color = Color.White,
                                 style = MaterialTheme.typography.headlineLarge
                             )
                             Text(
-                                text = "movie details",
+                                text = stringResource(R.string.movie_details),
                                 color = Color.White,
                                 style = MaterialTheme.typography.headlineLarge
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(Dimens16))
                             PullToReloadArrow()
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(Dimens16))
                             Text(
-                                text = "Pull to reload",
+                                text = stringResource(R.string.pull_to_reload),
                                 color = Color.White,
                                 style = MaterialTheme.typography.headlineMedium
                             )
-                            Spacer(modifier = Modifier.height(100.dp))
+                            Spacer(modifier = Modifier.height(Dimens100))
                         }
                     }
                 }
@@ -210,6 +220,7 @@ private fun MoviesGrid(
     var showPaginationControls by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     var lastSnackbarTime by remember { mutableStateOf(0L) }
+    val lastPageMessage = stringResource(R.string.last_page_message)
 
     // Track scroll position to show pagination controls when at bottom
     LaunchedEffect(listState.layoutInfo) {
@@ -233,25 +244,25 @@ private fun MoviesGrid(
                         onDragEnd = { },
                         onDrag = { _, dragAmount ->
                             // Swipe right (positive X) = Previous page
-                            if (dragAmount.x > 50) { // Swipe right threshold
+                            if (dragAmount.x > SWIPE_THRESHOLD) { // Swipe right threshold
                                 if (pagination?.hasPrevious == true) {
                                     onPreviousPage()
                                 }
                                 // If it's first page, do nothing
                             }
                             // Swipe left (negative X) = Next page
-                            else if (dragAmount.x < -50) { // Swipe left threshold
+                            else if (dragAmount.x < -SWIPE_THRESHOLD) { // Swipe left threshold
                                 if (pagination?.hasNext == true) {
                                     onNextPage()
                                 } else {
                                     // Show snackbar if it's the last page (with debouncing)
                                     val currentTime = System.currentTimeMillis()
-                                    if (currentTime - lastSnackbarTime > 2000) { // 2 second debounce
+                                    if (currentTime - lastSnackbarTime > SNACKBAR_DEBOUNCE_MS) { // 2 second debounce
                                         lastSnackbarTime = currentTime
                                         coroutineScope.launch {
                                             snackbarHostState.showSnackbar(
-                                                message = "This is the last available page",
-                                                duration = androidx.compose.material3.SnackbarDuration.Short
+                                                message = lastPageMessage,
+                                                duration = SnackbarDuration.Short
                                             )
                                         }
                                     }
@@ -260,10 +271,10 @@ private fun MoviesGrid(
                         }
                     )
                 },
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(Dimens16),
             contentPadding = PaddingValues(
-                top = 8.dp,
-                bottom = if (showPaginationControls) 88.dp else 8.dp
+                top = Dimens8,
+                bottom = if (showPaginationControls) Dimens88 else Dimens8
             )
         ) {
             // Add "Popular" title at the top
@@ -271,11 +282,11 @@ private fun MoviesGrid(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp),
+                        .padding(vertical = Dimens16),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Popular",
+                        text = stringResource(R.string.popular_title),
                         style = MaterialTheme.typography.headlineMedium,
                         color = Color.White
                     )
@@ -298,7 +309,7 @@ private fun MoviesGrid(
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
                     .background(SplashBackground)
-                    .padding(16.dp)
+                    .padding(Dimens16)
             ) {
                 PaginationControls(
                     pagination = pagination!!,
@@ -319,11 +330,11 @@ private fun PaginationControls(
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(Dimens12)
     ) {
         // Page info
         Text(
-            text = "Page ${pagination.page} of ${pagination.totalPages}",
+            text = stringResource(R.string.page_info, pagination.page, pagination.totalPages),
             color = Color.White,
             style = MaterialTheme.typography.bodyMedium
         )
@@ -338,7 +349,7 @@ private fun PaginationControls(
                 androidx.compose.material3.Button(
                     onClick = onPreviousPage,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White.copy(alpha = 0.2f)
+                        containerColor = Color.White.copy(alpha = Float02)
                     )
                 ) {
                     Text(
@@ -347,7 +358,7 @@ private fun PaginationControls(
                     )
                 }
             } else {
-                Spacer(modifier = Modifier.width(100.dp))
+                Spacer(modifier = Modifier.width(Dimens100))
             }
 
             // Next button
@@ -355,7 +366,7 @@ private fun PaginationControls(
                 androidx.compose.material3.Button(
                     onClick = onNextPage,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White.copy(alpha = 0.2f)
+                        containerColor = Color.White.copy(alpha = Float02)
                     )
                 ) {
                     Text(
@@ -364,7 +375,7 @@ private fun PaginationControls(
                     )
                 }
             } else {
-                Spacer(modifier = Modifier.width(100.dp))
+                Spacer(modifier = Modifier.width(Dimens100))
             }
         }
     }
@@ -384,9 +395,9 @@ private fun EmptyState() {
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Dimens8))
             Text(
-                text = "Pull to refresh to try again",
+                text = stringResource(R.string.pull_to_refresh_try_again),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

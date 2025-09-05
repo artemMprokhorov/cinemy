@@ -163,9 +163,10 @@ Box(
 
 5. **UI Layer Constants Rules**
    - **Dimensions**: Все размеры (16.dp, 8.dp, etc.) → `Dimens.kt`
-   - **Alpha Values**: Все прозрачности (0.2f, 0.7f, etc.) → `Alpha.kt`
+   - **Float Values**: Все float значения (0.1f, 0.7f, 2.0f, etc.) → `Floats.kt`
    - **UI Text**: Все пользовательские строки → `strings.xml`
-   - **URLs/Paths**: Все URL и пути → `BuildConfig.kt`
+   - **Image URLs**: Все URL изображений → `ImageConfig.kt`
+   - **UI Constants**: Числовые константы (пороги, лимиты) → `UIConstants.kt`
    - **No Hardcoded Values**: Никаких hardcoded значений в UI компонентах
 
 #### 🔤 Naming Conventions
@@ -248,8 +249,18 @@ Box(
         .height(Dimens200)
 )
 
-// ✅ Правильно - используйте Alpha.kt
-Color.White.copy(alpha = Alpha.Alpha02)
+// ✅ Правильно - используйте Floats.kt
+Color.White.copy(alpha = Float02)
+val centerX = size / Float2
+val progress = state.progress.coerceIn(Float0, Float10)
+
+// ✅ Правильно - используйте ImageConfig.kt
+val imageUrl = ImageConfig.buildBackdropUrl(movie.backdropPath)
+
+// ✅ Правильно - используйте UIConstants.kt
+if (movie.popularity > UIConstants.POPULARITY_THRESHOLD) {
+    // Show popularity
+}
 
 // ✅ Правильно - используйте strings.xml
 Text(text = stringResource(R.string.no_image))

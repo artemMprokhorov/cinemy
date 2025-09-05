@@ -21,6 +21,7 @@
 | **ViewModels** | ✅ | 85% | Полная структура с бизнес-логикой |
 | **UI Screens** | ✅ | 95% | Полнофункциональные экраны с pull-to-refresh и edge-to-edge |
 | **Constants System** | ✅ | 100% | Все hardcoded значения вынесены в константы |
+| **UI Layer Constants** | ✅ | 100% | Floats.kt, Dimens.kt, ImageConfig.kt, UIConstants.kt |
 | **Build Variants** | ✅ | 100% | dummyDebug, prodDebug, prodRelease |
 | **Mock Data System** | ✅ | 100% | Полная система mock данных из assets |
 | **Edge-to-Edge Display** | ✅ | 100% | Исправлена поддержка edge-to-edge на всех версиях Android |

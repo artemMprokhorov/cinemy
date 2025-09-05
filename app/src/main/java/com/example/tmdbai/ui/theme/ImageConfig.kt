@@ -1,5 +1,7 @@
 package com.example.tmdbai.ui.theme
 
+import com.example.tmdbai.BuildConfig
+
 /**
  * Image configuration constants for UI layer
  * Contains URLs and configuration values that should not be hardcoded
@@ -10,7 +12,7 @@ object ImageConfig {
      * TMDB Image API configuration
      */
     object TmdbImages {
-        const val BASE_URL = "https://image.tmdb.org/t/p/"
+        val BASE_URL = BuildConfig.TMDB_IMAGE_BASE_URL
         const val BACKDROP_SIZE = "w500"
         const val POSTER_SIZE = "w500"
         const val PROFILE_SIZE = "w185"

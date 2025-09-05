@@ -35,9 +35,13 @@ import com.example.tmdbai.ui.theme.Dimens2
 import com.example.tmdbai.ui.theme.Dimens4
 import com.example.tmdbai.ui.theme.Dimens8
 import com.example.tmdbai.ui.theme.ImageConfig
-import com.example.tmdbai.ui.theme.Alpha05
-import com.example.tmdbai.ui.theme.Alpha06
-import com.example.tmdbai.ui.theme.Alpha07
+import com.example.tmdbai.ui.theme.Float05
+import com.example.tmdbai.ui.theme.Float06
+import com.example.tmdbai.ui.theme.Float07
+
+private const val POPULARITY_THRESHOLD = 0.0
+private const val MAX_LINES_TITLE = 2
+private const val MAX_LINES_DESCRIPTION = 3
 
 /**
  * Configurable movie card component that supports server-driven styling
@@ -148,7 +152,7 @@ fun ConfigurableMovieCard(
                 style = MaterialTheme.typography.titleMedium,
                 uiConfig = uiConfig,
                 color = textColor,
-                maxLines = 2,
+                maxLines = MAX_LINES_TITLE,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -159,8 +163,8 @@ fun ConfigurableMovieCard(
                 text = movie.description,
                 style = MaterialTheme.typography.bodySmall,
                 uiConfig = uiConfig,
-                color = textColor.copy(alpha = Alpha07),
-                maxLines = 3,
+                color = textColor.copy(alpha = Float07),
+                maxLines = MAX_LINES_DESCRIPTION,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -178,7 +182,7 @@ fun ConfigurableMovieCard(
                         text = movie.releaseDate,
                         style = MaterialTheme.typography.labelSmall,
                         uiConfig = uiConfig,
-                        color = textColor.copy(alpha = Alpha06)
+                        color = textColor.copy(alpha = Float06)
                     )
                 }
 
@@ -189,7 +193,7 @@ fun ConfigurableMovieCard(
                         shape = RoundedCornerShape(Dimens4)
                     ) {
                         ConfigurableText(
-                            text = "18+",
+                            text = stringResource(R.string.adult_content_indicator),
                             style = MaterialTheme.typography.labelSmall,
                             uiConfig = uiConfig,
                             color = Color.White,
@@ -200,13 +204,13 @@ fun ConfigurableMovieCard(
             }
 
             // Popularity indicator
-            if (movie.popularity > 0) {
+            if (movie.popularity > POPULARITY_THRESHOLD) {
                 Spacer(modifier = Modifier.height(Dimens4))
                 ConfigurableText(
-                    text = "Popularity: ${String.format("%.1f", movie.popularity)}",
+                    text = stringResource(R.string.popularity_label, movie.popularity),
                     style = MaterialTheme.typography.labelSmall,
                     uiConfig = uiConfig,
-                    color = textColor.copy(alpha = Alpha05)
+                    color = textColor.copy(alpha = Float05)
                 )
             }
         }

@@ -231,12 +231,23 @@ User Action → Intent → ViewModel → Repository → MCP Client
 
 ## 📋 Changelog
 
-### **v2.3.1** - Edge-to-Edge Display Fix
+### **v2.3.1** - UI Layer Constants Refactoring
 **Date**: December 2024  
 **Status**: ✅ **COMPLETED**
 
-#### 🎨 **UI/UX Improvements**
-- **Edge-to-Edge Display**: Fixed edge-to-edge implementation to work on all supported Android versions
+#### 🎨 **UI Layer Constants System**
+- **Floats.kt**: Created comprehensive float constants file (Float0, Float01, Float02, etc.)
+- **Alpha.kt → Floats.kt**: Renamed and expanded alpha values to cover all float calculations
+- **ImageConfig.kt**: Centralized TMDB image URL configuration (renamed from BuildConfig.kt)
+- **UIConstants.kt**: Added animation constants and UI behavior constants
+- **String Resources**: Extracted animation labels and UI text to strings.xml
+
+#### 🔧 **Component Refactoring**
+- **PullToReloadIndicator**: All hardcoded float values extracted to constants
+- **ConfigurableMovieCard**: Dimensions, alpha values, and UI text extracted to constants
+- **ConfigurableButton**: All hardcoded values replaced with constants
+- **ConfigurableText**: TextType enum default texts moved to string resources
+- **Edge-to-Edge**: Applied systemBarsPadding() to main UI screens
 - **VersionUtils Update**: Changed API requirement from Android 14+ (API 34) to Android 5+ (API 21)
 - **System Bars Padding**: Added proper `systemBarsPadding()` to all main UI screens
 - **Status Bar Integration**: Content now properly extends behind status bar with correct padding
@@ -316,6 +327,25 @@ User Action → Intent → ViewModel → Repository → MCP Client
 - **Mock Data Assets**: Enhanced dummy version with movies from JSON assets
 - **Build Variants**: Simplified to dummyDebug, prodDebug, prodRelease
 - **Debug Logging**: Added pull-to-refresh trigger logging
+
+## 🎨 UI Layer Constants System
+
+### 📐 **Comprehensive Constants Architecture**
+The project implements a complete constants system for the UI layer to eliminate hardcoded values:
+
+#### **Constants Files:**
+- **`Floats.kt`**: All float values (Float0, Float01, Float02, Float03, etc.)
+- **`Dimens.kt`**: All dimension values (Dimens2, Dimens4, Dimens8, Dimens16, etc.)
+- **`ImageConfig.kt`**: TMDB image URL configuration and helper functions
+- **`UIConstants.kt`**: UI behavior constants, animation durations, and thresholds
+- **`strings.xml`**: All UI text for internationalization
+
+#### **Benefits:**
+- **No Hardcoded Values**: Complete elimination of magic numbers and strings
+- **Maintainability**: Centralized constants for easy updates
+- **Consistency**: Uniform naming conventions across the codebase
+- **Internationalization**: All UI text properly externalized
+- **Type Safety**: Compile-time constants for better performance
 
 ## 🎨 UI/UX особенности
 

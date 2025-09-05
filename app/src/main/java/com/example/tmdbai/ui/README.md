@@ -20,7 +20,7 @@ ui/
 ├── splash/                      # Splash screen
 │   └── Splash.kt               # Application splash screen
 └── theme/                       # UI theming system
-    ├── Alpha.kt                # Alpha values
+    ├── Floats.kt               # Float values
     ├── Color.kt                # Color definitions
     ├── Dimens.kt               # Dimension constants
     ├── Theme.kt                # Material3 theme configuration
