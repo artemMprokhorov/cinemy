@@ -3,7 +3,6 @@ package com.example.tmdbai.presentation.movieslist
 import com.example.tmdbai.data.model.Movie
 import com.example.tmdbai.data.model.UiConfiguration
 import com.example.tmdbai.data.model.Pagination
-import com.example.tmdbai.data.model.SearchInfo
 import com.example.tmdbai.data.model.Meta
 
 /**
@@ -18,12 +17,6 @@ data class MoviesListState(
     val currentPage: Int = 1,
     val hasMore: Boolean = true,
     
-    // Search functionality
-    val searchQuery: String = "",
-    val isSearching: Boolean = false,
-    val searchMetadata: SearchInfo? = null,
-    val screenMode: ScreenMode = ScreenMode.POPULAR,
-    
     // NEW: Connection and data source status
     val isUsingMockData: Boolean = false,
     val connectionStatus: ConnectionStatus = ConnectionStatus.Unknown,
@@ -36,10 +29,6 @@ data class MoviesListState(
     val uiConfig: UiConfiguration? = null,
     val meta: Meta? = null
 ) {
-    enum class ScreenMode {
-        POPULAR, SEARCH
-    }
-    
     enum class ConnectionStatus {
         Unknown,
         Connected,      // Real backend working

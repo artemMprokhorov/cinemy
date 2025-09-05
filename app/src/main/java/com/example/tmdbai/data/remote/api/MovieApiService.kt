@@ -8,7 +8,6 @@ interface MovieApiService {
     suspend fun getPopularMovies(page: Int = 1): McpResponseDto<McpMovieListResponseDto>
     suspend fun getTopRatedMovies(page: Int = 1): McpResponseDto<McpMovieListResponseDto>
     suspend fun getNowPlayingMovies(page: Int = 1): McpResponseDto<McpMovieListResponseDto>
-    suspend fun searchMovies(query: String, page: Int = 1): McpResponseDto<McpMovieListResponseDto>
     suspend fun getMovieDetails(movieId: Int): McpResponseDto<MovieDetailsDto>
     suspend fun getMovieRecommendations(movieId: Int, page: Int = 1): McpResponseDto<McpMovieListResponseDto>
 }

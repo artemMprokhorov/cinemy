@@ -1,5 +1,6 @@
 package com.example.tmdbai.data.mcp
 
+import android.content.Context
 import com.example.tmdbai.data.remote.api.MovieApiService
 import com.example.tmdbai.data.remote.dto.*
 import com.example.tmdbai.data.model.*
@@ -9,10 +10,10 @@ import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import java.io.IOException
 
-class McpClient : MovieApiService {
+class McpClient(private val context: Context) : MovieApiService {
     
     private val gson = Gson()
-    private val mcpHttpClient = McpHttpClient()
+    private val mcpHttpClient = McpHttpClient(context)
     
     override suspend fun getPopularMovies(page: Int): McpResponseDto<McpMovieListResponseDto> {
         val request = McpRequest(
@@ -98,64 +99,6 @@ class McpClient : MovieApiService {
         }
     }
     
-    override suspend fun searchMovies(query: String, page: Int): McpResponseDto<McpMovieListResponseDto> {
-        val request = McpRequest(
-            method = "searchMovies",
-            params = mapOf(
-                "query" to query,
-                "page" to page.toString()
-            )
-        )
-        
-        val response = mcpHttpClient.sendRequest<Map<String, Any>>(request)
-        
-        return if (response.success && response.data != null) {
-            // Convert the response data to DTO format
-            val data = response.data
-            val movies = (data["movies"] as? List<Map<String, Any>>)?.map { movieData ->
-                MovieDto(
-                    id = (movieData["id"] as? Number)?.toInt() ?: 0,
-                    title = movieData["title"] as? String ?: "",
-                    description = movieData["description"] as? String ?: "",
-                    posterPath = movieData["posterPath"] as? String,
-                    backdropPath = movieData["backdropPath"] as? String,
-                    rating = (movieData["rating"] as? Number)?.toDouble() ?: 0.0,
-                    voteCount = (movieData["voteCount"] as? Number)?.toInt() ?: 0,
-                    releaseDate = movieData["releaseDate"] as? String ?: "",
-                    genreIds = (movieData["genreIds"] as? List<Number>)?.map { it.toInt() } ?: emptyList(),
-                    popularity = (movieData["popularity"] as? Number)?.toDouble() ?: 0.0,
-                    adult = movieData["adult"] as? Boolean ?: false
-                )
-            } ?: emptyList()
-            
-            val paginationData = data["pagination"] as? Map<String, Any>
-            val pagination = PaginationDto(
-                page = (paginationData?.get("page") as? Number)?.toInt() ?: page,
-                totalPages = (paginationData?.get("totalPages") as? Number)?.toInt() ?: 1,
-                totalResults = (paginationData?.get("totalResults") as? Number)?.toInt() ?: 0,
-                hasNext = paginationData?.get("hasNext") as? Boolean ?: false,
-                hasPrevious = paginationData?.get("hasPrevious") as? Boolean ?: false
-            )
-            
-            val searchQuery = data["searchQuery"] as? String ?: query
-            
-            McpResponseDto(
-                success = true,
-                data = McpMovieListResponseDto(movies, pagination, searchQuery),
-                uiConfig = generateMockUiConfig(),
-                error = null,
-                meta = generateMockMeta()
-            )
-        } else {
-            McpResponseDto(
-                success = false,
-                data = null,
-                uiConfig = generateMockUiConfig(),
-                error = response.error ?: "Failed to search movies",
-                meta = generateMockMeta()
-            )
-        }
-    }
     
     override suspend fun getMovieDetails(movieId: Int): McpResponseDto<MovieDetailsDto> {
         val request = McpRequest(
@@ -408,65 +351,6 @@ class McpClient : MovieApiService {
         }
     }
     
-    /**
-     * Business method: Search movies using MCP HTTP client
-     */
-    suspend fun searchMoviesViaMcp(query: String, page: Int): Result<MovieListResponse> {
-        return runCatching {
-            val request = McpRequest(
-                method = "searchMovies",
-                params = mapOf(
-                    "query" to query,
-                    "page" to page.toString()
-                )
-            )
-            
-            val response = mcpHttpClient.sendRequest<Map<String, Any>>(request)
-            
-            if (response.success && response.data != null) {
-                val data = response.data
-                val movies = (data["movies"] as? List<Map<String, Any>>)?.map { movieData ->
-                    MovieDto(
-                        id = (movieData["id"] as? Number)?.toInt() ?: 0,
-                        title = movieData["title"] as? String ?: "",
-                        description = movieData["description"] as? String ?: "",
-                        posterPath = movieData["posterPath"] as? String,
-                        backdropPath = movieData["backdropPath"] as? String,
-                        rating = (movieData["rating"] as? Number)?.toDouble() ?: 0.0,
-                        voteCount = (movieData["voteCount"] as? Number)?.toInt() ?: 0,
-                        releaseDate = movieData["releaseDate"] as? String ?: "",
-                        genreIds = (movieData["genreIds"] as? List<Number>)?.map { it.toInt() } ?: emptyList(),
-                        popularity = (movieData["popularity"] as? Number)?.toDouble() ?: 0.0,
-                        adult = movieData["adult"] as? Boolean ?: false
-                    )
-                } ?: emptyList()
-                
-                val paginationData = data["pagination"] as? Map<String, Any>
-                val pagination = PaginationDto(
-                    page = (paginationData?.get("page") as? Number)?.toInt() ?: page,
-                    totalPages = (paginationData?.get("totalPages") as? Number)?.toInt() ?: 1,
-                    totalResults = (paginationData?.get("totalResults") as? Number)?.toInt() ?: 0,
-                    hasNext = paginationData?.get("hasNext") as? Boolean ?: false,
-                    hasPrevious = paginationData?.get("hasPrevious") as? Boolean ?: false
-                )
-                
-                val searchQuery = data["searchQuery"] as? String ?: query
-                
-                val movieListResponse = MovieMapper.mapMcpMovieListResponseDtoToMovieListResponse(
-                    McpMovieListResponseDto(movies, pagination, searchQuery)
-                )
-                
-                Result.Success(
-                    data = movieListResponse,
-                    uiConfig = null
-                )
-            } else {
-                Result.Error(response.error ?: "Failed to search movies")
-            }
-        }.getOrElse { exception ->
-            Result.Error("Error searching movies: ${exception.message ?: "Unknown error"}")
-        }
-    }
     
     /**
      * Clean up resources

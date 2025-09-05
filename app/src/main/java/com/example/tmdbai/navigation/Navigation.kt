@@ -6,9 +6,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.tmdbai.presentation.moviedetail.MovieDetailViewModel
+import com.example.tmdbai.presentation.movieslist.MoviesListViewModel
 import com.example.tmdbai.ui.moviedetail.MovieDetailScreen
 import com.example.tmdbai.ui.movieslist.MoviesListScreen
 import com.example.tmdbai.ui.splash.MovieAppSplashScreen
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
@@ -27,13 +30,11 @@ fun AppNavigation(navController: NavHostController) {
         }
 
         composable(Screen.MoviesList.route) {
+            val moviesListViewModel: MoviesListViewModel = koinViewModel()
             MoviesListScreen(
-                onMovieClick = { movieId ->
-                    navController.navigate(Screen.MovieDetail(movieId).createRoute())
-                },
-                onBackPressed = {
-                    // Close the app when back is pressed on List screen
-                    android.os.Process.killProcess(android.os.Process.myPid())
+                viewModel = moviesListViewModel,
+                onMovieClick = { movie ->
+                    navController.navigate(Screen.MovieDetail(movie.id).createRoute())
                 }
             )
         }
@@ -47,8 +48,10 @@ fun AppNavigation(navController: NavHostController) {
             )
         ) { backStackEntry ->
             val movieId = backStackEntry.arguments?.getInt("movieId") ?: 1
+            val movieDetailViewModel: MovieDetailViewModel = koinViewModel()
             MovieDetailScreen(
                 movieId = movieId,
+                viewModel = movieDetailViewModel,
                 onBackClick = {
                     navController.popBackStack()
                 }

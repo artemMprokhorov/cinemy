@@ -1,5 +1,6 @@
 package com.example.tmdbai.data.mcp
 
+import android.content.Context
 import android.util.Log
 import com.example.tmdbai.BuildConfig
 import com.example.tmdbai.data.mcp.models.McpRequest
@@ -13,8 +14,9 @@ import io.ktor.http.*
 import kotlinx.coroutines.delay
 import org.json.JSONObject
 import org.json.JSONArray
+import java.io.IOException
 
-class McpHttpClient {
+class McpHttpClient(private val context: Context) {
     
     private val httpClient = HttpClient(Android) {
         install(HttpTimeout) {
@@ -140,14 +142,27 @@ class McpHttpClient {
         // Simulate realistic network delay only in mock mode
         delay(300 + (Math.random() * 500).toLong())
         
-        // Return mock response based on provided contracts
+        // Check if we should use assets data (dummy config)
+        val useAssetsData = BuildConfig.FLAVOR_NAME == "Dummy"
+        
         @Suppress("UNCHECKED_CAST")
         return when (request.method) {
-            "getPopularMovies" -> createMockPopularResponse() as McpResponse<T>
-            "searchMovies" -> createMockSearchResponse(request.params["query"] ?: "") as McpResponse<T>
-            "getMovieDetails" -> createMockDetailsResponse(
-                request.params["movieId"]?.toIntOrNull() ?: 1
-            ) as McpResponse<T>
+            "getPopularMovies" -> {
+                if (useAssetsData) {
+                    loadMockDataFromAssets("mock_movies.json") as McpResponse<T>
+                } else {
+                    createMockPopularResponse() as McpResponse<T>
+                }
+            }
+            "getMovieDetails" -> {
+                if (useAssetsData) {
+                    loadMockDataFromAssets("mock_movie_details.json") as McpResponse<T>
+                } else {
+                    createMockDetailsResponse(
+                        request.params["movieId"]?.toIntOrNull() ?: 1
+                    ) as McpResponse<T>
+                }
+            }
             else -> McpResponse(
                 success = false,
                 data = null,
@@ -191,39 +206,6 @@ class McpHttpClient {
         )
     }
 
-    private fun createMockSearchResponse(query: String): McpResponse<Any> {
-        // Use structure from searchMovies.rtf
-        return McpResponse(
-            success = true,
-            data = mapOf(
-                "movies" to listOf(
-                    mapOf(
-                        "id" to 1924,
-                        "title" to "Superman",
-                        "description" to "Mild-mannered Clark Kent works as a reporter at the Daily Planet alongside his crush, Lois Lane.",
-                        "posterPath" to "/d7px1FQxW4tngdACVRsCSaZq0Xl.jpg",
-                        "backdropPath" to "/5PfHGXosySGs0l1JfeREspy3v6G.jpg",
-                        "rating" to 7.153,
-                        "voteCount" to 4050,
-                        "releaseDate" to "1978-12-14",
-                        "genreIds" to listOf(878, 28, 12),
-                        "popularity" to 10.2992,
-                        "adult" to false
-                    )
-                ),
-                "pagination" to mapOf(
-                    "page" to 1,
-                    "totalPages" to 11,
-                    "totalResults" to 211,
-                    "hasNext" to true,
-                    "hasPrevious" to false
-                ),
-                "searchQuery" to query
-            ),
-            error = null,
-            message = "Mock search results for: $query"
-        )
-    }
 
     private fun createMockDetailsResponse(movieId: Int): McpResponse<Any> {
         // Use structure from Get Movie Details.rtf
@@ -314,4 +296,28 @@ class McpHttpClient {
             else -> value
         }
     }
+    
+    private fun loadMockDataFromAssets(fileName: String): McpResponse<Any> {
+        return try {
+            Log.d("MCP", "Loading mock data from assets: $fileName")
+            val jsonString = context.assets.open(fileName).bufferedReader().use { it.readText() }
+            val jsonResponse = parseJsonResponse(jsonString)
+            
+            McpResponse<Any>(
+                success = jsonResponse["success"] as? Boolean ?: true,
+                data = jsonResponse["data"],
+                error = jsonResponse["error"] as? String,
+                message = "Mock data loaded from assets: $fileName"
+            )
+        } catch (e: IOException) {
+            Log.e("MCP", "Failed to load mock data from assets: $fileName", e)
+            McpResponse<Any>(
+                success = false,
+                data = null,
+                error = "Failed to load mock data from assets: ${e.message}",
+                message = "Asset loading failed"
+            )
+        }
+    }
+    
 }

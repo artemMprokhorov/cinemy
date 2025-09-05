@@ -27,23 +27,6 @@ class MovieRepositoryImpl(
         }
     }
     
-    override suspend fun searchMovies(query: String, page: Int): Result<MovieListResponse> {
-        return runCatching {
-            val response = mcpClient.searchMoviesViaMcp(query, page)
-            when (response) {
-                is Result.Success -> {
-                    Result.Success(
-                        data = response.data,
-                        uiConfig = response.uiConfig
-                    )
-                }
-                is Result.Error -> Result.Error(response.message, response.uiConfig)
-                is Result.Loading -> Result.Loading
-            }
-        }.getOrElse { exception ->
-            Result.Error("Network error: ${exception.message}")
-        }
-    }
     
     override suspend fun getMovieDetails(movieId: Int): Result<MovieDetailsResponse> {
         return runCatching {

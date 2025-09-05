@@ -12,14 +12,15 @@ val dataModule = module {
     
     // MCP HTTP Client
     single<McpHttpClient> { 
-        McpHttpClient().also {
+        McpHttpClient(get()).also {
             Log.d("DI", "McpHttpClient created - USE_MOCK_DATA: ${BuildConfig.USE_MOCK_DATA}")
             Log.d("DI", "MCP_SERVER_URL: ${BuildConfig.MCP_SERVER_URL}")
+            Log.d("DI", "FLAVOR_NAME: ${BuildConfig.FLAVOR_NAME}")
         }
     }
     
     // MCP Client
-    single<McpClient> { McpClient() }
+    single<McpClient> { McpClient(get()) }
     
     // Repository
     single<MovieRepository> { MovieRepositoryImpl(get()) }

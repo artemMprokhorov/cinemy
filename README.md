@@ -128,12 +128,16 @@ TmdbAi - это современное Android-приложение для по�
 git clone https://github.com/artemMprokhorov/TmdbAi.git
 cd TmdbAi
 ./gradlew installDummyDebug
+# Or manually install:
+adb install -r app/build/outputs/apk/dummy/debug/app-dummy-debug.apk
 ```
 
 #### Production Testing:
 ```bash
 # Edit app/build.gradle.kts MCP_SERVER_URL first
 ./gradlew installProdDebug
+# Or manually install:
+adb install -r app/build/outputs/apk/prod/debug/app-prod-debug.apk
 ```
 
 ### **Backend Configuration**
@@ -197,18 +201,22 @@ User Action → Intent → ViewModel → Repository → MCP Client
 - [x] Базовая архитектура MVI + Clean Architecture
 - [x] Навигация между экранами
 - [x] Splash экран
-- [x] Список фильмов (базовая структура)
-- [x] Детали фильма (базовая структура)
+- [x] Список фильмов с pull-to-refresh
+- [x] Детали фильма с pull-to-refresh
 - [x] Dependency Injection с Koin
 - [x] MCP клиент для AI интеграции
 - [x] Базовые ViewModels и States
 - [x] Material Design 3 тема
+- [x] Custom error screens с red arrow indicator
+- [x] Pull-to-refresh functionality на всех экранах
+- [x] Mock data из assets для dummy версии
+- [x] Enhanced UI/UX с consistent design
+- [x] Обработка ошибок с retry functionality
 
 ### 🚧 В разработке
 - [ ] Интеграция с TMDB API
 - [ ] AI рекомендации через MCP
 - [ ] Кэширование данных
-- [ ] Обработка ошибок
 - [ ] Unit тесты
 - [ ] UI тесты
 
@@ -222,6 +230,31 @@ User Action → Intent → ViewModel → Repository → MCP Client
 - [ ] Аналитика и метрики
 
 ## 📋 Changelog
+
+### **v2.1.0** - Enhanced UI/UX & Pull-to-Refresh
+**Date**: September 2025  
+**Status**: ✅ **COMPLETED**
+
+#### 🎨 **UI/UX Improvements**
+- **Custom Error Screens**: Large white text with split error messages
+- **Red Arrow Indicator**: Triple-sized (144dp) custom pull-to-reload arrow
+- **Pull-to-Refresh**: Full gesture support on error screens
+- **Consistent Background**: SplashBackground color across all screens
+- **Loading States**: Custom white spinner without system indicators
+- **Scrollable Error Content**: Enhanced gesture detection for pull-to-refresh
+
+#### 🔧 **Technical Enhancements**
+- **Custom PullToReloadIndicator**: Canvas-drawn red arrow with animations
+- **Gesture Handling**: Improved pull-to-refresh detection on error screens
+- **Mock Data Assets**: Enhanced dummy version with 15 movies from JSON assets
+- **Build Variants**: Simplified to dummyDebug, prodDebug, prodRelease
+- **Debug Logging**: Added pull-to-refresh trigger logging
+
+#### 🚀 **User Experience**
+- **Error Recovery**: Easy retry with pull-down gesture
+- **Visual Feedback**: Clear error messages and reload instructions
+- **Consistent Design**: Unified color scheme and typography
+- **Intuitive Gestures**: Natural pull-to-refresh interaction
 
 ### **v2.0.0** - Enhanced Data Models & API Alignment
 **Date**: September 2025  

@@ -28,8 +28,6 @@ class MoviesListViewModel(
     fun processIntent(intent: MoviesListIntent) {
         when (intent) {
             is MoviesListIntent.LoadPopularMovies -> loadPopularMovies()
-            is MoviesListIntent.SearchMovies -> searchMovies(intent.query)
-            is MoviesListIntent.ClearSearch -> clearSearch()
             is MoviesListIntent.LoadMoreMovies -> loadMoreMovies()
             is MoviesListIntent.NavigateToDetails -> {
                 // This will be handled by the UI layer for navigation
@@ -49,8 +47,7 @@ class MoviesListViewModel(
             _state.value = _state.value.copy(
                 isLoading = true,
                 error = if (isRetry) null else _state.value.error,
-                canRetry = false,
-                screenMode = MoviesListState.ScreenMode.POPULAR
+                canRetry = false
             )
 
             when (val result = movieRepository.getPopularMovies(page)) {
@@ -91,72 +88,18 @@ class MoviesListViewModel(
         }
     }
 
-    private fun searchMovies(query: String, page: Int = 1) {
-        if (query.isBlank()) return
-        
-        viewModelScope.launch {
-            _state.value = _state.value.copy(
-                isSearching = true,
-                searchQuery = query,
-                screenMode = MoviesListState.ScreenMode.SEARCH
-            )
-
-            when (val result = movieRepository.searchMovies(query, page)) {
-                is Result.Success -> {
-                    val response = result.data
-                    _state.value = _state.value.copy(
-                        isSearching = false,
-                        movies = response.data.movies,
-                        pagination = response.data.pagination,
-                        currentPage = page,
-                        hasMore = response.data.pagination.hasNext,
-                        searchMetadata = response.uiConfig.searchInfo,
-                        uiConfig = response.uiConfig,
-                        meta = response.meta
-                    )
-                }
-                is Result.Error -> {
-                    _state.value = _state.value.copy(
-                        isSearching = false,
-                        error = result.message,
-                        uiConfig = result.uiConfig
-                    )
-                }
-                is Result.Loading -> {
-                    _state.value = _state.value.copy(isSearching = true)
-                }
-            }
-        }
-    }
-
-    private fun clearSearch() {
-        _state.value = _state.value.copy(
-            searchQuery = "",
-            isSearching = false,
-            searchMetadata = null,
-            screenMode = MoviesListState.ScreenMode.POPULAR,
-            currentPage = 1
-        )
-        loadPopularMovies()
-    }
 
     private fun loadMoreMovies() {
         val currentState = _state.value
         if (currentState.hasMore && !currentState.isLoading) {
             val nextPage = currentState.currentPage + 1
-            when (currentState.screenMode) {
-                MoviesListState.ScreenMode.POPULAR -> loadPopularMovies(nextPage)
-                MoviesListState.ScreenMode.SEARCH -> searchMovies(currentState.searchQuery, nextPage)
-            }
+            loadPopularMovies(nextPage)
         }
     }
 
     private fun retryLastOperation() {
         val currentState = _state.value
-        when (currentState.screenMode) {
-            MoviesListState.ScreenMode.POPULAR -> loadPopularMovies(currentState.currentPage)
-            MoviesListState.ScreenMode.SEARCH -> searchMovies(currentState.searchQuery, currentState.currentPage)
-        }
+        loadPopularMovies(currentState.currentPage)
     }
     
     // NEW: Helper method to determine connection status

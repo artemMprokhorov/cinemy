@@ -1,0 +1,45 @@
+{
+  "success": true,
+  "data": {
+    "movieDetails": {
+      "id": 1,
+      "title": "The Dark Knight",
+      "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice. As the Joker's reign of terror escalates, Batman must confront the very nature of heroism and sacrifice in a city that has lost hope.",
+      "posterPath": "/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+      "backdropPath": "/hqkIcbrOHL86UncnHIsHVcVmzue.jpg",
+      "rating": 9.0,
+      "voteCount": 30000,
+      "releaseDate": "2008-07-18",
+      "runtime": 152,
+      "genres": [
+        {"id": 28, "name": "Action"},
+        {"id": 80, "name": "Crime"},
+        {"id": 18, "name": "Drama"}
+      ],
+      "productionCompanies": [
+        {"id": 429, "name": "DC Comics", "logoPath": "/2Tc1P3Ac8M479naPp1kYT3izLS5.png", "originCountry": "US"},
+        {"id": 923, "name": "Legendary Pictures", "logoPath": "/5UQsZrfbfG2dYJbx8DxfoTr2Bvu.png", "originCountry": "US"},
+        {"id": 9993, "name": "Warner Bros. Pictures", "logoPath": "/2Tc1P3Ac8M479naPp1kYT3izLS5.png", "originCountry": "US"}
+      ],
+      "budget": 185000000,
+      "revenue": 1004558444,
+      "status": "Released"
+    }
+  },
+  "uiConfig": {
+    "colors": {
+      "moviePosterColors": [
+        {"name": "Blue", "value": "#1976D2"},
+        {"name": "Brown", "value": "#5D4037"},
+        {"name": "Green", "value": "#388E3C"},
+        {"name": "Navy", "value": "#303F9F"},
+        {"name": "Dark Blue", "value": "#1A237E"}
+      ]
+    }
+  },
+  "meta": {
+    "timestamp": "2024-01-15T10:30:00Z",
+    "version": "1.0.0",
+    "source": "mock_data"
+  }
+}

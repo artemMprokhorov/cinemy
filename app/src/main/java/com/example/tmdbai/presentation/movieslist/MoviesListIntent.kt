@@ -10,10 +10,6 @@ sealed class MoviesListIntent : CommonIntent {
     object LoadPopularMovies : MoviesListIntent()
     object LoadMoreMovies : MoviesListIntent()
     
-    // Search intents
-    data class SearchMovies(val query: String) : MoviesListIntent()
-    object ClearSearch : MoviesListIntent()
-    
     data class NavigateToDetails(val movieId: Int) : MoviesListIntent()
     object RetryLastOperation : MoviesListIntent()
     

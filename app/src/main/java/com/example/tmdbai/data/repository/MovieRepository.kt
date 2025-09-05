@@ -8,9 +8,6 @@ interface MovieRepository {
     // Popular movies with enhanced pagination
     suspend fun getPopularMovies(page: Int = 1): Result<MovieListResponse>
     
-    // Search movies with metadata
-    suspend fun searchMovies(query: String, page: Int = 1): Result<MovieListResponse>
-    
     // Movie details with complete information
     suspend fun getMovieDetails(movieId: Int): Result<MovieDetailsResponse>
 }

@@ -1,0 +1,224 @@
+{
+  "success": true,
+  "data": {
+    "movies": [
+      {
+        "id": 1,
+        "title": "The Dark Knight",
+        "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+        "posterPath": "/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+        "backdropPath": "/hqkIcbrOHL86UncnHIsHVcVmzue.jpg",
+        "rating": 9.0,
+        "voteCount": 30000,
+        "releaseDate": "2008-07-18",
+        "genreIds": [28, 80, 18],
+        "popularity": 85.5,
+        "adult": false
+      },
+      {
+        "id": 2,
+        "title": "Inception",
+        "description": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+        "posterPath": "/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
+        "backdropPath": "/s3TBrRGB1iav7gFOCNx3H31MoES.jpg",
+        "rating": 8.8,
+        "voteCount": 25000,
+        "releaseDate": "2010-07-16",
+        "genreIds": [28, 878, 53],
+        "popularity": 78.2,
+        "adult": false
+      },
+      {
+        "id": 3,
+        "title": "Pulp Fiction",
+        "description": "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
+        "posterPath": "/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg",
+        "backdropPath": "/4cDFJr4H91XNjI2m5j6uGHcBzZN.jpg",
+        "rating": 8.9,
+        "voteCount": 28000,
+        "releaseDate": "1994-10-14",
+        "genreIds": [80, 18],
+        "popularity": 72.1,
+        "adult": false
+      },
+      {
+        "id": 4,
+        "title": "The Shawshank Redemption",
+        "description": "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
+        "posterPath": "/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
+        "backdropPath": "/iNh3BivHyg5sQRPP1KOkzguEX0H.jpg",
+        "rating": 9.3,
+        "voteCount": 32000,
+        "releaseDate": "1994-09-23",
+        "genreIds": [18, 80],
+        "popularity": 88.7,
+        "adult": false
+      },
+      {
+        "id": 5,
+        "title": "The Godfather",
+        "description": "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
+        "posterPath": "/3bhkrj58Vtu7enYsRolD1fZdja1.jpg",
+        "backdropPath": "/tmU7GeKVybMWFButWEGl2M4GeiP.jpg",
+        "rating": 9.2,
+        "voteCount": 29000,
+        "releaseDate": "1972-03-24",
+        "genreIds": [80, 18],
+        "popularity": 82.4,
+        "adult": false
+      },
+      {
+        "id": 6,
+        "title": "Forrest Gump",
+        "description": "The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal and other historical events unfold from the perspective of an Alabama man with an IQ of 75.",
+        "posterPath": "/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg",
+        "backdropPath": "/7c9UVPPiTPltouxRVY6N9uugaVA.jpg",
+        "rating": 8.8,
+        "voteCount": 26000,
+        "releaseDate": "1994-07-06",
+        "genreIds": [35, 18, 10749],
+        "popularity": 75.9,
+        "adult": false
+      },
+      {
+        "id": 7,
+        "title": "The Matrix",
+        "description": "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
+        "posterPath": "/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
+        "backdropPath": "/7u3pxc0K1wx30IWeAkEodtjUZqR.jpg",
+        "rating": 8.7,
+        "voteCount": 24000,
+        "releaseDate": "1999-03-31",
+        "genreIds": [28, 878],
+        "popularity": 69.3,
+        "adult": false
+      },
+      {
+        "id": 8,
+        "title": "Goodfellas",
+        "description": "The story of Henry Hill and his life in the mob, covering his relationship with his wife Karen Hill and his mob partners Jimmy Conway and Tommy DeVito.",
+        "posterPath": "/aKuFiU82s5ISJpGZp7YkIr3kCUd.jpg",
+        "backdropPath": "/sw7mordbZxgITU877yTp65udqY.jpg",
+        "rating": 8.7,
+        "voteCount": 22000,
+        "releaseDate": "1990-09-19",
+        "genreIds": [80, 18],
+        "popularity": 66.8,
+        "adult": false
+      },
+      {
+        "id": 9,
+        "title": "The Lord of the Rings: The Fellowship of the Ring",
+        "description": "A meek Hobbit from the Shire and eight companions set out on a journey to destroy the powerful One Ring and save Middle-earth from the Dark Lord Sauron.",
+        "posterPath": "/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg",
+        "backdropPath": "/2u7zbn8EudG6kLlBzUYqP8RyFU4.jpg",
+        "rating": 8.8,
+        "voteCount": 27000,
+        "releaseDate": "2001-12-19",
+        "genreIds": [12, 14, 28],
+        "popularity": 81.2,
+        "adult": false
+      },
+      {
+        "id": 10,
+        "title": "Fight Club",
+        "description": "An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into much more.",
+        "posterPath": "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+        "backdropPath": "/87hTDiay2N2qWyX4Dx7uLJFgJ4.jpg",
+        "rating": 8.8,
+        "voteCount": 23000,
+        "releaseDate": "1999-10-15",
+        "genreIds": [18],
+        "popularity": 73.6,
+        "adult": false
+      },
+      {
+        "id": 11,
+        "title": "The Lord of the Rings: The Return of the King",
+        "description": "Gandalf and Aragorn lead the World of Men against Sauron's army to draw his gaze from Frodo and Sam as they approach Mount Doom with the One Ring.",
+        "posterPath": "/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg",
+        "backdropPath": "/2u7zbn8EudG6kLlBzUYqP8RyFU4.jpg",
+        "rating": 8.9,
+        "voteCount": 28000,
+        "releaseDate": "2003-12-17",
+        "genreIds": [12, 14, 28],
+        "popularity": 84.1,
+        "adult": false
+      },
+      {
+        "id": 12,
+        "title": "The Godfather Part II",
+        "description": "The early life and career of Vito Corleone in 1920s New York City is portrayed, while his son, Michael, expands and tightens his grip on the family crime syndicate.",
+        "posterPath": "/hek3koDUyRQk7FIhPXsa6mT2Zc3.jpg",
+        "backdropPath": "/tmU7GeKVybMWFButWEGl2M4GeiP.jpg",
+        "rating": 9.0,
+        "voteCount": 25000,
+        "releaseDate": "1974-12-20",
+        "genreIds": [80, 18],
+        "popularity": 79.5,
+        "adult": false
+      },
+      {
+        "id": 13,
+        "title": "The Dark Knight Rises",
+        "description": "Eight years after the Joker's reign of anarchy, Batman, with the help of the enigmatic Catwoman, is forced from his exile to save Gotham City from the brutal guerrilla terrorist Bane.",
+        "posterPath": "/85cWkCVftiVs0BVey6pxX8uNmLt.jpg",
+        "backdropPath": "/hqkIcbrOHL86UncnHIsHVcVmzue.jpg",
+        "rating": 8.4,
+        "voteCount": 21000,
+        "releaseDate": "2012-07-20",
+        "genreIds": [28, 80, 18],
+        "popularity": 77.8,
+        "adult": false
+      },
+      {
+        "id": 14,
+        "title": "The Lord of the Rings: The Two Towers",
+        "description": "While Frodo and Sam edge closer to Mordor with the help of the shifty Gollum, the divided fellowship makes a stand against Sauron's new ally, Saruman, and his hordes of Isengard.",
+        "posterPath": "/5VTN0pR8gcqV3EPUHHfMGn5RUNR.jpg",
+        "backdropPath": "/2u7zbn8EudG6kLlBzUYqP8RyFU4.jpg",
+        "rating": 8.7,
+        "voteCount": 26000,
+        "releaseDate": "2002-12-18",
+        "genreIds": [12, 14, 28],
+        "popularity": 82.9,
+        "adult": false
+      },
+      {
+        "id": 15,
+        "title": "One Flew Over the Cuckoo's Nest",
+        "description": "A criminal pleads insanity and is admitted to a mental institution, where he rebels against the oppressive nurse and rallies up the scared patients.",
+        "posterPath": "/3jcbDmRFiQ83drXNOvRDeKHxS0C.jpg",
+        "backdropPath": "/iNh3BivHyg5sQRPP1KOkzguEX0H.jpg",
+        "rating": 8.7,
+        "voteCount": 20000,
+        "releaseDate": "1975-11-19",
+        "genreIds": [18],
+        "popularity": 68.4,
+        "adult": false
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "totalPages": 1,
+      "totalResults": 15,
+      "hasNext": false
+    }
+  },
+  "uiConfig": {
+    "colors": {
+      "moviePosterColors": [
+        {"name": "Blue", "value": "#1976D2"},
+        {"name": "Brown", "value": "#5D4037"},
+        {"name": "Green", "value": "#388E3C"},
+        {"name": "Navy", "value": "#303F9F"},
+        {"name": "Dark Blue", "value": "#1A237E"}
+      ]
+    }
+  },
+  "meta": {
+    "timestamp": "2024-01-15T10:30:00Z",
+    "version": "1.0.0",
+    "source": "mock_data"
+  }
+}

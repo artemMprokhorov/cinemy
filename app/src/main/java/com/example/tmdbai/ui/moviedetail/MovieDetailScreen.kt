@@ -13,19 +13,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -35,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import com.example.tmdbai.ui.theme.SplashBackground
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,452 +47,227 @@ import com.example.tmdbai.data.model.UiConfiguration
 import com.example.tmdbai.presentation.moviedetail.MovieDetailIntent
 import com.example.tmdbai.presentation.moviedetail.MovieDetailState
 import com.example.tmdbai.presentation.moviedetail.MovieDetailViewModel
-import com.example.tmdbai.ui.theme.Alpha06
-import com.example.tmdbai.ui.theme.AppBackground
-import com.example.tmdbai.ui.theme.Dimens12
-import com.example.tmdbai.ui.theme.Dimens16
-import com.example.tmdbai.ui.theme.Dimens24
-import com.example.tmdbai.ui.theme.Dimens32
-import com.example.tmdbai.ui.theme.Dimens48
-import com.example.tmdbai.ui.theme.Dimens100
-import com.example.tmdbai.ui.theme.Dimens200
-import com.example.tmdbai.ui.theme.Dimens8
-import com.example.tmdbai.ui.theme.Dimens6
-import com.example.tmdbai.ui.theme.Dimens4
-import com.example.tmdbai.ui.theme.Dimens2
-import com.example.tmdbai.ui.theme.MoviePosterBlue
-import com.example.tmdbai.ui.theme.MoviePosterBrown
-import com.example.tmdbai.ui.theme.MoviePosterDarkBlue
-import com.example.tmdbai.ui.theme.MoviePosterGreen
-import com.example.tmdbai.ui.theme.MoviePosterNavy
-import org.koin.androidx.compose.koinViewModel
-
-// Import the new server-driven UI components
-import com.example.tmdbai.ui.components.ConfigurableButton
-import com.example.tmdbai.ui.components.ConfigurableText
-import com.example.tmdbai.ui.components.ConfigurableTextByType
-import com.example.tmdbai.ui.components.TextType
+import com.example.tmdbai.ui.components.PullToReloadIndicator
+import com.example.tmdbai.ui.components.PullToReloadArrow
+import com.example.tmdbai.ui.theme.TmdbAiTheme
+import coil.compose.AsyncImage
 
 @Composable
 fun MovieDetailScreen(
     movieId: Int,
-    onBackClick: () -> Unit = {},
-    viewModel: MovieDetailViewModel = koinViewModel()
+    viewModel: MovieDetailViewModel,
+    onBackClick: () -> Unit
 ) {
-    BackHandler {
-        onBackClick()
-    }
-    
     val state by viewModel.state.collectAsState()
-    
-    // Load movie details when the screen is first displayed
+
     LaunchedEffect(movieId) {
         viewModel.processIntent(MovieDetailIntent.LoadMovieDetails(movieId))
     }
-    
+
+    BackHandler {
+        onBackClick()
+    }
+
+    MovieDetailContent(
+        state = state,
+        onBackClick = onBackClick,
+        onIntent = viewModel::processIntent
+    )
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun MovieDetailContent(
+    state: MovieDetailState,
+    onBackClick: () -> Unit,
+    onIntent: (MovieDetailIntent) -> Unit
+) {
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = state.isLoading,
+        onRefresh = { 
+            android.util.Log.d("MovieDetail", "Pull to refresh triggered")
+            onIntent(MovieDetailIntent.Retry)
+        }
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                state.uiConfig?.colors?.background ?: AppBackground
-            )
+            .background(SplashBackground)
+            .pullRefresh(pullRefreshState)
     ) {
         when {
             state.isLoading -> {
-                LoadingContent(uiConfig = state.uiConfig)
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Loading...",
+                            color = Color.White,
+                            style = MaterialTheme.typography.headlineMedium
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        CircularProgressIndicator(
+                            color = Color.White
+                        )
+                    }
+                }
             }
             state.error != null -> {
-                ErrorContent(
-                    error = state.error!!,
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        modifier = Modifier.verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(100.dp))
+                        Text(
+                            text = "Failed to fetch",
+                            color = Color.White,
+                            style = MaterialTheme.typography.headlineLarge
+                        )
+                        Text(
+                            text = "movie details",
+                            color = Color.White,
+                            style = MaterialTheme.typography.headlineLarge
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        PullToReloadArrow()
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "Pull to reload",
+                            color = Color.White,
+                            style = MaterialTheme.typography.headlineMedium
+                        )
+                        Spacer(modifier = Modifier.height(100.dp))
+                    }
+                }
+            }
+            state.movieDetails != null -> {
+                MovieDetailsContent(
+                    movieDetails = state.movieDetails,
                     uiConfig = state.uiConfig,
-                    onRetry = { viewModel.processIntent(MovieDetailIntent.Retry) },
                     onBackClick = onBackClick
                 )
             }
-            state.movieDetails != null -> {
-                            MovieDetailContent(
-                movieDetails = state.movieDetails!!,
-                uiConfig = state.uiConfig,
-                onBackClick = onBackClick
-            )
-            }
-        }
-    }
-}
-
-@Composable
-private fun LoadingContent(uiConfig: UiConfiguration? = null) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        ConfigurableTextByType(
-            textType = TextType.LOADING_TEXT,
-            uiConfig = uiConfig,
-            style = MaterialTheme.typography.headlineMedium
-        )
-    }
-}
-
-@Composable
-private fun ErrorContent(
-    error: String,
-    uiConfig: UiConfiguration?,
-    onRetry: () -> Unit,
-    onBackClick: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(Dimens32),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        // Back button at the top
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
-        ) {
-            IconButton(
-                onClick = onBackClick,
-                modifier = Modifier.size(Dimens48)
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    tint = Color.White
-                )
-            }
         }
         
-        Spacer(modifier = Modifier.height(Dimens32))
-        
-        ConfigurableText(
-            text = error,
-            style = MaterialTheme.typography.bodyLarge,
-            uiConfig = uiConfig,
-            modifier = Modifier.fillMaxWidth()
-        )
-        
-        Spacer(modifier = Modifier.height(Dimens24))
-        
-        ConfigurableButton(
-            text = uiConfig?.texts?.retryButton ?: "Retry",
-            onClick = onRetry,
-            uiConfig = uiConfig
-        )
+        // No pull refresh indicator - only custom spinner on loading screen
     }
 }
 
 @Composable
-private fun MovieDetailContent(
+private fun MovieDetailsContent(
     movieDetails: MovieDetails,
     uiConfig: UiConfiguration?,
     onBackClick: () -> Unit
 ) {
-    val posterColors = uiConfig?.colors?.moviePosterColors ?: listOf(
-        MoviePosterBlue, MoviePosterBrown, MoviePosterGreen, MoviePosterNavy, MoviePosterDarkBlue
-    )
-    val posterColor = if (posterColors.isNotEmpty()) {
-        posterColors[movieDetails.id % posterColors.size]
-    } else {
-        MoviePosterBlue // Default color if list is empty
-    }
-    
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        // Header with back button
-        Row(
+        // Movie poster
+        AsyncImage(
+            model = movieDetails.posterPath,
+            contentDescription = movieDetails.title,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens16),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    tint = Color.White
-                )
-            }
-            
-            Spacer(modifier = Modifier.width(Dimens8))
-            
-            ConfigurableText(
-                text = "Movie Details",
-                style = MaterialTheme.typography.titleLarge,
-                uiConfig = uiConfig
-            )
-        }
-        
-        // Movie Poster
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(Dimens200)
-                .padding(Dimens16)
-                .clip(RoundedCornerShape(Dimens12))
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            posterColor,
-                            posterColor.copy(alpha = Alpha06)
-                        )
-                    )
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Default.PlayArrow,
-                contentDescription = "Play",
-                modifier = Modifier.size(Dimens48),
-                tint = Color.White
-            )
-        }
-        
-        // Movie Information
+                .height(400.dp)
+                .padding(horizontal = 16.dp)
+                .clip(RoundedCornerShape(8.dp))
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Movie details
         Column(
-            modifier = Modifier.padding(Dimens16)
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             // Title
-            ConfigurableText(
+            Text(
                 text = movieDetails.title,
-                style = MaterialTheme.typography.headlineLarge,
-                uiConfig = uiConfig
+                style = MaterialTheme.typography.headlineMedium
             )
-            
-            Spacer(modifier = Modifier.height(Dimens8))
-            
-            // Rating and Release Date
+
+            // Rating
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                ConfigurableText(
-                    text = "★ ${movieDetails.rating} (${movieDetails.voteCount} votes)",
-                    style = MaterialTheme.typography.bodyMedium,
-                    uiConfig = uiConfig
+                Text(
+                    text = "Rating: ${movieDetails.rating}/10",
+                    style = MaterialTheme.typography.bodyLarge
                 )
-                
-                Spacer(modifier = Modifier.width(Dimens16))
-                
-                ConfigurableText(
-                    text = movieDetails.releaseDate,
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = "(${movieDetails.voteCount} votes)",
                     style = MaterialTheme.typography.bodyMedium,
-                    uiConfig = uiConfig
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            
-            Spacer(modifier = Modifier.height(Dimens8))
-            
-            // Runtime and Status
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                ConfigurableText(
-                    text = "Runtime: ${movieDetails.runtime} minutes",
-                    style = MaterialTheme.typography.bodyMedium,
-                    uiConfig = uiConfig
-                )
-                ConfigurableText(
-                    text = "Status: ${movieDetails.status}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    uiConfig = uiConfig
-                )
-            }
-            
-            Spacer(modifier = Modifier.height(Dimens16))
-            
-            // Description
-            ConfigurableText(
-                text = "Overview",
-                style = MaterialTheme.typography.titleLarge,
-                uiConfig = uiConfig
+
+            // Release date
+            Text(
+                text = "Release Date: ${movieDetails.releaseDate}",
+                style = MaterialTheme.typography.bodyMedium
             )
-            
-            Spacer(modifier = Modifier.height(Dimens8))
-            
-            ConfigurableText(
+
+            // Description
+            Text(
                 text = movieDetails.description,
                 style = MaterialTheme.typography.bodyMedium,
-                uiConfig = uiConfig
+                textAlign = TextAlign.Justify
             )
-            
-            Spacer(modifier = Modifier.height(Dimens24))
-            
+
             // Genres
             if (movieDetails.genres.isNotEmpty()) {
-                ConfigurableText(
-                    text = "Genres",
-                    style = MaterialTheme.typography.titleLarge,
-                    uiConfig = uiConfig
+                Text(
+                    text = "Genres: ${movieDetails.genres.joinToString(", ") { it.name }}",
+                    style = MaterialTheme.typography.bodyMedium
                 )
-                
-                Spacer(modifier = Modifier.height(Dimens8))
-                
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Dimens8)
-                ) {
-                    items(movieDetails.genres) { genre ->
-                        Card(
-                            colors = CardDefaults.cardColors(
-                                containerColor = uiConfig?.buttons?.secondaryButtonColor ?: MoviePosterDarkBlue
-                            )
-                        ) {
-                            ConfigurableText(
-                                text = genre.name,
-                                style = MaterialTheme.typography.bodySmall,
-                                uiConfig = uiConfig,
-                                modifier = Modifier.padding(horizontal = Dimens12, vertical = Dimens6)
-                            )
-                        }
-                    }
-                }
-                
-                Spacer(modifier = Modifier.height(Dimens24))
             }
-            
-            // Budget and Revenue (if available)
-            if (movieDetails.budget > 0 || movieDetails.revenue > 0) {
-                ConfigurableText(
-                    text = "Financial Information",
-                    style = MaterialTheme.typography.titleLarge,
-                    uiConfig = uiConfig
-                )
-                
-                Spacer(modifier = Modifier.height(Dimens8))
-                
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    if (movieDetails.budget > 0) {
-                        ConfigurableText(
-                            text = "Budget: $${movieDetails.budget / 1_000_000}M",
-                            style = MaterialTheme.typography.bodyMedium,
-                            uiConfig = uiConfig
-                        )
-                    }
-                    if (movieDetails.revenue > 0) {
-                        ConfigurableText(
-                            text = "Revenue: $${movieDetails.revenue / 1_000_000}M",
-                            style = MaterialTheme.typography.bodyMedium,
-                            uiConfig = uiConfig
-                        )
-                    }
-                }
-                
-                Spacer(modifier = Modifier.height(Dimens24))
-            }
-            
-            // Production Companies
-            if (movieDetails.productionCompanies.isNotEmpty()) {
-                ConfigurableText(
-                    text = "Production Companies",
-                    style = MaterialTheme.typography.titleLarge,
-                    uiConfig = uiConfig
-                )
-                
-                Spacer(modifier = Modifier.height(Dimens8))
-                
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Dimens8)
-                ) {
-                    items(movieDetails.productionCompanies) { company ->
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(Dimens8)
-                        ) {
-                            // Company logo placeholder (would need actual image loading)
-                            Box(
-                                modifier = Modifier
-                                    .size(60.dp)
-                                    .background(
-                                        uiConfig?.colors?.surface ?: Color.Gray,
-                                        RoundedCornerShape(Dimens8)
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                ConfigurableText(
-                                    text = company.name.take(2).uppercase(),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    uiConfig = uiConfig
-                                )
-                            }
-                            
-                            Spacer(modifier = Modifier.height(Dimens4))
-                            
-                            ConfigurableText(
-                                text = company.name,
-                                style = MaterialTheme.typography.bodySmall,
-                                uiConfig = uiConfig
-                            )
-                            
-                            if (company.originCountry.isNotEmpty()) {
-                                ConfigurableText(
-                                    text = company.originCountry,
-                                    style = MaterialTheme.typography.labelSmall,
-                                    uiConfig = uiConfig
-                                )
-                            }
-                        }
-                    }
-                }
-                
-                Spacer(modifier = Modifier.height(Dimens24))
-            }
-            
-            // Additional Details
-            ConfigurableText(
-                text = "Additional Details",
-                style = MaterialTheme.typography.titleLarge,
-                uiConfig = uiConfig
-            )
-            
-            Spacer(modifier = Modifier.height(Dimens8))
-            
-            DetailRow("Vote Count", movieDetails.voteCount.toString(), uiConfig)
-            DetailRow("Runtime", "${movieDetails.runtime} minutes", uiConfig)
-            DetailRow("Status", movieDetails.status, uiConfig)
-            
-            Spacer(modifier = Modifier.height(Dimens32))
-        }
-    }
-}
 
-@Composable
-private fun DetailRow(
-    label: String,
-    value: String,
-    uiConfig: UiConfiguration? = null
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = Dimens4)
-    ) {
-        ConfigurableText(
-            text = "$label:",
-            style = MaterialTheme.typography.bodyMedium,
-            uiConfig = uiConfig,
-            modifier = Modifier.width(Dimens100)
-        )
-        
-        ConfigurableText(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            uiConfig = uiConfig
-        )
+            // Runtime
+            if (movieDetails.runtime > 0) {
+                Text(
+                    text = "Runtime: ${movieDetails.runtime} minutes",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun MovieDetailScreenPreview() {
-    MovieDetailScreen(movieId = 1)
+private fun MovieDetailScreenPreview() {
+    TmdbAiTheme {
+        MovieDetailsContent(
+            movieDetails = MovieDetails(
+                id = 1,
+                title = "Sample Movie",
+                description = "This is a sample movie description that shows how the detail screen looks.",
+                posterPath = null,
+                backdropPath = null,
+                rating = 8.5,
+                voteCount = 1000,
+                releaseDate = "2023-01-01",
+                runtime = 120,
+                genres = emptyList(),
+                productionCompanies = emptyList(),
+                budget = 50000000,
+                revenue = 100000000,
+                status = "Released"
+            ),
+            uiConfig = null,
+            onBackClick = {}
+        )
+    }
 }
