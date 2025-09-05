@@ -3,11 +3,8 @@ package com.example.tmdbai.presentation.movieslist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tmdbai.BuildConfig
-import com.example.tmdbai.data.model.MovieListResponse
 import com.example.tmdbai.data.model.Result
 import com.example.tmdbai.data.repository.MovieRepository
-import com.example.tmdbai.presentation.movieslist.MoviesListIntent
-import com.example.tmdbai.presentation.movieslist.MoviesListState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,14 +29,15 @@ class MoviesListViewModel(
             is MoviesListIntent.NavigateToDetails -> {
                 // This will be handled by the UI layer for navigation
             }
+
             is MoviesListIntent.RetryLastOperation -> retryLastOperation()
-            
+
             // NEW: Connection handling cases
             is MoviesListIntent.RetryConnection,
             is MoviesListIntent.RefreshData,
             is MoviesListIntent.CheckConnectionStatus,
             is MoviesListIntent.DismissError -> processConnectionIntent(intent)
-            
+
             // NEW: Pagination navigation cases
             is MoviesListIntent.NextPage -> navigateToNextPage()
             is MoviesListIntent.PreviousPage -> navigateToPreviousPage()
@@ -63,18 +61,19 @@ class MoviesListViewModel(
                         pagination = response.data.pagination,
                         currentPage = page,
                         hasMore = response.data.pagination.hasNext,
-                        
+
                         // NEW: Connection status handling
                         isUsingMockData = false, // Will be determined by BuildConfig
                         connectionStatus = determineConnectionStatus(null),
                         lastSyncTime = System.currentTimeMillis(),
                         retryCount = 0,
                         canRetry = false,
-                        
+
                         uiConfig = response.uiConfig,
                         meta = response.meta
                     )
                 }
+
                 is Result.Error -> {
                     _state.value = _state.value.copy(
                         isLoading = false,
@@ -85,6 +84,7 @@ class MoviesListViewModel(
                         uiConfig = result.uiConfig
                     )
                 }
+
                 is Result.Loading -> {
                     _state.value = _state.value.copy(isLoading = true)
                 }
@@ -105,7 +105,7 @@ class MoviesListViewModel(
         val currentState = _state.value
         loadPopularMovies(currentState.currentPage)
     }
-    
+
     // NEW: Helper method to determine connection status
     private fun determineConnectionStatus(message: String?): MoviesListState.ConnectionStatus {
         return when {
@@ -122,16 +122,21 @@ class MoviesListViewModel(
             is MoviesListIntent.RetryConnection -> {
                 loadPopularMovies(page = 1, isRetry = true)
             }
+
             is MoviesListIntent.RefreshData -> {
-                _state.value = _state.value.copy(connectionStatus = MoviesListState.ConnectionStatus.Unknown)
+                _state.value =
+                    _state.value.copy(connectionStatus = MoviesListState.ConnectionStatus.Unknown)
                 loadPopularMovies(page = 1)
             }
+
             is MoviesListIntent.CheckConnectionStatus -> {
                 checkConnectionStatus()
             }
+
             is MoviesListIntent.DismissError -> {
                 _state.value = _state.value.copy(error = null, canRetry = false)
             }
+
             else -> {
                 // Handle other intents that shouldn't be processed here
             }
@@ -142,38 +147,42 @@ class MoviesListViewModel(
     private fun checkConnectionStatus() {
         viewModelScope.launch {
             // Quick ping to check if backend is available
-            try {
-                val result = movieRepository.getPopularMovies(1)
-                _state.value = _state.value.copy(
-                    connectionStatus = determineConnectionStatus(
-                        when (result) {
-                            is Result.Success -> null
-                            is Result.Error -> result.message
-                            else -> null
-                        }
+            runCatching {
+                movieRepository.getPopularMovies(1)
+            }.fold(
+                onSuccess = { result ->
+                    _state.value = _state.value.copy(
+                        connectionStatus = determineConnectionStatus(
+                            when (result) {
+                                is Result.Success -> null
+                                is Result.Error -> result.message
+                                else -> null
+                            }
+                        )
                     )
-                )
-            } catch (e: Exception) {
-                _state.value = _state.value.copy(
-                    connectionStatus = MoviesListState.ConnectionStatus.Disconnected
-                )
-            }
+                },
+                onFailure = { _ ->
+                    _state.value = _state.value.copy(
+                        connectionStatus = MoviesListState.ConnectionStatus.Disconnected
+                    )
+                }
+            )
         }
     }
-    
+
     private fun navigateToNextPage() {
         val currentState = _state.value
         val pagination = currentState.pagination
-        
+
         if (pagination != null && pagination.hasNext && !currentState.isLoading) {
             loadPopularMovies(pagination.page + 1)
         }
     }
-    
+
     private fun navigateToPreviousPage() {
         val currentState = _state.value
         val pagination = currentState.pagination
-        
+
         if (pagination != null && pagination.hasPrevious && !currentState.isLoading) {
             loadPopularMovies(pagination.page - 1)
         }

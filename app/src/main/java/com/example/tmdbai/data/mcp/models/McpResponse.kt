@@ -2,7 +2,7 @@ package com.example.tmdbai.data.mcp.models
 
 /**
  * Represents an MCP (Model Context Protocol) response
- * 
+ *
  * @param success Whether the request was successful
  * @param data The response data of type T
  * @param error Error message if the request failed

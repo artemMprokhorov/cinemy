@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -23,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.tmdbai.data.model.Movie
@@ -31,10 +29,10 @@ import com.example.tmdbai.data.model.UiConfiguration
 
 /**
  * Configurable movie card component that supports server-driven styling
- * 
+ *
  * This component accepts UiConfig parameters for dynamic theming while
  * falling back to Material3 defaults when no configuration is provided.
- * 
+ *
  * @param movie The movie data to display
  * @param onClick The action to perform when the card is clicked
  * @param uiConfig Optional UI configuration for dynamic styling
@@ -53,12 +51,12 @@ fun ConfigurableMovieCard(
 ) {
     // Extract color configuration from UiConfig
     val colorScheme = uiConfig?.colors
-    
+
     // Determine colors with fallback to Material3 defaults
     val cardColor = colorScheme?.surface ?: MaterialTheme.colorScheme.surface
     val textColor = colorScheme?.onSurface ?: MaterialTheme.colorScheme.onSurface
     val primaryColor = colorScheme?.primary ?: MaterialTheme.colorScheme.primary
-    
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -85,7 +83,7 @@ fun ConfigurableMovieCard(
                 // Try backdrop first, then poster
                 val imagePath = movie.backdropPath?.let { "https://image.tmdb.org/t/p/w500$it" }
                     ?: movie.posterPath?.let { "https://image.tmdb.org/t/p/w500$it" }
-                
+
                 imagePath?.let { path ->
                     AsyncImage(
                         model = path,
@@ -109,7 +107,7 @@ fun ConfigurableMovieCard(
                         )
                     }
                 }
-                
+
                 // Rating badge overlay
                 if (showRating) {
                     Surface(
@@ -129,9 +127,9 @@ fun ConfigurableMovieCard(
                     }
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             // Movie title
             ConfigurableText(
                 text = movie.title,
@@ -141,9 +139,9 @@ fun ConfigurableMovieCard(
                 maxLines = 2,
                 modifier = Modifier.fillMaxWidth()
             )
-            
+
             Spacer(modifier = Modifier.height(4.dp))
-            
+
             // Movie description
             ConfigurableText(
                 text = movie.description,
@@ -153,9 +151,9 @@ fun ConfigurableMovieCard(
                 maxLines = 3,
                 modifier = Modifier.fillMaxWidth()
             )
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             // Additional movie info
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -171,7 +169,7 @@ fun ConfigurableMovieCard(
                         color = textColor.copy(alpha = 0.6f)
                     )
                 }
-                
+
                 // Adult content indicator
                 if (movie.adult) {
                     Surface(
@@ -188,7 +186,7 @@ fun ConfigurableMovieCard(
                     }
                 }
             }
-            
+
             // Popularity indicator
             if (movie.popularity > 0) {
                 Spacer(modifier = Modifier.height(4.dp))
@@ -205,7 +203,7 @@ fun ConfigurableMovieCard(
 
 /**
  * Compact version of the movie card for list views
- * 
+ *
  * @param movie The movie data to display
  * @param onClick The action to perform when the card is clicked
  * @param uiConfig Optional UI configuration for dynamic styling

@@ -3,84 +3,84 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    
+
     <!-- Main clapperboard body -->
     <path
         android:fillColor="#3A3A3A"
-        android:pathData="M24,28 L84,28 L84,88 L24,88 Z"/>
-    
+        android:pathData="M24,28 L84,28 L84,88 L24,88 Z" />
+
     <!-- Top pattern section (clapper sticks area) -->
     <path
         android:fillColor="#2A2A2A"
-        android:pathData="M24,28 L84,28 L84,36 L24,36 Z"/>
-    
+        android:pathData="M24,28 L84,28 L84,36 L24,36 Z" />
+
     <!-- Three dots on the left (hinge/bolt) -->
     <path
         android:fillColor="#000000"
-        android:pathData="M28,30 L30,30 L30,32 L28,32 Z"/>
+        android:pathData="M28,30 L30,30 L30,32 L28,32 Z" />
     <path
         android:fillColor="#000000"
-        android:pathData="M28,33 L30,33 L30,35 L28,35 Z"/>
+        android:pathData="M28,33 L30,33 L30,35 L28,35 Z" />
     <path
         android:fillColor="#000000"
-        android:pathData="M28,36 L30,36 L30,38 L28,38 Z"/>
-    
+        android:pathData="M28,36 L30,36 L30,38 L28,38 Z" />
+
     <!-- Horizontal separator lines -->
     <path
         android:fillColor="#666666"
-        android:pathData="M28,42 L80,42 L80,43 L28,43 Z"/>
+        android:pathData="M28,42 L80,42 L80,43 L28,43 Z" />
     <path
         android:fillColor="#666666"
-        android:pathData="M28,52 L80,52 L80,53 L28,53 Z"/>
+        android:pathData="M28,52 L80,52 L80,53 L28,53 Z" />
     <path
         android:fillColor="#666666"
-        android:pathData="M28,62 L80,62 L80,63 L28,63 Z"/>
+        android:pathData="M28,62 L80,62 L80,63 L28,63 Z" />
     <path
         android:fillColor="#666666"
-        android:pathData="M28,72 L80,72 L80,73 L28,73 Z"/>
+        android:pathData="M28,72 L80,72 L80,73 L28,73 Z" />
     <path
         android:fillColor="#666666"
-        android:pathData="M28,82 L80,82 L80,83 L28,83 Z"/>
-    
+        android:pathData="M28,82 L80,82 L80,83 L28,83 Z" />
+
     <!-- Text labels (simplified as rectangles for icon clarity) -->
     <!-- PROD.NO. -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M30,38 L45,38 L45,40 L30,40 Z"/>
-    
+        android:pathData="M30,38 L45,38 L45,40 L30,40 Z" />
+
     <!-- SCENE -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M30,48 L40,48 L40,50 L30,50 Z"/>
-    
+        android:pathData="M30,48 L40,48 L40,50 L30,50 Z" />
+
     <!-- TAKE -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M50,48 L60,48 L60,50 L50,50 Z"/>
-    
+        android:pathData="M50,48 L60,48 L60,50 L50,50 Z" />
+
     <!-- ROLL -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M70,48 L78,48 L78,50 L70,50 Z"/>
-    
+        android:pathData="M70,48 L78,48 L78,50 L70,50 Z" />
+
     <!-- DATE -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M30,58 L40,58 L40,60 L30,60 Z"/>
-    
+        android:pathData="M30,58 L40,58 L40,60 L30,60 Z" />
+
     <!-- SOUND -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M70,58 L78,58 L78,60 L70,60 Z"/>
-    
+        android:pathData="M70,58 L78,58 L78,60 L70,60 Z" />
+
     <!-- PROD.CO. -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M30,68 L45,68 L45,70 L30,70 Z"/>
-    
+        android:pathData="M30,68 L45,68 L45,70 L30,70 Z" />
+
     <!-- DIRECTOR -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M30,78 L50,78 L50,80 L30,80 Z"/>
-        
+        android:pathData="M30,78 L50,78 L50,80 L30,80 Z" />
+
 </vector>

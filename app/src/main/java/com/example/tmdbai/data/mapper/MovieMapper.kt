@@ -1,41 +1,40 @@
 package com.example.tmdbai.data.mapper
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import com.example.tmdbai.data.model.Movie
-import com.example.tmdbai.data.model.MovieDetails
-import com.example.tmdbai.data.model.MovieListResponse
-import com.example.tmdbai.data.model.MovieDetailsResponse
-import com.example.tmdbai.data.model.MovieDetailsData
-import com.example.tmdbai.data.model.MovieListData
-import com.example.tmdbai.data.model.Pagination
-import com.example.tmdbai.data.model.Meta
-import com.example.tmdbai.data.model.UiConfiguration
-import com.example.tmdbai.data.model.ColorScheme
-import com.example.tmdbai.data.model.TextConfiguration
 import com.example.tmdbai.data.model.ButtonConfiguration
+import com.example.tmdbai.data.model.ColorScheme
 import com.example.tmdbai.data.model.GeminiColors
 import com.example.tmdbai.data.model.Genre
+import com.example.tmdbai.data.model.Meta
+import com.example.tmdbai.data.model.Movie
+import com.example.tmdbai.data.model.MovieDetails
+import com.example.tmdbai.data.model.MovieListData
+import com.example.tmdbai.data.model.MovieListResponse
+import com.example.tmdbai.data.model.Pagination
 import com.example.tmdbai.data.model.ProductionCompany
-import com.example.tmdbai.data.model.SearchInfo
 import com.example.tmdbai.data.model.Result
-import com.example.tmdbai.data.remote.dto.MovieDto
-import com.example.tmdbai.data.remote.dto.MovieDetailsDto
-import com.example.tmdbai.data.remote.dto.McpMovieListResponseDto
-import com.example.tmdbai.data.remote.dto.PaginationDto
-import com.example.tmdbai.data.remote.dto.MetaDto
-import com.example.tmdbai.data.remote.dto.UiConfigurationDto
-import com.example.tmdbai.data.remote.dto.ColorSchemeDto
-import com.example.tmdbai.data.remote.dto.TextConfigurationDto
+import com.example.tmdbai.data.model.SearchInfo
+import com.example.tmdbai.data.model.StringConstants
+import com.example.tmdbai.data.model.TextConfiguration
+import com.example.tmdbai.data.model.UiConfiguration
 import com.example.tmdbai.data.remote.dto.ButtonConfigurationDto
+import com.example.tmdbai.data.remote.dto.ColorSchemeDto
 import com.example.tmdbai.data.remote.dto.GeminiColorsDto
 import com.example.tmdbai.data.remote.dto.GenreDto
+import com.example.tmdbai.data.remote.dto.McpMovieListResponseDto
+import com.example.tmdbai.data.remote.dto.McpResponseDto
+import com.example.tmdbai.data.remote.dto.MetaDto
+import com.example.tmdbai.data.remote.dto.MovieDetailsDto
+import com.example.tmdbai.data.remote.dto.MovieDto
+import com.example.tmdbai.data.remote.dto.PaginationDto
 import com.example.tmdbai.data.remote.dto.ProductionCompanyDto
 import com.example.tmdbai.data.remote.dto.SearchInfoDto
-import com.example.tmdbai.data.remote.dto.McpResponseDto
+import com.example.tmdbai.data.remote.dto.TextConfigurationDto
+import com.example.tmdbai.data.remote.dto.UiConfigurationDto
+import android.graphics.Color as AndroidColor
 
 object MovieMapper {
-    
+
     fun mapMovieDtoToMovie(dto: MovieDto): Movie {
         return Movie(
             id = dto.id,
@@ -51,7 +50,7 @@ object MovieMapper {
             adult = dto.adult
         )
     }
-    
+
     fun mapMovieDetailsDtoToMovieDetails(dto: MovieDetailsDto): MovieDetails {
         return MovieDetails(
             id = dto.id,
@@ -64,20 +63,24 @@ object MovieMapper {
             releaseDate = dto.releaseDate,
             runtime = dto.runtime ?: 0,
             genres = dto.genres.map { mapGenreDtoToGenre(it) },
-            productionCompanies = dto.productionCompanies.map { mapProductionCompanyDtoToProductionCompany(it) },
+            productionCompanies = dto.productionCompanies.map {
+                mapProductionCompanyDtoToProductionCompany(
+                    it
+                )
+            },
             budget = dto.budget,
             revenue = dto.revenue,
             status = dto.status
         )
     }
-    
+
     fun mapGenreDtoToGenre(dto: GenreDto): Genre {
         return Genre(
             id = dto.id,
             name = dto.name
         )
     }
-    
+
     fun mapProductionCompanyDtoToProductionCompany(dto: ProductionCompanyDto): ProductionCompany {
         return ProductionCompany(
             id = dto.id,
@@ -86,7 +89,7 @@ object MovieMapper {
             originCountry = dto.originCountry
         )
     }
-    
+
     fun mapMcpMovieListResponseDtoToMovieListResponse(dto: McpMovieListResponseDto): MovieListResponse {
         return MovieListResponse(
             success = true,
@@ -97,52 +100,52 @@ object MovieMapper {
             ),
             uiConfig = UiConfiguration(
                 colors = ColorScheme(
-                    primary = androidx.compose.ui.graphics.Color.Blue,
-                    secondary = androidx.compose.ui.graphics.Color.Gray,
-                    background = androidx.compose.ui.graphics.Color.Black,
-                    surface = androidx.compose.ui.graphics.Color.DarkGray,
-                    onPrimary = androidx.compose.ui.graphics.Color.White,
-                    onSecondary = androidx.compose.ui.graphics.Color.White,
-                    onBackground = androidx.compose.ui.graphics.Color.White,
-                    onSurface = androidx.compose.ui.graphics.Color.White,
+                    primary = Color.Blue,
+                    secondary = Color.Gray,
+                    background = Color.Black,
+                    surface = Color.DarkGray,
+                    onPrimary = Color.White,
+                    onSecondary = Color.White,
+                    onBackground = Color.White,
+                    onSurface = Color.White,
                     moviePosterColors = emptyList()
                 ),
                 texts = TextConfiguration(
-                    appTitle = "Movies",
-                    loadingText = "Loading...",
-                    errorMessage = "Error",
-                    noMoviesFound = "No movies found",
-                    retryButton = "Retry",
-                    backButton = "Back",
-                    playButton = "Play"
+                    appTitle = StringConstants.MOVIES_TITLE,
+                    loadingText = StringConstants.LOADING_TEXT,
+                    errorMessage = StringConstants.ERROR_GENERIC,
+                    noMoviesFound = StringConstants.NO_MOVIES_FOUND,
+                    retryButton = StringConstants.RETRY_BUTTON,
+                    backButton = StringConstants.BACK_BUTTON,
+                    playButton = StringConstants.PLAY_BUTTON
                 ),
                 buttons = ButtonConfiguration(
-                    primaryButtonColor = androidx.compose.ui.graphics.Color.Blue,
-                    secondaryButtonColor = androidx.compose.ui.graphics.Color.Gray,
-                    buttonTextColor = androidx.compose.ui.graphics.Color.White,
-                    buttonCornerRadius = 8
+                    primaryButtonColor = Color.Blue,
+                    secondaryButtonColor = Color.Gray,
+                    buttonTextColor = Color.White,
+                    buttonCornerRadius = StringConstants.BUTTON_CORNER_RADIUS
                 )
             ),
             error = null,
             meta = Meta(
                 timestamp = System.currentTimeMillis().toString(),
-                method = "getPopularMovies",
+                method = StringConstants.MCP_METHOD_GET_POPULAR_MOVIES,
                 searchQuery = null,
                 movieId = null,
                 resultsCount = dto.movies.size,
                 aiGenerated = true,
                 geminiColors = GeminiColors(
-                    primary = "#2C5F6F",
-                    secondary = "#4A90A4",
-                    accent = "#FFD700"
+                    primary = StringConstants.COLOR_PRIMARY,
+                    secondary = StringConstants.COLOR_SECONDARY,
+                    accent = StringConstants.COLOR_ACCENT
                 ),
                 avgRating = null,
                 movieRating = null,
-                version = "2.0.0"
+                version = StringConstants.VERSION_2_0_0
             )
         )
     }
-    
+
     fun mapPaginationDtoToPagination(dto: PaginationDto): Pagination {
         return Pagination(
             page = dto.page,
@@ -152,7 +155,7 @@ object MovieMapper {
             hasPrevious = dto.hasPrevious
         )
     }
-    
+
     fun mapUiConfigurationDtoToUiConfiguration(dto: UiConfigurationDto): UiConfiguration {
         return UiConfiguration(
             colors = mapColorSchemeDtoToColorScheme(dto.colors),
@@ -161,21 +164,21 @@ object MovieMapper {
             searchInfo = dto.searchInfo?.let { mapSearchInfoDtoToSearchInfo(it) }
         )
     }
-    
+
     fun mapColorSchemeDtoToColorScheme(dto: ColorSchemeDto): ColorScheme {
         return ColorScheme(
-            primary = Color(android.graphics.Color.parseColor(dto.primary)),
-            secondary = Color(android.graphics.Color.parseColor(dto.secondary)),
-            background = Color(android.graphics.Color.parseColor(dto.background)),
-            surface = Color(android.graphics.Color.parseColor(dto.surface)),
-            onPrimary = Color(android.graphics.Color.parseColor(dto.onPrimary)),
-            onSecondary = Color(android.graphics.Color.parseColor(dto.onSecondary)),
-            onBackground = Color(android.graphics.Color.parseColor(dto.onBackground)),
-            onSurface = Color(android.graphics.Color.parseColor(dto.onSurface)),
-            moviePosterColors = dto.moviePosterColors.map { Color(android.graphics.Color.parseColor(it)) }
+            primary = Color(AndroidColor.parseColor(dto.primary)),
+            secondary = Color(AndroidColor.parseColor(dto.secondary)),
+            background = Color(AndroidColor.parseColor(dto.background)),
+            surface = Color(AndroidColor.parseColor(dto.surface)),
+            onPrimary = Color(AndroidColor.parseColor(dto.onPrimary)),
+            onSecondary = Color(AndroidColor.parseColor(dto.onSecondary)),
+            onBackground = Color(AndroidColor.parseColor(dto.onBackground)),
+            onSurface = Color(AndroidColor.parseColor(dto.onSurface)),
+            moviePosterColors = dto.moviePosterColors.map { Color(AndroidColor.parseColor(it)) }
         )
     }
-    
+
     fun mapTextConfigurationDtoToTextConfiguration(dto: TextConfigurationDto): TextConfiguration {
         return TextConfiguration(
             appTitle = dto.appTitle,
@@ -187,16 +190,16 @@ object MovieMapper {
             playButton = dto.playButton
         )
     }
-    
+
     fun mapButtonConfigurationDtoToButtonConfiguration(dto: ButtonConfigurationDto): ButtonConfiguration {
         return ButtonConfiguration(
-            primaryButtonColor = Color(android.graphics.Color.parseColor(dto.primaryButtonColor)),
-            secondaryButtonColor = Color(android.graphics.Color.parseColor(dto.secondaryButtonColor)),
-            buttonTextColor = Color(android.graphics.Color.parseColor(dto.buttonTextColor)),
+            primaryButtonColor = Color(AndroidColor.parseColor(dto.primaryButtonColor)),
+            secondaryButtonColor = Color(AndroidColor.parseColor(dto.secondaryButtonColor)),
+            buttonTextColor = Color(AndroidColor.parseColor(dto.buttonTextColor)),
             buttonCornerRadius = dto.buttonCornerRadius
         )
     }
-    
+
     fun mapSearchInfoDtoToSearchInfo(dto: SearchInfoDto): SearchInfo {
         return SearchInfo(
             query = dto.query,
@@ -206,7 +209,7 @@ object MovieMapper {
             colorBased = dto.colorBased
         )
     }
-    
+
     fun mapMetaDtoToMeta(dto: MetaDto): Meta {
         return Meta(
             timestamp = dto.timestamp,
@@ -221,7 +224,7 @@ object MovieMapper {
             version = dto.version
         )
     }
-    
+
     fun mapGeminiColorsDtoToGeminiColors(dto: GeminiColorsDto): GeminiColors {
         return GeminiColors(
             primary = dto.primary,
@@ -229,17 +232,17 @@ object MovieMapper {
             accent = dto.accent
         )
     }
-    
+
     fun <T> mapMcpResponseToResult(
         mcpResponse: McpResponseDto<T>,
         dataMapper: (T) -> Any
     ): Result<Any> {
         return if (mcpResponse.success && mcpResponse.data != null) {
-            val uiConfig = mcpResponse.uiConfig?.let { mapUiConfigurationDtoToUiConfiguration(it) }
+            val uiConfig = mapUiConfigurationDtoToUiConfiguration(mcpResponse.uiConfig)
             Result.Success(dataMapper(mcpResponse.data), uiConfig)
         } else {
-            val uiConfig = mcpResponse.uiConfig?.let { mapUiConfigurationDtoToUiConfiguration(it) }
-            Result.Error(mcpResponse.error ?: "Unknown error", uiConfig)
+            val uiConfig = mapUiConfigurationDtoToUiConfiguration(mcpResponse.uiConfig)
+            Result.Error(mcpResponse.error ?: StringConstants.ERROR_UNKNOWN, uiConfig)
         }
     }
 }

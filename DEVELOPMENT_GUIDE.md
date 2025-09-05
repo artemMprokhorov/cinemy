@@ -2,7 +2,8 @@
 
 **TmdbAi - Руководство по разработке**  
 **Дата создания**: 2024-12-19  
-**Версия**: 1.0.0-dev
+**Дата обновления**: 2024-12-19  
+**Версия**: 2.3.0
 
 ## 🚀 Настройка среды разработки
 
@@ -37,7 +38,11 @@
 
 4. **Проверка сборки**
    ```bash
-   ./gradlew assembleDevelopmentDebug
+   # Dummy version (mock data)
+   ./gradlew assembleDummyDebug
+   
+   # Production version (real backend)
+   ./gradlew assembleProdDebug
    ```
 
 ### 🔧 Конфигурация Android Studio
@@ -46,6 +51,28 @@
 2. **Compose Preview**: Включите Compose Preview в настройках
 3. **Code Style**: Настройте Kotlin code style
 4. **Live Templates**: Настройте live templates для MVI
+
+### 🏗️ Build Variants
+
+Проект поддерживает три варианта сборки:
+
+| Variant | Purpose | Data Source | Package ID |
+|---------|---------|-------------|------------|
+| **dummyDebug** | Development | Mock data only | `com.example.tmdbai.dummy.debug` |
+| **prodDebug** | Testing | Real backend + fallback | `com.example.tmdbai.debug` |
+| **prodRelease** | Production | Real backend only | `com.example.tmdbai` |
+
+#### Установка и запуск
+
+```bash
+# Dummy version (mock data)
+./gradlew installDummyDebug
+adb shell am start -n com.example.tmdbai.dummy.debug/com.example.tmdbai.MainActivity
+
+# Production version (real backend)
+./gradlew installProdDebug
+adb shell am start -n com.example.tmdbai.debug/com.example.tmdbai.MainActivity
+```
 
 ## 📏 Правила работы с кодом
 
@@ -67,6 +94,11 @@
    - Используйте Koin для DI
    - Не создавайте объекты напрямую
    - Используйте интерфейсы для абстракции
+
+4. **Используйте константы вместо hardcoded значений**
+   - Все строки, числа и булевы значения должны быть в `StringConstants.kt`
+   - Используйте константы в `@SerializedName` аннотациях
+   - Не используйте константы для log сообщений (только inline строки)
 
 #### 🔤 Naming Conventions
 
@@ -98,6 +130,44 @@ ui/movieslist/
 data/repository/
 ├── MovieRepository.kt           # Интерфейс
 └── MovieRepositoryImpl.kt      # Реализация
+
+data/model/
+└── StringConstants.kt          # Все константы проекта
+```
+
+#### 🔧 Constants Usage
+
+```kotlin
+// ✅ Правильно - использование констант
+data class MovieDto(
+    @SerializedName(StringConstants.SERIALIZED_ID)
+    val id: Int,
+    @SerializedName(StringConstants.SERIALIZED_TITLE)
+    val title: String,
+    @SerializedName(StringConstants.SERIALIZED_OVERVIEW)
+    val description: String
+)
+
+// В коде
+val pagination = PaginationDto(
+    page = page,
+    totalPages = StringConstants.PAGINATION_TOP_RATED_TOTAL_PAGES,
+    totalResults = StringConstants.PAGINATION_TOP_RATED_TOTAL_RESULTS
+)
+
+// ❌ Неправильно - hardcoded значения
+data class MovieDto(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("title")
+    val title: String
+)
+
+val pagination = PaginationDto(
+    page = page,
+    totalPages = 8,
+    totalResults = 80
+)
 ```
 
 ### 🎭 MVI Implementation Rules

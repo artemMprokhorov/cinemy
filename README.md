@@ -231,8 +231,58 @@ User Action → Intent → ViewModel → Repository → MCP Client
 
 ## 📋 Changelog
 
+### **v2.3.0** - Constants Refactoring & Dummy Repository
+**Date**: December 2024  
+**Status**: ✅ **COMPLETED**
+
+#### 🔧 **Code Quality Improvements**
+- **Constants Extraction**: Extracted all hardcoded strings, integers, and doubles to `StringConstants.kt`
+- **Serialized Names**: All `@SerializedName` annotations now use constants instead of hardcoded strings
+- **Pagination Constants**: Centralized pagination values (8, 80, 5, 50, 4, 40, 1)
+- **Network Simulation**: Constants for delays (500ms, 1000ms) and error probability (0.05)
+- **HTTP Timeouts**: Constants for request (15000ms) and connect (10000ms) timeouts
+- **Default Values**: Constants for all default values (0, 0.0, 0L, false, "", etc.)
+- **UI Constants**: Button corner radius and other UI-related constants
+
+#### 🏗️ **Architecture Enhancements**
+- **DummyMovieRepository**: Created dedicated dummy repository for testing
+- **Asset Integration**: Proper integration with existing `FakeInterceptor` and `AssetDataLoader`
+- **Build Variants**: Correct configuration for dummy vs production versions
+- **Dependency Injection**: Proper DI setup for different build variants
+
+#### 🎯 **Build Variants**
+- **dummyDebug**: Uses `FakeInterceptor` → loads mock data from assets
+- **prodDebug**: Uses real backend calls with fallback to mock data
+- **prodRelease**: Production version with real backend integration
+
+#### 📱 **Mock Data System**
+- **Asset Files**: `mock_movies.json`, `mock_movie_details.json` for consistent testing
+- **Realistic Delays**: Simulated network delays for authentic testing experience
+- **Complete Data**: Full movie details with genres, production companies, budgets
+- **Pagination Support**: Proper pagination with realistic page counts
+
+### **v2.2.0** - Enhanced Pagination & UX (2024-12-19)
+**Date**: December 2024  
+**Status**: ✅ **COMPLETED**
+
+#### 🎨 **UI/UX Improvements**
+- **45 Movies Total**: Expanded mock data to 45 movies (15 per page × 3 pages)
+- **Smart Swipe Navigation**: 
+  - Swipe right on page 1: No action
+  - Swipe right on page 2+: Go to previous page
+  - Swipe left on page 1-2: Go to next page
+  - Swipe left on page 3: Show snackbar "This is the last available page"
+- **Custom Snackbar**: Dark blue background matching splash screen with white text
+- **Debounced Snackbar**: Prevents multiple snackbar spam with 2-second debounce
+- **Real TMDB Posters**: All 45 movies have proper poster URLs
+
+#### 🔧 **Technical Enhancements**
+- **Import Optimization**: Reviewed and maintained clean import structure
+- **Build Verification**: All variants (dummy, prod) build successfully
+- **Mock Data Integration**: Comprehensive mock data for offline testing
+
 ### **v2.1.0** - Enhanced UI/UX & Pull-to-Refresh
-**Date**: September 2025  
+**Date**: September 2024  
 **Status**: ✅ **COMPLETED**
 
 #### 🎨 **UI/UX Improvements**
@@ -246,40 +296,9 @@ User Action → Intent → ViewModel → Repository → MCP Client
 #### 🔧 **Technical Enhancements**
 - **Custom PullToReloadIndicator**: Canvas-drawn red arrow with animations
 - **Gesture Handling**: Improved pull-to-refresh detection on error screens
-- **Mock Data Assets**: Enhanced dummy version with 15 movies from JSON assets
+- **Mock Data Assets**: Enhanced dummy version with movies from JSON assets
 - **Build Variants**: Simplified to dummyDebug, prodDebug, prodRelease
 - **Debug Logging**: Added pull-to-refresh trigger logging
-
-#### 🚀 **User Experience**
-- **Error Recovery**: Easy retry with pull-down gesture
-- **Visual Feedback**: Clear error messages and reload instructions
-- **Consistent Design**: Unified color scheme and typography
-- **Intuitive Gestures**: Natural pull-to-refresh interaction
-
-### **v2.0.0** - Enhanced Data Models & API Alignment
-**Date**: September 2025  
-**Status**: ✅ **COMPLETED**
-
-#### 🚀 **Data Layer Enhancements**
-- **Enhanced Movie Model**: Added backdrop, vote count, popularity, adult flag
-- **MovieDetails Model**: Complete details with runtime and companies
-- **Production Data**: Budget and revenue information
-- **Search Metadata**: Enhanced search result information
-- **AI Metadata**: Backend generation tracking
-
-#### 🔧 **Technical Improvements**
-- **API Contract Alignment**: Models now match new API contracts exactly
-- **Enhanced DTOs**: Updated data transfer objects with new fields
-- **Search Support**: Complete search metadata and result tracking
-- **Production Info**: Full production company and financial data
-- **Backward Compatibility**: Maintained existing MCP integration
-
-#### 🎨 **UI Layer Enhancements**
-- **Search Functionality**: Complete search UI with real-time query handling
-- **Search Metadata**: Display search results information and statistics
-- **Enhanced Movie Cards**: Support for backdrop images, vote counts, and adult content indicators
-- **Movie Details**: Comprehensive display of runtime, status, budget, revenue, and production companies
-- **Server-Driven UI**: Maintained dynamic theming and configuration support
 
 ## 🎨 UI/UX особенности
 

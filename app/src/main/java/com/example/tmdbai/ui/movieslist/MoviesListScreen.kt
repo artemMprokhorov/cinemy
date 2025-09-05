@@ -1,5 +1,6 @@
 package com.example.tmdbai.ui.movieslist
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -7,60 +8,53 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
-import kotlinx.coroutines.launch
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.dp
-import com.example.tmdbai.ui.theme.SplashBackground
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.example.tmdbai.BuildConfig
+import com.example.tmdbai.R
 import com.example.tmdbai.data.model.Movie
 import com.example.tmdbai.data.model.UiConfiguration
 import com.example.tmdbai.presentation.movieslist.MoviesListIntent
 import com.example.tmdbai.presentation.movieslist.MoviesListState
 import com.example.tmdbai.presentation.movieslist.MoviesListViewModel
 import com.example.tmdbai.ui.components.ConfigurableMovieCard
-import com.example.tmdbai.ui.components.PullToReloadIndicator
 import com.example.tmdbai.ui.components.PullToReloadArrow
+import com.example.tmdbai.ui.theme.SplashBackground
 import com.example.tmdbai.ui.theme.TmdbAiTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun MoviesListScreen(
@@ -88,8 +82,10 @@ private fun MoviesListContent(
 ) {
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.isLoading,
-        onRefresh = { 
-            android.util.Log.d("MoviesList", "Pull to refresh triggered")
+        onRefresh = {
+            if (BuildConfig.DEBUG) {
+                Log.d("MoviesList", "Pull to refresh triggered")
+            }
             onIntent(MoviesListIntent.LoadPopularMovies)
         }
     )
@@ -107,26 +103,27 @@ private fun MoviesListContent(
         ) {
             // Content
             when {
-                                       state.isLoading -> {
-                           Box(
-                               modifier = Modifier.fillMaxSize(),
-                               contentAlignment = Alignment.Center
-                           ) {
-                               Column(
-                                   horizontalAlignment = Alignment.CenterHorizontally
-                               ) {
-                                   Text(
-                                       text = "Loading...",
-                                       color = Color.White,
-                                       style = MaterialTheme.typography.headlineMedium
-                                   )
-                                   Spacer(modifier = Modifier.height(16.dp))
-                                   CircularProgressIndicator(
-                                       color = Color.White
-                                   )
-                               }
-                           }
-                       }
+                state.isLoading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = stringResource(R.string.loading_text),
+                                color = Color.White,
+                                style = MaterialTheme.typography.headlineMedium
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            CircularProgressIndicator(
+                                color = Color.White
+                            )
+                        }
+                    }
+                }
+
                 state.error != null -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
@@ -138,7 +135,7 @@ private fun MoviesListContent(
                         ) {
                             Spacer(modifier = Modifier.height(100.dp))
                             Text(
-                                text = "Failed to fetch",
+                                text = stringResource(R.string.error_generic),
                                 color = Color.White,
                                 style = MaterialTheme.typography.headlineLarge
                             )
@@ -159,9 +156,11 @@ private fun MoviesListContent(
                         }
                     }
                 }
+
                 state.movies.isEmpty() -> {
                     EmptyState()
                 }
+
                 else -> {
                     MoviesGrid(
                         movies = state.movies,
@@ -175,7 +174,7 @@ private fun MoviesListContent(
                 }
             }
         }
-        
+
         // Snackbar for user feedback with custom colors
         SnackbarHost(
             hostState = snackbarHostState,
@@ -189,7 +188,7 @@ private fun MoviesListContent(
                 )
             }
         )
-        
+
         // No pull refresh indicator - only custom spinner on loading screen
     }
 }
@@ -209,17 +208,17 @@ private fun MoviesGrid(
     var showPaginationControls by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     var lastSnackbarTime by remember { mutableStateOf(0L) }
-    
+
     // Track scroll position to show pagination controls when at bottom
     LaunchedEffect(listState.layoutInfo) {
         val layoutInfo = listState.layoutInfo
         val isAtBottom = layoutInfo.visibleItemsInfo.lastOrNull()?.let { lastVisibleItem ->
             lastVisibleItem.index >= movies.size - 1
         } ?: false
-        
+
         showPaginationControls = isAtBottom && pagination != null
     }
-    
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -237,7 +236,7 @@ private fun MoviesGrid(
                                     onPreviousPage()
                                 }
                                 // If it's first page, do nothing
-                            } 
+                            }
                             // Swipe left (negative X) = Next page
                             else if (dragAmount.x < -50) { // Swipe left threshold
                                 if (pagination?.hasNext == true) {
@@ -260,7 +259,10 @@ private fun MoviesGrid(
                     )
                 },
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(top = 8.dp, bottom = if (showPaginationControls) 88.dp else 8.dp)
+            contentPadding = PaddingValues(
+                top = 8.dp,
+                bottom = if (showPaginationControls) 88.dp else 8.dp
+            )
         ) {
             // Add "Popular" title at the top
             item {
@@ -277,7 +279,7 @@ private fun MoviesGrid(
                     )
                 }
             }
-            
+
             items(movies) { movie ->
                 ConfigurableMovieCard(
                     movie = movie,
@@ -286,7 +288,7 @@ private fun MoviesGrid(
                 )
             }
         }
-        
+
         // Pagination controls clipped to bottom of screen - only show when at bottom
         if (showPaginationControls) {
             Box(
@@ -323,7 +325,7 @@ private fun PaginationControls(
             color = Color.White,
             style = MaterialTheme.typography.bodyMedium
         )
-        
+
         // Navigation buttons
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -345,7 +347,7 @@ private fun PaginationControls(
             } else {
                 Spacer(modifier = Modifier.width(100.dp))
             }
-            
+
             // Next button
             if (pagination.hasNext) {
                 androidx.compose.material3.Button(
@@ -376,7 +378,7 @@ private fun EmptyState() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "No movies found",
+                text = stringResource(R.string.no_movies_found),
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface
             )

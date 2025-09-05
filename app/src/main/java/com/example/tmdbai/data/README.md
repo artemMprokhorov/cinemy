@@ -1,6 +1,7 @@
 # Data Layer Implementation
 
-This package contains the complete data layer implementation for the TMDB AI Android application, following Clean Architecture principles with MVI pattern and Jetpack Compose.
+This package contains the complete data layer implementation for the TMDB AI Android application,
+following Clean Architecture principles with MVI pattern and Jetpack Compose.
 
 ## Architecture Overview
 
@@ -25,6 +26,7 @@ data/
 This data layer serves as the **Model** component in the MVI (Model-View-Intent) architecture:
 
 #### **1. Domain Models (Model State)**
+
 - **Clean Models**: `Movie`, `MovieDetails`, `Genre`, `ProductionCompany`
 - **Enhanced Movie Model**: Added `backdropPath`, `voteCount`, `popularity`, `adult` fields
 - **Complete MovieDetails**: Runtime, genres, production companies, budget, revenue
@@ -35,12 +37,14 @@ This data layer serves as the **Model** component in the MVI (Model-View-Intent)
 - **Pagination**: `Pagination` and `MovieListResponse` for list management
 
 #### **2. Repository Pattern (Model Logic)**
+
 - **Interface Contract**: `MovieRepository` defines the model's public API
 - **Implementation**: `MovieRepositoryImpl` contains business logic
 - **Data Sources**: MCP client for backend communication
 - **Error Handling**: Consistent error handling across all operations
 
 #### **3. Data Flow Integration**
+
 - **Unidirectional Flow**: Data flows from repository to presentation layer
 - **State Management**: Repository returns `Result<T>` for state handling
 - **UI Configuration**: Backend-driven UI configuration included in responses
@@ -53,6 +57,7 @@ Intent (from ViewModel) → Repository → Data Sources → Domain Models → Re
 ```
 
 #### **Example Flow:**
+
 ```kotlin
 // 1. ViewModel sends intent
 viewModel.processIntent(MoviesListIntent.LoadPopularMovies)
@@ -83,13 +88,16 @@ when (result) {
 ### 1. Remote Layer (`remote/`)
 
 #### API Service (`api/MovieApiService.kt`)
+
 - Defines the interface for movie-related API calls
 - All methods return `McpResponseDto<T>` which includes both data and UI configuration
 - Supports popular movies, top rated, now playing, search, details, and recommendations
 
 #### DTOs (`dto/MovieDto.kt`)
+
 - **Movie Data DTOs**: `MovieDto`, `MovieDetailsDto`, `GenreDto`, `ProductionCompanyDto`
-- **UI Configuration DTOs**: `UiConfigurationDto`, `ColorSchemeDto`, `TextConfigurationDto`, `ButtonConfigurationDto`
+- **UI Configuration DTOs**: `UiConfigurationDto`, `ColorSchemeDto`, `TextConfigurationDto`,
+  `ButtonConfigurationDto`
 - **MCP Response DTOs**: `McpResponseDto<T>`, `McpMovieListResponseDto`, `PaginationDto`
 
 ### 2. MCP Client (`mcp/McpClient.kt`)
@@ -110,18 +118,21 @@ when (result) {
 #### **Updated Domain Models (v2.0.0)**
 
 ##### Core Models
+
 - **Movie**: Enhanced with backdrop, vote count, popularity, adult flag
 - **MovieDetails**: Complete movie details with runtime, genres, companies
 - **Genre**: Movie genre information
 - **ProductionCompany**: Production company details with origin country
 
-##### Response Models  
+##### Response Models
+
 - **MovieListResponse**: Paginated movie lists with search metadata
 - **MovieDetailsResponse**: Detailed movie information wrapper
 - **Meta**: API response metadata with AI generation info
 - **SearchInfo**: Search-specific UI configuration
 
 ##### Enhanced Features
+
 - **Complete Pagination**: Full TMDB pagination support
 - **Search Metadata**: Query info and result statistics
 - **Production Data**: Budget, revenue, production companies
@@ -136,12 +147,14 @@ when (result) {
 ### 5. Repository Layer (`repository/`)
 
 #### Interface (`MovieRepository.kt`)
+
 - Defines repository contract with suspend functions
 - Returns `Result<T>` sealed class for error handling
 - **Enhanced Methods**: `getPopularMovies`, `searchMovies`, `getMovieDetails`
 - **API Contract Alignment**: Methods match new API contracts exactly
 
 #### Implementation (`MovieRepositoryImpl.kt`)
+
 - Implements repository interface
 - Uses MCP client for data fetching
 - Handles error mapping and UI configuration extraction
@@ -150,17 +163,20 @@ when (result) {
 #### **Repository Layer Updates (v2.0.0)**
 
 ##### Enhanced Repository Interface
+
 - **getPopularMovies**: Returns `MovieListResponse` with full pagination
-- **searchMovies**: Returns `MovieListResponse` with search metadata  
+- **searchMovies**: Returns `MovieListResponse` with search metadata
 - **getMovieDetails**: Returns `MovieDetailsResponse` with complete details
 
 ##### MCP Integration Enhancements
+
 - **Method Mapping**: Direct mapping to API contract methods
 - **Parameter Handling**: Proper query and pagination parameters
 - **Response Processing**: Complete response wrapper handling
 - **Error Handling**: Enhanced error messages and UI config preservation
 
 ##### Mock Data Alignment
+
 - **Contract Compliance**: Mock responses match API contracts exactly
 - **Development Testing**: Full feature testing without backend
 - **UI Configuration**: Dynamic theming data in all responses
@@ -174,40 +190,47 @@ when (result) {
 ## Key Features
 
 ### ✅ Clean Architecture Compliance
+
 - Clear separation of concerns
 - Dependency inversion principle
 - Repository pattern implementation
 
 ### ✅ MVI Pattern Support
+
 - Intent-based user interactions
 - StateFlow for reactive state management
 - Unidirectional data flow
 
 ### ✅ MCP Backend Integration
+
 - No TMDB API key in the app
 - All data comes through MCP backend
 - UI configuration included in responses
 - Simulated network calls for development
 
 ### ✅ Error Handling
+
 - Graceful error recovery
 - Type-safe error handling with sealed classes
 - User-friendly error messages
 - Loading state management
 
 ### ✅ Type Safety
+
 - Sealed classes for Result handling
 - Compile-time safety for all operations
 - Null safety with proper defaults
 - Domain model validation
 
 ### ✅ Dynamic UI Configuration
+
 - Backend-driven theming
 - Configurable colors and texts
 - Dynamic button styling
 - Movie poster color palettes
 
 ### ✅ Repository Pattern
+
 - Clean interface definitions
 - Implementation separation
 - Dependency injection support
@@ -216,16 +239,17 @@ when (result) {
 ## MVI Integration Examples
 
 ### Repository Usage in ViewModels
+
 ```kotlin
 class MoviesListViewModel(
     private val movieRepository: MovieRepository  // Model dependency
 ) : ViewModel() {
-    
+
     private fun loadMovies() {
         viewModelScope.launch {
             // Model operation
             val result = movieRepository.getPopularMovies(_state.value.currentPage)
-            
+
             // State update based on model result
             when (result) {
                 is Result.Success -> {
@@ -247,6 +271,7 @@ class MoviesListViewModel(
 ```
 
 ### Domain Model Usage
+
 ```kotlin
 // Clean domain models for UI consumption
 data class Movie(
@@ -275,8 +300,10 @@ sealed class Result<out T> {
 
 ## Build Status
 
-✅ **BUILD SUCCESSFUL** - All data layer components compile correctly and are fully integrated with the presentation layer.
+✅ **BUILD SUCCESSFUL** - All data layer components compile correctly and are fully integrated with
+the presentation layer.
 
 ✅ **MVI MODEL VERIFIED** - Complete compliance with MVI architecture Model component.
 
-The data layer is now ready for production use with complete Clean Architecture implementation, MVI pattern support, and seamless presentation layer integration.
+The data layer is now ready for production use with complete Clean Architecture implementation, MVI
+pattern support, and seamless presentation layer integration.

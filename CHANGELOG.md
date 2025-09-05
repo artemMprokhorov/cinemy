@@ -10,6 +10,71 @@
 
 ## 📅 **Version History**
 
+### **v2.3.0** - Constants Refactoring & Dummy Repository
+**Date**: December 2024  
+**Status**: ✅ **RELEASED**
+
+#### 🔧 **Code Quality Improvements**
+- **Constants Extraction**: Extracted all hardcoded strings, integers, and doubles to `StringConstants.kt`
+- **Serialized Names**: All `@SerializedName` annotations now use constants instead of hardcoded strings
+- **Pagination Constants**: Centralized pagination values (8, 80, 5, 50, 4, 40, 1)
+- **Network Simulation**: Constants for delays (500ms, 1000ms) and error probability (0.05)
+- **HTTP Timeouts**: Constants for request (15000ms) and connect (10000ms) timeouts
+- **Default Values**: Constants for all default values (0, 0.0, 0L, false, "", etc.)
+- **UI Constants**: Button corner radius and other UI-related constants
+
+#### 🏗️ **Architecture Enhancements**
+- **DummyMovieRepository**: Created dedicated dummy repository for testing
+- **Asset Integration**: Proper integration with existing `FakeInterceptor` and `AssetDataLoader`
+- **Build Variants**: Correct configuration for dummy vs production versions
+- **Dependency Injection**: Proper DI setup for different build variants
+
+#### 🎯 **Build Variants**
+- **dummyDebug**: Uses `FakeInterceptor` → loads mock data from assets
+- **prodDebug**: Uses real backend calls with fallback to mock data
+- **prodRelease**: Production version with real backend integration
+
+#### 📱 **Mock Data System**
+- **Asset Files**: `mock_movies.json`, `mock_movie_details.json` for consistent testing
+- **Realistic Delays**: Simulated network delays for authentic testing experience
+- **Complete Data**: Full movie details with genres, production companies, budgets
+- **Pagination Support**: Proper pagination with realistic page counts
+
+### **v2.2.0** - Enhanced Pagination & UX
+**Date**: December 2024  
+**Status**: ✅ **RELEASED**
+
+#### 🎨 **UI/UX Improvements**
+- **45 Movies Total**: Expanded mock data to 45 movies (15 per page × 3 pages)
+- **Smart Swipe Navigation**: Intelligent page navigation with swipe gestures
+- **Custom Snackbar**: Dark blue background matching splash screen with white text
+- **Debounced Snackbar**: Prevents multiple snackbar spam with 2-second debounce
+- **Real TMDB Posters**: All 45 movies have proper poster URLs
+
+#### 🔧 **Technical Enhancements**
+- **Import Optimization**: Reviewed and maintained clean import structure
+- **Build Verification**: All variants (dummy, prod) build successfully
+- **Mock Data Integration**: Comprehensive mock data for offline testing
+
+### **v2.1.0** - Enhanced UI/UX & Pull-to-Refresh
+**Date**: September 2024  
+**Status**: ✅ **RELEASED**
+
+#### 🎨 **UI/UX Improvements**
+- **Custom Error Screens**: Large white text with split error messages
+- **Red Arrow Indicator**: Triple-sized (144dp) custom pull-to-reload arrow
+- **Pull-to-Refresh**: Full gesture support on error screens
+- **Consistent Background**: SplashBackground color across all screens
+- **Loading States**: Custom white spinner without system indicators
+- **Scrollable Error Content**: Enhanced gesture detection for pull-to-refresh
+
+#### 🔧 **Technical Enhancements**
+- **Custom PullToReloadIndicator**: Canvas-drawn red arrow with animations
+- **Gesture Handling**: Improved pull-to-refresh detection on error screens
+- **Mock Data Assets**: Enhanced dummy version with movies from JSON assets
+- **Build Variants**: Simplified to dummyDebug, prodDebug, prodRelease
+- **Debug Logging**: Added pull-to-refresh trigger logging
+
 ### **v1.0.0** - Complete MCP Integration & Server-Driven UI
 **Date**: January 2025  
 **Status**: ✅ **RELEASED**

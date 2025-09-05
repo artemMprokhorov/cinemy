@@ -5,23 +5,29 @@ import android.util.Log
 import com.example.tmdbai.BuildConfig
 import com.example.tmdbai.data.mcp.models.McpRequest
 import com.example.tmdbai.data.mcp.models.McpResponse
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.android.*
-import io.ktor.client.plugins.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import kotlinx.coroutines.delay
-import org.json.JSONObject
+import com.example.tmdbai.data.model.StringConstants
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.android.Android
+import io.ktor.client.plugins.DefaultRequest
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.contentType
 import org.json.JSONArray
-import java.io.IOException
+import org.json.JSONObject
+import java.io.InputStream
 
 class McpHttpClient(private val context: Context) {
-    
+    private val fakeInterceptor = FakeInterceptor(context)
+
     private val httpClient = HttpClient(Android) {
         install(HttpTimeout) {
-            requestTimeoutMillis = 15000
-            connectTimeoutMillis = 10000
+            requestTimeoutMillis = StringConstants.HTTP_REQUEST_TIMEOUT_MS
+            connectTimeoutMillis = StringConstants.HTTP_CONNECT_TIMEOUT_MS
         }
         install(DefaultRequest) {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
@@ -30,229 +36,202 @@ class McpHttpClient(private val context: Context) {
 
     suspend fun <T> sendRequest(request: McpRequest): McpResponse<T> {
         return if (BuildConfig.USE_MOCK_DATA) {
-            Log.d("MCP", "Using mock data for method: ${request.method}")
-            sendMockRequest(request)
+            if (BuildConfig.DEBUG) {
+                Log.d("MCP", "Using mock data for method: ${request.method}")
+            }
+            fakeInterceptor.intercept<T>(request)
         } else {
-            Log.d("MCP", "Attempting real request to: ${BuildConfig.MCP_SERVER_URL}")
+            if (BuildConfig.DEBUG) {
+                Log.d("MCP", "Attempting real request to: ${BuildConfig.MCP_SERVER_URL}")
+            }
             sendRealRequest(request)
         }
     }
 
     private suspend fun <T> sendRealRequest(request: McpRequest): McpResponse<T> {
-        return try {
+        return runCatching {
             if (BuildConfig.MCP_SERVER_URL.isBlank()) {
-                Log.w("MCP", "MCP_SERVER_URL is blank, falling back to mock")
-                return sendMockRequest(request)
+                if (BuildConfig.DEBUG) {
+                    Log.w("MCP", "MCP_SERVER_URL is blank, falling back to mock")
+                }
+                return fakeInterceptor.intercept<T>(request)
             }
 
-            Log.d("MCP", "Sending real request: ${request.method} to ${BuildConfig.MCP_SERVER_URL}")
-            
+            if (BuildConfig.DEBUG) {
+                Log.d(
+                    "MCP",
+                    "Sending real request: ${request.method} to ${BuildConfig.MCP_SERVER_URL}"
+                )
+            }
+
             // Manually create JSON request body to avoid serialization issues
             val requestBody = buildString {
-                append("{")
-                append("\"method\":\"${request.method}\",")
-                append("\"params\":{")
+                append(StringConstants.JSON_OPEN_BRACE)
+                append(StringConstants.JSON_METHOD_FIELD.format(request.method))
+                append(StringConstants.JSON_PARAMS_FIELD)
                 request.params.entries.forEachIndexed { index, entry ->
-                    if (index > 0) append(",")
-                    append("\"${entry.key}\":\"${entry.value}\"")
+                    if (index > 0) append(StringConstants.JSON_COMMA)
+                    append(StringConstants.JSON_PARAM_ENTRY.format(entry.key, entry.value))
                 }
-                append("}")
-                append("}")
+                append(StringConstants.JSON_CLOSE_BRACE)
+                append(StringConstants.JSON_CLOSE_BRACE)
             }
-            
+
             // Use only the exact endpoint provided in the URL
-            val endpoints = listOf("")
-            
+            val endpoints = listOf(StringConstants.EMPTY_STRING)
+
             var lastError: Exception? = null
             var successfulResponse: String? = null
-            
+
             for (endpoint in endpoints) {
-                try {
+                runCatching {
                     val url = "${BuildConfig.MCP_SERVER_URL}$endpoint"
-                    Log.d("MCP", "Trying endpoint: $url")
-                    
+                    if (BuildConfig.DEBUG) {
+                        Log.d("MCP", "Trying endpoint: $url")
+                    }
+
                     val response = httpClient.post(url) {
-                contentType(ContentType.Application.Json)
+                        contentType(ContentType.Application.Json)
                         setBody(requestBody)
                     }
 
                     val responseText = response.body<String>()
-                    Log.d("MCP", "Response from $url: $responseText")
-                    
-                    // Check if response looks like an error page or is not JSON
-                    if (responseText.contains("<!DOCTYPE html>") || 
-                        responseText.contains("Cannot POST") ||
-                        responseText.contains("<html") ||
-                        responseText.contains("<title>Error</title>") ||
-                        !responseText.trimStart().startsWith("{") && !responseText.trimStart().startsWith("[")) {
-                        Log.w("MCP", "Endpoint $url returned error page or non-JSON response, trying next...")
-                        continue
+                    if (BuildConfig.DEBUG) {
+                        Log.d("MCP", "Response from $url: $responseText")
                     }
-                    
+
+                    // Check if response looks like an error page or is not JSON
+                    if (responseText.contains(StringConstants.HTML_DOCTYPE) ||
+                        responseText.contains(StringConstants.HTML_CANNOT_POST) ||
+                        responseText.contains(StringConstants.HTML_TAG) ||
+                        responseText.contains(StringConstants.HTML_ERROR_TITLE) ||
+                        !responseText.trimStart()
+                            .startsWith(StringConstants.JSON_OPEN_BRACE) && !responseText.trimStart()
+                            .startsWith(StringConstants.JSON_ARRAY_START)
+                    ) {
+                        if (BuildConfig.DEBUG) {
+                            Log.w(
+                                "MCP",
+                                "Endpoint $url returned error page or non-JSON response, trying next..."
+                            )
+                        }
+                        return@runCatching null
+                    }
+
                     // If we get here, the response looks good
                     successfulResponse = responseText
-                    Log.d("MCP", "Found working endpoint: $url")
-                    break
-                    
-                } catch (e: Exception) {
-                    Log.w("MCP", "Endpoint $endpoint failed: ${e.message}")
-                    lastError = e
-                    continue
+                    if (BuildConfig.DEBUG) {
+                        Log.d("MCP", "Found working endpoint: $url")
+                    }
+                    responseText
+                }.onFailure { e ->
+                    if (BuildConfig.DEBUG) {
+                        Log.w("MCP", "Endpoint $endpoint failed: ${e.message}")
+                    }
+                    lastError = e as? Exception ?: Exception(e.message)
                 }
             }
-            
+
             if (successfulResponse == null) {
-                throw lastError ?: Exception("All endpoints failed")
+                throw lastError ?: Exception(StringConstants.MCP_MESSAGE_ALL_ENDPOINTS_FAILED)
             }
-            
+
             // Parse the JSON response manually
-            try {
-                val jsonResponse = parseJsonResponse(successfulResponse)
+            val responseText = successfulResponse!!
+            runCatching {
+                val jsonResponse = parseJsonResponse(responseText)
                 val mcpResponse = McpResponse<T>(
-                    success = jsonResponse["success"] as? Boolean ?: true,
-                    data = jsonResponse["data"] as? T,
-                    error = jsonResponse["error"] as? String,
-                    message = jsonResponse["message"] as? String ?: "Real request successful"
+                    success = jsonResponse[StringConstants.FIELD_SUCCESS] as? Boolean ?: true,
+                    data = jsonResponse[StringConstants.FIELD_DATA] as? T,
+                    error = jsonResponse[StringConstants.FIELD_ERROR] as? String,
+                    message = jsonResponse[StringConstants.FIELD_MESSAGE] as? String
+                        ?: StringConstants.MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL
                 )
-                Log.d("MCP", "Real request successful: ${request.method}")
+                if (BuildConfig.DEBUG) {
+                    Log.d("MCP", "Real request successful: ${request.method}")
+                }
                 mcpResponse
-            } catch (e: Exception) {
-                Log.w("MCP", "Failed to parse JSON response: ${e.message}")
+            }.getOrElse { e ->
+                if (BuildConfig.DEBUG) {
+                    Log.w("MCP", "Failed to parse JSON response: ${e.message}")
+                }
                 // Return a successful response with the raw data
                 McpResponse<T>(
                     success = true,
-                    data = successfulResponse as? T,
+                    data = responseText as? T,
                     error = null,
-                    message = "Real request successful (raw response)"
+                    message = StringConstants.MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE
                 )
             }
 
-        } catch (e: Exception) {
-            Log.w("MCP", "Real request failed: ${e.message}, falling back to mock")
+        }.getOrElse { e ->
+            if (BuildConfig.DEBUG) {
+                Log.w("MCP", "Real request failed: ${e.message}, falling back to mock")
+            }
             // Graceful fallback to mock data
-            val mockResponse = sendMockRequest<T>(request)
+            val mockResponse = fakeInterceptor.intercept<T>(request)
             // Add indicator that this is fallback data
             mockResponse.copy(
-                message = "Using mock data (backend unavailable)"
+                message = StringConstants.MCP_MESSAGE_USING_MOCK_BACKEND_UNAVAILABLE
             )
         }
     }
 
-    private suspend fun <T> sendMockRequest(request: McpRequest): McpResponse<T> {
-        // Simulate realistic network delay only in mock mode
-        delay(300 + (Math.random() * 500).toLong())
-        
-        // Check if we should use assets data (dummy config)
-        val useAssetsData = BuildConfig.FLAVOR_NAME == "Dummy"
-        
-        @Suppress("UNCHECKED_CAST")
-        return when (request.method) {
-            "getPopularMovies" -> {
-                if (useAssetsData) {
-                    val page = request.params["page"]?.toIntOrNull() ?: 1
-                    loadMockDataFromAssetsWithPagination("mock_movies.json", page) as McpResponse<T>
-                } else {
-                    createMockPopularResponse() as McpResponse<T>
-                }
+
+    // Helper method to load JSON from assets
+    private fun loadJsonFromAssets(fileName: String): String? {
+        return runCatching {
+            val inputStream: InputStream = context.assets.open(fileName)
+            inputStream.bufferedReader().use { it.readText() }
+        }.getOrElse { e ->
+            if (BuildConfig.DEBUG) {
+                Log.e("McpHttpClient", "Error loading JSON from assets: $fileName", e)
             }
-            "getMovieDetails" -> {
-                if (useAssetsData) {
-                    loadMockDataFromAssets("mock_movie_details.json") as McpResponse<T>
-                } else {
-                    createMockDetailsResponse(
-                        request.params["movieId"]?.toIntOrNull() ?: 1
-                    ) as McpResponse<T>
-                }
-            }
-            else -> McpResponse(
-                success = false,
-                data = null,
-                error = "Unknown method: ${request.method}",
-                message = "Method not supported"
-            )
+            null
         }
     }
 
-    // Mock response creators using exact contract JSON structure
-    private fun createMockPopularResponse(): McpResponse<Any> {
-        // Use the exact JSON structure from Get Popular Movies.rtf
-        return McpResponse(
-            success = true,
-            data = mapOf(
-                "movies" to listOf(
-                    mapOf(
-                        "id" to 1061474,
-                        "title" to "Superman",
-                        "description" to "Superman, a journalist in Metropolis, embarks on a journey to reconcile his Kryptonian heritage with his human upbringing as Clark Kent.",
-                        "posterPath" to "/ombsmhYUqR4qqOLOxAyr5V8hbyv.jpg",
-                        "backdropPath" to "/eU7IfdWq8KQy0oNd4kKXS0QUR08.jpg",
-                        "rating" to 7.5,
-                        "voteCount" to 2896,
-                        "releaseDate" to "2025-07-09",
-                        "genreIds" to listOf(878, 12, 28),
-                        "popularity" to 361.1663,
-                        "adult" to false
-                    )
-                ),
-                "pagination" to mapOf(
-                    "page" to 1,
-                    "totalPages" to 52280,
-                    "totalResults" to 1045594,
-                    "hasNext" to true,
-                    "hasPrevious" to false
-                )
-            ),
-            error = null,
-            message = "Mock data loaded successfully"
-        )
+    // Helper method to convert JSONObject to Map
+    private fun jsonObjectToMap(jsonObject: JSONObject): Map<String, Any> {
+        val map = mutableMapOf<String, Any>()
+        val keys = jsonObject.keys()
+        while (keys.hasNext()) {
+            val key = keys.next()
+            val value = jsonObject.get(key)
+            map[key] = when (value) {
+                is JSONObject -> jsonObjectToMap(value)
+                is JSONArray -> jsonArrayToList(value)
+                else -> value
+            }
+        }
+        return map
     }
 
-
-    private fun createMockDetailsResponse(movieId: Int): McpResponse<Any> {
-        // Use structure from Get Movie Details.rtf
-        return McpResponse(
-            success = true,
-            data = mapOf(
-                "movieDetails" to mapOf(
-                    "id" to movieId,
-                    "title" to "Nobody 2",
-                    "description" to "Former assassin Hutch Mansell takes his family on a nostalgic vacation to a small-town theme park.",
-                    "posterPath" to "/svXVRoRSu6zzFtCzkRsjZS7Lqpd.jpg",
-                    "backdropPath" to "/mEW9XMgYDO6U0MJcIRqRuSwjzN5.jpg",
-                    "rating" to 7.085,
-                    "voteCount" to 177,
-                    "releaseDate" to "2025-08-13",
-                    "runtime" to 89,
-                    "genres" to listOf(
-                        mapOf("id" to 28, "name" to "Action"),
-                        mapOf("id" to 53, "name" to "Thriller")
-                    ),
-                    "productionCompanies" to listOf(
-                        mapOf(
-                            "id" to 33,
-                            "name" to "Universal Pictures",
-                            "logoPath" to "/8lvHyhjr8oUKOOy2dKXoALWKdp0.png",
-                            "originCountry" to "US"
-                        )
-                    ),
-                    "budget" to 25000000,
-                    "revenue" to 28583560,
-                    "status" to "Released"
-                )
-            ),
-            error = null,
-            message = "Mock movie details loaded"
-        )
+    // Helper method to convert JSONArray to List
+    private fun jsonArrayToList(jsonArray: JSONArray): List<Any> {
+        val list = mutableListOf<Any>()
+        for (i in 0 until jsonArray.length()) {
+            val value = jsonArray.get(i)
+            list.add(
+                when (value) {
+                    is JSONObject -> jsonObjectToMap(value)
+                    is JSONArray -> jsonArrayToList(value)
+                    else -> value
+                }
+            )
+        }
+        return list
     }
+
 
     fun close() {
         httpClient.close()
     }
-    
+
     private fun parseJsonResponse(jsonString: String): Map<String, Any> {
         val jsonObject = JSONObject(jsonString)
         val result = mutableMapOf<String, Any>()
-        
+
         // Convert JSONObject to Map<String, Any>
         for (key in jsonObject.keys()) {
             val value = jsonObject.get(key)
@@ -264,6 +243,7 @@ class McpHttpClient(private val context: Context) {
                     }
                     nestedMap
                 }
+
                 is JSONArray -> {
                     val list = mutableListOf<Any>()
                     for (i in 0 until value.length()) {
@@ -271,13 +251,14 @@ class McpHttpClient(private val context: Context) {
                     }
                     list
                 }
+
                 else -> value
             }
         }
-        
+
         return result
     }
-    
+
     private fun parseValue(value: Any): Any {
         return when (value) {
             is JSONObject -> {
@@ -287,6 +268,7 @@ class McpHttpClient(private val context: Context) {
                 }
                 nestedMap
             }
+
             is JSONArray -> {
                 val list = mutableListOf<Any>()
                 for (i in 0 until value.length()) {
@@ -294,76 +276,10 @@ class McpHttpClient(private val context: Context) {
                 }
                 list
             }
+
             else -> value
         }
     }
-    
-    private fun loadMockDataFromAssets(fileName: String): McpResponse<Any> {
-        return try {
-            Log.d("MCP", "Loading mock data from assets: $fileName")
-            val jsonString = context.assets.open(fileName).bufferedReader().use { it.readText() }
-            val jsonResponse = parseJsonResponse(jsonString)
-            
-            McpResponse<Any>(
-                success = jsonResponse["success"] as? Boolean ?: true,
-                data = jsonResponse["data"],
-                error = jsonResponse["error"] as? String,
-                message = "Mock data loaded from assets: $fileName"
-            )
-        } catch (e: IOException) {
-            Log.e("MCP", "Failed to load mock data from assets: $fileName", e)
-            McpResponse<Any>(
-                success = false,
-                data = null,
-                error = "Failed to load mock data from assets: ${e.message}",
-                message = "Asset loading failed"
-            )
-        }
-    }
-    
-    private fun loadMockDataFromAssetsWithPagination(fileName: String, page: Int): McpResponse<Any> {
-        return try {
-            Log.d("MCP", "Loading mock data from assets: $fileName, page: $page")
-            val jsonString = context.assets.open(fileName).bufferedReader().use { it.readText() }
-            val jsonResponse = parseJsonResponse(jsonString)
-            
-            // Create paginated response based on page
-            val allMovies = (jsonResponse["data"] as? Map<String, Any>)?.get("movies") as? List<Map<String, Any>> ?: emptyList()
-            val moviesPerPage = 15
-            val startIndex = (page - 1) * moviesPerPage
-            val endIndex = minOf(startIndex + moviesPerPage, allMovies.size)
-            val pageMovies = allMovies.subList(startIndex, endIndex)
-            
-            val totalPages = 3 // We have 3 pages of mock data
-            val hasNext = page < totalPages
-            val hasPrevious = page > 1
-            
-            val paginatedData = mapOf(
-                "movies" to pageMovies,
-                "pagination" to mapOf(
-                    "page" to page,
-                    "totalPages" to totalPages,
-                    "totalResults" to allMovies.size,
-                    "hasNext" to hasNext,
-                    "hasPrevious" to hasPrevious
-                )
-            )
-            
-            McpResponse<Any>(
-                success = jsonResponse["success"] as? Boolean ?: true,
-                data = paginatedData,
-                error = jsonResponse["error"] as? String,
-                message = "Mock data loaded from assets: $fileName, page: $page"
-            )
-        } catch (e: IOException) {
-            Log.e("MCP", "Failed to load mock data from assets: $fileName", e)
-            McpResponse<Any>(
-                success = false,
-                data = null,
-                error = "Failed to load mock data from assets: ${e.message}",
-                message = "Asset loading failed"
-            )
-        }
-    }
-    
+
+
 }

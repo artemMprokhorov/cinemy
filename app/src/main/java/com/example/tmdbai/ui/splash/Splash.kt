@@ -26,7 +26,6 @@ import com.example.tmdbai.ui.theme.Typography16
 import com.example.tmdbai.ui.theme.Typography32
 
 
-
 @Composable
 fun MovieAppSplashScreen(
     onSplashComplete: () -> Unit = {}

@@ -1,6 +1,7 @@
 # Presentation Layer Implementation
 
-This package contains the complete presentation layer implementation for the TMDB AI Android application, following MVI pattern with Jetpack Compose and integrating with the data layer.
+This package contains the complete presentation layer implementation for the TMDB AI Android
+application, following MVI pattern with Jetpack Compose and integrating with the data layer.
 
 ## Architecture Overview
 
@@ -29,18 +30,21 @@ presentation/
 This implementation **fully complies with MVI (Model-View-Intent) architecture principles**:
 
 #### **1. MODEL (Data Layer Integration)**
+
 - **Repository Pattern**: Clean integration with `MovieRepository`
 - **Domain Models**: Uses clean domain models from data layer
 - **Result Handling**: Type-safe `Result<T>` sealed class
 - **Business Logic**: Encapsulated in repository layer
 
 #### **2. VIEW (UI Layer)**
+
 - **Jetpack Compose**: Modern declarative UI components
 - **State-Driven**: UI reacts to state changes automatically
 - **Intent Sending**: UI sends intents to ViewModels
 - **Separation**: UI only handles display logic
 
 #### **3. INTENT (User Interactions)**
+
 - **Sealed Classes**: Type-safe intent definitions
 - **Comprehensive Coverage**: All user interactions captured
 - **Interface Inheritance**: Proper `CommonIntent` interface structure
@@ -48,6 +52,7 @@ This implementation **fully complies with MVI (Model-View-Intent) architecture p
 - **Examples**: `LoadPopularMovies`, `SearchMovies`, `LoadMoreMovies`, `RetryLastOperation`
 
 #### **4. STATE (UI State Management)**
+
 - **Immutable State**: Data classes with default values
 - **StateFlow**: Reactive state management
 - **Comprehensive State**: All UI state in single object
@@ -56,6 +61,7 @@ This implementation **fully complies with MVI (Model-View-Intent) architecture p
 - **UI Configuration**: Dynamic theming support
 
 #### **5. VIEWMODEL (Business Logic)**
+
 - **Intent Processing**: `processIntent()` method
 - **State Management**: `StateFlow` for reactive updates
 - **Unidirectional Flow**: Intent → Reducer → New State
@@ -64,11 +70,13 @@ This implementation **fully complies with MVI (Model-View-Intent) architecture p
 ### 🔄 **MVI Data Flow**
 
 #### **Unidirectional Data Flow:**
+
 ```
 User Action → Intent → ViewModel.processIntent() → Repository → State Update → UI Update
 ```
 
 #### **Detailed Flow Example:**
+
 ```kotlin
 // 1. User clicks "Load Popular Movies"
 viewModel.processIntent(MoviesListIntent.LoadPopularMovies)
@@ -97,60 +105,64 @@ val state by viewModel.state.collectAsState()
 
 ### ✅ **MVI Pattern Compliance Checklist**
 
-| MVI Component | Status | Implementation |
-|---------------|--------|----------------|
-| **Model** | ✅ | Data layer with repositories and business logic |
-| **View** | ✅ | Jetpack Compose UI components |
-| **Intent** | ✅ | Sealed classes for user interactions |
-| **State** | ✅ | Immutable data classes with StateFlow |
-| **Unidirectional Flow** | ✅ | Intent → Reducer → State → UI |
-| **State Management** | ✅ | StateFlow for reactive updates |
-| **Separation of Concerns** | ✅ | Clear boundaries between layers |
-| **Type Safety** | ✅ | Sealed classes and Result types |
-| **Error Handling** | ✅ | Result sealed class with error states |
-| **Reactive UI** | ✅ | Automatic UI updates via StateFlow |
+| MVI Component              | Status | Implementation                                  |
+|----------------------------|--------|-------------------------------------------------|
+| **Model**                  | ✅      | Data layer with repositories and business logic |
+| **View**                   | ✅      | Jetpack Compose UI components                   |
+| **Intent**                 | ✅      | Sealed classes for user interactions            |
+| **State**                  | ✅      | Immutable data classes with StateFlow           |
+| **Unidirectional Flow**    | ✅      | Intent → Reducer → State → UI                   |
+| **State Management**       | ✅      | StateFlow for reactive updates                  |
+| **Separation of Concerns** | ✅      | Clear boundaries between layers                 |
+| **Type Safety**            | ✅      | Sealed classes and Result types                 |
+| **Error Handling**         | ✅      | Result sealed class with error states           |
+| **Reactive UI**            | ✅      | Automatic UI updates via StateFlow              |
 
 ## Key Components
 
 ### 1. Common Layer (`commons/`)
 
 #### CommonIntent.kt
+
 - **CommonIntent**: Base interface for all intents
-  - `Retry`: Retry the current operation
-  - `Refresh`: Refresh the current data
-  - `BackPressed`: Handle back button press
+    - `Retry`: Retry the current operation
+    - `Refresh`: Refresh the current data
+    - `BackPressed`: Handle back button press
 - **Inheritance**: All specific intents implement this interface
 
 ### 2. Movies List Screen (`movieslist/`)
 
 #### MoviesListState.kt
+
 - **MoviesListState**: Data class containing all UI state information
-  - `movies`: List of movies to display
-  - `isLoading`: Loading state indicator
-  - `error`: Error message if any
-  - `uiConfig`: Dynamic UI configuration from backend
-  - `currentPage`: Current pagination page
-  - `totalPages`: Total number of pages
-  - `hasNextPage`/`hasPreviousPage`: Pagination controls
-  - `searchQuery`: Current search query
-  - `isSearchMode`: Search mode toggle
+    - `movies`: List of movies to display
+    - `isLoading`: Loading state indicator
+    - `error`: Error message if any
+    - `uiConfig`: Dynamic UI configuration from backend
+    - `currentPage`: Current pagination page
+    - `totalPages`: Total number of pages
+    - `hasNextPage`/`hasPreviousPage`: Pagination controls
+    - `searchQuery`: Current search query
+    - `isSearchMode`: Search mode toggle
 
 #### MoviesListIntent.kt
+
 - **MoviesListIntent**: Sealed class defining all user interactions
-  - `LoadPopularMovies`: Load popular movies
-  - `LoadTopRatedMovies`: Load top-rated movies
-  - `LoadNowPlayingMovies`: Load now-playing movies
-  - `SearchMovies(query)`: Search movies with query
-  - `LoadNextPage`: Load next page of results
-  - `LoadPreviousPage`: Load previous page of results
-  - `MovieClicked(movieId)`: Handle movie selection
-  - `ClearSearch`: Clear search query
-  - `ToggleSearchMode`: Toggle search mode
-  - `Retry`: Retry failed operation
-  - `Refresh`: Refresh current data
-  - `BackPressed`: Handle back button press
+    - `LoadPopularMovies`: Load popular movies
+    - `LoadTopRatedMovies`: Load top-rated movies
+    - `LoadNowPlayingMovies`: Load now-playing movies
+    - `SearchMovies(query)`: Search movies with query
+    - `LoadNextPage`: Load next page of results
+    - `LoadPreviousPage`: Load previous page of results
+    - `MovieClicked(movieId)`: Handle movie selection
+    - `ClearSearch`: Clear search query
+    - `ToggleSearchMode`: Toggle search mode
+    - `Retry`: Retry failed operation
+    - `Refresh`: Refresh current data
+    - `BackPressed`: Handle back button press
 
 #### MoviesListViewModel.kt
+
 - **MoviesListViewModel**: Implements MVI pattern
 - **Intent Processing**: Handles all user interactions through intents
 - **State Management**: Exposes StateFlow for reactive UI updates
@@ -162,21 +174,24 @@ val state by viewModel.state.collectAsState()
 ### 3. Movie Details Screen (`moviedetail/`)
 
 #### MovieDetailState.kt
+
 - **MovieDetailState**: Data class containing movie details state
-  - `movieDetails`: Complete movie information
-  - `isLoading`: Loading state indicator
-  - `error`: Error message if any
-  - `uiConfig`: Dynamic UI configuration from backend
+    - `movieDetails`: Complete movie information
+    - `isLoading`: Loading state indicator
+    - `error`: Error message if any
+    - `uiConfig`: Dynamic UI configuration from backend
 
 #### MovieDetailIntent.kt
+
 - **MovieDetailIntent**: Sealed class defining all user interactions
-  - `LoadMovieDetails(movieId)`: Load specific movie details
-  - `LoadRecommendations`: Load movie recommendations
-  - `Retry`: Retry failed operation
-  - `Refresh`: Refresh current data
-  - `BackPressed`: Handle back button press
+    - `LoadMovieDetails(movieId)`: Load specific movie details
+    - `LoadRecommendations`: Load movie recommendations
+    - `Retry`: Retry failed operation
+    - `Refresh`: Refresh current data
+    - `BackPressed`: Handle back button press
 
 #### MovieDetailViewModel.kt
+
 - **MovieDetailViewModel**: Implements MVI pattern for details
 - **Intent Processing**: Handles movie details loading and retry
 - **State Management**: Exposes StateFlow for reactive UI updates
@@ -186,6 +201,7 @@ val state by viewModel.state.collectAsState()
 ### 4. Dependency Injection (`di/`)
 
 #### PresentationModule.kt
+
 - **Koin Module**: Provides ViewModels for dependency injection
 - **ViewModel Factories**: Creates ViewModels with repository dependencies
 - **Integration**: Works with data layer modules
@@ -224,10 +240,12 @@ val state by viewModel.state.collectAsState()
 ## Navigation Integration
 
 ### Screen Flow
+
 1. **Splash** → **MoviesListScreen**
 2. **MoviesListScreen** → **MovieDetailScreen** (with movie ID)
 
 ### Navigation Implementation
+
 ```kotlin
 // In Navigation.kt
 composable(Screen.List.route) {
@@ -250,12 +268,14 @@ composable(Screen.Details.route) { backStackEntry ->
 ## Data Layer Integration
 
 ### Repository Usage
+
 - **Dependency Injection**: ViewModels receive repositories through Koin
 - **Suspend Functions**: All repository calls are suspend functions
 - **Result Handling**: Uses sealed Result class for type-safe error handling
 - **UI Configuration**: Extracts UI configuration from repository responses
 
 ### Example Integration
+
 ```kotlin
 class MoviesListViewModel(
     private val movieRepository: MovieRepository
@@ -288,42 +308,49 @@ class MoviesListViewModel(
 ## Key Features
 
 ### ✅ MVI Pattern Compliance
+
 - Intent-based user interactions
 - Unidirectional data flow
 - StateFlow for reactive updates
 - Clear separation of concerns
 
 ### ✅ Organized Package Structure
+
 - Each ViewModel has its own package
 - Intent and State classes co-located with ViewModels
 - Common base classes in dedicated commons package
 - Clear separation of concerns
 
 ### ✅ Jetpack Compose Integration
+
 - Modern declarative UI
 - State-driven composables
 - Compose-friendly ViewModels
 - Koin integration with `koinViewModel()`
 
 ### ✅ Dynamic UI Configuration
+
 - Backend-driven theming
 - Configurable colors and texts
 - Dynamic button styling
 - Movie poster color palettes
 
 ### ✅ Error Handling
+
 - Graceful error recovery
 - Retry functionality
 - User-friendly error messages
 - Loading state management
 
 ### ✅ Search and Pagination
+
 - Movie search functionality
 - Pagination controls
 - Search mode toggle
 - Query persistence
 
 ### ✅ Navigation
+
 - Type-safe navigation
 - Parameter passing
 - Back stack management
@@ -371,8 +398,10 @@ fun MoviesListScreen(
 
 ## Build Status
 
-✅ **BUILD SUCCESSFUL** - All presentation layer components compile correctly and are fully integrated with the data layer.
+✅ **BUILD SUCCESSFUL** - All presentation layer components compile correctly and are fully
+integrated with the data layer.
 
 ✅ **MVI PATTERN VERIFIED** - Complete compliance with MVI architecture principles.
 
-The presentation layer is now ready for production use with complete MVI pattern implementation, dynamic UI configuration, and seamless data layer integration.
+The presentation layer is now ready for production use with complete MVI pattern implementation,
+dynamic UI configuration, and seamless data layer integration.

@@ -1,5 +1,6 @@
 package com.example.tmdbai.ui.moviedetail
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,46 +12,39 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import com.example.tmdbai.ui.theme.SplashBackground
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import com.example.tmdbai.BuildConfig
+import com.example.tmdbai.R
 import com.example.tmdbai.data.model.MovieDetails
 import com.example.tmdbai.data.model.UiConfiguration
 import com.example.tmdbai.presentation.moviedetail.MovieDetailIntent
 import com.example.tmdbai.presentation.moviedetail.MovieDetailState
 import com.example.tmdbai.presentation.moviedetail.MovieDetailViewModel
-import com.example.tmdbai.ui.components.PullToReloadIndicator
 import com.example.tmdbai.ui.components.PullToReloadArrow
+import com.example.tmdbai.ui.theme.SplashBackground
 import com.example.tmdbai.ui.theme.TmdbAiTheme
-import coil.compose.AsyncImage
 
 @Composable
 fun MovieDetailScreen(
@@ -84,8 +78,10 @@ private fun MovieDetailContent(
 ) {
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.isLoading,
-        onRefresh = { 
-            android.util.Log.d("MovieDetail", "Pull to refresh triggered")
+        onRefresh = {
+            if (BuildConfig.DEBUG) {
+                Log.d("MovieDetail", "Pull to refresh triggered")
+            }
             onIntent(MovieDetailIntent.Retry)
         }
     )
@@ -106,7 +102,7 @@ private fun MovieDetailContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Loading...",
+                            text = stringResource(R.string.loading_text),
                             color = Color.White,
                             style = MaterialTheme.typography.headlineMedium
                         )
@@ -117,6 +113,7 @@ private fun MovieDetailContent(
                     }
                 }
             }
+
             state.error != null -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -128,7 +125,7 @@ private fun MovieDetailContent(
                     ) {
                         Spacer(modifier = Modifier.height(100.dp))
                         Text(
-                            text = "Failed to fetch",
+                            text = stringResource(R.string.error_generic),
                             color = Color.White,
                             style = MaterialTheme.typography.headlineLarge
                         )
@@ -149,6 +146,7 @@ private fun MovieDetailContent(
                     }
                 }
             }
+
             state.movieDetails != null -> {
                 MovieDetailsContent(
                     movieDetails = state.movieDetails,
@@ -157,7 +155,7 @@ private fun MovieDetailContent(
                 )
             }
         }
-        
+
         // No pull refresh indicator - only custom spinner on loading screen
     }
 }

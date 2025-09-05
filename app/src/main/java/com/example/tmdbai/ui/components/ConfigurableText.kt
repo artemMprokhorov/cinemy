@@ -10,10 +10,10 @@ import com.example.tmdbai.data.model.UiConfiguration
 
 /**
  * Configurable text component that supports server-driven styling
- * 
+ *
  * This component accepts UiConfig parameters for dynamic text theming while
  * falling back to Material3 defaults when no configuration is provided.
- * 
+ *
  * @param text The text content to display
  * @param style The text style to apply (Material3 typography)
  * @param uiConfig Optional UI configuration for dynamic styling
@@ -38,9 +38,10 @@ fun ConfigurableText(
             // to use specific text configurations from UiConfig
             uiConfig.colors.onBackground
         }
+
         else -> MaterialTheme.colorScheme.onBackground
     }
-    
+
     Text(
         text = text,
         style = style,
@@ -52,10 +53,10 @@ fun ConfigurableText(
 
 /**
  * Configurable text component for specific text types defined in UiConfig
- * 
+ *
  * This component maps to specific text configurations from the server
  * such as app title, loading text, error messages, etc.
- * 
+ *
  * @param textType The type of text to display (maps to UiConfig text configuration)
  * @param uiConfig UI configuration containing text definitions
  * @param modifier Modifier to apply to the text
@@ -81,7 +82,7 @@ fun ConfigurableTextByType(
         TextType.BACK_BUTTON -> uiConfig?.texts?.backButton
         TextType.PLAY_BUTTON -> uiConfig?.texts?.playButton
     } ?: textType.defaultText
-    
+
     ConfigurableText(
         text = textContent,
         style = style,

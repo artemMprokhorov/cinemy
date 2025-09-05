@@ -80,7 +80,7 @@ private fun DrawScope.drawPullToReloadArrow(
     // Draw the main arrow body (vertical line)
     val arrowBodyStart = centerY - arrowSize * 0.6f
     val arrowBodyEnd = centerY + arrowSize * 0.6f
-    
+
     drawLine(
         color = color,
         start = Offset(centerX, arrowBodyStart),
@@ -111,12 +111,12 @@ private fun DrawScope.drawPullToReloadArrow(
     if (progress > 0.1f) {
         val pullLinesAlpha = (progress - 0.1f) / 0.9f
         val pullLinesColor = color.copy(alpha = pullLinesAlpha)
-        
+
         // Draw curved lines indicating pull direction
         val curveRadius = arrowSize * 0.8f
         val curveStart = centerY - arrowSize * 0.8f
         val curveEnd = centerY - arrowSize * 0.2f
-        
+
         // Left curve
         val leftPath = Path().apply {
             moveTo(centerX - curveRadius * 0.3f, curveStart)
@@ -126,7 +126,7 @@ private fun DrawScope.drawPullToReloadArrow(
                 centerX - curveRadius * 0.2f, curveEnd
             )
         }
-        
+
         // Right curve
         val rightPath = Path().apply {
             moveTo(centerX + curveRadius * 0.3f, curveStart)

@@ -1,231 +1,232 @@
 package com.example.tmdbai.data.remote.dto
 
+import com.example.tmdbai.data.model.StringConstants
 import com.google.gson.annotations.SerializedName
 
 // Movie Data DTOs
 data class MovieDto(
-    @SerializedName("id")
+    @SerializedName(StringConstants.SERIALIZED_ID)
     val id: Int,
-    @SerializedName("title")
+    @SerializedName(StringConstants.SERIALIZED_TITLE)
     val title: String,
-    @SerializedName("overview")
+    @SerializedName(StringConstants.SERIALIZED_OVERVIEW)
     val description: String,
-    @SerializedName("poster_path")
+    @SerializedName(StringConstants.SERIALIZED_POSTER_PATH)
     val posterPath: String?,
-    @SerializedName("vote_average")
+    @SerializedName(StringConstants.SERIALIZED_VOTE_AVERAGE)
     val rating: Double,
-    @SerializedName("vote_count")
+    @SerializedName(StringConstants.SERIALIZED_VOTE_COUNT)
     val voteCount: Int,
-    @SerializedName("release_date")
+    @SerializedName(StringConstants.SERIALIZED_RELEASE_DATE)
     val releaseDate: String,
-    @SerializedName("backdrop_path")
+    @SerializedName(StringConstants.SERIALIZED_BACKDROP_PATH)
     val backdropPath: String?,
-    @SerializedName("genre_ids")
+    @SerializedName(StringConstants.SERIALIZED_GENRE_IDS)
     val genreIds: List<Int> = emptyList(),
-    @SerializedName("popularity")
+    @SerializedName(StringConstants.SERIALIZED_POPULARITY)
     val popularity: Double,
-    @SerializedName("adult")
+    @SerializedName(StringConstants.SERIALIZED_ADULT)
     val adult: Boolean
 )
 
 data class MovieListResponseDto(
-    @SerializedName("page")
+    @SerializedName(StringConstants.SERIALIZED_PAGE)
     val page: Int,
-    @SerializedName("results")
+    @SerializedName(StringConstants.SERIALIZED_RESULTS)
     val movies: List<MovieDto>,
-    @SerializedName("total_pages")
+    @SerializedName(StringConstants.SERIALIZED_TOTAL_PAGES)
     val totalPages: Int,
-    @SerializedName("total_results")
+    @SerializedName(StringConstants.SERIALIZED_TOTAL_RESULTS)
     val totalResults: Int
 )
 
 data class MovieDetailsDto(
-    @SerializedName("id")
+    @SerializedName(StringConstants.SERIALIZED_ID)
     val id: Int,
-    @SerializedName("title")
+    @SerializedName(StringConstants.SERIALIZED_TITLE)
     val title: String,
-    @SerializedName("overview")
+    @SerializedName(StringConstants.SERIALIZED_OVERVIEW)
     val description: String,
-    @SerializedName("poster_path")
+    @SerializedName(StringConstants.SERIALIZED_POSTER_PATH)
     val posterPath: String?,
-    @SerializedName("backdrop_path")
+    @SerializedName(StringConstants.SERIALIZED_BACKDROP_PATH)
     val backdropPath: String?,
-    @SerializedName("vote_average")
+    @SerializedName(StringConstants.SERIALIZED_VOTE_AVERAGE)
     val rating: Double,
-    @SerializedName("vote_count")
+    @SerializedName(StringConstants.SERIALIZED_VOTE_COUNT)
     val voteCount: Int,
-    @SerializedName("release_date")
+    @SerializedName(StringConstants.SERIALIZED_RELEASE_DATE)
     val releaseDate: String,
-    @SerializedName("runtime")
+    @SerializedName(StringConstants.SERIALIZED_RUNTIME)
     val runtime: Int?,
-    @SerializedName("genres")
+    @SerializedName(StringConstants.SERIALIZED_GENRES)
     val genres: List<GenreDto>,
-    @SerializedName("production_companies")
+    @SerializedName(StringConstants.SERIALIZED_PRODUCTION_COMPANIES)
     val productionCompanies: List<ProductionCompanyDto>,
-    @SerializedName("budget")
+    @SerializedName(StringConstants.SERIALIZED_BUDGET)
     val budget: Long,
-    @SerializedName("revenue")
+    @SerializedName(StringConstants.SERIALIZED_REVENUE)
     val revenue: Long,
-    @SerializedName("status")
+    @SerializedName(StringConstants.SERIALIZED_STATUS)
     val status: String
 )
 
 data class GenreDto(
-    @SerializedName("id")
+    @SerializedName(StringConstants.SERIALIZED_ID)
     val id: Int,
-    @SerializedName("name")
+    @SerializedName(StringConstants.SERIALIZED_NAME)
     val name: String
 )
 
 data class ProductionCompanyDto(
-    @SerializedName("id")
+    @SerializedName(StringConstants.SERIALIZED_ID)
     val id: Int,
-    @SerializedName("logo_path")
+    @SerializedName(StringConstants.SERIALIZED_LOGO_PATH)
     val logoPath: String?,
-    @SerializedName("name")
+    @SerializedName(StringConstants.SERIALIZED_NAME)
     val name: String,
-    @SerializedName("origin_country")
+    @SerializedName(StringConstants.SERIALIZED_ORIGIN_COUNTRY)
     val originCountry: String
 )
 
 // UI Configuration DTOs
 data class UiConfigurationDto(
-    @SerializedName("colors")
+    @SerializedName(StringConstants.SERIALIZED_COLORS)
     val colors: ColorSchemeDto,
-    @SerializedName("texts")
+    @SerializedName(StringConstants.SERIALIZED_TEXTS)
     val texts: TextConfigurationDto,
-    @SerializedName("buttons")
+    @SerializedName(StringConstants.SERIALIZED_BUTTONS)
     val buttons: ButtonConfigurationDto,
-    @SerializedName("search_info")
+    @SerializedName(StringConstants.SERIALIZED_SEARCH_INFO)
     val searchInfo: SearchInfoDto? = null
 )
 
 data class ColorSchemeDto(
-    @SerializedName("primary")
+    @SerializedName(StringConstants.SERIALIZED_PRIMARY)
     val primary: String,
-    @SerializedName("secondary")
+    @SerializedName(StringConstants.SERIALIZED_SECONDARY)
     val secondary: String,
-    @SerializedName("background")
+    @SerializedName(StringConstants.SERIALIZED_BACKGROUND)
     val background: String,
-    @SerializedName("surface")
+    @SerializedName(StringConstants.SERIALIZED_SURFACE)
     val surface: String,
-    @SerializedName("on_primary")
+    @SerializedName(StringConstants.SERIALIZED_ON_PRIMARY)
     val onPrimary: String,
-    @SerializedName("on_secondary")
+    @SerializedName(StringConstants.SERIALIZED_ON_SECONDARY)
     val onSecondary: String,
-    @SerializedName("on_background")
+    @SerializedName(StringConstants.SERIALIZED_ON_BACKGROUND)
     val onBackground: String,
-    @SerializedName("on_surface")
+    @SerializedName(StringConstants.SERIALIZED_ON_SURFACE)
     val onSurface: String,
-    @SerializedName("movie_poster_colors")
+    @SerializedName(StringConstants.SERIALIZED_MOVIE_POSTER_COLORS)
     val moviePosterColors: List<String>
 )
 
 data class TextConfigurationDto(
-    @SerializedName("app_title")
+    @SerializedName(StringConstants.SERIALIZED_APP_TITLE)
     val appTitle: String,
-    @SerializedName("loading_text")
+    @SerializedName(StringConstants.SERIALIZED_LOADING_TEXT)
     val loadingText: String,
-    @SerializedName("error_message")
+    @SerializedName(StringConstants.SERIALIZED_ERROR_MESSAGE)
     val errorMessage: String,
-    @SerializedName("no_movies_found")
+    @SerializedName(StringConstants.SERIALIZED_NO_MOVIES_FOUND)
     val noMoviesFound: String,
-    @SerializedName("retry_button")
+    @SerializedName(StringConstants.SERIALIZED_RETRY_BUTTON)
     val retryButton: String,
-    @SerializedName("back_button")
+    @SerializedName(StringConstants.SERIALIZED_BACK_BUTTON)
     val backButton: String,
-    @SerializedName("play_button")
+    @SerializedName(StringConstants.SERIALIZED_PLAY_BUTTON)
     val playButton: String
 )
 
 data class ButtonConfigurationDto(
-    @SerializedName("primary_button_color")
+    @SerializedName(StringConstants.SERIALIZED_PRIMARY_BUTTON_COLOR)
     val primaryButtonColor: String,
-    @SerializedName("secondary_button_color")
+    @SerializedName(StringConstants.SERIALIZED_SECONDARY_BUTTON_COLOR)
     val secondaryButtonColor: String,
-    @SerializedName("button_text_color")
+    @SerializedName(StringConstants.SERIALIZED_BUTTON_TEXT_COLOR)
     val buttonTextColor: String,
-    @SerializedName("button_corner_radius")
+    @SerializedName(StringConstants.SERIALIZED_BUTTON_CORNER_RADIUS)
     val buttonCornerRadius: Int
 )
 
 data class SearchInfoDto(
-    @SerializedName("query")
+    @SerializedName(StringConstants.SERIALIZED_QUERY)
     val query: String,
-    @SerializedName("result_count")
+    @SerializedName(StringConstants.SERIALIZED_RESULT_COUNT)
     val resultCount: Int,
-    @SerializedName("avg_rating")
+    @SerializedName(StringConstants.SERIALIZED_AVG_RATING)
     val avgRating: Double,
-    @SerializedName("rating_type")
+    @SerializedName(StringConstants.SERIALIZED_RATING_TYPE)
     val ratingType: String,
-    @SerializedName("color_based")
+    @SerializedName(StringConstants.SERIALIZED_COLOR_BASED)
     val colorBased: Boolean
 )
 
 data class MetaDto(
-    @SerializedName("timestamp")
+    @SerializedName(StringConstants.SERIALIZED_TIMESTAMP)
     val timestamp: String,
-    @SerializedName("method")
+    @SerializedName(StringConstants.SERIALIZED_METHOD)
     val method: String,
-    @SerializedName("search_query")
+    @SerializedName(StringConstants.SERIALIZED_SEARCH_QUERY)
     val searchQuery: String? = null,
-    @SerializedName("movie_id")
+    @SerializedName(StringConstants.SERIALIZED_MOVIE_ID)
     val movieId: Int? = null,
-    @SerializedName("results_count")
+    @SerializedName(StringConstants.SERIALIZED_RESULTS_COUNT)
     val resultsCount: Int? = null,
-    @SerializedName("ai_generated")
+    @SerializedName(StringConstants.SERIALIZED_AI_GENERATED)
     val aiGenerated: Boolean,
-    @SerializedName("gemini_colors")
+    @SerializedName(StringConstants.SERIALIZED_GEMINI_COLORS)
     val geminiColors: GeminiColorsDto,
-    @SerializedName("avg_rating")
+    @SerializedName(StringConstants.SERIALIZED_AVG_RATING)
     val avgRating: Double? = null,
-    @SerializedName("movie_rating")
+    @SerializedName(StringConstants.SERIALIZED_MOVIE_RATING)
     val movieRating: Double? = null,
-    @SerializedName("version")
+    @SerializedName(StringConstants.SERIALIZED_VERSION)
     val version: String
 )
 
 data class GeminiColorsDto(
-    @SerializedName("primary")
+    @SerializedName(StringConstants.SERIALIZED_PRIMARY)
     val primary: String,
-    @SerializedName("secondary")
+    @SerializedName(StringConstants.SERIALIZED_SECONDARY)
     val secondary: String,
-    @SerializedName("accent")
+    @SerializedName(StringConstants.SERIALIZED_ACCENT)
     val accent: String
 )
 
 // MCP Response DTOs
 data class McpResponseDto<T>(
-    @SerializedName("success")
+    @SerializedName(StringConstants.SERIALIZED_SUCCESS)
     val success: Boolean,
-    @SerializedName("data")
+    @SerializedName(StringConstants.SERIALIZED_DATA)
     val data: T?,
-    @SerializedName("ui_config")
+    @SerializedName(StringConstants.SERIALIZED_UI_CONFIG)
     val uiConfig: UiConfigurationDto,
-    @SerializedName("error")
+    @SerializedName(StringConstants.SERIALIZED_ERROR)
     val error: String? = null,
-    @SerializedName("meta")
+    @SerializedName(StringConstants.SERIALIZED_META)
     val meta: MetaDto
 )
 
 data class McpMovieListResponseDto(
-    @SerializedName("movies")
+    @SerializedName(StringConstants.SERIALIZED_MOVIES)
     val movies: List<MovieDto>,
-    @SerializedName("pagination")
+    @SerializedName(StringConstants.SERIALIZED_PAGINATION)
     val pagination: PaginationDto,
-    @SerializedName("search_query")
+    @SerializedName(StringConstants.SERIALIZED_SEARCH_QUERY)
     val searchQuery: String = ""
 )
 
 data class PaginationDto(
-    @SerializedName("page")
+    @SerializedName(StringConstants.SERIALIZED_PAGE)
     val page: Int,
-    @SerializedName("total_pages")
+    @SerializedName(StringConstants.SERIALIZED_TOTAL_PAGES)
     val totalPages: Int,
-    @SerializedName("total_results")
+    @SerializedName(StringConstants.SERIALIZED_TOTAL_RESULTS)
     val totalResults: Int,
-    @SerializedName("has_next")
+    @SerializedName(StringConstants.SERIALIZED_HAS_NEXT)
     val hasNext: Boolean,
-    @SerializedName("has_previous")
+    @SerializedName(StringConstants.SERIALIZED_HAS_PREVIOUS)
     val hasPrevious: Boolean
 )

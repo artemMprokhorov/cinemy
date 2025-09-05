@@ -9,16 +9,16 @@ import com.example.tmdbai.presentation.commons.CommonIntent
 sealed class MoviesListIntent : CommonIntent {
     object LoadPopularMovies : MoviesListIntent()
     object LoadMoreMovies : MoviesListIntent()
-    
+
     data class NavigateToDetails(val movieId: Int) : MoviesListIntent()
     object RetryLastOperation : MoviesListIntent()
-    
+
     // NEW: Enhanced error handling intents
     object RetryConnection : MoviesListIntent()
     object RefreshData : MoviesListIntent()
     object CheckConnectionStatus : MoviesListIntent()
     object DismissError : MoviesListIntent()
-    
+
     // NEW: Pagination navigation intents
     object NextPage : MoviesListIntent()
     object PreviousPage : MoviesListIntent()

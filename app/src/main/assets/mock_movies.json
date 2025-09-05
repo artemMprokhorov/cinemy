@@ -11,7 +11,11 @@
         "rating": 9.0,
         "voteCount": 30000,
         "releaseDate": "2008-07-18",
-        "genreIds": [28, 80, 18],
+        "genreIds": [
+          28,
+          80,
+          18
+        ],
         "popularity": 85.5,
         "adult": false
       },
@@ -24,7 +28,11 @@
         "rating": 8.8,
         "voteCount": 25000,
         "releaseDate": "2010-07-16",
-        "genreIds": [28, 878, 53],
+        "genreIds": [
+          28,
+          878,
+          53
+        ],
         "popularity": 78.2,
         "adult": false
       },
@@ -37,7 +45,10 @@
         "rating": 8.6,
         "voteCount": 22000,
         "releaseDate": "2014-11-07",
-        "genreIds": [18, 878],
+        "genreIds": [
+          18,
+          878
+        ],
         "popularity": 72.8,
         "adult": false
       },
@@ -50,7 +61,10 @@
         "rating": 8.7,
         "voteCount": 28000,
         "releaseDate": "1999-03-30",
-        "genreIds": [28, 878],
+        "genreIds": [
+          28,
+          878
+        ],
         "popularity": 81.3,
         "adult": false
       },
@@ -63,7 +77,10 @@
         "rating": 8.9,
         "voteCount": 26000,
         "releaseDate": "1994-09-10",
-        "genreIds": [80, 18],
+        "genreIds": [
+          80,
+          18
+        ],
         "popularity": 76.9,
         "adult": false
       },
@@ -76,7 +93,10 @@
         "rating": 9.2,
         "voteCount": 19000,
         "releaseDate": "1972-03-14",
-        "genreIds": [80, 18],
+        "genreIds": [
+          80,
+          18
+        ],
         "popularity": 88.1,
         "adult": false
       },
@@ -89,7 +109,11 @@
         "rating": 8.8,
         "voteCount": 24000,
         "releaseDate": "1994-06-23",
-        "genreIds": [35, 18, 10749],
+        "genreIds": [
+          35,
+          18,
+          10749
+        ],
         "popularity": 82.4,
         "adult": false
       },
@@ -102,7 +126,11 @@
         "rating": 8.8,
         "voteCount": 23000,
         "releaseDate": "2001-12-18",
-        "genreIds": [12, 14, 28],
+        "genreIds": [
+          12,
+          14,
+          28
+        ],
         "popularity": 79.6,
         "adult": false
       },
@@ -115,7 +143,9 @@
         "rating": 8.8,
         "voteCount": 27000,
         "releaseDate": "1999-10-15",
-        "genreIds": [18],
+        "genreIds": [
+          18
+        ],
         "popularity": 77.3,
         "adult": false
       },
@@ -128,7 +158,10 @@
         "rating": 8.7,
         "voteCount": 12000,
         "releaseDate": "1990-09-12",
-        "genreIds": [80, 18],
+        "genreIds": [
+          80,
+          18
+        ],
         "popularity": 74.8,
         "adult": false
       },
@@ -141,7 +174,10 @@
         "rating": 9.3,
         "voteCount": 25000,
         "releaseDate": "1994-09-23",
-        "genreIds": [18, 80],
+        "genreIds": [
+          18,
+          80
+        ],
         "popularity": 89.2,
         "adult": false
       },
@@ -154,7 +190,10 @@
         "rating": 9.0,
         "voteCount": 12000,
         "releaseDate": "1974-12-18",
-        "genreIds": [80, 18],
+        "genreIds": [
+          80,
+          18
+        ],
         "popularity": 86.7,
         "adult": false
       },
@@ -167,7 +206,11 @@
         "rating": 8.9,
         "voteCount": 22000,
         "releaseDate": "2003-12-01",
-        "genreIds": [12, 14, 28],
+        "genreIds": [
+          12,
+          14,
+          28
+        ],
         "popularity": 84.3,
         "adult": false
       },
@@ -180,7 +223,11 @@
         "rating": 8.9,
         "voteCount": 15000,
         "releaseDate": "1993-11-30",
-        "genreIds": [18, 36, 10752],
+        "genreIds": [
+          18,
+          36,
+          10752
+        ],
         "popularity": 81.9,
         "adult": false
       },
@@ -193,7 +240,10 @@
         "rating": 9.0,
         "voteCount": 8000,
         "releaseDate": "1957-04-10",
-        "genreIds": [18, 80],
+        "genreIds": [
+          18,
+          80
+        ],
         "popularity": 78.5,
         "adult": false
       },
@@ -206,7 +256,11 @@
         "rating": 8.7,
         "voteCount": 20000,
         "releaseDate": "2002-12-18",
-        "genreIds": [12, 14, 28],
+        "genreIds": [
+          12,
+          14,
+          28
+        ],
         "popularity": 83.1,
         "adult": false
       },
@@ -219,7 +273,9 @@
         "rating": 8.8,
         "voteCount": 8000,
         "releaseDate": "1966-12-23",
-        "genreIds": [37],
+        "genreIds": [
+          37
+        ],
         "popularity": 75.2,
         "adult": false
       },
@@ -232,7 +288,11 @@
         "rating": 8.4,
         "voteCount": 18000,
         "releaseDate": "2012-07-16",
-        "genreIds": [28, 80, 18],
+        "genreIds": [
+          28,
+          80,
+          18
+        ],
         "popularity": 79.8,
         "adult": false
       },
@@ -245,7 +305,10 @@
         "rating": 8.9,
         "voteCount": 26000,
         "releaseDate": "1994-09-10",
-        "genreIds": [80, 18],
+        "genreIds": [
+          80,
+          18
+        ],
         "popularity": 76.9,
         "adult": false
       },
@@ -258,7 +321,10 @@
         "rating": 7.2,
         "voteCount": 15000,
         "releaseDate": "2003-05-15",
-        "genreIds": [28, 878],
+        "genreIds": [
+          28,
+          878
+        ],
         "popularity": 68.4,
         "adult": false
       },
@@ -271,7 +337,10 @@
         "rating": 6.8,
         "voteCount": 12000,
         "releaseDate": "2003-11-05",
-        "genreIds": [28, 878],
+        "genreIds": [
+          28,
+          878
+        ],
         "popularity": 65.7,
         "adult": false
       },
@@ -284,7 +353,11 @@
         "rating": 8.6,
         "voteCount": 14000,
         "releaseDate": "1991-02-14",
-        "genreIds": [80, 18, 53],
+        "genreIds": [
+          80,
+          18,
+          53
+        ],
         "popularity": 73.9,
         "adult": false
       },
@@ -297,7 +370,11 @@
         "rating": 8.6,
         "voteCount": 16000,
         "releaseDate": "1998-07-24",
-        "genreIds": [18, 36, 10752],
+        "genreIds": [
+          18,
+          36,
+          10752
+        ],
         "popularity": 77.1,
         "adult": false
       },
@@ -310,7 +387,11 @@
         "rating": 8.6,
         "voteCount": 18000,
         "releaseDate": "1999-12-10",
-        "genreIds": [18, 14, 80],
+        "genreIds": [
+          18,
+          14,
+          80
+        ],
         "popularity": 78.3,
         "adult": false
       },
@@ -323,7 +404,11 @@
         "rating": 8.5,
         "voteCount": 13000,
         "releaseDate": "2006-10-06",
-        "genreIds": [80, 18, 53],
+        "genreIds": [
+          80,
+          18,
+          53
+        ],
         "popularity": 74.6,
         "adult": false
       },
@@ -336,7 +421,11 @@
         "rating": 8.5,
         "voteCount": 17000,
         "releaseDate": "2000-05-01",
-        "genreIds": [28, 18, 36],
+        "genreIds": [
+          28,
+          18,
+          36
+        ],
         "popularity": 76.8,
         "adult": false
       },
@@ -349,7 +438,11 @@
         "rating": 8.5,
         "voteCount": 19000,
         "releaseDate": "1994-06-15",
-        "genreIds": [12, 16, 18],
+        "genreIds": [
+          12,
+          16,
+          18
+        ],
         "popularity": 80.2,
         "adult": false
       },
@@ -362,7 +455,11 @@
         "rating": 8.6,
         "voteCount": 15000,
         "releaseDate": "1991-07-01",
-        "genreIds": [28, 878, 53],
+        "genreIds": [
+          28,
+          878,
+          53
+        ],
         "popularity": 75.4,
         "adult": false
       },
@@ -375,7 +472,11 @@
         "rating": 8.5,
         "voteCount": 16000,
         "releaseDate": "1985-07-03",
-        "genreIds": [12, 35, 878],
+        "genreIds": [
+          12,
+          35,
+          878
+        ],
         "popularity": 78.7,
         "adult": false
       },
@@ -388,7 +489,11 @@
         "rating": 8.5,
         "voteCount": 14000,
         "releaseDate": "2006-10-17",
-        "genreIds": [18, 53, 878],
+        "genreIds": [
+          18,
+          53,
+          878
+        ],
         "popularity": 72.3,
         "adult": false
       },
@@ -401,7 +506,11 @@
         "rating": 8.5,
         "voteCount": 8000,
         "releaseDate": "1942-11-26",
-        "genreIds": [18, 10749, 10752],
+        "genreIds": [
+          18,
+          10749,
+          10752
+        ],
         "popularity": 70.1,
         "adult": false
       },
@@ -414,7 +523,11 @@
         "rating": 8.5,
         "voteCount": 9000,
         "releaseDate": "1995-08-16",
-        "genreIds": [80, 18, 53],
+        "genreIds": [
+          80,
+          18,
+          53
+        ],
         "popularity": 71.8,
         "adult": false
       },
@@ -427,7 +540,10 @@
         "rating": 8.4,
         "voteCount": 13000,
         "releaseDate": "1981-06-12",
-        "genreIds": [12, 28],
+        "genreIds": [
+          12,
+          28
+        ],
         "popularity": 76.5,
         "adult": false
       },
@@ -440,7 +556,11 @@
         "rating": 8.3,
         "voteCount": 18000,
         "releaseDate": "1995-10-30",
-        "genreIds": [12, 16, 35],
+        "genreIds": [
+          12,
+          16,
+          35
+        ],
         "popularity": 82.1,
         "adult": false
       },
@@ -453,7 +573,10 @@
         "rating": 8.1,
         "voteCount": 12000,
         "releaseDate": "1975-06-20",
-        "genreIds": [27, 53],
+        "genreIds": [
+          27,
+          53
+        ],
         "popularity": 73.6,
         "adult": false
       },
@@ -466,7 +589,11 @@
         "rating": 7.9,
         "voteCount": 11000,
         "releaseDate": "1982-06-11",
-        "genreIds": [12, 14, 35],
+        "genreIds": [
+          12,
+          14,
+          35
+        ],
         "popularity": 69.8,
         "adult": false
       },
@@ -479,7 +606,11 @@
         "rating": 8.1,
         "voteCount": 8000,
         "releaseDate": "1939-08-15",
-        "genreIds": [12, 14, 35],
+        "genreIds": [
+          12,
+          14,
+          35
+        ],
         "popularity": 67.4,
         "adult": false
       },
@@ -492,7 +623,10 @@
         "rating": 8.3,
         "voteCount": 6000,
         "releaseDate": "1941-04-17",
-        "genreIds": [18, 80],
+        "genreIds": [
+          18,
+          80
+        ],
         "popularity": 64.2,
         "adult": false
       },
@@ -505,7 +639,10 @@
         "rating": 8.4,
         "voteCount": 7000,
         "releaseDate": "1979-08-15",
-        "genreIds": [18, 10752],
+        "genreIds": [
+          18,
+          10752
+        ],
         "popularity": 68.9,
         "adult": false
       },
@@ -518,7 +655,10 @@
         "rating": 8.2,
         "voteCount": 9000,
         "releaseDate": "1976-02-07",
-        "genreIds": [80, 18],
+        "genreIds": [
+          80,
+          18
+        ],
         "popularity": 71.3,
         "adult": false
       },
@@ -531,7 +671,11 @@
         "rating": 8.3,
         "voteCount": 5000,
         "releaseDate": "1962-12-10",
-        "genreIds": [18, 36, 10752],
+        "genreIds": [
+          18,
+          36,
+          10752
+        ],
         "popularity": 62.7,
         "adult": false
       },
@@ -544,7 +688,11 @@
         "rating": 8.3,
         "voteCount": 4000,
         "releaseDate": "1958-05-09",
-        "genreIds": [18, 53, 10749],
+        "genreIds": [
+          18,
+          53,
+          10749
+        ],
         "popularity": 59.8,
         "adult": false
       },
@@ -557,7 +705,11 @@
         "rating": 8.5,
         "voteCount": 6000,
         "releaseDate": "1960-06-16",
-        "genreIds": [27, 53, 80],
+        "genreIds": [
+          27,
+          53,
+          80
+        ],
         "popularity": 66.4,
         "adult": false
       },
@@ -570,7 +722,11 @@
         "rating": 8.1,
         "voteCount": 3000,
         "releaseDate": "1959-07-17",
-        "genreIds": [28, 53, 80],
+        "genreIds": [
+          28,
+          53,
+          80
+        ],
         "popularity": 58.2,
         "adult": false
       },
@@ -583,7 +739,10 @@
         "rating": 8.4,
         "voteCount": 2000,
         "releaseDate": "1950-08-25",
-        "genreIds": [18, 80],
+        "genreIds": [
+          18,
+          80
+        ],
         "popularity": 55.6,
         "adult": false
       }
@@ -599,11 +758,26 @@
   "uiConfig": {
     "colors": {
       "moviePosterColors": [
-        {"name": "Blue", "value": "#1976D2"},
-        {"name": "Brown", "value": "#5D4037"},
-        {"name": "Green", "value": "#388E3C"},
-        {"name": "Navy", "value": "#303F9F"},
-        {"name": "Dark Blue", "value": "#1A237E"}
+        {
+          "name": "Blue",
+          "value": "#1976D2"
+        },
+        {
+          "name": "Brown",
+          "value": "#5D4037"
+        },
+        {
+          "name": "Green",
+          "value": "#388E3C"
+        },
+        {
+          "name": "Navy",
+          "value": "#303F9F"
+        },
+        {
+          "name": "Dark Blue",
+          "value": "#1A237E"
+        }
       ]
     }
   },

@@ -1,0 +1,93 @@
+{
+  "success": true,
+  "data": {
+    "movies": [
+      {
+        "id": 1061474,
+        "title": "Superman",
+        "description": "Superman, a journalist in Metropolis, embarks on a journey to reconcile his Kryptonian heritage with his human upbringing as Clark Kent.",
+        "posterPath": "/ombsmhYUqR4qqOLOxAyr5V8hbyv.jpg",
+        "backdropPath": "/eU7IfdWq8KQy0oNd4kKXS0QUR08.jpg",
+        "rating": 7.5,
+        "voteCount": 2896,
+        "releaseDate": "2025-07-09",
+        "genreIds": [
+          878,
+          12,
+          28
+        ],
+        "popularity": 361.1663,
+        "adult": false
+      },
+      {
+        "id": 2,
+        "title": "The Dark Knight",
+        "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+        "posterPath": "/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+        "backdropPath": "/hqkIcbrOHL86UncnHIsHVcVmzue.jpg",
+        "rating": 9.0,
+        "voteCount": 30000,
+        "releaseDate": "2008-07-18",
+        "genreIds": [
+          28,
+          80,
+          18
+        ],
+        "popularity": 85.0,
+        "adult": false
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "totalPages": 10,
+      "totalResults": 200,
+      "hasNext": true,
+      "hasPrevious": false
+    },
+    "searchQuery": null
+  },
+  "uiConfig": {
+    "colors": {
+      "primary": "#1976D2",
+      "secondary": "#424242",
+      "background": "#000000",
+      "surface": "#121212",
+      "onPrimary": "#FFFFFF",
+      "onSecondary": "#FFFFFF",
+      "onBackground": "#FFFFFF",
+      "onSurface": "#FFFFFF",
+      "moviePosterColors": []
+    },
+    "texts": {
+      "appTitle": "Movies",
+      "loadingText": "Loading...",
+      "errorMessage": "Error",
+      "noMoviesFound": "No movies found",
+      "retryButton": "Retry",
+      "backButton": "Back",
+      "playButton": "Play"
+    },
+    "buttons": {
+      "primaryButtonColor": "#1976D2",
+      "secondaryButtonColor": "#424242",
+      "buttonTextColor": "#FFFFFF",
+      "buttonCornerRadius": 8
+    }
+  },
+  "meta": {
+    "timestamp": "2024-01-15T10:30:00Z",
+    "method": "getPopularMovies",
+    "searchQuery": null,
+    "movieId": null,
+    "resultsCount": 2,
+    "aiGenerated": true,
+    "geminiColors": {
+      "primary": "#2C5F6F",
+      "secondary": "#4A90A4",
+      "accent": "#FFD700"
+    },
+    "avgRating": null,
+    "movieRating": null,
+    "version": "2.0.0"
+  }
+}
