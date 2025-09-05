@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.tmdbai.BuildConfig
 import com.example.tmdbai.R
@@ -44,9 +43,9 @@ import com.example.tmdbai.presentation.moviedetail.MovieDetailIntent
 import com.example.tmdbai.presentation.moviedetail.MovieDetailState
 import com.example.tmdbai.presentation.moviedetail.MovieDetailViewModel
 import com.example.tmdbai.ui.components.PullToReloadArrow
+import com.example.tmdbai.ui.theme.Dimens100
 import com.example.tmdbai.ui.theme.Dimens12
 import com.example.tmdbai.ui.theme.Dimens16
-import com.example.tmdbai.ui.theme.Dimens100
 import com.example.tmdbai.ui.theme.Dimens400
 import com.example.tmdbai.ui.theme.Dimens8
 import com.example.tmdbai.ui.theme.SplashBackground
@@ -240,7 +239,9 @@ private fun MovieDetailsContent(
             // Genres
             if (movieDetails.genres.isNotEmpty()) {
                 Text(
-                    text = stringResource(R.string.genres_label, movieDetails.genres.joinToString(", ") { it.name }),
+                    text = stringResource(
+                        R.string.genres_label,
+                        movieDetails.genres.joinToString(", ") { it.name }),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White
                 )

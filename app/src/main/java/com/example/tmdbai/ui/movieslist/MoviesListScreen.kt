@@ -13,13 +13,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -42,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,11 +56,12 @@ import com.example.tmdbai.presentation.movieslist.MoviesListState
 import com.example.tmdbai.presentation.movieslist.MoviesListViewModel
 import com.example.tmdbai.ui.components.ConfigurableMovieCard
 import com.example.tmdbai.ui.components.PullToReloadArrow
-import com.example.tmdbai.ui.theme.Dimens8
+import com.example.tmdbai.ui.theme.Dimens100
+import com.example.tmdbai.ui.theme.Dimens112
 import com.example.tmdbai.ui.theme.Dimens12
 import com.example.tmdbai.ui.theme.Dimens16
+import com.example.tmdbai.ui.theme.Dimens8
 import com.example.tmdbai.ui.theme.Dimens88
-import com.example.tmdbai.ui.theme.Dimens100
 import com.example.tmdbai.ui.theme.Float02
 import com.example.tmdbai.ui.theme.SplashBackground
 import com.example.tmdbai.ui.theme.TmdbAiTheme
@@ -274,7 +277,14 @@ private fun MoviesGrid(
             verticalArrangement = Arrangement.spacedBy(Dimens16),
             contentPadding = PaddingValues(
                 top = Dimens8,
-                bottom = if (showPaginationControls) Dimens88 else Dimens8
+                bottom = if (showPaginationControls) {
+                    // Calculate based on actual content: text + spacing + buttons + padding
+                    // Text height (~20dp) + spacing (12dp) + button height (~48dp) + padding (16dp * 2) = ~112dp
+                    if (BuildConfig.DEBUG) {
+                        Log.d("PaginationControls", "Using calculated height: $Dimens112")
+                    }
+                    Dimens112
+                } else Dimens8
             )
         ) {
             // Add "Popular" title at the top

@@ -52,7 +52,10 @@ class MovieDetailViewModel(
 
     private fun loadMovieDetails(movieId: Int) {
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = PresentationConstants.DEFAULT_BOOLEAN_TRUE, error = null)
+            _state.value = _state.value.copy(
+                isLoading = PresentationConstants.DEFAULT_BOOLEAN_TRUE,
+                error = null
+            )
 
             val result = movieRepository.getMovieDetails(movieId)
 
@@ -77,7 +80,8 @@ class MovieDetailViewModel(
                 }
 
                 is Result.Loading -> {
-                    _state.value = _state.value.copy(isLoading = PresentationConstants.DEFAULT_BOOLEAN_TRUE)
+                    _state.value =
+                        _state.value.copy(isLoading = PresentationConstants.DEFAULT_BOOLEAN_TRUE)
                 }
             }
         }

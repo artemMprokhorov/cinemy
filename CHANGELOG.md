@@ -10,6 +10,35 @@
 
 ## 📅 **Version History**
 
+### **v2.3.2** - Theme Resources Cleanup & Pagination Fix
+**Date**: December 2024  
+**Status**: ✅ **RELEASED**
+
+#### 🧹 **Theme Resources Cleanup**
+- **Color.kt**: Removed 8 unused colors (AppBackground, MoviePosterBlue, MoviePosterBrown, MoviePosterDarkBlue, MoviePosterGreen, MoviePosterNavy, TextTertiary, ButtonContainer)
+- **Dimens.kt**: Removed 8 unused dimensions (Dimens1, Dimens6, Dimens20, Dimens24, Dimens40, Dimens48, Dimens300, Dimens500) + Added Dimens112
+- **Typography.kt**: Removed 5 unused typography values (Typography8, Typography12, Typography14, Typography20, LetterSpacing2)
+- **File Size Reduction**: Significant reduction in theme file sizes (Color.kt: 40% reduction, Dimens.kt: 24% reduction, Typography.kt: 28% reduction)
+
+#### 🔧 **Pagination Controls Fix**
+- **Dynamic Margin**: Fixed pagination controls overlapping last movie card
+- **Calculated Height**: Implemented reliable 112dp bottom padding for pagination controls
+- **Constants Compliance**: Extracted hardcoded 112dp to Dimens112 constant
+- **Better UX**: Last movie card now fully visible when pagination controls are shown
+
+#### 📱 **UI Components Updates**
+- **MoviesListScreen.kt**: Fixed dynamic margin problem with proper constants usage
+- **ConfigurableMovieCard.kt**: Updated to use cleaned up theme constants
+- **ConfigurableButton.kt**: Updated to use cleaned up theme constants
+- **PullToReloadIndicator.kt**: Updated to use cleaned up theme constants
+- **MovieDetailScreen.kt**: Updated to use cleaned up theme constants
+
+#### 🎯 **Code Quality**
+- **No Dead Code**: Eliminated all unused theme resources
+- **Cleaner Codebase**: Only necessary resources remain in theme files
+- **Better Maintainability**: Reduced file sizes and complexity
+- **Constants Compliance**: All hardcoded values properly extracted to constants
+
 ### **v2.3.1** - UI Layer Constants Refactoring
 **Date**: December 2024  
 **Status**: ✅ **RELEASED**

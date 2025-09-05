@@ -10,8 +10,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.res.stringResource
-import com.example.tmdbai.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -20,9 +18,12 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
+import com.example.tmdbai.R
 import com.example.tmdbai.ui.theme.Dimens140
 import com.example.tmdbai.ui.theme.Float0
+import com.example.tmdbai.ui.theme.Float008
 import com.example.tmdbai.ui.theme.Float01
 import com.example.tmdbai.ui.theme.Float02
 import com.example.tmdbai.ui.theme.Float03
@@ -30,7 +31,6 @@ import com.example.tmdbai.ui.theme.Float04
 import com.example.tmdbai.ui.theme.Float05
 import com.example.tmdbai.ui.theme.Float06
 import com.example.tmdbai.ui.theme.Float07
-import com.example.tmdbai.ui.theme.Float008
 import com.example.tmdbai.ui.theme.Float08
 import com.example.tmdbai.ui.theme.Float09
 import com.example.tmdbai.ui.theme.Float10

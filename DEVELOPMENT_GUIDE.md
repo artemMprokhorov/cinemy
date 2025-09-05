@@ -168,6 +168,8 @@ Box(
    - **Image URLs**: Все URL изображений → `ImageConfig.kt`
    - **UI Constants**: Числовые константы (пороги, лимиты) → `UIConstants.kt`
    - **No Hardcoded Values**: Никаких hardcoded значений в UI компонентах
+   - **Theme Cleanup**: Регулярно удаляйте неиспользуемые ресурсы из theme файлов
+   - **Resource Optimization**: Поддерживайте минимальный набор необходимых констант
 
 #### 🔤 Naming Conventions
 
@@ -283,6 +285,41 @@ Text(text = "No Image")
 
 // ❌ Неправильно - hardcoded значения
 val imageUrl = "https://image.tmdb.org/t/p/w500${movie.backdropPath}"
+```
+
+#### 🧹 Theme Resources Cleanup
+
+Регулярно проверяйте и удаляйте неиспользуемые ресурсы из theme файлов:
+
+```kotlin
+// ✅ Правильно - только используемые ресурсы
+// Color.kt - только необходимые цвета
+val SplashBackground = Color(0xFF2B3A4B)
+val TextSecondary = Color(0xFF9E9E9E)
+
+// Dimens.kt - только используемые размеры
+val Dimens2 = 2.dp
+val Dimens4 = 4.dp
+val Dimens8 = 8.dp
+val Dimens112 = 112.dp  // Для pagination controls
+
+// Typography.kt - только используемые размеры шрифтов
+val Typography16 = 16.sp
+val Typography24 = 24.sp
+val Typography32 = 32.sp
+
+// ❌ Неправильно - неиспользуемые ресурсы
+val UnusedColor = Color(0xFF123456)  // Не используется нигде
+val UnusedDimension = 50.dp          // Не используется нигде
+val UnusedTypography = 10.sp         // Не используется нигде
+```
+
+**Проверка использования ресурсов:**
+```bash
+# Поиск использования константы в проекте
+grep -r "UnusedColor" app/src/main/java/
+grep -r "UnusedDimension" app/src/main/java/
+grep -r "UnusedTypography" app/src/main/java/
 ```
 
 ### 🎭 MVI Implementation Rules

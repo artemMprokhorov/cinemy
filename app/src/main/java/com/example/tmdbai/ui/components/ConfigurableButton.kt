@@ -10,10 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.tmdbai.data.model.UiConfiguration
-import com.example.tmdbai.ui.theme.Float12
-import com.example.tmdbai.ui.theme.Float38
 import com.example.tmdbai.ui.theme.Dimens16
 import com.example.tmdbai.ui.theme.Dimens8
+import com.example.tmdbai.ui.theme.Float12
+import com.example.tmdbai.ui.theme.Float38
 
 /**
  * Configurable button component that supports server-driven styling

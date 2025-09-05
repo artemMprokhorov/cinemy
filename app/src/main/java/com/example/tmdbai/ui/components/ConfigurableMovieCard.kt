@@ -23,21 +23,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.tmdbai.R
 import com.example.tmdbai.data.model.Movie
 import com.example.tmdbai.data.model.UiConfiguration
 import com.example.tmdbai.ui.theme.Dimens12
 import com.example.tmdbai.ui.theme.Dimens16
-import com.example.tmdbai.ui.theme.Dimens200
 import com.example.tmdbai.ui.theme.Dimens2
+import com.example.tmdbai.ui.theme.Dimens200
 import com.example.tmdbai.ui.theme.Dimens4
 import com.example.tmdbai.ui.theme.Dimens8
-import com.example.tmdbai.ui.theme.ImageConfig
 import com.example.tmdbai.ui.theme.Float05
 import com.example.tmdbai.ui.theme.Float06
 import com.example.tmdbai.ui.theme.Float07
+import com.example.tmdbai.ui.theme.ImageConfig
 
 private const val POPULARITY_THRESHOLD = 0.0
 private const val MAX_LINES_TITLE = 2

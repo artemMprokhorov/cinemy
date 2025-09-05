@@ -45,7 +45,10 @@ class MoviesListViewModel(
         }
     }
 
-    private fun loadPopularMovies(page: Int = PresentationConstants.DEFAULT_PAGE_NUMBER, isRetry: Boolean = PresentationConstants.DEFAULT_BOOLEAN_FALSE) {
+    private fun loadPopularMovies(
+        page: Int = PresentationConstants.DEFAULT_PAGE_NUMBER,
+        isRetry: Boolean = PresentationConstants.DEFAULT_BOOLEAN_FALSE
+    ) {
         viewModelScope.launch {
             _state.value = _state.value.copy(
                 isLoading = PresentationConstants.DEFAULT_BOOLEAN_TRUE,
@@ -87,7 +90,8 @@ class MoviesListViewModel(
                 }
 
                 is Result.Loading -> {
-                    _state.value = _state.value.copy(isLoading = PresentationConstants.DEFAULT_BOOLEAN_TRUE)
+                    _state.value =
+                        _state.value.copy(isLoading = PresentationConstants.DEFAULT_BOOLEAN_TRUE)
                 }
             }
         }
@@ -121,7 +125,10 @@ class MoviesListViewModel(
     private fun processConnectionIntent(intent: MoviesListIntent) {
         when (intent) {
             is MoviesListIntent.RetryConnection -> {
-                loadPopularMovies(page = PresentationConstants.DEFAULT_PAGE_NUMBER, isRetry = PresentationConstants.DEFAULT_BOOLEAN_TRUE)
+                loadPopularMovies(
+                    page = PresentationConstants.DEFAULT_PAGE_NUMBER,
+                    isRetry = PresentationConstants.DEFAULT_BOOLEAN_TRUE
+                )
             }
 
             is MoviesListIntent.RefreshData -> {
@@ -135,7 +142,10 @@ class MoviesListViewModel(
             }
 
             is MoviesListIntent.DismissError -> {
-                _state.value = _state.value.copy(error = null, canRetry = PresentationConstants.DEFAULT_CAN_RETRY)
+                _state.value = _state.value.copy(
+                    error = null,
+                    canRetry = PresentationConstants.DEFAULT_CAN_RETRY
+                )
             }
 
             else -> {

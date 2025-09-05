@@ -366,7 +366,7 @@ fun MoviesListScreen(
     viewModel: MoviesListViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    
+
     Box(
         modifier = Modifier
             .fillMaxSize()
