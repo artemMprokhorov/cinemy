@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tmdbai.data.model.Result
 import com.example.tmdbai.data.repository.MovieRepository
+import com.example.tmdbai.presentation.PresentationConstants
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +17,7 @@ class MovieDetailViewModel(
     private val _state = MutableStateFlow(MovieDetailState())
     val state: StateFlow<MovieDetailState> = _state.asStateFlow()
 
-    private var currentMovieId: Int = 0
+    private var currentMovieId: Int = PresentationConstants.DEFAULT_MOVIE_ID
 
     fun processIntent(intent: MovieDetailIntent) {
         when (intent) {
@@ -31,14 +32,14 @@ class MovieDetailViewModel(
 
             is MovieDetailIntent.Retry -> {
                 // Retry loading the current movie details using stored movie ID
-                if (currentMovieId > 0) {
+                if (currentMovieId > PresentationConstants.DEFAULT_MOVIE_ID) {
                     loadMovieDetails(currentMovieId)
                 }
             }
 
             is MovieDetailIntent.Refresh -> {
                 // Refresh current movie details using stored movie ID
-                if (currentMovieId > 0) {
+                if (currentMovieId > PresentationConstants.DEFAULT_MOVIE_ID) {
                     loadMovieDetails(currentMovieId)
                 }
             }
@@ -51,7 +52,7 @@ class MovieDetailViewModel(
 
     private fun loadMovieDetails(movieId: Int) {
         viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true, error = null)
+            _state.value = _state.value.copy(isLoading = PresentationConstants.DEFAULT_BOOLEAN_TRUE, error = null)
 
             val result = movieRepository.getMovieDetails(movieId)
 
@@ -60,7 +61,7 @@ class MovieDetailViewModel(
                     val response = result.data
                     _state.value = _state.value.copy(
                         movieDetails = response.data.movieDetails,
-                        isLoading = false,
+                        isLoading = PresentationConstants.DEFAULT_BOOLEAN_FALSE,
                         error = null,
                         uiConfig = response.uiConfig,
                         meta = response.meta
@@ -69,14 +70,14 @@ class MovieDetailViewModel(
 
                 is Result.Error -> {
                     _state.value = _state.value.copy(
-                        isLoading = false,
+                        isLoading = PresentationConstants.DEFAULT_BOOLEAN_FALSE,
                         error = result.message,
                         uiConfig = result.uiConfig
                     )
                 }
 
                 is Result.Loading -> {
-                    _state.value = _state.value.copy(isLoading = true)
+                    _state.value = _state.value.copy(isLoading = PresentationConstants.DEFAULT_BOOLEAN_TRUE)
                 }
             }
         }

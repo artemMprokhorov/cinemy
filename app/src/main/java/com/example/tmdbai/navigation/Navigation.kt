@@ -47,7 +47,8 @@ fun AppNavigation(navController: NavHostController) {
                 }
             )
         ) { backStackEntry ->
-            val movieId = backStackEntry.arguments?.getInt(NavigationConstants.NAV_ARG_MOVIE_ID) ?: NavigationConstants.DEFAULT_MOVIE_ID
+            val movieId = backStackEntry.arguments?.getInt(NavigationConstants.NAV_ARG_MOVIE_ID)
+                ?: NavigationConstants.DEFAULT_MOVIE_ID
             val movieDetailViewModel: MovieDetailViewModel = koinViewModel()
             MovieDetailScreen(
                 movieId = movieId,

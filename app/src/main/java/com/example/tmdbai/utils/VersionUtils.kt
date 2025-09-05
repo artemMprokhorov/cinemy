@@ -18,16 +18,17 @@ object VersionUtils {
         const val ANDROID_12 = Build.VERSION_CODES.S_V2 // API 32
         const val ANDROID_11 = Build.VERSION_CODES.R // API 30
         const val ANDROID_10 = Build.VERSION_CODES.Q // API 29
+        const val ANDROID_5 = Build.VERSION_CODES.LOLLIPOP // API 21 - Minimum for edge-to-edge
     }
 
     /**
-     * Safely enables edge-to-edge display only on supported Android versions
-     * This prevents UI issues on older devices that don't support this feature
+     * Safely enables edge-to-edge display on supported Android versions
+     * enableEdgeToEdge() is available from API 21+ (Android 5.0)
      *
      * @param activity The activity to enable edge-to-edge for
      */
     fun safeEnableEdgeToEdge(activity: ComponentActivity) {
-        if (Build.VERSION.SDK_INT >= Versions.ANDROID_14) {
+        if (Build.VERSION.SDK_INT >= Versions.ANDROID_5) {
             activity.enableEdgeToEdge()
         }
     }
@@ -39,7 +40,7 @@ object VersionUtils {
  * @return true if edge-to-edge is supported, false otherwise
  */
 fun supportsEdgeToEdge(): Boolean {
-    return Build.VERSION.SDK_INT >= VersionUtils.Versions.ANDROID_14
+    return Build.VERSION.SDK_INT >= VersionUtils.Versions.ANDROID_5
 }
 
 /**
