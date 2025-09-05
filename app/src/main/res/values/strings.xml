@@ -8,6 +8,9 @@
     <string name="retry_button">Retry</string>
     <string name="back_button">Back</string>
     <string name="play_button">Play</string>
+    <string name="no_image">No Image</string>
+    <string name="previous_button">Previous</string>
+    <string name="next_button">Next</string>
 
     <!-- Error Messages -->
     <string name="error_unknown">Unknown error</string>

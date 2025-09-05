@@ -24,3 +24,8 @@ val Dimens48 = 48.dp
 val Dimens100 = 100.dp
 val Dimens140 = 140.dp
 val Dimens200 = 200.dp
+
+// Very large dimensions (300-500dp)
+val Dimens300 = 300.dp
+val Dimens400 = 400.dp
+val Dimens500 = 500.dp

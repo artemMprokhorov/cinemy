@@ -22,10 +22,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.tmdbai.R
 import com.example.tmdbai.data.model.Movie
 import com.example.tmdbai.data.model.UiConfiguration
+import com.example.tmdbai.ui.theme.Dimens12
+import com.example.tmdbai.ui.theme.Dimens16
+import com.example.tmdbai.ui.theme.Dimens200
+import com.example.tmdbai.ui.theme.Dimens2
+import com.example.tmdbai.ui.theme.Dimens4
+import com.example.tmdbai.ui.theme.Dimens8
+import com.example.tmdbai.ui.theme.ImageConfig
+import com.example.tmdbai.ui.theme.Alpha05
+import com.example.tmdbai.ui.theme.Alpha06
+import com.example.tmdbai.ui.theme.Alpha07
 
 /**
  * Configurable movie card component that supports server-driven styling
@@ -65,24 +77,24 @@ fun ConfigurableMovieCard(
             containerColor = cardColor
         ),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
+            defaultElevation = Dimens4
         ),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(Dimens12)
     ) {
         Column(
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.padding(Dimens12)
         ) {
             // Movie poster with backdrop support
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .height(Dimens200)
+                    .clip(RoundedCornerShape(Dimens8))
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 // Try backdrop first, then poster
-                val imagePath = movie.backdropPath?.let { "https://image.tmdb.org/t/p/w500$it" }
-                    ?: movie.posterPath?.let { "https://image.tmdb.org/t/p/w500$it" }
+                val imagePath = ImageConfig.buildBackdropUrl(movie.backdropPath)
+                    ?: ImageConfig.buildPosterUrl(movie.posterPath)
 
                 imagePath?.let { path ->
                     AsyncImage(
@@ -100,7 +112,7 @@ fun ConfigurableMovieCard(
                         contentAlignment = Alignment.Center
                     ) {
                         ConfigurableText(
-                            text = "No Image",
+                            text = stringResource(R.string.no_image),
                             style = MaterialTheme.typography.bodyMedium,
                             uiConfig = uiConfig,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -112,23 +124,23 @@ fun ConfigurableMovieCard(
                 if (showRating) {
                     Surface(
                         modifier = Modifier
-                            .padding(8.dp)
+                            .padding(Dimens8)
                             .align(Alignment.TopEnd),
                         color = primaryColor,
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(Dimens16)
                     ) {
                         ConfigurableText(
                             text = "★ ${movie.rating} (${movie.voteCount})",
                             style = MaterialTheme.typography.labelSmall,
                             uiConfig = uiConfig,
                             color = Color.White,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                            modifier = Modifier.padding(horizontal = Dimens8, vertical = Dimens4)
                         )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(Dimens12))
 
             // Movie title
             ConfigurableText(
@@ -140,19 +152,19 @@ fun ConfigurableMovieCard(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(Dimens4))
 
             // Movie description
             ConfigurableText(
                 text = movie.description,
                 style = MaterialTheme.typography.bodySmall,
                 uiConfig = uiConfig,
-                color = textColor.copy(alpha = 0.7f),
+                color = textColor.copy(alpha = Alpha07),
                 maxLines = 3,
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Dimens8))
 
             // Additional movie info
             Row(
@@ -166,7 +178,7 @@ fun ConfigurableMovieCard(
                         text = movie.releaseDate,
                         style = MaterialTheme.typography.labelSmall,
                         uiConfig = uiConfig,
-                        color = textColor.copy(alpha = 0.6f)
+                        color = textColor.copy(alpha = Alpha06)
                     )
                 }
 
@@ -174,14 +186,14 @@ fun ConfigurableMovieCard(
                 if (movie.adult) {
                     Surface(
                         color = Color.Red,
-                        shape = RoundedCornerShape(4.dp)
+                        shape = RoundedCornerShape(Dimens4)
                     ) {
                         ConfigurableText(
                             text = "18+",
                             style = MaterialTheme.typography.labelSmall,
                             uiConfig = uiConfig,
                             color = Color.White,
-                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                            modifier = Modifier.padding(horizontal = Dimens4, vertical = Dimens2)
                         )
                     }
                 }
@@ -189,12 +201,12 @@ fun ConfigurableMovieCard(
 
             // Popularity indicator
             if (movie.popularity > 0) {
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(Dimens4))
                 ConfigurableText(
                     text = "Popularity: ${String.format("%.1f", movie.popularity)}",
                     style = MaterialTheme.typography.labelSmall,
                     uiConfig = uiConfig,
-                    color = textColor.copy(alpha = 0.5f)
+                    color = textColor.copy(alpha = Alpha05)
                 )
             }
         }

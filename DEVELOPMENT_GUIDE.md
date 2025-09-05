@@ -161,6 +161,13 @@ Box(
    - Используйте константы в `@SerializedName` аннотациях
    - Не используйте константы для log сообщений (только inline строки)
 
+5. **UI Layer Constants Rules**
+   - **Dimensions**: Все размеры (16.dp, 8.dp, etc.) → `Dimens.kt`
+   - **Alpha Values**: Все прозрачности (0.2f, 0.7f, etc.) → `Alpha.kt`
+   - **UI Text**: Все пользовательские строки → `strings.xml`
+   - **URLs/Paths**: Все URL и пути → `BuildConfig.kt`
+   - **No Hardcoded Values**: Никаких hardcoded значений в UI компонентах
+
 #### 🔤 Naming Conventions
 
 ```kotlin
@@ -229,6 +236,42 @@ val pagination = PaginationDto(
     totalPages = 8,
     totalResults = 80
 )
+```
+
+#### 🎨 UI Layer Constants Usage
+
+```kotlin
+// ✅ Правильно - используйте Dimens.kt
+Box(
+    modifier = Modifier
+        .padding(Dimens16)
+        .height(Dimens200)
+)
+
+// ✅ Правильно - используйте Alpha.kt
+Color.White.copy(alpha = Alpha.Alpha02)
+
+// ✅ Правильно - используйте strings.xml
+Text(text = stringResource(R.string.no_image))
+
+// ✅ Правильно - используйте BuildConfig.kt
+val imageUrl = BuildConfig.buildBackdropUrl(movie.backdropPath)
+
+// ❌ Неправильно - hardcoded значения
+Box(
+    modifier = Modifier
+        .padding(16.dp)
+        .height(200.dp)
+)
+
+// ❌ Неправильно - hardcoded значения
+Color.White.copy(alpha = 0.2f)
+
+// ❌ Неправильно - hardcoded значения
+Text(text = "No Image")
+
+// ❌ Неправильно - hardcoded значения
+val imageUrl = "https://image.tmdb.org/t/p/w500${movie.backdropPath}"
 ```
 
 ### 🎭 MVI Implementation Rules

@@ -342,7 +342,7 @@ private fun PaginationControls(
                     )
                 ) {
                     Text(
-                        text = "Previous",
+                        text = stringResource(R.string.previous_button),
                         color = Color.White
                     )
                 }
@@ -359,7 +359,7 @@ private fun PaginationControls(
                     )
                 ) {
                     Text(
-                        text = "Next",
+                        text = stringResource(R.string.next_button),
                         color = Color.White
                     )
                 }
