@@ -5,52 +5,52 @@
 [![Compose](https://img.shields.io/badge/Compose-1.5.8-orange.svg)](https://developer.android.com/jetpack/compose)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## 📱 Описание проекта
+## 📱 Project Description
 
-TmdbAi - это современное Android-приложение для поиска и изучения фильмов, использующее искусственный интеллект через MCP (Model Context Protocol) для персонализированных рекомендаций и анализа контента.
+TmdbAi is a modern Android application for discovering and exploring movies, using artificial intelligence through MCP (Model Context Protocol) for personalized recommendations and content analysis.
 
-### 🎯 Основные цели
-- Предоставить пользователям персонализированные рекомендации фильмов
-- Интегрировать AI-анализ через MCP протокол
-- Создать современный и интуитивный пользовательский интерфейс
-- Демонстрировать лучшие практики Android разработки
+### 🎯 Main Goals
+- Provide users with personalized movie recommendations
+- Integrate AI analysis through MCP protocol
+- Create a modern and intuitive user interface
+- Demonstrate Android development best practices
 
-## 🤖 ML Возможности v2.0
+## 🤖 ML Capabilities v2.0
 
 ### Enhanced Keyword Sentiment Analysis
-- **Модель**: Enhanced Keyword Model v2.0.0
-- **Точность**: 85%+ для английских отзывов
-- **Словарь**: 60+ ключевых слов + модификаторы
-- **Скорость**: < 50ms локальный анализ
-- **Особенности**: Context-aware анализ с интенсивностью
+- **Model**: Enhanced Keyword Model v2.0.0
+- **Accuracy**: 85%+ for English reviews
+- **Dictionary**: 60+ keywords + modifiers
+- **Speed**: < 50ms local analysis
+- **Features**: Context-aware analysis with intensity
 
-#### Новые возможности v2.0:
-- ✨ **Расширенный словарь** - специализированные термины кино
-- 🔧 **Модификаторы интенсивности** - "absolutely amazing" vs "pretty good"  
-- 🎯 **Контекстная осведомленность** - понимание кино-контекста
-- ⚡ **Улучшенная точность** - до 85% на фильмовых отзывах
+#### New Features v2.0:
+- ✨ **Extended Dictionary** - specialized cinema terminology
+- 🔧 **Intensity Modifiers** - "absolutely amazing" vs "pretty good"  
+- 🎯 **Context Awareness** - understanding cinema context
+- ⚡ **Improved Accuracy** - up to 85% on movie reviews
 
-#### Использование:
-1. Откройте экран фильма
-2. Найдите "🤖 Анализ тональности v2.0"
-3. Введите отзыв: "This movie is absolutely incredible!"
-4. Получите точный результат с объяснением ключевых слов
+#### Usage:
+1. Open movie detail screen
+2. Find "🤖 Sentiment Analysis v2.0"
+3. Enter review: "This movie is absolutely incredible!"
+4. Get accurate result with keyword explanation
 
 ## 🎨 Server-Driven UI (SDUI)
 
 ### AI-Powered Dynamic Theming
-Приложение поддерживает **Server-Driven UI** - динамическое изменение внешнего вида через конфигурацию от N8N бэкенда с AI-генерацией цветов.
+The application supports **Server-Driven UI** - dynamic appearance changes through configuration from N8N backend with AI-generated colors.
 
-#### ✨ Возможности:
-- **AI-генерация цветов** - N8N + Perplexity AI создают персонализированные цветовые схемы
-- **Динамическое обновление** - Изменение темы без перезапуска приложения
-- **ConfigurableComponents** - Специальные компоненты, адаптирующиеся под uiConfig
-- **Fallback система** - Автоматический откат к Material Theme при отсутствии конфигурации
+#### ✨ Features:
+- **AI Color Generation** - N8N + Perplexity AI create personalized color schemes
+- **Dynamic Updates** - Theme changes without app restart
+- **ConfigurableComponents** - Special components that adapt to uiConfig
+- **Fallback System** - Automatic fallback to Material Theme when configuration is unavailable
 
-#### 🔧 Компоненты:
-- **ConfigurableMovieCard** - Карточки фильмов с AI цветами
-- **ConfigurableButton** - Кнопки с динамическими цветами
-- **ConfigurableText** - Текст с адаптивными цветами
+#### 🔧 Components:
+- **ConfigurableMovieCard** - Movie cards with AI colors
+- **ConfigurableButton** - Buttons with dynamic colors
+- **ConfigurableText** - Text with adaptive colors
 
 #### 📊 uiConfig Structure:
 ```json
@@ -85,9 +85,9 @@ N8N Backend → MCP Client → Repository → ViewModel → ConfigurableComponen
   AI Colors    HTTP Response  Parsing   State Update   Visual Apply
 ```
 
-## 🏗️ Архитектура
+## 🏗️ Architecture
 
-Проект построен на принципах **Clean Architecture** с использованием **MVI (Model-View-Intent)** паттерна:
+The project is built on **Clean Architecture** principles using the **MVI (Model-View-Intent)** pattern:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -126,57 +126,57 @@ N8N Backend → MCP Client → Repository → ViewModel → ConfigurableComponen
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## 🛠️ Технологии и библиотеки
+## 🛠️ Technologies and Libraries
 
 ### Core Technologies
-- **Kotlin 1.9.22** - Основной язык разработки
-- **Android 14 (API 36)** - Минимальная версия API 24
-- **Jetpack Compose 1.5.8** - Современный UI фреймворк
-- **Material Design 3** - Система дизайна
+- **Kotlin 1.9.22** - Primary development language
+- **Android 14 (API 36)** - Minimum API version 24
+- **Jetpack Compose 1.5.8** - Modern UI framework
+- **Material Design 3** - Design system
 
 ### Architecture & DI
-- **Clean Architecture** - Принципы разделения слоев
-- **MVI Pattern** - Паттерн управления состоянием
+- **Clean Architecture** - Layer separation principles
+- **MVI Pattern** - State management pattern
 - **Koin 3.5.3** - Dependency Injection
-- **Navigation Compose 2.9.3** - Навигация между экранами
+- **Navigation Compose 2.9.3** - Screen navigation
 
 ### Networking & Data
-- **Ktor 2.1.3** - HTTP клиент для MCP протокола
-- **Kotlinx Serialization** - JSON сериализация
-- **DataStore** - Хранение настроек
-- **Paging 3** - Пагинация списков
+- **Ktor 2.1.3** - HTTP client for MCP protocol
+- **Kotlinx Serialization** - JSON serialization
+- **DataStore** - Settings storage
+- **Paging 3** - List pagination
 
 ### UI & UX
-- **Coil 2.5.0** - Загрузка изображений
-- **Accompanist** - Дополнительные UI компоненты
-- **Splash Screen API** - Экран загрузки
-- **Edge-to-Edge** - Полноэкранный режим
+- **Coil 2.5.0** - Image loading
+- **Accompanist** - Additional UI components
+- **Splash Screen API** - Loading screen
+- **Edge-to-Edge** - Full-screen mode
 
 ### Testing
-- **JUnit 4** - Unit тестирование
-- **MockK** - Мокирование
-- **Turbine** - Тестирование Flow
-- **Espresso** - UI тестирование
+- **JUnit 4** - Unit testing
+- **MockK** - Mocking
+- **Turbine** - Flow testing
+- **Espresso** - UI testing
 
-## 🚀 Установка и запуск
+## 🚀 Installation and Setup
 
-### Предварительные требования
-- Android Studio Hedgehog (2023.1.1) или новее
+### Prerequisites
+- Android Studio Hedgehog (2023.1.1) or newer
 - Android SDK API 36
 - JDK 17
-- Android устройство или эмулятор (API 24+)
+- Android device or emulator (API 24+)
 
-### Шаги установки
+### Installation Steps
 
-1. **Клонирование репозитория**
+1. **Clone Repository**
    ```bash
-   git clone https://github.com/your-username/TmdbAi.git
+   git clone https://github.com/artemMprokhorov/TmdbAi.git
    cd TmdbAi
    ```
 
-2. **Настройка переменных окружения**
+2. **Environment Variables Setup**
    ```bash
-   # Создайте local.properties или настройте в Android Studio
+   # Create local.properties or configure in Android Studio
    MCP_SERVER_URL=https://your-ngrok-url.ngrok.io
    TMDB_BASE_URL=https://api.themoviedb.org/3/
    ```
@@ -221,33 +221,33 @@ buildConfigField("String", "MCP_SERVER_URL", "\"https://your-backend.ngrok.io\""
 - 🟠 Orange: Backend unavailable
 - 🟢 Green: Connected to backend
 
-## 📁 Структура проекта
+## 📁 Project Structure
 
 ```
 app/src/main/java/com/example/tmdbai/
-├── TmdbAi.kt                    # Главный класс приложения
-├── navigation/                   # Навигация
-│   ├── Navigation.kt            # Основная навигация
-│   └── Screen.kt                # Определения экранов
-├── ui/                          # UI компоненты
-│   ├── components/              # Переиспользуемые компоненты
-│   ├── movieslist/              # Экран списка фильмов
-│   ├── moviedetail/             # Экран деталей фильма
-│   ├── splash/                  # Экран загрузки
-│   └── theme/                   # Тема и стили
-├── presentation/                 # Presentation слой
-│   ├── di/                      # DI модули
-│   ├── commons/                 # Общие компоненты
+├── TmdbAi.kt                    # Main application class
+├── navigation/                   # Navigation
+│   ├── Navigation.kt            # Main navigation
+│   └── Screen.kt                # Screen definitions
+├── ui/                          # UI components
+│   ├── components/              # Reusable components
+│   ├── movieslist/              # Movie list screen
+│   ├── moviedetail/             # Movie detail screen
+│   ├── splash/                  # Splash screen
+│   └── theme/                   # Theme and styles
+├── presentation/                 # Presentation layer
+│   ├── di/                      # DI modules
+│   ├── commons/                 # Common components
 │   ├── movieslist/              # MoviesList ViewModel
 │   └── moviedetail/             # MovieDetail ViewModel
-├── data/                        # Data слой
-│   ├── di/                      # Data DI модули
-│   ├── mcp/                     # MCP клиент и модели
-│   ├── model/                   # Data модели
-│   ├── mapper/                  # Мапперы данных
+├── data/                        # Data layer
+│   ├── di/                      # Data DI modules
+│   ├── mcp/                     # MCP client and models
+│   ├── model/                   # Data models
+│   ├── mapper/                  # Data mappers
 │   ├── remote/                  # Remote data sources
-│   └── repository/              # Репозитории
-└── utils/                       # Утилиты
+│   └── repository/              # Repositories
+└── utils/                       # Utilities
 ```
 
 ## 🔄 Data Flow
@@ -258,46 +258,50 @@ User Action → Intent → ViewModel → Repository → MCP Client
      └────────────── State ←─────────────── Result ←────────┘
 ```
 
-1. **User Action** - Пользователь выполняет действие
-2. **Intent** - Создается Intent для ViewModel
-3. **ViewModel** - Обрабатывает Intent и вызывает Repository
-4. **Repository** - Получает данные через MCP Client
-5. **State** - Обновляется состояние UI
-6. **UI Update** - Интерфейс перерисовывается
+1. **User Action** - User performs an action
+2. **Intent** - Intent is created for ViewModel
+3. **ViewModel** - Processes Intent and calls Repository
+4. **Repository** - Gets data through MCP Client
+5. **State** - UI state is updated
+6. **UI Update** - Interface is redrawn
 
-## 📊 Статус разработки
+## 📊 Development Status
 
-### ✅ Реализовано
-- [x] Базовая архитектура MVI + Clean Architecture
-- [x] Навигация между экранами
-- [x] Splash экран
-- [x] Список фильмов с pull-to-refresh
-- [x] Детали фильма с pull-to-refresh
-- [x] Dependency Injection с Koin
-- [x] MCP клиент для AI интеграции
-- [x] Базовые ViewModels и States
-- [x] Material Design 3 тема
-- [x] Custom error screens с red arrow indicator
-- [x] Pull-to-refresh functionality на всех экранах
-- [x] Mock data из assets для dummy версии
-- [x] Enhanced UI/UX с consistent design
-- [x] Обработка ошибок с retry functionality
+### ✅ Implemented
+- [x] Basic MVI + Clean Architecture
+- [x] Screen navigation
+- [x] Splash screen
+- [x] Movie list with pull-to-refresh
+- [x] Movie details with pull-to-refresh
+- [x] Dependency Injection with Koin
+- [x] MCP client for AI integration
+- [x] Basic ViewModels and States
+- [x] Material Design 3 theme
+- [x] Custom error screens with red arrow indicator
+- [x] Pull-to-refresh functionality on all screens
+- [x] Mock data from assets for dummy version
+- [x] Enhanced UI/UX with consistent design
+- [x] Error handling with retry functionality
+- [x] Server-Driven UI with AI-powered theming
+- [x] Local ML sentiment analysis
+- [x] String resources and internationalization
+- [x] Constants system and code quality improvements
 
-### 🚧 В разработке
-- [ ] Интеграция с TMDB API
-- [ ] AI рекомендации через MCP
-- [ ] Кэширование данных
-- [ ] Unit тесты
-- [ ] UI тесты
+### 🚧 In Development
+- [ ] TMDB API integration
+- [ ] AI recommendations through MCP
+- [ ] Data caching
+- [ ] Unit tests
+- [ ] UI tests
 
-### 📋 Планируется
-- [ ] Поиск фильмов
-- [ ] Фильтры и сортировка
-- [ ] Избранное
-- [ ] Push уведомления
-- [ ] Темная тема
-- [ ] Многоязычность
-- [ ] Аналитика и метрики
+### 📋 Planned
+- [ ] Movie search
+- [ ] Filters and sorting
+- [ ] Favorites
+- [ ] Push notifications
+- [ ] Dark theme
+- [ ] Multi-language support
+- [ ] Analytics and metrics
 
 ## 📋 Changelog
 
@@ -490,15 +494,15 @@ The project implements a complete constants system for the UI layer to eliminate
 - **Internationalization**: All UI text properly externalized
 - **Type Safety**: Compile-time constants for better performance
 
-## 🎨 UI/UX особенности
+## 🎨 UI/UX Features
 
-- **Material Design 3** - Современный дизайн
-- **Edge-to-Edge** - Полноэкранный режим
-- **Responsive Design** - Адаптация под разные экраны
-- **Smooth Animations** - Плавные переходы
-- **Accessibility** - Поддержка доступности
+- **Material Design 3** - Modern design
+- **Edge-to-Edge** - Full-screen mode
+- **Responsive Design** - Adaptation to different screens
+- **Smooth Animations** - Smooth transitions
+- **Accessibility** - Accessibility support
 
-## 🧪 Тестирование
+## 🧪 Testing
 
 ### Unit Tests
 ```bash
@@ -537,37 +541,37 @@ The project implements a complete constants system for the UI layer to eliminate
 - ✅ **Technical Enhancements**: Improved error handling and state management
 - ✅ **User Experience**: Enhanced loading states and error screens
 
-## 📱 Скриншоты
+## 📱 Screenshots
 
-*Скриншоты будут добавлены по мере развития UI*
+*Screenshots will be added as UI develops*
 
-## 🤝 Вклад в проект
+## 🤝 Contributing
 
-1. Fork репозитория
-2. Создайте feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit изменения (`git commit -m 'Add some AmazingFeature'`)
-4. Push в branch (`git push origin feature/AmazingFeature`)
-5. Откройте Pull Request
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## 📄 Лицензия
+## 📄 License
 
-Этот проект лицензирован под MIT License - см. файл [LICENSE](LICENSE) для деталей.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📞 Контакты
+## 📞 Contacts
 
-- **Разработчик**: [Your Name]
+- **Developer**: [Your Name]
 - **Email**: [your.email@example.com]
 - **GitHub**: [@your-username]
 
-## 🙏 Благодарности
+## 🙏 Acknowledgments
 
-- [TMDB](https://www.themoviedb.org/) - API для данных о фильмах
-- [Jetpack Compose](https://developer.android.com/jetpack/compose) - Современный UI фреймворк
+- [TMDB](https://www.themoviedb.org/) - API for movie data
+- [Jetpack Compose](https://developer.android.com/jetpack/compose) - Modern UI framework
 - [Koin](https://insert-koin.io/) - Dependency Injection
-- [Material Design](https://material.io/) - Система дизайна
+- [Material Design](https://material.io/) - Design system
 
 ---
 
-**Последнее обновление**: 2024-12-19  
-**Версия**: 2.2.0  
-**Статус**: В активной разработке
+**Last Updated**: 2024-12-10  
+**Version**: 2.4.0  
+**Status**: In active development

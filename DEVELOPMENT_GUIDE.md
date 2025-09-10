@@ -1,11 +1,11 @@
 # DEVELOPMENT_GUIDE.md
 
-**TmdbAi - Руководство по разработке**  
-**Дата создания**: 2024-12-19  
-**Дата обновления**: 2024-12-10  
-**Версия**: 2.4.0
+**TmdbAi - Development Guide**  
+**Created**: 2024-12-19  
+**Last Updated**: 2024-12-10  
+**Version**: 2.4.0
 
-## 🆕 Последние обновления (v2.4.0)
+## 🆕 Latest Updates (v2.4.0)
 
 ### 🔧 Code Quality & Refactoring Improvements
 - **String Resources**: All hardcoded UI texts moved to `strings.xml` for internationalization
@@ -15,27 +15,27 @@
 - **ML Components**: SentimentAnalyzer and MLPerformanceMonitor fully refactored with constants
 - **UI Components**: SentimentAnalysisCard and ConfigurableMovieCard use string resources
 
-## 🆕 Последние обновления (v2.4.1)
+## 🆕 Latest Updates (v2.4.1)
 
 ### 🤖 Enhanced ML Model v2.0.0
-- **Новая модель**: Enhanced Keyword Model v2.0.0 с улучшенной точностью
-- **Точность**: Повышена с ~75% до 85%+ для английских отзывов
-- **Новые возможности**: Модификаторы интенсивности, контекстные усилители
-- **Тестирование**: Полное покрытие unit тестами
-- **Обратная совместимость**: Fallback к v1.0 при необходимости
+- **New Model**: Enhanced Keyword Model v2.0.0 with improved accuracy
+- **Accuracy**: Increased from ~75% to 85%+ for English reviews
+- **New Features**: Intensity modifiers, contextual enhancers
+- **Testing**: Full unit test coverage
+- **Backward Compatibility**: Fallback to v1.0 when necessary
 
 ### 🔧 GitHub Actions Fixes
-- **Исправлены ошибки**: 502 HTTP ошибки при установке Android SDK
-- **Новый подход**: Ручная установка SDK с wget и sdkmanager
-- **Дополнительные workflows**: simple-test.yml для быстрых проверок
-- **Улучшенная надежность**: Fallback методы и retry логика
+- **Fixed Issues**: 502 HTTP errors during Android SDK installation
+- **New Approach**: Manual SDK installation with wget and sdkmanager
+- **Additional Workflows**: simple-test.yml for quick checks
+- **Improved Reliability**: Fallback methods and retry logic
 
-## 🚀 Настройка среды разработки
+## 🚀 Development Environment Setup
 
-### 📋 Предварительные требования
+### 📋 Prerequisites
 
-- **Android Studio**: Hedgehog (2023.1.1) или новее
-- **JDK**: 17 или новее
+- **Android Studio**: Hedgehog (2023.1.1) or newer
+- **JDK**: 17 or newer
 - **Android SDK**: API 36 (Android 14)
 - **Gradle**: 8.10.2
 - **Kotlin**: 1.9.22

@@ -1,12 +1,12 @@
 # ARCHITECTURE_GUIDE.md
 
-**TmdbAi - Руководство по архитектуре**  
-**Дата создания**: 2024-12-19  
-**Версия**: 1.0.0-dev
+**TmdbAi - Architecture Guide**  
+**Created**: 2024-12-19  
+**Version**: 1.0.0-dev
 
-## 🏗️ Обзор архитектуры
+## 🏗️ Architecture Overview
 
-TmdbAi построен на принципах **Clean Architecture** с использованием **MVI (Model-View-Intent)** паттерна. Архитектура обеспечивает четкое разделение ответственности, тестируемость и масштабируемость.
+TmdbAi is built on **Clean Architecture** principles using the **MVI (Model-View-Intent)** pattern. The architecture ensures clear separation of concerns, testability, and scalability.
 
 ## 🎯 MVI (Model-View-Intent) Pattern
 

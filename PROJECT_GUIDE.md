@@ -1,13 +1,13 @@
 # AI ASSISTANT GUIDE - TmdbAi Project
 
-> **ВАЖНО:** Этот документ является reference guide для взаимодействия с AI ассистентом по проекту TmdbAi. Копируйте ссылку на этот файл в начале каждого нового чата с AI.
+> **IMPORTANT:** This document is a reference guide for interacting with AI assistant on the TmdbAi project. Copy the link to this file at the beginning of each new chat with AI.
 
-## ПРОЕКТ OVERVIEW
+## PROJECT OVERVIEW
 
-**Репозиторий:** https://github.com/artemMprokhorov/TmdbAi.git  
-**Тип проекта:** Обучающий Android проект (без публикации в Play Store)  
-**Цель:** Демонстрация современной Android архитектуры с AI-интеграцией  
-**Статус:** ✅ **ЗАВЕРШЕН** - MCP интеграция и Server-Driven UI полностью реализованы
+**Repository:** https://github.com/artemMprokhorov/TmdbAi.git  
+**Project Type:** Educational Android project (not for Play Store publication)  
+**Goal:** Demonstrate modern Android architecture with AI integration  
+**Status:** ✅ **COMPLETED** - MCP integration and Server-Driven UI fully implemented
 
 ## 🎯 ТЕКУЩИЙ СТАТУС ПРОЕКТА
 

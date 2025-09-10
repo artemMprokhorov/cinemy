@@ -1,23 +1,23 @@
 # DOCUMENTATION_OVERVIEW.md
 
-**TmdbAi - Обзор документации**  
-**Дата создания**: 2024-12-19  
-**Версия**: 1.0.0-dev
+**TmdbAi - Documentation Overview**  
+**Created**: 2024-12-19  
+**Version**: 1.0.0-dev
 
-## 📚 Созданная документация
+## 📚 Created Documentation
 
 ### 1. 📖 README.md
-**Основной файл проекта** с полным описанием:
-- Описание проекта и целей
-- Архитектура MVI + Clean Architecture
-- Технологии и библиотеки
-- Инструкции по установке и запуску
-- Структура проекта
-- Статус разработки
+**Main project file** with complete description:
+- Project description and goals
+- MVI + Clean Architecture
+- Technologies and libraries
+- Installation and setup instructions
+- Project structure
+- Development status
 
 ### 2. 📊 PROJECT_STATUS.md
-**Текущий статус проекта**:
-- Общий прогресс: 35%
+**Current project status**:
+- Overall progress: 95%
 - Реализованные функции (с галочками)
 - Планируемые функции
 - Известные проблемы
