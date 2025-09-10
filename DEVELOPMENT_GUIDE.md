@@ -2,8 +2,18 @@
 
 **TmdbAi - Руководство по разработке**  
 **Дата создания**: 2024-12-19  
-**Дата обновления**: 2024-12-19  
-**Версия**: 2.4.1
+**Дата обновления**: 2024-12-10  
+**Версия**: 2.4.0
+
+## 🆕 Последние обновления (v2.4.0)
+
+### 🔧 Code Quality & Refactoring Improvements
+- **String Resources**: All hardcoded UI texts moved to `strings.xml` for internationalization
+- **Constants Organization**: Comprehensive constants system with proper organization
+- **Error Handling**: Replaced all `try/catch` blocks with modern `runCatching` approach
+- **Debug Logging**: All logs now wrapped with `BuildConfig.DEBUG` checks for production safety
+- **ML Components**: SentimentAnalyzer and MLPerformanceMonitor fully refactored with constants
+- **UI Components**: SentimentAnalysisCard and ConfigurableMovieCard use string resources
 
 ## 🆕 Последние обновления (v2.4.1)
 
@@ -149,6 +159,166 @@ Box(
 - **Content overlapping status bar**: Missing `systemBarsPadding()`
 - **Not working on older devices**: Check API level requirements
 - **Inconsistent behavior**: Ensure all screens use the same pattern
+
+## 🔧 Code Quality & Best Practices (v2.4.0)
+
+### 📝 **String Resources & Internationalization**
+
+#### ✅ **Required Patterns**
+```kotlin
+// ❌ BAD - Hardcoded strings
+Text("Sentiment Analysis Reviews")
+Text("Positive Reviews (${count})")
+
+// ✅ GOOD - String resources
+Text(stringResource(R.string.sentiment_analysis_title))
+Text(stringResource(R.string.sentiment_positive_reviews, count))
+```
+
+#### 📋 **String Resources Structure**
+```xml
+<!-- strings.xml -->
+<string name="sentiment_analysis_title">🤖 Sentiment Analysis Reviews</string>
+<string name="sentiment_positive_reviews">😊 Positive Reviews (%1$d)</string>
+<string name="movie_poster_description">Poster for %1$s</string>
+<string name="movie_rating_format">★ %1$.1f (%2$d)</string>
+```
+
+### 🎯 **Constants Organization**
+
+#### ✅ **Required Patterns**
+```kotlin
+// ❌ BAD - Hardcoded values
+val confidence = 0.85
+val timeout = 30000L
+val errorMessage = "Analysis failed"
+
+// ✅ GOOD - Constants in companion object
+companion object {
+    const val DEFAULT_CONFIDENCE = 0.85
+    const val HTTP_REQUEST_TIMEOUT_MS = 30000L
+    const val ERROR_ANALYSIS_FAILED = "Analysis failed"
+}
+```
+
+#### 📋 **Constants Placement Rules**
+1. **Place constants in the same class** where they are used
+2. **Use companion object** for class-level constants
+3. **Use descriptive names** with proper prefixes
+4. **Group related constants** together
+
+### 🚀 **Error Handling with runCatching**
+
+#### ✅ **Required Patterns**
+```kotlin
+// ❌ BAD - try/catch blocks
+try {
+    val result = performAnalysis()
+    return result
+} catch (e: Exception) {
+    Log.e("Error", "Analysis failed", e)
+    return null
+}
+
+// ✅ GOOD - runCatching approach
+return runCatching {
+    performAnalysis()
+}.onFailure { e ->
+    if (BuildConfig.DEBUG) {
+        Log.e("Analysis", "Analysis failed", e)
+    }
+}.getOrNull()
+```
+
+#### 📋 **runCatching Best Practices**
+1. **Use runCatching** instead of try/catch blocks
+2. **Handle errors gracefully** with getOrElse or getOrNull
+3. **Log errors only in debug builds**
+4. **Provide meaningful error messages**
+
+### 📊 **Debug-Only Logging**
+
+#### ✅ **Required Patterns**
+```kotlin
+// ❌ BAD - Always logging
+Log.d("Tag", "Debug message")
+Log.e("Tag", "Error message", exception)
+
+// ✅ GOOD - Debug-only logging
+if (BuildConfig.DEBUG) {
+    Log.d("Tag", "Debug message")
+    Log.e("Tag", "Error message", exception)
+}
+```
+
+#### 📋 **Logging Best Practices**
+1. **Wrap all logs** with `BuildConfig.DEBUG` checks
+2. **Use descriptive tags** for easy filtering
+3. **Log errors with stack traces** for debugging
+4. **Avoid logging sensitive information**
+
+### 🎨 **UI Component Patterns**
+
+#### ✅ **Required Patterns**
+```kotlin
+// ❌ BAD - Hardcoded values in UI
+Text(
+    text = "Positive Reviews (${reviews.size})",
+    color = Color(0xFF4CAF50),
+    fontSize = 24.sp
+)
+
+// ✅ GOOD - String resources and constants
+Text(
+    text = stringResource(R.string.sentiment_positive_reviews, reviews.size),
+    color = SentimentPositive,
+    fontSize = Typography24
+)
+```
+
+#### 📋 **UI Best Practices**
+1. **Use string resources** for all user-facing text
+2. **Use theme constants** for colors, dimensions, typography
+3. **Provide content descriptions** for accessibility
+4. **Use parameterized strings** for dynamic content
+
+### 🧪 **ML Component Patterns**
+
+#### ✅ **Required Patterns**
+```kotlin
+// ❌ BAD - Hardcoded ML configuration
+class SentimentAnalyzer {
+    private val confidence = 0.85
+    private val errorMessage = "Analysis failed"
+    
+    fun analyze(text: String): SentimentResult {
+        try {
+            // Analysis logic
+        } catch (e: Exception) {
+            return SentimentResult.error("Analysis failed")
+        }
+    }
+}
+
+// ✅ GOOD - Constants and runCatching
+class SentimentAnalyzer {
+    companion object {
+        const val DEFAULT_CONFIDENCE = 0.85
+        const val ERROR_ANALYSIS_FAILED = "Analysis failed"
+    }
+    
+    fun analyze(text: String): SentimentResult {
+        return runCatching {
+            // Analysis logic
+        }.getOrElse { e ->
+            if (BuildConfig.DEBUG) {
+                Log.e("SentimentAnalyzer", ERROR_ANALYSIS_FAILED, e)
+            }
+            SentimentResult.error(ERROR_ANALYSIS_FAILED)
+        }
+    }
+}
+```
 
 ## 📏 Правила работы с кодом
 
