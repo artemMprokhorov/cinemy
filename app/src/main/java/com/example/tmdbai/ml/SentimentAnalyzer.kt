@@ -25,13 +25,48 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 INSTANCE ?: SentimentAnalyzer(context.applicationContext).also { INSTANCE = it }
             }
         }
+        
+        // Model constants
+        private const val MODEL_TYPE = "keyword_sentiment_analysis"
+        private const val MODEL_VERSION = "2.0.0"
+        private const val MODEL_LANGUAGE = "en"
+        private const val MODEL_ACCURACY = "85%+"
+        private const val MODEL_SPEED = "very_fast"
+        
+        // Error messages
+        private const val ERROR_ANALYZER_NOT_INITIALIZED = "Analyzer not initialized"
+        private const val ERROR_ANALYSIS_ERROR = "Analysis error: "
+        
+        // Performance thresholds
+        private const val BASE_CONFIDENCE = 0.6
+        private const val KEYWORD_WEIGHT = 1.0
+        private const val CONTEXT_WEIGHT = 0.3
+        private const val MODIFIER_WEIGHT = 0.4
+        private const val NEUTRAL_THRESHOLD = 0.5
+        private const val MIN_CONFIDENCE = 0.3
+        private const val MAX_CONFIDENCE = 0.9
+        
+        // Intensity modifiers
+        private const val INTENSITY_ABSOLUTELY = 1.5
+        private const val INTENSITY_COMPLETELY = 1.4
+        private const val INTENSITY_TOTALLY = 1.3
+        private const val INTENSITY_EXTREMELY = 1.3
+        private const val INTENSITY_INCREDIBLY = 1.3
+        private const val INTENSITY_VERY = 1.2
+        private const val INTENSITY_REALLY = 1.1
+        private const val INTENSITY_PRETTY = 0.8
+        private const val INTENSITY_SOMEWHAT = 0.7
+        private const val INTENSITY_SLIGHTLY = 0.6
+        private const val INTENSITY_NOT = -1.0
+        private const val INTENSITY_NEVER = -1.0
+        private const val INTENSITY_BARELY = -0.5
     }
     
     /**
      * Initialize analyzer (call at app startup)
      */
     suspend fun initialize(): Boolean = withContext(Dispatchers.IO) {
-        try {
+        runCatching {
             if (isInitialized) return@withContext true
             
             // Load model from assets (currently using built-in model)
@@ -42,7 +77,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             model = createSimpleModel()
             isInitialized = true
             true
-        } catch (e: Exception) {
+        }.getOrElse { e ->
             e.printStackTrace()
             false
         }
@@ -53,17 +88,17 @@ class SentimentAnalyzer private constructor(private val context: Context) {
      */
     suspend fun analyzeSentiment(text: String): SentimentResult = withContext(Dispatchers.Default) {
         if (!isInitialized || model == null) {
-            return@withContext SentimentResult.error("Analyzer not initialized")
+            return@withContext SentimentResult.error(ERROR_ANALYZER_NOT_INITIALIZED)
         }
         
         if (text.isBlank()) {
             return@withContext SentimentResult.neutral()
         }
         
-        try {
+        runCatching {
             analyzeWithKeywords(text, model!!)
-        } catch (e: Exception) {
-            SentimentResult.error("Analysis error: ${e.message}")
+        }.getOrElse { e ->
+            SentimentResult.error("$ERROR_ANALYSIS_ERROR${e.message}")
         }
     }
     
@@ -84,11 +119,11 @@ class SentimentAnalyzer private constructor(private val context: Context) {
      */
     private fun createSimpleModel(): KeywordSentimentModel {
         val modelInfo = ModelInfo(
-            type = "keyword_sentiment_analysis",
-            version = "2.0.0",
-            language = "en",
-            accuracy = "85%+",
-            speed = "very_fast"
+            type = MODEL_TYPE,
+            version = MODEL_VERSION,
+            language = MODEL_LANGUAGE,
+            accuracy = MODEL_ACCURACY,
+            speed = MODEL_SPEED
         )
         
         val positiveKeywords = listOf(
@@ -113,19 +148,19 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         )
         
         val intensityModifiers = mapOf(
-            "absolutely" to 1.5,
-            "completely" to 1.4,
-            "totally" to 1.3,
-            "extremely" to 1.3,
-            "incredibly" to 1.3,
-            "very" to 1.2,
-            "really" to 1.1,
-            "pretty" to 0.8,
-            "somewhat" to 0.7,
-            "slightly" to 0.6,
-            "not" to -1.0,
-            "never" to -1.0,
-            "barely" to -0.5
+            "absolutely" to INTENSITY_ABSOLUTELY,
+            "completely" to INTENSITY_COMPLETELY,
+            "totally" to INTENSITY_TOTALLY,
+            "extremely" to INTENSITY_EXTREMELY,
+            "incredibly" to INTENSITY_INCREDIBLY,
+            "very" to INTENSITY_VERY,
+            "really" to INTENSITY_REALLY,
+            "pretty" to INTENSITY_PRETTY,
+            "somewhat" to INTENSITY_SOMEWHAT,
+            "slightly" to INTENSITY_SLIGHTLY,
+            "not" to INTENSITY_NOT,
+            "never" to INTENSITY_NEVER,
+            "barely" to INTENSITY_BARELY
         )
         
         val contextBoosters = ContextBoosters(
@@ -144,13 +179,13 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         )
         
         val algorithm = AlgorithmConfig(
-            baseConfidence = 0.6,
-            keywordWeight = 1.0,
-            contextWeight = 0.3,
-            modifierWeight = 0.4,
-            neutralThreshold = 0.5,
-            minConfidence = 0.3,
-            maxConfidence = 0.9
+            baseConfidence = BASE_CONFIDENCE,
+            keywordWeight = KEYWORD_WEIGHT,
+            contextWeight = CONTEXT_WEIGHT,
+            modifierWeight = MODIFIER_WEIGHT,
+            neutralThreshold = NEUTRAL_THRESHOLD,
+            minConfidence = MIN_CONFIDENCE,
+            maxConfidence = MAX_CONFIDENCE
         )
         
         return KeywordSentimentModel(
@@ -168,10 +203,10 @@ class SentimentAnalyzer private constructor(private val context: Context) {
      * Main keyword analysis algorithm with fallback
      */
     private fun analyzeWithKeywords(text: String, model: KeywordSentimentModel): SentimentResult {
-        return try {
+        return runCatching {
             // Use enhanced algorithm
             analyzeWithEnhancedKeywords(text, model)
-        } catch (e: Exception) {
+        }.getOrElse { e ->
             // Fallback to simple algorithm if something went wrong
             analyzeWithSimpleKeywords(text, model)
         }

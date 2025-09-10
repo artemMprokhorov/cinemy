@@ -1,6 +1,7 @@
 package com.example.tmdbai.ml
 
 import android.util.Log
+import com.example.tmdbai.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,6 +18,24 @@ class MLPerformanceMonitor private constructor() {
     
     companion object {
         private const val TAG = "MLPerformanceMonitor"
+        
+        // Performance thresholds
+        private const val SHORT_TEXT_THRESHOLD = 50
+        private const val MEDIUM_TEXT_THRESHOLD = 200
+        private const val LOG_INTERVAL = 10
+        
+        // Text length categories
+        private const val CATEGORY_SHORT = "short"
+        private const val CATEGORY_MEDIUM = "medium"
+        private const val CATEGORY_LONG = "long"
+        
+        // Log messages
+        private const val LOG_PERFORMANCE_STATS = "ML Performance Stats:"
+        private const val LOG_TOTAL_ANALYSES = "  Total analyses: "
+        private const val LOG_AVERAGE_TIME = "  Average time: "
+        private const val LOG_ERROR_RATE = "  Error rate: "
+        private const val LOG_GROUP_STATS = "  "
+        private const val LOG_ERROR_LOGGING = "Error logging performance stats"
         
         @Volatile
         private var INSTANCE: MLPerformanceMonitor? = null
@@ -51,9 +70,9 @@ class MLPerformanceMonitor private constructor() {
         
         // Group by text length
         val lengthGroup = when {
-            textLength <= 50 -> "short"
-            textLength <= 200 -> "medium"
-            else -> "long"
+            textLength <= SHORT_TEXT_THRESHOLD -> CATEGORY_SHORT
+            textLength <= MEDIUM_TEXT_THRESHOLD -> CATEGORY_MEDIUM
+            else -> CATEGORY_LONG
         }
         
         performanceData.compute(lengthGroup) { _, existing ->
@@ -71,7 +90,7 @@ class MLPerformanceMonitor private constructor() {
         }
         
         // Log every 10 analyses
-        if (analysisCount.get() % 10 == 0) {
+        if (analysisCount.get() % LOG_INTERVAL == 0) {
             logPerformanceStats()
         }
     }
@@ -105,20 +124,22 @@ class MLPerformanceMonitor private constructor() {
      * Log statistics
      */
     private fun logPerformanceStats() {
+        if (!BuildConfig.DEBUG) return
+        
         CoroutineScope(Dispatchers.IO).launch {
-            try {
+            runCatching {
                 val stats = getPerformanceStats()
-                Log.i(TAG, "ML Performance Stats:")
-                Log.i(TAG, "  Total analyses: ${stats.totalAnalyses}")
-                Log.i(TAG, "  Average time: ${stats.averageProcessingTimeMs.toInt()}ms")
-                Log.i(TAG, "  Error rate: ${(stats.errorRate * 100).toInt()}%")
+                Log.i(TAG, LOG_PERFORMANCE_STATS)
+                Log.i(TAG, "$LOG_TOTAL_ANALYSES${stats.totalAnalyses}")
+                Log.i(TAG, "$LOG_AVERAGE_TIME${stats.averageProcessingTimeMs.toInt()}ms")
+                Log.i(TAG, "$LOG_ERROR_RATE${(stats.errorRate * 100).toInt()}%")
                 
                 stats.detailedMetrics.forEach { (group, metric) ->
                     val avgTime = metric.totalTime.toDouble() / metric.count
-                    Log.i(TAG, "  $group: ${metric.count} analyses, avg ${avgTime.toInt()}ms")
+                    Log.i(TAG, "$LOG_GROUP_STATS$group: ${metric.count} analyses, avg ${avgTime.toInt()}ms")
                 }
-            } catch (e: Exception) {
-                Log.e(TAG, "Error logging performance stats", e)
+            }.onFailure { e ->
+                Log.e(TAG, LOG_ERROR_LOGGING, e)
             }
         }
     }

@@ -37,11 +37,15 @@ class TmdbAiApplication : Application() {
         
         // Initialize ML analyzer
         CoroutineScope(Dispatchers.IO).launch {
-            try {
+            runCatching {
                 val success = sentimentAnalyzer.initialize()
-                android.util.Log.d("TmdbAi_ML", "ML analyzer initialized: $success")
-            } catch (e: Exception) {
-                android.util.Log.e("TmdbAi_ML", "ML initialization error", e)
+                if (BuildConfig.DEBUG) {
+                    android.util.Log.d("TmdbAi_ML", "ML analyzer initialized: $success")
+                }
+            }.onFailure { e ->
+                if (BuildConfig.DEBUG) {
+                    android.util.Log.e("TmdbAi_ML", "ML initialization error", e)
+                }
             }
         }
     }

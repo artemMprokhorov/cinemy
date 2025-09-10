@@ -127,7 +127,7 @@ fun ConfigurableMovieCard(
                 imagePath?.let { path ->
                     AsyncImage(
                         model = path,
-                        contentDescription = "Poster for ${movie.title}",
+                        contentDescription = stringResource(R.string.movie_poster_description, movie.title),
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
@@ -158,7 +158,7 @@ fun ConfigurableMovieCard(
                         shape = RoundedCornerShape(Dimens16)
                     ) {
                         ConfigurableText(
-                            text = "★ ${movie.rating} (${movie.voteCount})",
+                            text = stringResource(R.string.movie_rating_format, movie.rating, movie.voteCount),
                             style = MaterialTheme.typography.labelSmall,
                             uiConfig = uiConfig,
                             color = Color.White,

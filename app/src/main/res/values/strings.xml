@@ -28,6 +28,22 @@
     <string name="pull_to_refresh_try_again">Pull to refresh to try again</string>
     <string name="page_info">Page %1$d of %2$d</string>
     <string name="splash_subtitle">Discover new films from TMDB</string>
+    
+    <!-- Sentiment Analysis -->
+    <string name="sentiment_analysis_title">🤖 Sentiment Analysis Reviews</string>
+    <string name="sentiment_analysis_subtitle">Ready reviews • AI-analysis</string>
+    <string name="sentiment_reviews_not_loaded">Reviews not loaded yet...</string>
+    <string name="sentiment_reviews_loading">Reviews will be loaded from backend...</string>
+    <string name="sentiment_positive_reviews">😊 Positive Reviews (%1$d)</string>
+    <string name="sentiment_negative_reviews">😞 Negative Reviews (%1$d)</string>
+    <string name="sentiment_keywords_label">Keywords: %1$s</string>
+    <string name="sentiment_positive_emoji">😊</string>
+    <string name="sentiment_negative_emoji">😞</string>
+    <string name="sentiment_neutral_emoji">😐</string>
+    
+    <!-- Movie Card -->
+    <string name="movie_poster_description">Poster for %1$s</string>
+    <string name="movie_rating_format">★ %1$.1f (%2$d)</string>
 
     <!-- Error Messages -->
     <string name="error_unknown">Unknown error</string>

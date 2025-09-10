@@ -114,34 +114,33 @@ class MovieDetailViewModel(
     
     private fun analyzeSentimentWithLocalModel(reviews: com.example.tmdbai.data.model.SentimentReviews) {
         viewModelScope.launch {
-            try {
-                // Analyze positive reviews
-                val positiveResults = sentimentAnalyzer.analyzeBatch(reviews.positive)
-                val negativeResults = sentimentAnalyzer.analyzeBatch(reviews.negative)
-                
-                // Log analysis results
-                if (BuildConfig.DEBUG) {
-                    Log.d("ML_ANALYSIS", "Analyzed ${reviews.positive.size} positive and ${reviews.negative.size} negative reviews")
-                    Log.d("ML_ANALYSIS", "Positive results: ${positiveResults.map { it.sentiment }}")
-                    Log.d("ML_ANALYSIS", "Negative results: ${negativeResults.map { it.sentiment }}")
-                }
-                
-                // Update state with analysis results
-                _state.value = _state.value.copy(
-                    sentimentResult = com.example.tmdbai.ml.SentimentResult.positive(
-                        confidence = 0.8,
-                        keywords = listOf("local_ai_analysis")
-                    )
-                )
-                
-            } catch (e: Exception) {
-                if (BuildConfig.DEBUG) {
-                    Log.e("ML_ANALYSIS", "Error analyzing sentiment with local model", e)
-                }
-                _state.value = _state.value.copy(
-                    sentimentError = "Local AI analysis failed: ${e.message}"
-                )
+        runCatching {
+            // Analyze positive reviews
+            val positiveResults = sentimentAnalyzer.analyzeBatch(reviews.positive)
+            val negativeResults = sentimentAnalyzer.analyzeBatch(reviews.negative)
+            
+            // Log analysis results
+            if (BuildConfig.DEBUG) {
+                Log.d("ML_ANALYSIS", "Analyzed ${reviews.positive.size} positive and ${reviews.negative.size} negative reviews")
+                Log.d("ML_ANALYSIS", "Positive results: ${positiveResults.map { it.sentiment }}")
+                Log.d("ML_ANALYSIS", "Negative results: ${negativeResults.map { it.sentiment }}")
             }
+            
+            // Update state with analysis results
+            _state.value = _state.value.copy(
+                sentimentResult = com.example.tmdbai.ml.SentimentResult.positive(
+                    confidence = 0.8,
+                    keywords = listOf("local_ai_analysis")
+                )
+            )
+        }.onFailure { e ->
+            if (BuildConfig.DEBUG) {
+                Log.e("ML_ANALYSIS", "Error analyzing sentiment with local model", e)
+            }
+            _state.value = _state.value.copy(
+                sentimentError = "Local AI analysis failed: ${e.message}"
+            )
+        }
         }
     }
 }

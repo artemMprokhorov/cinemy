@@ -12,6 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.example.tmdbai.R
 import com.example.tmdbai.data.model.SentimentReviews
 import com.example.tmdbai.ml.SentimentResult
 import com.example.tmdbai.ml.SentimentType
@@ -37,14 +39,14 @@ fun SentimentAnalysisCard(
             verticalArrangement = Arrangement.spacedBy(Dimens12)
         ) {
             Text(
-                text = "🤖 Sentiment Analysis Reviews",
+                text = stringResource(R.string.sentiment_analysis_title),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
             
             Text(
-                text = "Ready reviews • AI-analysis",
+                text = stringResource(R.string.sentiment_analysis_subtitle),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = Float07)
             )
@@ -64,7 +66,7 @@ fun SentimentAnalysisCard(
                     SentimentReviewsContent(reviews = reviews)
                 } else {
                     Text(
-                        text = "Reviews not loaded yet...",
+                        text = stringResource(R.string.sentiment_reviews_not_loaded),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = Float07)
                     )
@@ -73,7 +75,7 @@ fun SentimentAnalysisCard(
                 // Show message if no reviews
                 if (!isLoading && error == null) {
                     Text(
-                        text = "Reviews will be loaded from backend...",
+                        text = stringResource(R.string.sentiment_reviews_loading),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = Float07)
                     )
@@ -100,7 +102,7 @@ private fun SentimentReviewsContent(
         // Positive reviews
         if (reviews.hasPositiveReviews) {
             Text(
-                text = "😊 Positive Reviews (${reviews.positive.size})",
+                text = stringResource(R.string.sentiment_positive_reviews, reviews.positive.size),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Medium,
                 color = SentimentPositive
@@ -123,7 +125,7 @@ private fun SentimentReviewsContent(
         // Negative reviews
         if (reviews.hasNegativeReviews) {
             Text(
-                text = "😞 Negative Reviews (${reviews.negative.size})",
+                text = stringResource(R.string.sentiment_negative_reviews, reviews.negative.size),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Medium,
                 color = SentimentNegative
@@ -175,17 +177,17 @@ private fun SentimentResultCard(
         SentimentType.POSITIVE -> Triple(
             SentimentPositive.copy(alpha = Float01),
             SentimentPositive,
-            "😊"
+            stringResource(R.string.sentiment_positive_emoji)
         )
         SentimentType.NEGATIVE -> Triple(
             SentimentNegative.copy(alpha = Float01),
             SentimentNegative,
-            "😞"
+            stringResource(R.string.sentiment_negative_emoji)
         )
         else -> Triple(
             SentimentNeutral.copy(alpha = Float01),
             SentimentNeutral,
-            "😐"
+            stringResource(R.string.sentiment_neutral_emoji)
         )
     }
     
@@ -219,7 +221,7 @@ private fun SentimentResultCard(
                     )
                     if (result.foundKeywords.isNotEmpty()) {
                         Text(
-                            text = "Keywords: ${result.foundKeywords.take(3).joinToString(", ")}",
+                            text = stringResource(R.string.sentiment_keywords_label, result.foundKeywords.take(3).joinToString(", ")),
                             style = MaterialTheme.typography.bodySmall,
                             color = textColor.copy(alpha = Float07)
                         )
