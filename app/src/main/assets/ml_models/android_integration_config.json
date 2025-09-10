@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "name": "TmdbAi Sentiment Analysis",
+    "version": "1.0.0",
+    "integration_type": "keyword_based_primary",
+    "created_date": "2024-09-09"
+  },
+  "models": {
+    "primary": {
+      "file": "keyword_sentiment_model.json",
+      "type": "keyword_based",
+      "speed": "very_fast",
+      "accuracy": "good",
+      "offline": true,
+      "memory_usage_mb": 1
+    },
+    "fallback": {
+      "enabled": false,
+      "reason": "Simplified implementation for mobile performance"
+    }
+  },
+  "android_integration": {
+    "min_sdk": 24,
+    "target_sdk": 34,
+    "package_name": "com.tmdbai.ml",
+    "main_class": "SentimentAnalyzer",
+    "assets_folder": "ml_models",
+    "permissions": []
+  },
+  "performance": {
+    "target_inference_time_ms": 5,
+    "memory_usage_mb": 1,
+    "battery_impact": "minimal",
+    "offline_capable": true
+  },
+  "usage_instructions": {
+    "initialization": "Load keyword_sentiment_model.json into SentimentAnalyzer",
+    "inference": "Call analyzeSentiment(text) method",
+    "result_format": "SentimentResult with confidence score",
+    "caching": "Recommended for repeated analysis"
+  }
+}
