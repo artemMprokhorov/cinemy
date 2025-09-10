@@ -9,80 +9,80 @@
 **Goal:** Demonstrate modern Android architecture with AI integration  
 **Status:** ✅ **COMPLETED** - MCP integration and Server-Driven UI fully implemented
 
-## 🎯 ТЕКУЩИЙ СТАТУС ПРОЕКТА
+## 🎯 CURRENT PROJECT STATUS
 
-### ✅ **ЗАВЕРШЕННЫЕ ФАЗЫ:**
+### ✅ **COMPLETED PHASES:**
 
-#### **ФАЗА 1: FOUNDATION** ✅ **ЗАВЕРШЕНО**
-- [x] Cursor IDE настройка и AI configuration
-- [x] GitHub Actions для APK generation
-- [x] Keystore generation и secrets setup
-- [x] Базовая MCP client архитектура
+#### **PHASE 1: FOUNDATION** ✅ **COMPLETED**
+- [x] Cursor IDE setup and AI configuration
+- [x] GitHub Actions for APK generation
+- [x] Keystore generation and secrets setup
+- [x] Basic MCP client architecture
 
-#### **ФАЗА 2: BACKEND INFRASTRUCTURE** ✅ **ЗАВЕРШЕНО**
-- [x] Docker + N8N environment (готов к настройке)
-- [x] Ngrok tunnel configuration (готов к настройке)
-- [x] Local AI model setup (готов к настройке)
-- [x] MCP server implementation (готов к настройке)
-- [x] TMDB API integration в AI agent (готов к настройке)
+#### **PHASE 2: BACKEND INFRASTRUCTURE** ✅ **COMPLETED**
+- [x] Docker + N8N environment (ready for configuration)
+- [x] Ngrok tunnel configuration (ready for configuration)
+- [x] Local AI model setup (ready for configuration)
+- [x] MCP server implementation (ready for configuration)
+- [x] TMDB API integration in AI agent (ready for configuration)
 
-#### **ФАЗА 3: ANDROID CORE** ✅ **ЗАВЕРШЕНО**
-- [x] Clean Architecture без domain слоя
+#### **PHASE 3: ANDROID CORE** ✅ **COMPLETED**
+- [x] Clean Architecture without domain layer
 - [x] MVI pattern implementation
 - [x] Navigation 3.0 type-safe setup
 - [x] Koin DI configuration
 - [x] Base UI components package
 
-#### **ФАЗА 4: UI & UX** ✅ **ЗАВЕРШЕНО**
+#### **PHASE 4: UI & UX** ✅ **COMPLETED**
 - [x] Server-driven UI implementation
 - [x] Dynamic theming system
 - [x] Jetpack Coil image loading
 - [x] Standardized network layer
-- [x] Responsive design для всех экранов
+- [x] Responsive design for all screens
 
-#### **ФАЗА 5: AI INTEGRATION** ✅ **ЗАВЕРШЕНО**
-- [x] MCP protocol полная интеграция
-- [x] AI model fine-tuning для UI generation (готов к настройке)
+#### **PHASE 5: AI INTEGRATION** ✅ **COMPLETED**
+- [x] MCP protocol full integration
+- [x] AI model fine-tuning for UI generation (ready for configuration)
 - [x] Performance optimization
-- [x] Error handling и fallbacks
+- [x] Error handling and fallbacks
 
-#### **ФАЗА 6: TESTING & POLISH** ✅ **ЗАВЕРШЕНО**
-- [x] Unit tests coverage (готов к расширению)
-- [x] UI tests для критических flows (готов к расширению)
-- [x] Performance testing и optimization
-- [x] APK generation и signing verification
+#### **PHASE 6: TESTING & POLISH** ✅ **COMPLETED**
+- [x] Unit tests coverage (ready for expansion)
+- [x] UI tests for critical flows (ready for expansion)
+- [x] Performance testing and optimization
+- [x] APK generation and signing verification
 
-## 🚀 ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ
+## 🚀 TECHNICAL REQUIREMENTS
 
 ### Android App Stack:
 
-- **Архитектура:** ✅ Clean Architecture + MVI pattern (БЕЗ domain слоя)
+- **Architecture:** ✅ Clean Architecture + MVI pattern (WITHOUT domain layer)
 - **UI:** ✅ Jetpack Compose
-- **Навигация:** ✅ Jetpack Navigation 3.0 (type-safe)
-- **Коммуникация:** ✅ AI MCP protocol для всех backend вызовов
-- **Изображения:** ✅ Jetpack Coil для загрузки
+- **Navigation:** ✅ Jetpack Navigation 3.0 (type-safe)
+- **Communication:** ✅ AI MCP protocol for all backend calls
+- **Images:** ✅ Jetpack Coil for loading
 - **DI:** ✅ Koin
-- **Тесты:** ✅ Unit tests coverage (базовая структура)
-- **UI Стандартизация:** ✅ Переиспользуемые компоненты в отдельном пакете
-- **Network:** ✅ Стандартизированный слой в отдельном пакете
-- **Server-Driven UI:** ✅ Рендеринг UI с параметрами (цвета, тексты) с backend через MCP
+- **Tests:** ✅ Unit tests coverage (basic structure)
+- **UI Standardization:** ✅ Reusable components in separate package
+- **Network:** ✅ Standardized layer in separate package
+- **Server-Driven UI:** ✅ UI rendering with parameters (colors, texts) from backend via MCP
 
 ### Backend Stack:
 
-- **Туннель:** 🔄 Ngrok для доступа к локальному серверу (готов к настройке)
-- **Контейнеры:** 🔄 Docker для изоляции сервисов (готов к настройке)
-- **Workflow:** 🔄 N8N для автоматизации (готов к настройке)
-- **AI:** 🔄 Локальная AI модель для обработки MCP calls (готов к настройке)
-- **Протокол:** ✅ MCP для коммуникации с Android app
+- **Tunnel:** 🔄 Ngrok for local server access (ready for configuration)
+- **Containers:** 🔄 Docker for service isolation (ready for configuration)
+- **Workflow:** 🔄 N8N for automation (ready for configuration)
+- **AI:** 🔄 Local AI model for MCP calls processing (ready for configuration)
+- **Protocol:** ✅ MCP for communication with Android app
 
 ### DevOps:
 
-- **IDE:** ✅ Cursor для AI-assisted разработки
+- **IDE:** ✅ Cursor for AI-assisted development
 - **CI/CD:** ✅ GitHub Actions
-- **Артефакты:** ✅ Генерация подписанного APK
-- **Безопасность:** ✅ Хранение ключей в GitHub Secrets
+- **Artifacts:** ✅ Signed APK generation
+- **Security:** ✅ Key storage in GitHub Secrets
 
-## 🏗️ АРХИТЕКТУРА ПРИЛОЖЕНИЯ
+## 🏗️ APPLICATION ARCHITECTURE
 
 ### App Flow:
 
@@ -94,13 +94,13 @@ Splash Screen → Principal Page → Movie Detail Page
  AI Processing  TMDB Images    Detail Data
 ```
 
-### MVI без Domain слоя:
+### MVI without Domain layer:
 
 ```
 data/
-├── model/           # Модели и Result types
-├── repository/      # Repository интерфейсы и реализации  
-├── remote/          # MCP client и network
+├── model/           # Models and Result types
+├── repository/      # Repository interfaces and implementations  
+├── remote/          # MCP client and network
 ├── mcp/             # ✅ MCP protocol implementation
 │   ├── models/      # ✅ McpRequest, McpResponse
 │   ├── McpHttpClient.kt # ✅ Ktor-based HTTP client
@@ -108,60 +108,60 @@ data/
 └── di/              # Dependency injection
 
 presentation/
-├── commons/         # Базовые классы
+├── commons/         # Base classes
 ├── splash/          # Splash screen logic
 ├── movieslist/      # Movies list MVI logic
 ├── moviedetail/     # Movie detail MVI logic
 └── di/              # Presentation DI
 
 ui/
-├── components/      # ✅ Переиспользуемые компоненты
+├── components/      # ✅ Reusable components
 │   ├── ConfigurableButton.kt    # ✅ Dynamic button styling
 │   ├── ConfigurableText.kt      # ✅ Dynamic text styling
 │   └── ConfigurableMovieCard.kt # ✅ Dynamic movie card theming
-├── network/         # ✅ Стандартизированный network слой
+├── network/         # ✅ Standardized network layer
 ├── splash/          # Splash UI
 ├── movieslist/      # Movies list UI
 ├── moviedetail/     # Movie detail UI
 └── theme/           # Dynamic theming
 ```
 
-## ✅ КЛЮЧЕВЫЕ ОСОБЕННОСТИ РЕАЛИЗАЦИИ
+## ✅ KEY IMPLEMENTATION FEATURES
 
-### 1. MCP Protocol Integration ✅ **ЗАВЕРШЕНО**
+### 1. MCP Protocol Integration ✅ **COMPLETED**
 
-- ✅ Все backend коммуникации только через MCP
-- ✅ Локальная AI модель обрабатывает MCP вызовы (готово к настройке)
-- ✅ JSON responses с UI конфигурацией
+- ✅ All backend communications only through MCP
+- ✅ Local AI model processes MCP calls (ready for configuration)
+- ✅ JSON responses with UI configuration
 
-### 2. Server-Driven UI ✅ **ЗАВЕРШЕНО**
+### 2. Server-Driven UI ✅ **COMPLETED**
 
-- ✅ Backend отправляет цвета для кнопок, текстов, фонов
-- ✅ Dynamic theming на основе AI анализа контента
-- ✅ Адаптивные стили компонентов
+- ✅ Backend sends colors for buttons, texts, backgrounds
+- ✅ Dynamic theming based on AI content analysis
+- ✅ Adaptive component styles
 
-### 3. Hybrid Data Loading ✅ **ЗАВЕРШЕНО**
+### 3. Hybrid Data Loading ✅ **COMPLETED**
 
-- ✅ Метаданные фильмов через MCP (с AI обработкой)
-- ✅ Изображения напрямую с TMDB через Coil
-- ✅ Кэширование и оптимизация загрузки
+- ✅ Movie metadata through MCP (with AI processing)
+- ✅ Images directly from TMDB through Coil
+- ✅ Caching and loading optimization
 
-### 4. AI Enhancement ✅ **ЗАВЕРШЕНО**
+### 4. AI Enhancement ✅ **COMPLETED**
 
-- ✅ Локальная модель анализирует данные фильмов (готово к настройке)
-- ✅ Генерирует персонализированные UI конфигурации
-- ✅ Обогащает контент дополнительной информацией
+- ✅ Local model analyzes movie data (ready for configuration)
+- ✅ Generates personalized UI configurations
+- ✅ Enriches content with additional information
 
-## 🔄 ЭТАПЫ РАЗРАБОТКИ
+## 🔄 DEVELOPMENT PHASES
 
-### ФАЗА 1: FOUNDATION ✅ **ЗАВЕРШЕНО** (1-2 недели)
+### PHASE 1: FOUNDATION ✅ **COMPLETED** (1-2 weeks)
 
-- [x] Cursor IDE настройка и AI configuration
-- [x] GitHub Actions для APK generation
-- [x] Keystore generation и secrets setup
-- [x] Базовая MCP client архитектура
+- [x] Cursor IDE setup and AI configuration
+- [x] GitHub Actions for APK generation
+- [x] Keystore generation and secrets setup
+- [x] Basic MCP client architecture
 
-### ФАЗА 2: BACKEND INFRASTRUCTURE 🔄 **ГОТОВО К НАСТРОЙКЕ** (1-2 недели)
+### PHASE 2: BACKEND INFRASTRUCTURE 🔄 **READY FOR CONFIGURATION** (1-2 weeks)
 
 - [x] Docker + N8N environment
 - [x] Ngrok tunnel configuration
