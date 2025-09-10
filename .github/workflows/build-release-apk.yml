@@ -1,5 +1,5 @@
 # .github/workflows/build-release-apk-fixed.yml
-name: Build and Release APK (Fixed)
+name: Build and Release APK
 
 on:
   push:
