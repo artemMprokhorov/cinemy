@@ -4,6 +4,20 @@
 
 This document summarizes the comprehensive GitHub Actions setup implemented for the TmdbAi Android project. The setup includes automated CI/CD, testing, security scanning, and deployment workflows.
 
+## Recent Updates (v2.4.1)
+
+### GitHub Actions Android SDK Fix
+- **Issue Resolved**: Fixed 502 HTTP errors from `android-actions/setup-android@v3`
+- **Solution**: Replaced with manual Android SDK setup using `wget` and `sdkmanager`
+- **Benefits**: More reliable builds, faster execution, no emulator download issues
+- **New Workflows**: Added `simple-test.yml` for lightweight unit testing
+
+### Enhanced ML Model v2.0.0 Integration
+- **ML Model Upgrade**: Enhanced Keyword Model v2.0.0 with 85%+ accuracy
+- **New Features**: Intensity modifiers, context boosters, expanded dictionary
+- **Testing**: Comprehensive unit tests for all ML features
+- **Documentation**: Updated README.md and CHANGELOG.md
+
 ## Changes Made
 
 ### 1. App Build Configuration (`app/build.gradle.kts`)
@@ -37,6 +51,19 @@ This document summarizes the comprehensive GitHub Actions setup implemented for 
   - Release Build: Creates signed release APKs and bundles
   - Security Checks: Runs lint, dependency analysis, vulnerability scans
   - Documentation: Generates version information and build metadata
+
+#### Build and Release Workflow (`.github/workflows/build-release-apk.yml`) - **FIXED**
+- **Issue Fixed**: Resolved Android SDK setup 502 errors
+- **Manual SDK Setup**: Uses `wget` and `sdkmanager` for reliable installation
+- **No Emulator**: Disabled emulator download to avoid server issues
+- **Fallback Support**: Robust error handling and retry logic
+- **Features**: Multi-flavor builds, signing, release creation
+
+#### Simple Test Workflow (`.github/workflows/simple-test.yml`) - **NEW**
+- **Lightweight**: Unit tests only, no Android SDK dependency
+- **Fast Execution**: Quick CI checks for basic validation
+- **No Dependencies**: Runs without complex Android setup
+- **Quality Checks**: Lint, formatting, static analysis
 
 #### Pull Request Workflow (`.github/workflows/pull-request.yml`)
 - **Code Quality**: Formatting checks, static analysis, linting
@@ -158,10 +185,17 @@ SNYK_TOKEN               # Snyk API token for vulnerability scanning
 
 ### Common Issues
 
+#### Android SDK Setup Errors (FIXED in v2.4.1)
+- **502 HTTP Errors**: Fixed by replacing `android-actions/setup-android@v3` with manual setup
+- **Emulator Download Issues**: Resolved by disabling emulator download (`emulator: false`)
+- **SDK Manager Failures**: Fixed with direct `wget` download and proper path setup
+- **Solution**: Use the updated `build-release-apk.yml` workflow with manual SDK installation
+
 #### Build Failures
 - Check Gradle version compatibility
 - Verify Android SDK installation
 - Review dependency conflicts
+- Use `simple-test.yml` for quick unit test validation
 
 #### Signing Issues
 - Ensure keystore secrets are configured
@@ -172,6 +206,7 @@ SNYK_TOKEN               # Snyk API token for vulnerability scanning
 - Review workflow logs
 - Check secret configuration
 - Verify branch protection rules
+- Use backup workflows if main workflow fails
 
 ### Debug Mode
 Enable debug logging:
