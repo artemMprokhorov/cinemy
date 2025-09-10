@@ -1,204 +1,204 @@
 # DEPENDENCIES_INFO.md
 
-**TmdbAi - Информация о зависимостях**  
-**Дата создания**: 2024-12-19  
-**Версия**: 1.0.0-dev
+**TmdbAi - Dependencies Information**  
+**Creation Date**: 2024-12-19  
+**Version**: 1.0.0-dev
 
-## 📦 Обзор зависимостей
+## 📦 Dependencies Overview
 
-Проект использует современный стек технологий для Android разработки с акцентом на производительность, тестируемость и масштабируемость.
+The project uses a modern technology stack for Android development with a focus on performance, testability, and scalability.
 
 ## 🏗️ Core Dependencies
 
 ### 📱 Android Core
 
-| Зависимость | Версия | Назначение | Обоснование |
-|-------------|--------|------------|-------------|
-| `androidx.core:core-ktx` | 1.12.0 | Базовые Android компоненты | Стандартная библиотека для Kotlin Android |
-| `androidx.lifecycle:lifecycle-runtime-ktx` | 2.7.0 | Lifecycle компоненты | Управление жизненным циклом компонентов |
-| `androidx.activity:activity-compose` | 1.8.2 | Compose Activity | Интеграция Compose с Activity |
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `androidx.core:core-ktx` | 1.12.0 | Basic Android components | Standard library for Kotlin Android |
+| `androidx.lifecycle:lifecycle-runtime-ktx` | 2.7.0 | Lifecycle components | Component lifecycle management |
+| `androidx.activity:activity-compose` | 1.8.2 | Compose Activity | Compose integration with Activity |
 
 ### 🎨 Jetpack Compose
 
-| Зависимость | Версия | Назначение | Обоснование |
-|-------------|--------|------------|-------------|
-| `androidx.compose:compose-bom` | 2025.01.00 | Compose BOM | Управление версиями Compose |
-| `androidx.compose.ui:ui` | BOM | UI компоненты | Основные UI элементы |
-| `androidx.compose.material3:material3` | BOM | Material Design 3 | Современная система дизайна |
-| `androidx.compose.ui:ui-tooling-preview` | BOM | Preview инструменты | Предварительный просмотр UI |
-| `androidx.compose.ui:ui-tooling` | BOM | Debug инструменты | Отладка Compose UI |
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `androidx.compose:compose-bom` | 2025.01.00 | Compose BOM | Compose version management |
+| `androidx.compose.ui:ui` | BOM | UI components | Core UI elements |
+| `androidx.compose.material3:material3` | BOM | Material Design 3 | Modern design system |
+| `androidx.compose.ui:ui-tooling-preview` | BOM | Preview tools | UI preview |
+| `androidx.compose.ui:ui-tooling` | BOM | Debug tools | Compose UI debugging |
 
-**Обоснование выбора**: Compose - современный декларативный UI фреймворк, который заменяет традиционный View system. Material Design 3 обеспечивает современный внешний вид.
+**Selection Justification**: Compose is a modern declarative UI framework that replaces the traditional View system. Material Design 3 provides a modern appearance.
 
 ### 🧭 Navigation
 
-| Зависимость | Версия | Назначение | Обоснование |
-|-------------|--------|------------|-------------|
-| `androidx.navigation:navigation-compose` | 2.9.3 | Compose навигация | Type-safe навигация между экранами |
-| `androidx.navigation:navigation-runtime-ktx` | 2.9.3 | Runtime навигация | Базовые компоненты навигации |
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `androidx.navigation:navigation-compose` | 2.9.3 | Compose navigation | Type-safe navigation between screens |
+| `androidx.navigation:navigation-runtime-ktx` | 2.9.3 | Runtime navigation | Basic navigation components |
 
-**Обоснование выбора**: Navigation Compose обеспечивает type-safe навигацию с поддержкой Compose. Версия 2.9.3 - последняя стабильная версия.
+**Selection Justification**: Navigation Compose provides type-safe navigation with Compose support. Version 2.9.3 is the latest stable version.
 
 ### 🔄 State Management
 
-| Зависимость | Версия | Назначение | Обоснование |
-|-------------|--------|------------|-------------|
-| `androidx.lifecycle:lifecycle-viewmodel-compose` | 2.7.0 | ViewModel Compose | Интеграция ViewModel с Compose |
-| `androidx.lifecycle:lifecycle-runtime-compose` | 2.7.0 | Runtime Compose | Runtime интеграция |
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `androidx.lifecycle:lifecycle-viewmodel-compose` | 2.7.0 | ViewModel Compose | ViewModel integration with Compose |
+| `androidx.lifecycle:lifecycle-runtime-compose` | 2.7.0 | Runtime Compose | Runtime integration |
 
-**Обоснование выбора**: ViewModel Compose обеспечивает правильную интеграцию ViewModel с Compose UI, включая автоматическое управление жизненным циклом.
+**Selection Justification**: ViewModel Compose provides proper ViewModel integration with Compose UI, including automatic lifecycle management.
 
 ## 🗜️ Dependency Injection
 
 ### 🎯 Koin
 
-| Зависимость | Версия | Назначение | Обоснование |
-|-------------|--------|------------|-------------|
-| `io.insert-koin:koin-android` | 3.5.3 | Android Koin | DI для Android |
-| `io.insert-koin:koin-androidx-compose` | 3.5.3 | Compose Koin | DI для Compose |
-| `io.insert-koin:koin-core` | 3.5.3 | Core Koin | Базовые DI компоненты |
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `io.insert-koin:koin-android` | 3.5.3 | Android Koin | DI for Android |
+| `io.insert-koin:koin-androidx-compose` | 3.5.3 | Compose Koin | DI for Compose |
+| `io.insert-koin:koin-core` | 3.5.3 | Core Koin | Basic DI components |
 
-**Обоснование выбора**: Koin выбран за простоту использования, отсутствие аннотаций и хорошую интеграцию с Kotlin. Альтернатива Hilt требует больше настройки.
+**Selection Justification**: Koin was chosen for its ease of use, lack of annotations, and good integration with Kotlin. Alternative Hilt requires more setup.
 
 ## 🌐 Networking & Data
 
 ### 🚀 Ktor Client
 
-| Зависимость | Версия | Назначение | Обоснование |
-|-------------|--------|------------|-------------|
-| `io.ktor:ktor-client-core` | 2.1.3 | Core HTTP клиент | Базовый HTTP функционал |
-| `io.ktor:ktor-client-android` | 2.1.3 | Android HTTP клиент | Android-специфичные функции |
-| `io.ktor:ktor-client-content-negotiation` | 2.1.3 | Content negotiation | Автоматическая сериализация |
-| `io.ktor:ktor-serialization-kotlinx-json` | 2.1.3 | JSON сериализация | JSON обработка |
-| `io.ktor:ktor-client-logging` | 2.1.3 | HTTP логирование | Отладка сетевых запросов |
-| `io.ktor:ktor-client-auth` | 2.1.3 | Аутентификация | HTTP аутентификация |
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `io.ktor:ktor-client-core` | 2.1.3 | Core HTTP client | Basic HTTP functionality |
+| `io.ktor:ktor-client-android` | 2.1.3 | Android HTTP client | Android-specific functions |
+| `io.ktor:ktor-client-content-negotiation` | 2.1.3 | Content negotiation | Automatic serialization |
+| `io.ktor:ktor-serialization-kotlinx-json` | 2.1.3 | JSON serialization | JSON processing |
+| `io.ktor:ktor-client-logging` | 2.1.3 | HTTP logging | Network request debugging |
+| `io.ktor:ktor-client-auth` | 2.1.3 | Authentication | HTTP authentication |
 
-**Обоснование выбора**: Ktor - современный HTTP клиент от JetBrains, написанный на Kotlin. Обеспечивает лучшую интеграцию с Kotlin и корутинами по сравнению с Retrofit.
+**Selection Justification**: Ktor is a modern HTTP client from JetBrains, written in Kotlin. Provides better integration with Kotlin and coroutines compared to Retrofit.
 
 ### 📊 JSON Processing
 
-| Зависимость | Версия | Назначение | Обоснование |
-|-------------|--------|------------|-------------|
-| `org.jetbrains.kotlinx:kotlinx-serialization-json` | 1.6.2 | JSON сериализация | Основная JSON библиотека |
-| `com.google.code.gson:gson` | 2.10.1 | Gson (совместимость) | Обратная совместимость |
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `org.jetbrains.kotlinx:kotlinx-serialization-json` | 1.6.2 | JSON serialization | Main JSON library |
+| `com.google.code.gson:gson` | 2.10.1 | Gson (compatibility) | Backward compatibility |
 
-**Обоснование выбора**: Kotlinx Serialization - нативная Kotlin библиотека для сериализации. Gson оставлен для обратной совместимости во время миграции.
+**Selection Justification**: Kotlinx Serialization is a native Kotlin library for serialization. Gson is kept for backward compatibility during migration.
 
 ## 🖼️ Image Loading
 
 ### 🎨 Coil
 
-| Зависимость | Версия | Назначение | Обоснование |
-|-------------|--------|------------|-------------|
-| `io.coil-kt:coil-compose` | 2.5.0 | Compose интеграция | Загрузка изображений в Compose |
-| `io.coil-kt:coil-gif` | 2.5.0 | GIF поддержка | Анимированные изображения |
-| `io.coil-kt:coil-svg` | 2.5.0 | SVG поддержка | Векторные изображения |
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `io.coil-kt:coil-compose` | 2.5.0 | Compose integration | Image loading in Compose |
+| `io.coil-kt:coil-gif` | 2.5.0 | GIF support | Animated images |
+| `io.coil-kt:coil-svg` | 2.5.0 | SVG support | Vector images |
 
-**Обоснование выбора**: Coil - современная библиотека для загрузки изображений, написанная на Kotlin. Обеспечивает лучшую производительность по сравнению с Glide и Picasso.
+**Selection Justification**: Coil is a modern image loading library written in Kotlin. Provides better performance compared to Glide and Picasso.
 
 ## ⚡ Asynchronous Programming
 
 ### 🔄 Coroutines
 
-| Зависимость | Версия | Назначение | Обоснование |
-|-------------|--------|------------|-------------|
-| `org.jetbrains.kotlinx:kotlinx-coroutines-android` | 1.8.0 | Android корутины | Асинхронное программирование |
-| `org.jetbrains.kotlinx:kotlinx-coroutines-core` | 1.8.0 | Core корутины | Базовые корутины |
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `org.jetbrains.kotlinx:kotlinx-coroutines-android` | 1.8.0 | Android coroutines | Asynchronous programming |
+| `org.jetbrains.kotlinx:kotlinx-coroutines-core` | 1.8.0 | Core coroutines | Basic coroutines |
 
-**Обоснование выбора**: Kotlin Coroutines - нативный способ асинхронного программирования в Kotlin. Обеспечивает лучшую читаемость кода по сравнению с RxJava.
+**Selection Justification**: Kotlin Coroutines is the native way of asynchronous programming in Kotlin. Provides better code readability compared to RxJava.
 
 ## 📱 UI Enhancements
 
 ### 🎨 Accompanist
 
-| Зависимость | Версия | Назначение | Обоснование |
-|-------------|--------|------------|-------------|
-| `com.google.accompanist:accompanist-systemuicontroller` | 0.34.0 | System UI контроллер | Управление системным UI |
-| `com.google.accompanist:accompanist-permissions` | 0.34.0 | Permissions | Управление разрешениями |
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `com.google.accompanist:accompanist-systemuicontroller` | 0.34.0 | System UI controller | System UI management |
+| `com.google.accompanist:accompanist-permissions` | 0.34.0 | Permissions | Permission management |
 
-**Обоснование выбора**: Accompanist предоставляет дополнительные компоненты для Compose, которые еще не включены в основной фреймворк.
+**Selection Justification**: Accompanist provides additional components for Compose that are not yet included in the main framework.
 
 ### 🔄 Paging
 
-| Зависимость | Версия | Назначение | Обоснование |
-|-------------|--------|------------|-------------|
-| `androidx.paging:paging-runtime-ktx` | 3.2.1 | Paging runtime | Пагинация данных |
-| `androidx.paging:paging-compose` | 3.2.1 | Compose paging | UI для пагинации |
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `androidx.paging:paging-runtime-ktx` | 3.2.1 | Paging runtime | Data pagination |
+| `androidx.paging:paging-compose` | 3.2.1 | Compose paging | UI for pagination |
 
-**Обоснование выбора**: Paging 3 обеспечивает эффективную загрузку и отображение больших списков данных с поддержкой Compose.
+**Selection Justification**: Paging 3 provides efficient loading and display of large data lists with Compose support.
 
 ## 💾 Data Storage
 
 ### 📊 DataStore
 
-| Зависимость | Версия | Назначение | Обоснование |
-|-------------|--------|------------|-------------|
-| `androidx.datastore:datastore-preferences` | 1.0.0 | Preferences DataStore | Хранение настроек |
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `androidx.datastore:datastore-preferences` | 1.0.0 | Preferences DataStore | Settings storage |
 
-**Обоснование выбора**: DataStore - современная замена SharedPreferences, обеспечивающая type-safe API и поддержку корутин.
+**Selection Justification**: DataStore is a modern replacement for SharedPreferences, providing type-safe API and coroutine support.
 
 ## 🧪 Testing
 
 ### 📊 Unit Testing
 
-| Зависимость | Версия | Назначение | Обоснование |
-|-------------|--------|------------|-------------|
-| `junit:junit` | 4.13.2 | JUnit 4 | Базовое unit тестирование |
-| `org.jetbrains.kotlinx:kotlinx-coroutines-test` | 1.8.0 | Coroutines тестирование | Тестирование корутин |
-| `io.mockk:mockk` | 1.13.8 | Mocking | Создание моков |
-| `app.cash.turbine:turbine` | 1.0.0 | Flow тестирование | Тестирование Flow |
-| `io.insert-koin:koin-test` | 3.5.3 | Koin тестирование | Тестирование DI |
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `junit:junit` | 4.13.2 | JUnit 4 | Basic unit testing |
+| `org.jetbrains.kotlinx:kotlinx-coroutines-test` | 1.8.0 | Coroutines testing | Coroutine testing |
+| `io.mockk:mockk` | 1.13.8 | Mocking | Mock creation |
+| `app.cash.turbine:turbine` | 1.0.0 | Flow testing | Flow testing |
+| `io.insert-koin:koin-test` | 3.5.3 | Koin testing | DI testing |
 
-**Обоснование выбора**: MockK - современная библиотека для мокирования в Kotlin. Turbine специально разработан для тестирования Flow.
+**Selection Justification**: MockK is a modern mocking library for Kotlin. Turbine is specifically designed for Flow testing.
 
 ### 📱 Android Testing
 
-| Зависимость | Версия | Назначение | Обоснование |
-|-------------|--------|------------|-------------|
-| `androidx.test.ext:junit` | 1.1.5 | Android JUnit | JUnit для Android |
-| `androidx.test.espresso:espresso-core` | 3.5.1 | Espresso | UI тестирование |
-| `androidx.compose.ui:ui-test-junit4` | BOM | Compose тестирование | Тестирование Compose UI |
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `androidx.test.ext:junit` | 1.1.5 | Android JUnit | JUnit for Android |
+| `androidx.test.espresso:espresso-core` | 3.5.1 | Espresso | UI testing |
+| `androidx.compose.ui:ui-test-junit4` | BOM | Compose testing | Compose UI testing |
 
-**Обоснование выбора**: Espresso - стандартная библиотека для UI тестирования Android. Compose UI Test обеспечивает тестирование Compose компонентов.
+**Selection Justification**: Espresso is the standard library for Android UI testing. Compose UI Test provides testing for Compose components.
 
 ## 🔧 Development Tools
 
 ### 📝 Logging
 
-| Зависимость | Версия | Назначение | Обоснование |
-|-------------|--------|------------|-------------|
-| `com.jakewharton.timber:timber` | 5.0.1 | Логирование | Структурированное логирование |
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `com.jakewharton.timber:timber` | 5.0.1 | Logging | Structured logging |
 
-**Обоснование выбора**: Timber - популярная библиотека для логирования, обеспечивающая удобный API и автоматическое управление тегами.
+**Selection Justification**: Timber is a popular logging library that provides a convenient API and automatic tag management.
 
 ### 🎨 Debug Tools
 
-| Зависимость | Версия | Назначение | Обоснование |
-|-------------|--------|------------|-------------|
-| `com.squareup.leakcanary:leakcanary-android` | 2.12 | Memory leak detection | Отладка утечек памяти |
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `com.squareup.leakcanary:leakcanary-android` | 2.12 | Memory leak detection | Memory leak debugging |
 
-**Обоснование выбора**: LeakCanary - инструмент для обнаружения утечек памяти в Android приложениях.
+**Selection Justification**: LeakCanary is a tool for detecting memory leaks in Android applications.
 
 ## 📋 Version Management
 
 ### 🔄 Version Catalog
 
-Проект использует Gradle Version Catalog (`gradle/libs.versions.toml`) для централизованного управления версиями зависимостей.
+The project uses Gradle Version Catalog (`gradle/libs.versions.toml`) for centralized dependency version management.
 
-**Преимущества**:
-- Централизованное управление версиями
-- Легкое обновление зависимостей
-- Консистентность версий
-- Упрощение миграции
+**Advantages**:
+- Centralized version management
+- Easy dependency updates
+- Version consistency
+- Simplified migration
 
 ### 📊 Version Compatibility
 
-| Компонент | Версия | Совместимость |
-|-----------|--------|---------------|
+| Component | Version | Compatibility |
+|-----------|---------|---------------|
 | AGP | 8.8.0 | Android Studio Hedgehog+ |
-| Kotlin | 1.9.22 | Стабильная версия |
-| Compose Compiler | 1.5.8 | Совместим с Kotlin 1.9.22 |
-| Compose BOM | 2025.01.00 | Последняя стабильная версия |
+| Kotlin | 1.9.22 | Stable version |
+| Compose Compiler | 1.5.8 | Compatible with Kotlin 1.9.22 |
+| Compose BOM | 2025.01.00 | Latest stable version |
 
 ## 🚀 Build Configuration
 
@@ -248,10 +248,10 @@ buildConfigField("String", "MCP_SERVER_URL", "\"https://your-ngrok-url.ngrok.io\
 buildConfigField("String", "TMDB_BASE_URL", "\"https://api.themoviedb.org/3/\"")
 ```
 
-**Рекомендации**:
-- Не коммитьте API ключи в репозиторий
-- Используйте переменные окружения
-- Храните секреты в безопасном месте
+**Recommendations**:
+- Do not commit API keys to repository
+- Use environment variables
+- Store secrets in a secure location
 
 ### 🔐 Signing Configuration
 
@@ -301,47 +301,47 @@ release {
 
 ### 📅 Update Schedule
 
-- **Еженедельно**: Проверка обновлений безопасности
-- **Ежемесячно**: Обновление minor версий
-- **Ежеквартально**: Обновление major версий
+- **Weekly**: Security update checks
+- **Monthly**: Minor version updates
+- **Quarterly**: Major version updates
 
 ### 🚨 Breaking Changes
 
-При обновлении зависимостей:
-1. Проверьте changelog
-2. Протестируйте на dev ветке
-3. Обновите документацию
-4. Проведите code review
+When updating dependencies:
+1. Check changelog
+2. Test on dev branch
+3. Update documentation
+4. Conduct code review
 
 ## 📚 Alternative Libraries
 
 ### 🔄 Considered Alternatives
 
-| Текущая | Альтернатива | Причина выбора |
-|---------|--------------|----------------|
-| Koin | Hilt | Простота настройки |
-| Ktor | Retrofit | Kotlin-first подход |
-| Coil | Glide | Современность и производительность |
-| StateFlow | LiveData | Kotlin-first подход |
+| Current | Alternative | Selection Reason |
+|---------|-------------|------------------|
+| Koin | Hilt | Setup simplicity |
+| Ktor | Retrofit | Kotlin-first approach |
+| Coil | Glide | Modernity and performance |
+| StateFlow | LiveData | Kotlin-first approach |
 
 ## 🎯 Future Dependencies
 
 ### 📋 Planned Additions
 
-- **Room**: Локальная база данных
-- **Hilt**: Замена Koin (если потребуется)
-- **WorkManager**: Фоновые задачи
-- **DataStore**: Замена SharedPreferences
-- **Navigation Testing**: Тестирование навигации
+- **Room**: Local database
+- **Hilt**: Koin replacement (if needed)
+- **WorkManager**: Background tasks
+- **DataStore**: SharedPreferences replacement
+- **Navigation Testing**: Navigation testing
 
 ### 🔮 Experimental Features
 
-- **Compose Multiplatform**: Кроссплатформенная разработка
-- **Kotlin Multiplatform**: Общий код для Android и iOS
-- **Jetpack Compose for Desktop**: Desktop приложения
+- **Compose Multiplatform**: Cross-platform development
+- **Kotlin Multiplatform**: Shared code for Android and iOS
+- **Jetpack Compose for Desktop**: Desktop applications
 
 ---
 
-**Последнее обновление**: 2024-12-19  
-**Версия документа**: 1.0.0  
-**Статус**: Актуально
+**Last Updated**: 2024-12-19  
+**Document Version**: 1.0.0  
+**Status**: Current
