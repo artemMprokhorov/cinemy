@@ -10,9 +10,9 @@ TmdbAi is built on **Clean Architecture** principles using the **MVI (Model-View
 
 ## 🎯 MVI (Model-View-Intent) Pattern
 
-### 📖 Основные принципы
+### 📖 Core Principles
 
-MVI - это архитектурный паттерн, который обеспечивает **однонаправленный поток данных** и **предсказуемое состояние** приложения.
+MVI is an architectural pattern that ensures **unidirectional data flow** and **predictable application state**.
 
 ```
 ┌─────────────┐    Intent    ┌─────────────┐    State    ┌─────────────┐
@@ -37,139 +37,139 @@ MVI - это архитектурный паттерн, который обес�
 
 ### 🔄 Data Flow
 
-1. **User Action** → Пользователь выполняет действие
-2. **Intent** → Создается Intent объект
-3. **ViewModel.processIntent()** → Обработка Intent
-4. **Repository Call** → Вызов репозитория
-5. **MCP Client** → Взаимодействие с AI сервером
-6. **State Update** → Обновление состояния
-7. **UI Update** → Автоматическое обновление UI
+1. **User Action** → User performs an action
+2. **Intent** → Intent object is created
+3. **ViewModel.processIntent()** → Intent processing
+4. **Repository Call** → Repository call
+5. **MCP Client** → AI server interaction
+6. **State Update** → State update
+7. **UI Update** → Automatic UI update
 
 ## 🏛️ Clean Architecture Layers
 
 ### 📱 Presentation Layer (UI + ViewModels)
 
-**Назначение**: Управление UI состоянием и пользовательскими взаимодействиями
+**Purpose**: Managing UI state and user interactions
 
-**Компоненты**:
-- `MoviesListViewModel` - Управление списком фильмов
-- `MovieDetailViewModel` - Управление деталями фильма
-- `MoviesListIntent` - Intent'ы для списка фильмов
-- `MovieDetailIntent` - Intent'ы для деталей фильма
-- `MoviesListState` - Состояние списка фильмов
-- `MovieDetailState` - Состояние деталей фильма
+**Components**:
+- `MoviesListViewModel` - Movie list management
+- `MovieDetailViewModel` - Movie details management
+- `MoviesListIntent` - Intents for movie list
+- `MovieDetailIntent` - Intents for movie details
+- `MoviesListState` - Movie list state
+- `MovieDetailState` - Movie details state
 
-**Принципы**:
-- ViewModels не знают о деталях UI
-- Состояние представлено как immutable data class
-- Intent'ы описывают все возможные действия пользователя
+**Principles**:
+- ViewModels don't know about UI details
+- State is represented as immutable data class
+- Intents describe all possible user actions
 
 ### 🎯 Domain Layer (Use Cases + Models)
 
-**Назначение**: Бизнес-логика и доменные модели
+**Purpose**: Business logic and domain models
 
-**Компоненты**:
-- `MovieRepository` - Интерфейс репозитория
-- Domain Models - Бизнес-модели
-- Use Cases - Бизнес-операции
+**Components**:
+- `MovieRepository` - Repository interface
+- Domain Models - Business models
+- Use Cases - Business operations
 
-**Принципы**:
-- Независимость от внешних слоев
-- Чистая бизнес-логика
-- Тестируемость
+**Principles**:
+- Independence from external layers
+- Clean business logic
+- Testability
 
 ### 💾 Data Layer (Repository + Data Sources)
 
-**Назначение**: Управление данными и внешними API
+**Purpose**: Data management and external APIs
 
-**Компоненты**:
-- `MovieRepositoryImpl` - Реализация репозитория
-- `McpClient` - MCP клиент для AI интеграции
-- `McpHttpClient` - HTTP клиент
-- Data Models - DTO модели
-- Mappers - Преобразование данных
+**Components**:
+- `MovieRepositoryImpl` - Repository implementation
+- `McpClient` - MCP client for AI integration
+- `McpHttpClient` - HTTP client
+- Data Models - DTO models
+- Mappers - Data transformation
 
-**Принципы**:
+**Principles**:
 - Repository pattern
-- Абстракция источников данных
-- Кэширование и синхронизация
+- Data source abstraction
+- Caching and synchronization
 
-## 📁 Структура папок
+## 📁 Folder Structure
 
 ```
 app/src/main/java/com/example/tmdbai/
-├── TmdbAi.kt                    # Главный класс приложения
-├── navigation/                   # Навигация
-│   ├── Navigation.kt            # Основная навигация
-│   └── Screen.kt                # Определения экранов
+├── TmdbAi.kt                    # Main application class
+├── navigation/                   # Navigation
+│   ├── Navigation.kt            # Main navigation
+│   └── Screen.kt                # Screen definitions
 ├── ui/                          # UI Layer
-│   ├── components/              # Переиспользуемые компоненты
-│   ├── movieslist/              # Экран списка фильмов
-│   ├── moviedetail/             # Экран деталей фильма
-│   ├── splash/                  # Экран загрузки
-│   └── theme/                   # Тема и стили
+│   ├── components/              # Reusable components
+│   ├── movieslist/              # Movie list screen
+│   ├── moviedetail/             # Movie details screen
+│   ├── splash/                  # Splash screen
+│   └── theme/                   # Theme and styles
 ├── presentation/                 # Presentation Layer
-│   ├── di/                      # DI модули
-│   ├── commons/                 # Общие компоненты
+│   ├── di/                      # DI modules
+│   ├── commons/                 # Common components
 │   ├── movieslist/              # MoviesList ViewModel
 │   └── moviedetail/             # MovieDetail ViewModel
 ├── data/                        # Data Layer
-│   ├── di/                      # Data DI модули
-│   ├── mcp/                     # MCP клиент и модели
-│   ├── model/                   # Data модели
-│   ├── mapper/                  # Мапперы данных
+│   ├── di/                      # Data DI modules
+│   ├── mcp/                     # MCP client and models
+│   ├── model/                   # Data models
+│   ├── mapper/                  # Data mappers
 │   ├── remote/                  # Remote data sources
-│   └── repository/              # Репозитории
-└── utils/                       # Утилиты
+│   └── repository/              # Repositories
+└── utils/                       # Utilities
 ```
 
 ### 📱 UI Layer
 
-**Назначение**: Отображение UI и обработка пользовательских взаимодействий
+**Purpose**: UI display and user interaction handling
 
-**Принципы**:
-- Только UI логика
-- Реакция на изменения состояния
-- Отправка Intent'ов в ViewModel
+**Principles**:
+- UI logic only
+- Reacting to state changes
+- Sending Intents to ViewModel
 
-**Компоненты**:
-- `MoviesListScreen` - Экран списка фильмов
-- `MovieDetailScreen` - Экран деталей фильма
-- `MovieAppSplashScreen` - Экран загрузки
-- `components/` - Переиспользуемые UI компоненты
+**Components**:
+- `MoviesListScreen` - Movie list screen
+- `MovieDetailScreen` - Movie details screen
+- `MovieAppSplashScreen` - Splash screen
+- `components/` - Reusable UI components
 
 ### 🎭 Presentation Layer
 
-**Назначение**: Управление состоянием и бизнес-логика UI
+**Purpose**: State management and UI business logic
 
-**Принципы**:
-- Обработка Intent'ов
-- Управление состоянием
-- Взаимодействие с репозиториями
+**Principles**:
+- Intent processing
+- State management
+- Repository interaction
 
-**Компоненты**:
-- ViewModels - Управление состоянием
-- Intent Classes - Описание действий пользователя
-- State Classes - Описание состояния UI
+**Components**:
+- ViewModels - State management
+- Intent Classes - User action description
+- State Classes - UI state description
 
 ### 💾 Data Layer
 
-**Назначение**: Управление данными и внешними API
+**Purpose**: Data management and external APIs
 
-**Принципы**:
+**Principles**:
 - Repository pattern
-- Абстракция источников данных
-- Кэширование
+- Data source abstraction
+- Caching
 
-**Компоненты**:
-- `MovieRepository` - Интерфейс репозитория
-- `MovieRepositoryImpl` - Реализация репозитория
-- `McpClient` - MCP клиент
-- `McpHttpClient` - HTTP клиент
+**Components**:
+- `MovieRepository` - Repository interface
+- `MovieRepositoryImpl` - Repository implementation
+- `McpClient` - MCP client
+- `McpHttpClient` - HTTP client
 
 ## 🔄 Dependency Injection (Koin)
 
-### 📦 Модули
+### 📦 Modules
 
 #### Presentation Module
 ```kotlin
@@ -205,7 +205,7 @@ Koin Container
 
 ## 🧭 Navigation
 
-### 📱 Навигационная структура
+### 📱 Navigation Structure
 
 ```kotlin
 @Composable
@@ -353,7 +353,7 @@ fun processIntent(intent: MoviesListIntent) {
 
 ### 🤖 Model Context Protocol
 
-MCP (Model Context Protocol) - это протокол для взаимодействия с AI моделями.
+MCP (Model Context Protocol) is a protocol for interacting with AI models.
 
 #### MCP Client
 ```kotlin
@@ -406,38 +406,38 @@ class McpHttpClient {
 
 ### 🎯 Unit Tests
 
-- **ViewModels** - Тестирование бизнес-логики
-- **Repositories** - Тестирование доступа к данным
-- **Use Cases** - Тестирование бизнес-операций
+- **ViewModels** - Business logic testing
+- **Repositories** - Data access testing
+- **Use Cases** - Business operations testing
 
 ### 🔗 Integration Tests
 
-- **Repository + MCP Client** - Тестирование интеграции
-- **ViewModel + Repository** - Тестирование взаимодействия слоев
+- **Repository + MCP Client** - Integration testing
+- **ViewModel + Repository** - Layer interaction testing
 
 ### 📱 UI Tests
 
-- **Screen Navigation** - Тестирование навигации
-- **User Interactions** - Тестирование пользовательских действий
-- **State Updates** - Тестирование обновления UI
+- **Screen Navigation** - Navigation testing
+- **User Interactions** - User action testing
+- **State Updates** - UI update testing
 
 ## 📏 Naming Conventions
 
-### 🏷️ Классы
+### 🏷️ Classes
 
-- **ViewModel**: `{Feature}ViewModel` (например, `MoviesListViewModel`)
-- **Intent**: `{Feature}Intent` (например, `MoviesListIntent`)
-- **State**: `{Feature}State` (например, `MoviesListState`)
-- **Repository**: `{Feature}Repository` (например, `MovieRepository`)
-- **Screen**: `{Feature}Screen` (например, `MoviesListScreen`)
+- **ViewModel**: `{Feature}ViewModel` (e.g., `MoviesListViewModel`)
+- **Intent**: `{Feature}Intent` (e.g., `MoviesListIntent`)
+- **State**: `{Feature}State` (e.g., `MoviesListState`)
+- **Repository**: `{Feature}Repository` (e.g., `MovieRepository`)
+- **Screen**: `{Feature}Screen` (e.g., `MoviesListScreen`)
 
-### 📁 Папки
+### 📁 Folders
 
-- **UI**: `ui/{feature}` (например, `ui/movieslist`)
-- **Presentation**: `presentation/{feature}` (например, `presentation/movieslist`)
-- **Data**: `data/{layer}` (например, `data/repository`)
+- **UI**: `ui/{feature}` (e.g., `ui/movieslist`)
+- **Presentation**: `presentation/{feature}` (e.g., `presentation/movieslist`)
+- **Data**: `data/{layer}` (e.g., `data/repository`)
 
-### 🔤 Переменные и функции
+### 🔤 Variables and Functions
 
 - **ViewModel state**: `_state`, `state`
 - **Intent processing**: `processIntent(intent: Intent)`
@@ -445,44 +445,44 @@ class McpHttpClient {
 
 ## 🚀 Performance Considerations
 
-### ⚡ Оптимизации
+### ⚡ Optimizations
 
-1. **StateFlow vs LiveData** - Использование StateFlow для Kotlin-first подхода
-2. **Lazy Loading** - Загрузка данных по требованию
-3. **Image Caching** - Кэширование изображений с Coil
-4. **Pagination** - Пагинация для больших списков
+1. **StateFlow vs LiveData** - Using StateFlow for Kotlin-first approach
+2. **Lazy Loading** - Loading data on demand
+3. **Image Caching** - Image caching with Coil
+4. **Pagination** - Pagination for large lists
 
 ### 📱 Memory Management
 
-1. **ViewModel Scope** - Правильное управление жизненным циклом
-2. **Coroutine Scope** - Отмена корутин при уничтожении ViewModel
-3. **Resource Cleanup** - Освобождение ресурсов
+1. **ViewModel Scope** - Proper lifecycle management
+2. **Coroutine Scope** - Canceling coroutines when ViewModel is destroyed
+3. **Resource Cleanup** - Resource cleanup
 
 ## 🔒 Security
 
-### 🛡️ Безопасность данных
+### 🛡️ Data Security
 
-1. **API Keys** - Хранение в BuildConfig
-2. **HTTPS** - Использование защищенных соединений
-3. **Input Validation** - Валидация пользовательского ввода
-4. **Error Handling** - Безопасная обработка ошибок
+1. **API Keys** - Storage in BuildConfig
+2. **HTTPS** - Using secure connections
+3. **Input Validation** - User input validation
+4. **Error Handling** - Safe error handling
 
 ## 📚 Best Practices
 
-### ✅ Рекомендуется
+### ✅ Recommended
 
-1. **Single Responsibility** - Каждый класс имеет одну ответственность
-2. **Dependency Inversion** - Зависимость от абстракций, а не от реализаций
-3. **Immutable State** - Неизменяемое состояние
-4. **Unidirectional Flow** - Однонаправленный поток данных
-5. **Error Handling** - Обработка всех возможных ошибок
+1. **Single Responsibility** - Each class has one responsibility
+2. **Dependency Inversion** - Depend on abstractions, not implementations
+3. **Immutable State** - Immutable state
+4. **Unidirectional Flow** - Unidirectional data flow
+5. **Error Handling** - Handling all possible errors
 
-### ❌ Не рекомендуется
+### ❌ Not Recommended
 
-1. **Business Logic in UI** - Бизнес-логика в UI слое
-2. **Direct API Calls** - Прямые вызовы API из ViewModel
-3. **Mutable State** - Изменяемое состояние
-4. **Tight Coupling** - Сильная связанность между слоями
+1. **Business Logic in UI** - Business logic in UI layer
+2. **Direct API Calls** - Direct API calls from ViewModel
+3. **Mutable State** - Mutable state
+4. **Tight Coupling** - Tight coupling between layers
 
 ## 🔄 Migration Guide
 
@@ -504,6 +504,6 @@ class McpHttpClient {
 
 ---
 
-**Последнее обновление**: 2024-12-19  
-**Версия документа**: 1.0.0  
-**Статус**: Актуально
+**Last Updated**: 2024-12-19  
+**Document Version**: 1.0.0  
+**Status**: Current
