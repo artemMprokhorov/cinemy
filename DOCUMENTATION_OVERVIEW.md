@@ -18,131 +18,131 @@
 ### 2. 📊 PROJECT_STATUS.md
 **Current project status**:
 - Overall progress: 95%
-- Реализованные функции (с галочками)
-- Планируемые функции
-- Известные проблемы
-- Архитектурные решения
-- Roadmap на 2025 год
+- Implemented features (with checkmarks)
+- Planned features
+- Known issues
+- Architectural decisions
+- 2025 roadmap
 
 ### 3. 🏗️ ARCHITECTURE_GUIDE.md
-**Детальное руководство по архитектуре**:
-- MVI паттерн и принципы
-- Clean Architecture слои
-- Структура папок и назначение
-- Data flow диаграммы
+**Detailed architecture guide**:
+- MVI pattern and principles
+- Clean Architecture layers
+- Folder structure and purpose
+- Data flow diagrams
 - Dependency Injection (Koin)
 - Navigation setup
 - Testing strategy
 
 ### 4. 🚀 DEVELOPMENT_GUIDE.md
-**Руководство по разработке**:
-- Настройка среды разработки
-- Правила работы с кодом
+**Development guide**:
+- Development environment setup
+- Code development rules
 - MVI implementation rules
-- Пошаговое добавление новых функций
+- Step-by-step feature addition
 - Testing guidelines
 - Troubleshooting common issues
 
 ### 5. 📦 DEPENDENCIES_INFO.md
-**Информация о зависимостях**:
-- Список всех зависимостей
-- Назначение каждой библиотеки
-- Версии и совместимость
-- Обоснование выбора технологий
+**Dependencies information**:
+- List of all dependencies
+- Purpose of each library
+- Versions and compatibility
+- Technology selection justification
 - Security considerations
 - Performance optimizations
 
-## 🎯 Ключевые особенности документации
+## 🎯 Key Documentation Features
 
-### ✅ Полнота покрытия
-- **Архитектура**: MVI + Clean Architecture
-- **Технологии**: Современный Android стек
-- **Разработка**: Пошаговые инструкции
-- **Тестирование**: Unit, Integration, UI тесты
-- **Безопасность**: API keys, signing, ProGuard
+### ✅ Complete Coverage
+- **Architecture**: MVI + Clean Architecture
+- **Technologies**: Modern Android stack
+- **Development**: Step-by-step instructions
+- **Testing**: Unit, Integration, UI tests
+- **Security**: API keys, signing, ProGuard
 
-### 🔄 Актуальность
-- **Дата создания**: 2024-12-19
-- **Версия проекта**: 1.0.0-dev
-- **Статус**: В активной разработке
-- **Основа**: Реальный анализ кода
+### 🔄 Currency
+- **Creation Date**: 2024-12-19
+- **Project Version**: 1.0.0-dev
+- **Status**: In active development
+- **Basis**: Real code analysis
 
-### 📱 Практичность
-- **Примеры кода**: Готовые к использованию
-- **Troubleshooting**: Решение типичных проблем
-- **Best practices**: Рекомендации по разработке
-- **Migration guides**: Переход между паттернами
+### 📱 Practicality
+- **Code Examples**: Ready to use
+- **Troubleshooting**: Solutions to common problems
+- **Best Practices**: Development recommendations
+- **Migration Guides**: Pattern transitions
 
-## 🚀 Как использовать документацию
+## 🚀 How to Use Documentation
 
-### 👨‍💻 Для разработчиков
-1. **Начало работы**: README.md + DEVELOPMENT_GUIDE.md
-2. **Архитектура**: ARCHITECTURE_GUIDE.md
-3. **Добавление функций**: DEVELOPMENT_GUIDE.md
-4. **Тестирование**: DEVELOPMENT_GUIDE.md (Testing section)
+### 👨‍💻 For Developers
+1. **Getting Started**: README.md + DEVELOPMENT_GUIDE.md
+2. **Architecture**: ARCHITECTURE_GUIDE.md
+3. **Adding Features**: DEVELOPMENT_GUIDE.md
+4. **Testing**: DEVELOPMENT_GUIDE.md (Testing section)
 
-### 🏗️ Для архитекторов
-1. **Обзор**: README.md + PROJECT_STATUS.md
-2. **Детали**: ARCHITECTURE_GUIDE.md
-3. **Зависимости**: DEPENDENCIES_INFO.md
-4. **Планирование**: PROJECT_STATUS.md (Roadmap)
+### 🏗️ For Architects
+1. **Overview**: README.md + PROJECT_STATUS.md
+2. **Details**: ARCHITECTURE_GUIDE.md
+3. **Dependencies**: DEPENDENCIES_INFO.md
+4. **Planning**: PROJECT_STATUS.md (Roadmap)
 
-### 📋 Для менеджеров
-1. **Статус**: PROJECT_STATUS.md
-2. **Прогресс**: PROJECT_STATUS.md (Progress section)
-3. **Планы**: PROJECT_STATUS.md (Roadmap section)
-4. **Технический обзор**: README.md
+### 📋 For Managers
+1. **Status**: PROJECT_STATUS.md
+2. **Progress**: PROJECT_STATUS.md (Progress section)
+3. **Plans**: PROJECT_STATUS.md (Roadmap section)
+4. **Technical Overview**: README.md
 
-## 📊 Статус документации
+## 📊 Documentation Status
 
-| Документ | Готовность | Последнее обновление | Статус |
-|----------|------------|---------------------|---------|
-| README.md | 100% | 2024-12-19 | ✅ Готов |
-| PROJECT_STATUS.md | 100% | 2024-12-19 | ✅ Готов |
-| ARCHITECTURE_GUIDE.md | 100% | 2024-12-19 | ✅ Готов |
-| DEVELOPMENT_GUIDE.md | 100% | 2024-12-19 | ✅ Готов |
-| DEPENDENCIES_INFO.md | 100% | 2024-12-19 | ✅ Готов |
+| Document | Readiness | Last Updated | Status |
+|----------|-----------|--------------|--------|
+| README.md | 100% | 2024-12-19 | ✅ Ready |
+| PROJECT_STATUS.md | 100% | 2024-12-19 | ✅ Ready |
+| ARCHITECTURE_GUIDE.md | 100% | 2024-12-19 | ✅ Ready |
+| DEVELOPMENT_GUIDE.md | 100% | 2024-12-19 | ✅ Ready |
+| DEPENDENCIES_INFO.md | 100% | 2024-12-19 | ✅ Ready |
 
-## 🔄 Обновление документации
+## 🔄 Documentation Updates
 
-### 📅 План обновлений
-- **Еженедельно**: Проверка актуальности
-- **При изменениях**: Обновление соответствующих разделов
-- **При релизах**: Обновление версий и статуса
+### 📅 Update Plan
+- **Weekly**: Currency check
+- **On Changes**: Update relevant sections
+- **On Releases**: Update versions and status
 
-### 📝 Что обновлять
-1. **Версии**: При обновлении зависимостей
-2. **Статус**: При реализации новых функций
-3. **Примеры**: При изменении архитектуры
-4. **Roadmap**: При изменении планов
+### 📝 What to Update
+1. **Versions**: When updating dependencies
+2. **Status**: When implementing new features
+3. **Examples**: When changing architecture
+4. **Roadmap**: When changing plans
 
-## 📚 Дополнительные ресурсы
+## 📚 Additional Resources
 
-### 🔗 Внешние ссылки
+### 🔗 External Links
 - [Android Developer](https://developer.android.com/)
 - [Jetpack Compose](https://developer.android.com/jetpack/compose)
 - [Material Design](https://material.io/)
 - [Koin Documentation](https://insert-koin.io/)
 
-### 📱 Примеры проектов
+### 📱 Project Examples
 - [Android Architecture Samples](https://github.com/android/architecture-samples)
 - [Jetpack Compose Samples](https://github.com/android/compose-samples)
 - [Koin Samples](https://github.com/InsertKoinIO/koin-samples)
 
-## 🎉 Заключение
+## 🎉 Conclusion
 
-Создана **полная и актуальная документация** проекта TmdbAi, которая покрывает:
+Created **complete and current documentation** for the TmdbAi project that covers:
 
-✅ **Все аспекты разработки**  
-✅ **Современные практики**  
-✅ **Практические примеры**  
+✅ **All development aspects**  
+✅ **Modern practices**  
+✅ **Practical examples**  
 ✅ **Troubleshooting**  
-✅ **Roadmap и планирование**  
+✅ **Roadmap and planning**  
 
-Документация готова к использованию и будет обновляться по мере развития проекта.
+Documentation is ready for use and will be updated as the project develops.
 
 ---
 
-**Последнее обновление**: 2024-12-19  
-**Версия документации**: 1.0.0  
-**Статус**: Полностью готова
+**Last Updated**: 2024-12-19  
+**Documentation Version**: 1.0.0  
+**Status**: Fully Ready

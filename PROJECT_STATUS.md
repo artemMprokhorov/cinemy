@@ -48,203 +48,203 @@
 - **Material Theme Fixes**: Eliminated conflicts between Material Theme and uiConfig colors
 - **MCP Diagnostic Logging**: Comprehensive logging for debugging MCP responses
 
-## 🆕 Предыдущие обновления (v2.4.1)
+## 🆕 Previous Updates (v2.4.1)
 
 ### 🤖 Enhanced ML Model v2.0.0
-- **Точность**: Улучшена с ~75% до 85%+
-- **Словарь**: Расширен до 60+ специализированных терминов
-- **Модификаторы интенсивности**: "absolutely" (1.5x), "very" (1.2x), "pretty" (0.8x)
-- **Контекстная осведомленность**: Понимание кино-терминологии
-- **Fallback система**: Обратная совместимость с v1.0
+- **Accuracy**: Improved from ~75% to 85%+
+- **Vocabulary**: Expanded to 60+ specialized terms
+- **Intensity Modifiers**: "absolutely" (1.5x), "very" (1.2x), "pretty" (0.8x)
+- **Contextual Awareness**: Understanding of cinema terminology
+- **Fallback System**: Backward compatibility with v1.0
 
 ### 🔧 GitHub Actions Fixes
-- **Исправлены 502 ошибки**: Заменен android-actions/setup-android@v3
-- **Ручная установка SDK**: Использует wget и sdkmanager
-- **Новые workflows**: simple-test.yml для быстрых проверок
-- **Улучшенная надежность**: Fallback методы и retry логика
+- **Fixed 502 errors**: Replaced android-actions/setup-android@v3
+- **Manual SDK installation**: Uses wget and sdkmanager
+- **New workflows**: simple-test.yml for quick checks
+- **Improved reliability**: Fallback methods and retry logic
 
-## ✅ Реализованные функции
+## ✅ Implemented Features
 
-### 🏗️ Архитектура
-- [x] **Clean Architecture** - Разделение на слои
-- [x] **MVI Pattern** - Model-View-Intent реализация
-- [x] **Dependency Injection** - Koin модули
-- [x] **Repository Pattern** - Абстракция данных
-- [x] **Navigation** - Type-safe навигация
+### 🏗️ Architecture
+- [x] **Clean Architecture** - Layer separation
+- [x] **MVI Pattern** - Model-View-Intent implementation
+- [x] **Dependency Injection** - Koin modules
+- [x] **Repository Pattern** - Data abstraction
+- [x] **Navigation** - Type-safe navigation
 
 ### 📱 UI/UX
-- [x] **Splash Screen** - Экран загрузки
-- [x] **Movies List Screen** - Базовая структура
-- [x] **Movie Detail Screen** - Базовая структура
-- [x] **Material Design 3** - Современная тема
-- [x] **Edge-to-Edge** - Полноэкранный режим
-- [x] **Responsive Design** - Адаптация под экраны
+- [x] **Splash Screen** - Loading screen
+- [x] **Movies List Screen** - Basic structure
+- [x] **Movie Detail Screen** - Basic structure
+- [x] **Material Design 3** - Modern theme
+- [x] **Edge-to-Edge** - Full-screen mode
+- [x] **Responsive Design** - Screen adaptation
 
-### 🔧 Техническая инфраструктура
+### 🔧 Technical Infrastructure
 - [x] **Build Variants** - dummyDebug/prodDebug/prodRelease
-- [x] **Version Management** - Автоматическое управление версиями
-- [x] **ProGuard Configuration** - Оптимизация релизных сборок
-- [x] **Signing Configuration** - Подписание APK
-- [x] **Gradle Configuration** - Оптимизированная сборка
-- [x] **Constants System** - Централизованные константы
-- [x] **Code Quality** - Устранение hardcoded значений
+- [x] **Version Management** - Automatic version management
+- [x] **ProGuard Configuration** - Release build optimization
+- [x] **Signing Configuration** - APK signing
+- [x] **Gradle Configuration** - Optimized build
+- [x] **Constants System** - Centralized constants
+- [x] **Code Quality** - Elimination of hardcoded values
 
-### 🌐 Сетевое взаимодействие
-- [x] **MCP Client** - Полная реализация с mock и real data
-- [x] **Ktor HTTP Client** - HTTP клиент с timeout настройками
-- [x] **JSON Serialization** - Обработка данных с константами
-- [x] **Error Handling** - Улучшенная обработка ошибок
-- [x] **FakeInterceptor** - Симуляция сетевых запросов
-- [x] **Asset Data Loader** - Загрузка mock данных из assets
-- [x] **Network Simulation** - Реалистичные задержки и ошибки
+### 🌐 Network Interaction
+- [x] **MCP Client** - Full implementation with mock and real data
+- [x] **Ktor HTTP Client** - HTTP client with timeout settings
+- [x] **JSON Serialization** - Data processing with constants
+- [x] **Error Handling** - Improved error handling
+- [x] **FakeInterceptor** - Network request simulation
+- [x] **Asset Data Loader** - Loading mock data from assets
+- [x] **Network Simulation** - Realistic delays and errors
 
 ### 🎨 UI/UX
-- [x] **Edge-to-Edge Display** - Полноэкранный режим с правильными отступами
-- [x] **System Bars Integration** - Интеграция с системными панелями
-- [x] **Cross-Platform Support** - Поддержка Android 5.0+ для edge-to-edge
-- [x] **Window Insets Handling** - Правильная обработка системных отступов
+- [x] **Edge-to-Edge Display** - Full-screen mode with proper padding
+- [x] **System Bars Integration** - Integration with system panels
+- [x] **Cross-Platform Support** - Android 5.0+ support for edge-to-edge
+- [x] **Window Insets Handling** - Proper handling of system insets
 
-## 🚧 В разработке
+## 🚧 In Development
 
-### 🔄 Интеграция с TMDB
-- [ ] **TMDB API Client** - HTTP клиент для TMDB
-- [ ] **Movie Data Models** - Модели данных фильмов
-- [ ] **Genre & Cast Models** - Дополнительные модели
-- [ ] **Image Loading** - Загрузка постеров и изображений
+### 🔄 TMDB Integration
+- [ ] **TMDB API Client** - HTTP client for TMDB
+- [ ] **Movie Data Models** - Movie data models
+- [ ] **Genre & Cast Models** - Additional models
+- [ ] **Image Loading** - Poster and image loading
 
-### 🤖 AI интеграция через MCP
-- [ ] **Movie Recommendations** - AI рекомендации
-- [ ] **Content Analysis** - Анализ контента
-- [ ] **Personalization** - Персонализация контента
-- [ ] **Dynamic UI** - Динамическая настройка UI
+### 🤖 AI Integration via MCP
+- [ ] **Movie Recommendations** - AI recommendations
+- [ ] **Content Analysis** - Content analysis
+- [ ] **Personalization** - Content personalization
+- [ ] **Dynamic UI** - Dynamic UI configuration
 
-### 💾 Данные и кэширование
-- [ ] **Local Database** - Room база данных
-- [ ] **Data Caching** - Кэширование данных
-- [ ] **Offline Support** - Работа без интернета
-- [ ] **Data Synchronization** - Синхронизация данных
+### 💾 Data and Caching
+- [ ] **Local Database** - Room database
+- [ ] **Data Caching** - Data caching
+- [ ] **Offline Support** - Offline operation
+- [ ] **Data Synchronization** - Data synchronization
 
-## 📋 Планируемые функции
+## 📋 Planned Features
 
-### 🔍 Поиск и фильтрация
-- [ ] **Movie Search** - Поиск фильмов
-- [ ] **Advanced Filters** - Расширенные фильтры
-- [ ] **Sorting Options** - Варианты сортировки
-- [ ] **Search History** - История поиска
+### 🔍 Search and Filtering
+- [ ] **Movie Search** - Movie search
+- [ ] **Advanced Filters** - Advanced filters
+- [ ] **Sorting Options** - Sorting options
+- [ ] **Search History** - Search history
 
-### 👤 Пользовательский опыт
-- [ ] **Favorites** - Избранные фильмы
-- [ ] **Watchlist** - Список для просмотра
-- [ ] **User Ratings** - Пользовательские оценки
-- [ ] **Reviews** - Отзывы пользователей
+### 👤 User Experience
+- [ ] **Favorites** - Favorite movies
+- [ ] **Watchlist** - Watch list
+- [ ] **User Ratings** - User ratings
+- [ ] **Reviews** - User reviews
 
-### 🎨 Персонализация
-- [ ] **Dark Theme** - Темная тема
-- [ ] **Custom Themes** - Пользовательские темы
-- [ ] **Language Support** - Многоязычность
-- [ ] **Accessibility** - Улучшения доступности
+### 🎨 Personalization
+- [ ] **Dark Theme** - Dark theme
+- [ ] **Custom Themes** - Custom themes
+- [ ] **Language Support** - Multi-language support
+- [ ] **Accessibility** - Accessibility improvements
 
-### 📊 Аналитика и метрики
-- [ ] **Usage Analytics** - Аналитика использования
-- [ ] **Performance Monitoring** - Мониторинг производительности
-- [ ] **Crash Reporting** - Отчеты о сбоях
-- [ ] **User Feedback** - Обратная связь пользователей
+### 📊 Analytics and Metrics
+- [ ] **Usage Analytics** - Usage analytics
+- [ ] **Performance Monitoring** - Performance monitoring
+- [ ] **Crash Reporting** - Crash reports
+- [ ] **User Feedback** - User feedback
 
-## ❌ Известные проблемы
+## ❌ Known Issues
 
-### 🔴 Критические
-- **Нет** критических проблем
+### 🔴 Critical
+- **No** critical issues
 
-### 🟡 Средние
-- [ ] **MCP Server URL** - Не настроен реальный сервер
-- [ ] **TMDB API Key** - Отсутствует API ключ
-- [ ] **Error Handling** - Неполная обработка ошибок
-- [ ] **Loading States** - Не все состояния загрузки
+### 🟡 Medium
+- [ ] **MCP Server URL** - Real server not configured
+- [ ] **TMDB API Key** - API key missing
+- [ ] **Error Handling** - Incomplete error handling
+- [ ] **Loading States** - Not all loading states
 
-### 🟢 Низкие
-- [ ] **UI Polish** - Нужна доработка интерфейса
-- [ ] **Animations** - Отсутствуют анимации
-- [ ] **Accessibility** - Базовые улучшения доступности
+### 🟢 Low
+- [ ] **UI Polish** - Interface needs refinement
+- [ ] **Animations** - Missing animations
+- [ ] **Accessibility** - Basic accessibility improvements
 
-## 🏗️ Архитектурные решения
+## 🏗️ Architectural Decisions
 
-### ✅ Принятые решения
-1. **MVI Pattern** - Для управления состоянием
-2. **Clean Architecture** - Для разделения ответственности
-3. **Koin DI** - Для dependency injection
-4. **Navigation Compose** - Для навигации
-5. **Ktor** - Для HTTP клиента
-6. **StateFlow** - Для реактивного программирования
+### ✅ Accepted Decisions
+1. **MVI Pattern** - For state management
+2. **Clean Architecture** - For separation of concerns
+3. **Koin DI** - For dependency injection
+4. **Navigation Compose** - For navigation
+5. **Ktor** - For HTTP client
+6. **StateFlow** - For reactive programming
 
-### 🤔 Альтернативы, которые рассматривались
-1. **Hilt** - Выбран Koin из-за простоты
-2. **MVVM** - Выбран MVI для лучшего контроля состояния
-3. **Retrofit** - Выбран Ktor для MCP интеграции
-4. **LiveData** - Выбран StateFlow для Kotlin-first подхода
+### 🤔 Alternatives Considered
+1. **Hilt** - Chose Koin for simplicity
+2. **MVVM** - Chose MVI for better state control
+3. **Retrofit** - Chose Ktor for MCP integration
+4. **LiveData** - Chose StateFlow for Kotlin-first approach
 
-### 📈 Планы по улучшению архитектуры
-1. **Modularization** - Разделение на модули
-2. **Feature Toggles** - Переключатели функций
-3. **A/B Testing** - Тестирование вариантов
-4. **Performance Monitoring** - Мониторинг производительности
+### 📈 Architecture Improvement Plans
+1. **Modularization** - Module separation
+2. **Feature Toggles** - Feature switches
+3. **A/B Testing** - Variant testing
+4. **Performance Monitoring** - Performance monitoring
 
-## 🧪 Тестирование
+## 🧪 Testing
 
-### 📊 Покрытие тестами
-- **Unit Tests**: 5% (только базовые тесты)
-- **Integration Tests**: 0% (не реализованы)
-- **UI Tests**: 0% (не реализованы)
+### 📊 Test Coverage
+- **Unit Tests**: 5% (only basic tests)
+- **Integration Tests**: 0% (not implemented)
+- **UI Tests**: 0% (not implemented)
 - **Overall Coverage**: 2%
 
-### 🎯 Приоритеты тестирования
-1. **Repository Tests** - Тестирование репозиториев
-2. **ViewModel Tests** - Тестирование ViewModels
-3. **Use Case Tests** - Тестирование бизнес-логики
-4. **UI Tests** - Тестирование интерфейса
+### 🎯 Testing Priorities
+1. **Repository Tests** - Repository testing
+2. **ViewModel Tests** - ViewModel testing
+3. **Use Case Tests** - Business logic testing
+4. **UI Tests** - Interface testing
 
 ## 🚀 Roadmap
 
-### 🎯 Q1 2025 - Базовая функциональность
-- [ ] TMDB API интеграция
-- [ ] Базовый поиск фильмов
-- [ ] Детали фильмов
-- [ ] Кэширование данных
+### 🎯 Q1 2025 - Basic Functionality
+- [ ] TMDB API integration
+- [ ] Basic movie search
+- [ ] Movie details
+- [ ] Data caching
 
-### 🎯 Q2 2025 - AI интеграция
-- [ ] MCP сервер интеграция
-- [ ] AI рекомендации
-- [ ] Персонализация
-- [ ] Расширенный поиск
+### 🎯 Q2 2025 - AI Integration
+- [ ] MCP server integration
+- [ ] AI recommendations
+- [ ] Personalization
+- [ ] Advanced search
 
-### 🎯 Q3 2025 - Пользовательский опыт
-- [ ] Избранное и списки
-- [ ] Темная тема
-- [ ] Анимации
+### 🎯 Q3 2025 - User Experience
+- [ ] Favorites and lists
+- [ ] Dark theme
+- [ ] Animations
 - [ ] Accessibility
 
-### 🎯 Q4 2025 - Продакшн готовность
-- [ ] Полное тестирование
-- [ ] Performance оптимизация
-- [ ] Аналитика и мониторинг
-- [ ] Store подготовка
+### 🎯 Q4 2025 - Production Readiness
+- [ ] Complete testing
+- [ ] Performance optimization
+- [ ] Analytics and monitoring
+- [ ] Store preparation
 
-## 📝 Заключение
+## 📝 Conclusion
 
-Проект находится на ранней стадии разработки с хорошо заложенной архитектурной основой. Основные компоненты MVI и Clean Architecture реализованы, но требуется значительная работа по интеграции с внешними API и реализации бизнес-логики.
+The project is in early development stage with a well-established architectural foundation. Main MVI and Clean Architecture components are implemented, but significant work is required for external API integration and business logic implementation.
 
-**Сильные стороны:**
-- Современная архитектура
-- Качественная техническая база
-- Хорошая структура проекта
+**Strengths:**
+- Modern architecture
+- Quality technical foundation
+- Good project structure
 
-**Области для улучшения:**
-- Интеграция с TMDB API
-- Реализация AI функций
-- Тестирование
-- UI/UX полировка
+**Areas for improvement:**
+- TMDB API integration
+- AI functionality implementation
+- Testing
+- UI/UX polish
 
-**Следующие шаги:**
-1. Настроить TMDB API интеграцию
-2. Реализовать базовую функциональность поиска
-3. Добавить unit тесты
-4. Улучшить обработку ошибок
+**Next steps:**
+1. Set up TMDB API integration
+2. Implement basic search functionality
+3. Add unit tests
+4. Improve error handling
