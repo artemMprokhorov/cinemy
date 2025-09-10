@@ -8,22 +8,41 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.tmdbai.data.di.dataModule
+import com.example.tmdbai.di.mlModule
+import com.example.tmdbai.ml.SentimentAnalyzer
 import com.example.tmdbai.navigation.AppNavigation
 import com.example.tmdbai.presentation.di.presentationModule
 import com.example.tmdbai.ui.theme.TmdbAiTheme
 import com.example.tmdbai.utils.VersionUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 
 class TmdbAiApplication : Application() {
+    
+    private val sentimentAnalyzer: SentimentAnalyzer by inject()
+    
     override fun onCreate() {
         super.onCreate()
 
         startKoin {
             androidLogger()
             androidContext(this@TmdbAiApplication)
-            modules(dataModule, presentationModule)
+            modules(dataModule, presentationModule, mlModule)
+        }
+        
+        // Инициализация ML анализатора
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val success = sentimentAnalyzer.initialize()
+                android.util.Log.d("TmdbAi_ML", "ML анализатор инициализирован: $success")
+            } catch (e: Exception) {
+                android.util.Log.e("TmdbAi_ML", "Ошибка инициализации ML", e)
+            }
         }
     }
 }

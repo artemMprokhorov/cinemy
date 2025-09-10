@@ -12,4 +12,8 @@ sealed class MovieDetailIntent : CommonIntent {
     object Retry : MovieDetailIntent()
     object Refresh : MovieDetailIntent()
     object BackPressed : MovieDetailIntent()
+    
+    // ML интенты:
+    data class AnalyzeSentiment(val reviewText: String) : MovieDetailIntent()
+    object ClearSentimentResult : MovieDetailIntent()
 }

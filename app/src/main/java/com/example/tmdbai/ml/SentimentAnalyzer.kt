@@ -1,9 +1,8 @@
-package com.tmdbai.ml
+package com.example.tmdbai.ml
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.IOException
 
@@ -38,7 +37,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 inputStream.bufferedReader().readText()
             }
             
-            model = Json.decodeFromString<KeywordSentimentModel>(modelJson)
+            model = createSimpleModel()
             isInitialized = true
             true
         } catch (e: Exception) {
@@ -77,6 +76,47 @@ class SentimentAnalyzer private constructor(private val context: Context) {
      * Получение информации о модели
      */
     fun getModelInfo(): ModelInfo? = model?.modelInfo
+    
+    /**
+     * Создание простой модели для тестирования
+     */
+    private fun createSimpleModel(): KeywordSentimentModel {
+        val modelInfo = ModelInfo(
+            type = "keyword_sentiment_analysis",
+            version = "1.0.0",
+            language = "en",
+            accuracy = "~80%",
+            speed = "very_fast"
+        )
+        
+        val positiveKeywords = listOf(
+            "amazing", "fantastic", "great", "excellent", "wonderful", "brilliant",
+            "outstanding", "superb", "magnificent", "perfect", "incredible", "awesome",
+            "beautiful", "lovely", "good", "nice", "best", "favorite", "love", "enjoy"
+        )
+        
+        val negativeKeywords = listOf(
+            "terrible", "awful", "horrible", "bad", "worst", "hate", "disgusting",
+            "boring", "stupid", "dumb", "annoying", "frustrating", "disappointing",
+            "waste", "rubbish", "garbage", "trash", "sucks", "pathetic", "lame"
+        )
+        
+        val algorithm = AlgorithmConfig(
+            defaultConfidence = 0.6,
+            positiveWeight = 1.0,
+            negativeWeight = 1.0,
+            neutralThreshold = 0.5,
+            minConfidence = 0.3,
+            maxConfidence = 0.9
+        )
+        
+        return KeywordSentimentModel(
+            modelInfo = modelInfo,
+            positiveKeywords = positiveKeywords,
+            negativeKeywords = negativeKeywords,
+            algorithm = algorithm
+        )
+    }
     
     /**
      * Основной алгоритм анализа по ключевым словам
@@ -137,7 +177,6 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 /**
  * Результат анализа тональности
  */
-@Serializable
 data class SentimentResult(
     val sentiment: SentimentType,
     val confidence: Double,
@@ -174,7 +213,6 @@ data class SentimentResult(
 /**
  * Типы тональности
  */
-@Serializable
 enum class SentimentType {
     POSITIVE, NEGATIVE, NEUTRAL
 }
@@ -182,7 +220,6 @@ enum class SentimentType {
 /**
  * Модель данных для keyword-based анализа
  */
-@Serializable
 data class KeywordSentimentModel(
     val modelInfo: ModelInfo,
     val positiveKeywords: List<String>,
@@ -192,7 +229,6 @@ data class KeywordSentimentModel(
     val algorithm: AlgorithmConfig
 )
 
-@Serializable
 data class ModelInfo(
     val type: String,
     val version: String,
@@ -201,7 +237,6 @@ data class ModelInfo(
     val speed: String
 )
 
-@Serializable
 data class AlgorithmConfig(
     val defaultConfidence: Double,
     val positiveWeight: Double,

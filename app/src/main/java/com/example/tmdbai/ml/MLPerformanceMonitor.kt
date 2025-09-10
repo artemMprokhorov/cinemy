@@ -1,4 +1,4 @@
-package com.tmdbai.ml
+package com.example.tmdbai.ml
 
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
@@ -127,7 +127,6 @@ class MLPerformanceMonitor private constructor() {
 /**
  * Метрика производительности для группы
  */
-@Serializable
 data class PerformanceMetric(
     var count: Int,
     var totalTime: Long,
@@ -138,7 +137,6 @@ data class PerformanceMetric(
 /**
  * Общая статистика производительности
  */
-@Serializable
 data class PerformanceStats(
     val totalAnalyses: Int,
     val averageProcessingTimeMs: Double,

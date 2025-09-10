@@ -11,7 +11,8 @@ val Dimens8 = 8.dp
 val Dimens12 = 12.dp
 val Dimens16 = 16.dp
 
-// Large dimensions (32dp)
+// Large dimensions (24-32dp)
+val Dimens24 = 24.dp
 val Dimens32 = 32.dp
 
 // Extra large dimensions (88-200dp)

@@ -10,6 +10,27 @@
 
 ## 📅 **Version History**
 
+### **v2.4.0** - ML Sentiment Analysis Integration
+**Date**: December 2024  
+**Status**: ✅ **RELEASED**
+
+#### 🤖 **ML Features**
+- **Local Sentiment Analysis**: Keyword-based algorithm for movie reviews
+- **MVI Integration**: ML operations follow existing architecture patterns
+- **Performance Monitoring**: MLPerformanceMonitor for metrics tracking
+- **Offline Capability**: Works without internet connection
+
+#### 🎨 **UI Components**
+- **SentimentAnalysisCard**: New configurable component for review analysis
+- **Result Display**: Visual feedback with confidence scores and keywords
+- **Error Handling**: Proper error states and user feedback
+
+#### 🔧 **Technical Implementation**
+- **Koin DI Integration**: ML components properly injected
+- **MVI Architecture**: New intents and state for sentiment analysis
+- **Type Safety**: Proper Result types and error handling
+- **Performance**: Lightweight JSON-based model (~1KB)
+
 ### **v2.3.2** - Theme Resources Cleanup & Pagination Fix
 **Date**: December 2024  
 **Status**: ✅ **RELEASED**

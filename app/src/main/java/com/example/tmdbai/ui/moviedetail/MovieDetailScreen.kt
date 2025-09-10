@@ -43,6 +43,7 @@ import com.example.tmdbai.presentation.moviedetail.MovieDetailIntent
 import com.example.tmdbai.presentation.moviedetail.MovieDetailState
 import com.example.tmdbai.presentation.moviedetail.MovieDetailViewModel
 import com.example.tmdbai.ui.components.PullToReloadArrow
+import com.example.tmdbai.ui.components.SentimentAnalysisCard
 import com.example.tmdbai.ui.theme.Dimens100
 import com.example.tmdbai.ui.theme.Dimens12
 import com.example.tmdbai.ui.theme.Dimens16
@@ -159,7 +160,9 @@ private fun MovieDetailContent(
                 MovieDetailsContent(
                     movieDetails = state.movieDetails,
                     uiConfig = state.uiConfig,
-                    onBackClick = onBackClick
+                    onBackClick = onBackClick,
+                    state = state,
+                    onIntent = onIntent
                 )
             }
         }
@@ -172,7 +175,9 @@ private fun MovieDetailContent(
 private fun MovieDetailsContent(
     movieDetails: MovieDetails,
     uiConfig: UiConfiguration?,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    state: MovieDetailState,
+    onIntent: (MovieDetailIntent) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -256,6 +261,19 @@ private fun MovieDetailsContent(
                 )
             }
         }
+        
+        // ML Sentiment Analysis Card
+        SentimentAnalysisCard(
+            onAnalyzeText = { reviewText ->
+                onIntent(MovieDetailIntent.AnalyzeSentiment(reviewText))
+            },
+            sentimentResult = state.sentimentResult,
+            isLoading = state.isSentimentAnalyzing,
+            error = state.sentimentError,
+            modifier = Modifier.padding(horizontal = Dimens16)
+        )
+        
+        Spacer(modifier = Modifier.height(Dimens16))
     }
 }
 
@@ -281,7 +299,9 @@ private fun MovieDetailScreenPreview() {
                 status = "Released"
             ),
             uiConfig = null,
-            onBackClick = {}
+            onBackClick = {},
+            state = MovieDetailState(),
+            onIntent = {}
         )
     }
 }

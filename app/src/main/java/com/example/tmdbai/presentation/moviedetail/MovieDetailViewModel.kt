@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tmdbai.data.model.Result
 import com.example.tmdbai.data.repository.MovieRepository
+import com.example.tmdbai.ml.SentimentAnalyzer
 import com.example.tmdbai.presentation.PresentationConstants
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +12,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MovieDetailViewModel(
-    private val movieRepository: MovieRepository
+    private val movieRepository: MovieRepository,
+    private val sentimentAnalyzer: SentimentAnalyzer
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MovieDetailState())
@@ -47,6 +49,9 @@ class MovieDetailViewModel(
             is MovieDetailIntent.BackPressed -> {
                 // This will be handled by the UI layer
             }
+            
+            is MovieDetailIntent.AnalyzeSentiment -> analyzeSentiment(intent.reviewText)
+            is MovieDetailIntent.ClearSentimentResult -> clearSentimentResult()
         }
     }
 
@@ -85,5 +90,34 @@ class MovieDetailViewModel(
                 }
             }
         }
+    }
+    
+    private fun analyzeSentiment(reviewText: String) {
+        _state.value = _state.value.copy(
+            isSentimentAnalyzing = true,
+            sentimentError = null
+        )
+        
+        viewModelScope.launch {
+            try {
+                val result = sentimentAnalyzer.analyzeSentiment(reviewText)
+                _state.value = _state.value.copy(
+                    sentimentResult = result,
+                    isSentimentAnalyzing = false
+                )
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(
+                    isSentimentAnalyzing = false,
+                    sentimentError = "Ошибка анализа: ${e.message}"
+                )
+            }
+        }
+    }
+    
+    private fun clearSentimentResult() {
+        _state.value = _state.value.copy(
+            sentimentResult = null,
+            sentimentError = null
+        )
     }
 }

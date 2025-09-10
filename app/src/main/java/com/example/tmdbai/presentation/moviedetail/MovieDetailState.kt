@@ -3,6 +3,7 @@ package com.example.tmdbai.presentation.moviedetail
 import com.example.tmdbai.data.model.Meta
 import com.example.tmdbai.data.model.MovieDetails
 import com.example.tmdbai.data.model.UiConfiguration
+import com.example.tmdbai.ml.SentimentResult
 import com.example.tmdbai.presentation.PresentationConstants
 
 /**
@@ -19,7 +20,12 @@ data class MovieDetailState(
 
     // UI helpers
     val showFullDescription: Boolean = PresentationConstants.DEFAULT_SHOW_FULL_DESCRIPTION,
-    val showProductionDetails: Boolean = PresentationConstants.DEFAULT_SHOW_PRODUCTION_DETAILS
+    val showProductionDetails: Boolean = PresentationConstants.DEFAULT_SHOW_PRODUCTION_DETAILS,
+    
+    // ML поля:
+    val sentimentResult: SentimentResult? = null,
+    val isSentimentAnalyzing: Boolean = false,
+    val sentimentError: String? = null
 ) {
     val formattedRuntime: String
         get() = movieDetails?.runtime?.let {
