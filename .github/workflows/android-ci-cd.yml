@@ -1,8 +1,9 @@
 name: Android CI/CD
 
 on:
-  push:
-    branches: [ master, develop ]
+  # Disabled - only build-release-apk.yml should run on master push
+  # push:
+  #   branches: [ master, develop ]
   pull_request:
     branches: [ master, develop ]
   release:
