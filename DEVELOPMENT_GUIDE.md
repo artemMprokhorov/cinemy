@@ -40,28 +40,28 @@
 - **Gradle**: 8.10.2
 - **Kotlin**: 1.9.22
 
-### ⚙️ Настройка проекта
+### ⚙️ Project Setup
 
-1. **Клонирование репозитория**
+1. **Clone Repository**
    ```bash
    git clone https://github.com/your-username/TmdbAi.git
    cd TmdbAi
    ```
 
-2. **Настройка переменных окружения**
+2. **Environment Variables Setup**
    ```bash
-   # Создайте local.properties
+   # Create local.properties
    MCP_SERVER_URL=https://your-ngrok-url.ngrok.io
    TMDB_BASE_URL=https://api.themoviedb.org/3/
    TMDB_API_KEY=your_tmdb_api_key_here
    ```
 
-3. **Синхронизация Gradle**
+3. **Gradle Sync**
    ```bash
    ./gradlew --refresh-dependencies
    ```
 
-4. **Проверка сборки**
+4. **Build Verification**
    ```bash
    # Dummy version (mock data)
    ./gradlew assembleDummyDebug
@@ -70,16 +70,16 @@
    ./gradlew assembleProdDebug
    ```
 
-### 🔧 Конфигурация Android Studio
+### 🔧 Android Studio Configuration
 
-1. **Kotlin Plugin**: Убедитесь, что установлен Kotlin plugin
-2. **Compose Preview**: Включите Compose Preview в настройках
-3. **Code Style**: Настройте Kotlin code style
-4. **Live Templates**: Настройте live templates для MVI
+1. **Kotlin Plugin**: Ensure Kotlin plugin is installed
+2. **Compose Preview**: Enable Compose Preview in settings
+3. **Code Style**: Configure Kotlin code style
+4. **Live Templates**: Set up live templates for MVI
 
 ### 🏗️ Build Variants
 
-Проект поддерживает три варианта сборки:
+The project supports three build variants:
 
 | Variant | Purpose | Data Source | Package ID |
 |---------|---------|-------------|------------|
@@ -87,7 +87,7 @@
 | **prodDebug** | Testing | Real backend + fallback | `com.example.tmdbai.debug` |
 | **prodRelease** | Production | Real backend only | `com.example.tmdbai` |
 
-#### Установка и запуск
+#### Installation and Launch
 
 ```bash
 # Dummy version (mock data)
@@ -101,9 +101,9 @@ adb shell am start -n com.example.tmdbai.debug/com.example.tmdbai.MainActivity
 
 ## 🎨 Edge-to-Edge Display
 
-### 📱 Настройка Edge-to-Edge
+### 📱 Edge-to-Edge Setup
 
-Проект поддерживает полноэкранный режим (edge-to-edge) на всех версиях Android 5.0+:
+The project supports full-screen mode (edge-to-edge) on all Android 5.0+ versions:
 
 #### 1. **VersionUtils Configuration**
 ```kotlin
@@ -320,81 +320,81 @@ class SentimentAnalyzer {
 }
 ```
 
-## 📏 Правила работы с кодом
+## 📏 Code Development Rules
 
-### 🏗️ Архитектурные принципы
+### 🏗️ Architectural Principles
 
-#### ✅ Обязательные правила
+#### ✅ Mandatory Rules
 
-1. **Следуйте MVI паттерну**
-   - Каждый экран имеет свой ViewModel
-   - ViewModel обрабатывает Intent'ы
-   - UI реагирует на изменения State
+1. **Follow MVI Pattern**
+   - Each screen has its own ViewModel
+   - ViewModel processes Intents
+   - UI reacts to State changes
 
-2. **Используйте Clean Architecture**
-   - Разделяйте код на слои
-   - Зависимости направлены внутрь
-   - Внешние слои не знают о внутренних
+2. **Use Clean Architecture**
+   - Separate code into layers
+   - Dependencies point inward
+   - External layers don't know about internal ones
 
-3. **Применяйте Dependency Injection**
-   - Используйте Koin для DI
-   - Не создавайте объекты напрямую
-   - Используйте интерфейсы для абстракции
+3. **Apply Dependency Injection**
+   - Use Koin for DI
+   - Don't create objects directly
+   - Use interfaces for abstraction
 
-4. **Используйте константы вместо hardcoded значений**
-   - Все строки, числа и булевы значения должны быть в `StringConstants.kt`
-   - Используйте константы в `@SerializedName` аннотациях
-   - Не используйте константы для log сообщений (только inline строки)
+4. **Use Constants Instead of Hardcoded Values**
+   - All strings, numbers, and boolean values should be in `StringConstants.kt`
+   - Use constants in `@SerializedName` annotations
+   - Don't use constants for log messages (only inline strings)
 
 5. **UI Layer Constants Rules**
-   - **Dimensions**: Все размеры (16.dp, 8.dp, etc.) → `Dimens.kt`
-   - **Float Values**: Все float значения (0.1f, 0.7f, 2.0f, etc.) → `Floats.kt`
-   - **UI Text**: Все пользовательские строки → `strings.xml`
-   - **Image URLs**: Все URL изображений → `ImageConfig.kt`
-   - **UI Constants**: Числовые константы (пороги, лимиты) → `UIConstants.kt`
-   - **No Hardcoded Values**: Никаких hardcoded значений в UI компонентах
-   - **Theme Cleanup**: Регулярно удаляйте неиспользуемые ресурсы из theme файлов
-   - **Resource Optimization**: Поддерживайте минимальный набор необходимых констант
+   - **Dimensions**: All sizes (16.dp, 8.dp, etc.) → `Dimens.kt`
+   - **Float Values**: All float values (0.1f, 0.7f, 2.0f, etc.) → `Floats.kt`
+   - **UI Text**: All user strings → `strings.xml`
+   - **Image URLs**: All image URLs → `ImageConfig.kt`
+   - **UI Constants**: Numeric constants (thresholds, limits) → `UIConstants.kt`
+   - **No Hardcoded Values**: No hardcoded values in UI components
+   - **Theme Cleanup**: Regularly remove unused resources from theme files
+   - **Resource Optimization**: Maintain minimal set of necessary constants
 
 #### 🔤 Naming Conventions
 
 ```kotlin
-// ✅ Правильно
+// ✅ Correct
 class MoviesListViewModel : ViewModel()
 sealed class MoviesListIntent
 data class MoviesListState
 interface MovieRepository
 
-// ❌ Неправильно
+// ❌ Incorrect
 class MoviesListVM : ViewModel()
 class MoviesListActions
 class MoviesListData
 class MovieRepo
 ```
 
-#### 📁 Структура файлов
+#### 📁 File Structure
 
 ```
 presentation/movieslist/
 ├── MoviesListViewModel.kt      # ViewModel
-├── MoviesListIntent.kt         # Intent классы
-└── MoviesListState.kt          # State классы
+├── MoviesListIntent.kt         # Intent classes
+└── MoviesListState.kt          # State classes
 
 ui/movieslist/
-└── MoviesListScreen.kt         # UI экран
+└── MoviesListScreen.kt         # UI screen
 
 data/repository/
-├── MovieRepository.kt           # Интерфейс
-└── MovieRepositoryImpl.kt      # Реализация
+├── MovieRepository.kt           # Interface
+└── MovieRepositoryImpl.kt      # Implementation
 
 data/model/
-└── StringConstants.kt          # Все константы проекта
+└── StringConstants.kt          # All project constants
 ```
 
 #### 🔧 Constants Usage
 
 ```kotlin
-// ✅ Правильно - использование констант
+// ✅ Correct - using constants
 data class MovieDto(
     @SerializedName(StringConstants.SERIALIZED_ID)
     val id: Int,
@@ -404,14 +404,14 @@ data class MovieDto(
     val description: String
 )
 
-// В коде
+// In code
 val pagination = PaginationDto(
     page = page,
     totalPages = StringConstants.PAGINATION_TOP_RATED_TOTAL_PAGES,
     totalResults = StringConstants.PAGINATION_TOP_RATED_TOTAL_RESULTS
 )
 
-// ❌ Неправильно - hardcoded значения
+// ❌ Incorrect - hardcoded values
 data class MovieDto(
     @SerializedName("id")
     val id: Int,
@@ -429,79 +429,79 @@ val pagination = PaginationDto(
 #### 🎨 UI Layer Constants Usage
 
 ```kotlin
-// ✅ Правильно - используйте Dimens.kt
+// ✅ Correct - use Dimens.kt
 Box(
     modifier = Modifier
         .padding(Dimens16)
         .height(Dimens200)
 )
 
-// ✅ Правильно - используйте Floats.kt
+// ✅ Correct - use Floats.kt
 Color.White.copy(alpha = Float02)
 val centerX = size / Float2
 val progress = state.progress.coerceIn(Float0, Float10)
 
-// ✅ Правильно - используйте ImageConfig.kt
+// ✅ Correct - use ImageConfig.kt
 val imageUrl = ImageConfig.buildBackdropUrl(movie.backdropPath)
 
-// ✅ Правильно - используйте UIConstants.kt
+// ✅ Correct - use UIConstants.kt
 if (movie.popularity > UIConstants.POPULARITY_THRESHOLD) {
     // Show popularity
 }
 
-// ✅ Правильно - используйте strings.xml
+// ✅ Correct - use strings.xml
 Text(text = stringResource(R.string.no_image))
 
-// ✅ Правильно - используйте BuildConfig.kt
+// ✅ Correct - use BuildConfig.kt
 val imageUrl = BuildConfig.buildBackdropUrl(movie.backdropPath)
 
-// ❌ Неправильно - hardcoded значения
+// ❌ Incorrect - hardcoded values
 Box(
     modifier = Modifier
         .padding(16.dp)
         .height(200.dp)
 )
 
-// ❌ Неправильно - hardcoded значения
+// ❌ Incorrect - hardcoded values
 Color.White.copy(alpha = 0.2f)
 
-// ❌ Неправильно - hardcoded значения
+// ❌ Incorrect - hardcoded values
 Text(text = "No Image")
 
-// ❌ Неправильно - hardcoded значения
+// ❌ Incorrect - hardcoded values
 val imageUrl = "https://image.tmdb.org/t/p/w500${movie.backdropPath}"
 ```
 
 #### 🧹 Theme Resources Cleanup
 
-Регулярно проверяйте и удаляйте неиспользуемые ресурсы из theme файлов:
+Regularly check and remove unused resources from theme files:
 
 ```kotlin
-// ✅ Правильно - только используемые ресурсы
-// Color.kt - только необходимые цвета
+// ✅ Correct - only used resources
+// Color.kt - only necessary colors
 val SplashBackground = Color(0xFF2B3A4B)
 val TextSecondary = Color(0xFF9E9E9E)
 
-// Dimens.kt - только используемые размеры
+// Dimens.kt - only used dimensions
 val Dimens2 = 2.dp
 val Dimens4 = 4.dp
 val Dimens8 = 8.dp
-val Dimens112 = 112.dp  // Для pagination controls
+val Dimens112 = 112.dp  // For pagination controls
 
-// Typography.kt - только используемые размеры шрифтов
+// Typography.kt - only used font sizes
 val Typography16 = 16.sp
 val Typography24 = 24.sp
 val Typography32 = 32.sp
 
-// ❌ Неправильно - неиспользуемые ресурсы
-val UnusedColor = Color(0xFF123456)  // Не используется нигде
-val UnusedDimension = 50.dp          // Не используется нигде
-val UnusedTypography = 10.sp         // Не используется нигде
+// ❌ Incorrect - unused resources
+val UnusedColor = Color(0xFF123456)  // Not used anywhere
+val UnusedDimension = 50.dp          // Not used anywhere
+val UnusedTypography = 10.sp         // Not used anywhere
 ```
 
-**Проверка использования ресурсов:**
+**Resource Usage Check:**
 ```bash
-# Поиск использования константы в проекте
+# Search for constant usage in project
 grep -r "UnusedColor" app/src/main/java/
 grep -r "UnusedDimension" app/src/main/java/
 grep -r "UnusedTypography" app/src/main/java/
@@ -512,7 +512,7 @@ grep -r "UnusedTypography" app/src/main/java/
 #### Intent Classes
 
 ```kotlin
-// ✅ Правильно
+// ✅ Correct
 sealed class MoviesListIntent {
     object LoadPopularMovies : MoviesListIntent()
     object LoadMoreMovies : MoviesListIntent()
@@ -520,17 +520,17 @@ sealed class MoviesListIntent {
     data class SearchMovies(val query: String) : MoviesListIntent()
 }
 
-// ❌ Неправильно
+// ❌ Incorrect
 sealed class MoviesListIntent {
-    fun loadPopularMovies() // Не Intent, а функция
-    val isLoading: Boolean // Не Intent, а состояние
+    fun loadPopularMovies() // Not an Intent, but a function
+    val isLoading: Boolean // Not an Intent, but a state
 }
 ```
 
 #### State Classes
 
 ```kotlin
-// ✅ Правильно
+// ✅ Correct
 data class MoviesListState(
     val movies: List<Movie> = emptyList(),
     val isLoading: Boolean = false,
@@ -539,9 +539,9 @@ data class MoviesListState(
     val hasMorePages: Boolean = true
 )
 
-// ❌ Неправильно
+// ❌ Incorrect
 data class MoviesListState(
-    var movies: List<Movie> = emptyList(), // var вместо val
+    var movies: List<Movie> = emptyList(), // var instead of val
     var isLoading: Boolean = false
 )
 ```
@@ -549,7 +549,7 @@ data class MoviesListState(
 #### ViewModel Implementation
 
 ```kotlin
-// ✅ Правильно
+// ✅ Correct
 class MoviesListViewModel(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
@@ -590,14 +590,14 @@ class MoviesListViewModel(
 #### Result Pattern
 
 ```kotlin
-// ✅ Используйте Result для обработки ошибок
+// ✅ Use Result for error handling
 sealed class Result<out T> {
     data class Success<T>(val data: T) : Result<T>()
     data class Error(val exception: Exception) : Result<Nothing>()
     object Loading : Result<Nothing>()
 }
 
-// В Repository
+// In Repository
 suspend fun getPopularMovies(page: Int): Result<MovieListResponse> {
     return try {
         val response = mcpClient.getPopularMovies(page)
@@ -611,7 +611,7 @@ suspend fun getPopularMovies(page: Int): Result<MovieListResponse> {
 #### UI Error Handling
 
 ```kotlin
-// ✅ Правильная обработка ошибок в UI
+// ✅ Correct error handling in UI
 @Composable
 fun MoviesListScreen(
     viewModel: MoviesListViewModel = hiltViewModel()
@@ -633,11 +633,11 @@ fun MoviesListScreen(
 }
 ```
 
-## 🆕 Добавление новых функций
+## 🆕 Adding New Features
 
-### 📋 Пошаговый процесс
+### 📋 Step-by-Step Process
 
-#### 1. Создание Data Models
+#### 1. Creating Data Models
 
 ```kotlin
 // data/model/Movie.kt
@@ -652,7 +652,7 @@ data class Movie(
 )
 ```
 
-#### 2. Создание Repository Interface
+#### 2. Creating Repository Interface
 
 ```kotlin
 // data/repository/MovieRepository.kt
@@ -663,7 +663,7 @@ interface MovieRepository {
 }
 ```
 
-#### 3. Создание Repository Implementation
+#### 3. Creating Repository Implementation
 
 ```kotlin
 // data/repository/MovieRepositoryImpl.kt
@@ -682,7 +682,7 @@ class MovieRepositoryImpl(
 }
 ```
 
-#### 4. Создание Intent Classes
+#### 4. Creating Intent Classes
 
 ```kotlin
 // presentation/movieslist/MoviesListIntent.kt
@@ -694,7 +694,7 @@ sealed class MoviesListIntent {
 }
 ```
 
-#### 5. Создание State Classes
+#### 5. Creating State Classes
 
 ```kotlin
 // presentation/movieslist/MoviesListState.kt
@@ -708,7 +708,7 @@ data class MoviesListState(
 )
 ```
 
-#### 6. Создание ViewModel
+#### 6. Creating ViewModel
 
 ```kotlin
 // presentation/movieslist/MoviesListViewModel.kt
@@ -762,7 +762,7 @@ class MoviesListViewModel(
 }
 ```
 
-#### 7. Создание UI Screen
+#### 7. Creating UI Screen
 
 ```kotlin
 // ui/movieslist/MoviesListScreen.kt
@@ -808,7 +808,7 @@ fun MoviesListScreen(
 }
 ```
 
-#### 8. Добавление в Navigation
+#### 8. Adding to Navigation
 
 ```kotlin
 // navigation/Navigation.kt
@@ -824,7 +824,7 @@ composable(Screen.MoviesList.route) {
 }
 ```
 
-#### 9. Добавление в DI
+#### 9. Adding to DI
 
 ```kotlin
 // presentation/di/PresentationModule.kt
@@ -833,9 +833,9 @@ val presentationModule = module {
 }
 ```
 
-### 🔧 Создание новых экранов
+### 🔧 Creating New Screens
 
-#### 1. Создание Screen Route
+#### 1. Creating Screen Route
 
 ```kotlin
 // navigation/Screen.kt
@@ -847,7 +847,7 @@ sealed class Screen(val route: String) {
 }
 ```
 
-#### 2. Добавление в Navigation
+#### 2. Adding to Navigation
 
 ```kotlin
 // navigation/Navigation.kt
@@ -1039,7 +1039,7 @@ class MoviesListScreenUITest {
 #### Compose Compiler Issues
 
 ```bash
-# Очистка и пересборка
+# Clean and rebuild
 ./gradlew clean
 ./gradlew assembleDevelopmentDebug
 ```
@@ -1047,10 +1047,10 @@ class MoviesListScreenUITest {
 #### Dependency Conflicts
 
 ```bash
-# Просмотр дерева зависимостей
+# View dependency tree
 ./gradlew app:dependencies
 
-# Принудительное разрешение версий
+# Force version resolution
 configurations.all {
     resolutionStrategy.force 'androidx.core:core-ktx:1.12.0'
 }
@@ -1061,13 +1061,13 @@ configurations.all {
 #### Navigation Issues
 
 ```kotlin
-// ✅ Правильно - проверка аргументов
+// ✅ Correct - argument validation
 composable(
     route = Screen.MovieDetail(0).route,
     arguments = listOf(
         navArgument("movieId") {
             type = NavType.IntType
-            defaultValue = 1 // Добавьте defaultValue
+            defaultValue = 1 // Add defaultValue
         }
     )
 ) { backStackEntry ->
@@ -1079,12 +1079,12 @@ composable(
 #### State Management Issues
 
 ```kotlin
-// ✅ Правильно - использование StateFlow
+// ✅ Correct - using StateFlow
 class MoviesListViewModel : ViewModel() {
     private val _state = MutableStateFlow(MoviesListState())
     val state: StateFlow<MoviesListState> = _state.asStateFlow()
     
-    // Не используйте LiveData в Compose
+    // Don't use LiveData in Compose
     // private val _state = MutableLiveData<MoviesListState>()
 }
 ```
@@ -1094,21 +1094,21 @@ class MoviesListViewModel : ViewModel() {
 #### Memory Leaks
 
 ```kotlin
-// ✅ Правильно - использование viewModelScope
+// ✅ Correct - using viewModelScope
 class MoviesListViewModel : ViewModel() {
     fun loadMovies() {
         viewModelScope.launch {
-            // Coroutine автоматически отменяется при уничтожении ViewModel
+            // Coroutine automatically cancelled when ViewModel is destroyed
             val result = repository.getMovies()
             _state.value = _state.value.copy(movies = result)
         }
     }
 }
 
-// ❌ Неправильно - использование GlobalScope
+// ❌ Incorrect - using GlobalScope
 fun loadMovies() {
     GlobalScope.launch {
-        // Может привести к утечке памяти
+        // May cause memory leaks
     }
 }
 ```
@@ -1116,7 +1116,7 @@ fun loadMovies() {
 #### UI Performance
 
 ```kotlin
-// ✅ Правильно - использование remember и derivedStateOf
+// ✅ Correct - using remember and derivedStateOf
 @Composable
 fun MoviesList(movies: List<Movie>) {
     val sortedMovies by remember(movies) {
@@ -1133,9 +1133,9 @@ fun MoviesList(movies: List<Movie>) {
 }
 ```
 
-## 📚 Полезные ресурсы
+## 📚 Useful Resources
 
-### 🔗 Документация
+### 🔗 Documentation
 
 - [Jetpack Compose](https://developer.android.com/jetpack/compose)
 - [Navigation Compose](https://developer.android.com/jetpack/compose/navigation)
@@ -1143,14 +1143,14 @@ fun MoviesList(movies: List<Movie>) {
 - [Ktor](https://ktor.io/)
 - [Material Design 3](https://m3.material.io/)
 
-### 🛠️ Инструменты
+### 🛠️ Tools
 
 - [Android Studio](https://developer.android.com/studio)
 - [Layout Inspector](https://developer.android.com/studio/debug/layout-inspector)
 - [Profiler](https://developer.android.com/studio/profile)
 - [Lint](https://developer.android.com/studio/write/lint)
 
-### 📱 Примеры кода
+### 📱 Code Examples
 
 - [Android Architecture Samples](https://github.com/android/architecture-samples)
 - [Jetpack Compose Samples](https://github.com/android/compose-samples)
@@ -1158,6 +1158,6 @@ fun MoviesList(movies: List<Movie>) {
 
 ---
 
-**Последнее обновление**: 2024-12-19  
-**Версия документа**: 1.0.0  
-**Статус**: Актуально
+**Last Updated**: 2024-12-19  
+**Document Version**: 1.0.0  
+**Status**: Current
