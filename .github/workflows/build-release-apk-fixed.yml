@@ -1,0 +1,323 @@
+# .github/workflows/build-release-apk-fixed.yml
+name: Build and Release APK (Fixed)
+
+on:
+  push:
+    branches: [ master, develop ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      version_name:
+        description: 'Version name (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+      release_notes:
+        description: 'Release notes'
+        required: false
+        default: 'Bug fixes and improvements'
+
+env:
+  # Build configurations
+  COMPILE_SDK_VERSION: 34
+  MIN_SDK_VERSION: 24
+  TARGET_SDK_VERSION: 34
+  BUILD_TOOLS_VERSION: "34.0.0"
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Android SDK (Manual)
+        run: |
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+          
+          # Create Android SDK directory
+          mkdir -p $ANDROID_HOME
+          
+          # Download and install command line tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q commandlinetools-linux-11076708_latest.zip -d $ANDROID_HOME
+          mkdir -p $ANDROID_HOME/cmdline-tools/latest
+          mv $ANDROID_HOME/cmdline-tools/* $ANDROID_HOME/cmdline-tools/latest/ 2>/dev/null || true
+          
+          # Accept licenses and install required packages
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          
+          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run unit tests
+        run: ./gradlew testProdDebugUnitTest
+
+
+  build-debug:
+    name: Build Debug APK
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Android SDK (Manual)
+        run: |
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+          
+          # Create Android SDK directory
+          mkdir -p $ANDROID_HOME
+          
+          # Download and install command line tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q commandlinetools-linux-11076708_latest.zip -d $ANDROID_HOME
+          mkdir -p $ANDROID_HOME/cmdline-tools/latest
+          mv $ANDROID_HOME/cmdline-tools/* $ANDROID_HOME/cmdline-tools/latest/ 2>/dev/null || true
+          
+          # Accept licenses and install required packages
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          
+          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build debug APK
+        run: ./gradlew assembleProdDebug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apk
+          path: app/build/outputs/apk/prod/debug/*.apk
+          retention-days: 7
+
+  build-release:
+    name: Build Release APK
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+    outputs:
+      version_name: ${{ steps.version_info.outputs.version_name }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Android SDK (Manual)
+        run: |
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+          
+          # Create Android SDK directory
+          mkdir -p $ANDROID_HOME
+          
+          # Download and install command line tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q commandlinetools-linux-11076708_latest.zip -d $ANDROID_HOME
+          mkdir -p $ANDROID_HOME/cmdline-tools/latest
+          mv $ANDROID_HOME/cmdline-tools/* $ANDROID_HOME/cmdline-tools/latest/ 2>/dev/null || true
+          
+          # Accept licenses and install required packages
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          
+          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # Декодирование keystore из GitHub Secrets
+      - name: Decode Keystore
+        env:
+          ENCODED_STRING: ${{ secrets.KEYSTORE_FILE }}
+        run: |
+          echo $ENCODED_STRING | base64 -di > app/tmdbai-release-key.jks
+
+      # Создание файла с информацией о версии
+      - name: Generate version info
+        id: version_info
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION_NAME="${{ github.event.inputs.version_name }}"
+          else
+            VERSION_NAME=$(git describe --tags --always --dirty)
+          fi
+          
+          VERSION_CODE=${{ github.run_number }}
+          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+          echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+          
+          # Создание version.properties файла
+          cat > version.properties << EOF
+          VERSION_NAME=$VERSION_NAME
+          VERSION_CODE=$VERSION_CODE
+          BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          GIT_SHA=${GITHUB_SHA}
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          EOF
+
+      - name: Build release APK
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          VERSION_NAME: ${{ env.VERSION_NAME }}
+          VERSION_CODE: ${{ env.VERSION_CODE }}
+        run: ./gradlew assembleProdRelease
+
+
+      # Проверка подписи APK
+      - name: Verify APK signature
+        run: |
+          $ANDROID_HOME/build-tools/${{ env.BUILD_TOOLS_VERSION }}/aapt dump badging app/build/outputs/apk/prod/release/app-prod-release-unsigned.apk
+
+      - name: Get APK info
+        id: apk_info
+        run: |
+          APK_SIZE=$(stat -c%s app/build/outputs/apk/prod/release/app-prod-release-unsigned.apk | numfmt --to=iec)
+          
+          echo "apk_size=$APK_SIZE" >> $GITHUB_OUTPUT
+
+      # Создание имен файлов с версией
+      - name: Rename APK file
+        run: |
+          mv app/build/outputs/apk/prod/release/app-prod-release-unsigned.apk \
+             app/build/outputs/apk/prod/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
+
+      - name: Upload release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk-${{ env.VERSION_NAME }}
+          path: app/build/outputs/apk/prod/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
+          retention-days: 30
+
+
+      - name: Upload mapping files
+        uses: actions/upload-artifact@v4
+        with:
+          name: mapping-files-${{ env.VERSION_NAME }}
+          path: |
+            app/build/outputs/mapping/release/
+          retention-days: 90
+
+      # Создание GitHub Release для тегов
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ env.VERSION_NAME }}
+          body: |
+            ## 🚀 TmdbAi Release ${{ env.VERSION_NAME }}
+            
+            ### 📱 Download
+            - **APK Size:** ${{ steps.apk_info.outputs.apk_size }}
+            
+            ### 📋 Build Information
+            - **Version Code:** ${{ env.VERSION_CODE }}
+            - **Git SHA:** ${{ github.sha }}
+            - **Build Time:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+            
+            ### 🔧 Technical Details
+            - **Min SDK:** API ${{ env.MIN_SDK_VERSION }}
+            - **Target SDK:** API ${{ env.TARGET_SDK_VERSION }}
+            - **Architecture:** MVI + Clean Architecture
+            - **UI Framework:** Jetpack Compose
+            
+            ### 📝 Changes
+            ${{ github.event.inputs.release_notes || 'See commit history for detailed changes.' }}
+            
+            ---
+            
+            **Installation:** Download the APK file and install on your Android device.
+            **Requirements:** Android 7.0+ (API level 24)
+          files: |
+            app/build/outputs/apk/prod/release/TmdbAi-${{ env.VERSION_NAME }}-release.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Отправка уведомления в Telegram (опционально)
+      - name: Notify Telegram
+        if: success() && (startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch')
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+            MESSAGE="🚀 *TmdbAi Release ${{ env.VERSION_NAME }}*%0A%0A"
+            MESSAGE="${MESSAGE}📱 APK Size: ${{ steps.apk_info.outputs.apk_size }}%0A"
+            MESSAGE="${MESSAGE}🔢 Version Code: ${{ env.VERSION_CODE }}%0A"
+            MESSAGE="${MESSAGE}🌐 [Download from GitHub](https://github.com/${{ github.repository }}/releases/tag/${{ env.VERSION_NAME }})"
+          
+            curl -s "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+              -d "chat_id=$TELEGRAM_CHAT_ID" \
+              -d "text=$MESSAGE" \
+              -d "parse_mode=Markdown"
+          fi

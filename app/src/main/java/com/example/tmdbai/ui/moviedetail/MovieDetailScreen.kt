@@ -264,11 +264,8 @@ private fun MovieDetailsContent(
         
         // ML Sentiment Analysis Card
         SentimentAnalysisCard(
-            onAnalyzeText = { reviewText ->
-                onIntent(MovieDetailIntent.AnalyzeSentiment(reviewText))
-            },
             sentimentResult = state.sentimentResult,
-            isLoading = state.isSentimentAnalyzing,
+            isLoading = false,
             error = state.sentimentError,
             modifier = Modifier.padding(horizontal = Dimens16)
         )

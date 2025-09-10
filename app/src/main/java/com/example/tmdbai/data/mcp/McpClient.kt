@@ -1,7 +1,9 @@
 package com.example.tmdbai.data.mcp
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.graphics.Color
+import com.example.tmdbai.BuildConfig
 import com.example.tmdbai.data.mapper.MovieMapper
 import com.example.tmdbai.data.mcp.models.McpRequest
 import com.example.tmdbai.data.model.ButtonConfiguration
@@ -42,6 +44,11 @@ class McpClient(private val context: Context) : MovieApiService {
         )
 
         val response = mcpHttpClient.sendRequest<Map<String, Any>>(request)
+
+        // Debug logging for MCP response
+        if (BuildConfig.DEBUG) {
+            Log.d("MCP_CLIENT", "getPopularMovies response - success: ${response.success}, data: ${response.data}, error: ${response.error}")
+        }
 
         return if (response.success && response.data != null) {
             // Convert the response data to DTO format
@@ -86,10 +93,17 @@ class McpClient(private val context: Context) : MovieApiService {
                     ?: StringConstants.DEFAULT_BOOLEAN_VALUE
             )
 
+            val uiConfig = assetDataLoader.loadUiConfig()
+            
+            // Debug logging for uiConfig
+            if (BuildConfig.DEBUG) {
+                Log.d("MCP_CLIENT", "getPopularMovies uiConfig loaded - primary: ${uiConfig.colors.primary}, secondary: ${uiConfig.colors.secondary}")
+            }
+
             McpResponseDto(
                 success = true,
                 data = McpMovieListResponseDto(movies, pagination),
-                uiConfig = assetDataLoader.loadUiConfig(),
+                uiConfig = uiConfig,
                 error = null,
                 meta = assetDataLoader.loadMetaData(
                     StringConstants.MCP_METHOD_GET_POPULAR_MOVIES,
@@ -153,6 +167,11 @@ class McpClient(private val context: Context) : MovieApiService {
 
         val response = mcpHttpClient.sendRequest<Map<String, Any>>(request)
 
+        // Debug logging for MCP response
+        if (BuildConfig.DEBUG) {
+            Log.d("MCP_CLIENT", "getMovieDetails response - success: ${response.success}, data: ${response.data}, error: ${response.error}")
+        }
+
         return if (response.success && response.data != null) {
             // Convert the response data to DTO format
             val data = response.data
@@ -203,10 +222,17 @@ class McpClient(private val context: Context) : MovieApiService {
                         ?: StringConstants.EMPTY_STRING
                 )
 
+                val uiConfig = assetDataLoader.loadUiConfig()
+                
+                // Debug logging for uiConfig
+                if (BuildConfig.DEBUG) {
+                    Log.d("MCP_CLIENT", "getMovieDetails uiConfig loaded - primary: ${uiConfig.colors.primary}, secondary: ${uiConfig.colors.secondary}")
+                }
+
                 McpResponseDto(
                     success = true,
                     data = movieDetails,
-                    uiConfig = assetDataLoader.loadUiConfig(),
+                    uiConfig = uiConfig,
                     error = null,
                     meta = assetDataLoader.loadMetaData(
                         StringConstants.MCP_METHOD_GET_MOVIE_DETAILS,
@@ -321,9 +347,16 @@ class McpClient(private val context: Context) : MovieApiService {
                     McpMovieListResponseDto(movies, pagination)
                 )
 
+                val uiConfig = assetDataLoader.loadUiConfig()
+                
+                // Debug logging for uiConfig
+                if (BuildConfig.DEBUG) {
+                    Log.d("MCP_CLIENT", "getPopularMoviesViaMcp uiConfig loaded - primary: ${uiConfig.colors.primary}, secondary: ${uiConfig.colors.secondary}")
+                }
+
                 Result.Success(
                     data = movieListResponse,
-                    uiConfig = null
+                    uiConfig = MovieMapper.mapUiConfigurationDtoToUiConfiguration(uiConfig)
                 )
             } else {
                 Result.Error(
@@ -402,38 +435,19 @@ class McpClient(private val context: Context) : MovieApiService {
                     val domainMovieDetails =
                         MovieMapper.mapMovieDetailsDtoToMovieDetails(movieDetails)
 
+                    val uiConfig = assetDataLoader.loadUiConfig()
+                    val domainUiConfig = MovieMapper.mapUiConfigurationDtoToUiConfiguration(uiConfig)
+                    
+                    // Debug logging for uiConfig
+                    if (BuildConfig.DEBUG) {
+                        Log.d("MCP_CLIENT", "getMovieDetailsViaMcp uiConfig loaded - primary: ${uiConfig.colors.primary}, secondary: ${uiConfig.colors.secondary}")
+                    }
+
                     Result.Success(
                         data = MovieDetailsResponse(
                             success = true,
                             data = MovieDetailsData(movieDetails = domainMovieDetails),
-                            uiConfig = UiConfiguration(
-                                colors = ColorScheme(
-                                    primary = Color.Blue,
-                                    secondary = Color.Gray,
-                                    background = Color.Black,
-                                    surface = Color.DarkGray,
-                                    onPrimary = Color.White,
-                                    onSecondary = Color.White,
-                                    onBackground = Color.White,
-                                    onSurface = Color.White,
-                                    moviePosterColors = emptyList()
-                                ),
-                                texts = TextConfiguration(
-                                    appTitle = StringConstants.MOVIES_TITLE,
-                                    loadingText = StringConstants.LOADING_TEXT,
-                                    errorMessage = StringConstants.ERROR_GENERIC,
-                                    noMoviesFound = StringConstants.NO_MOVIES_FOUND,
-                                    retryButton = StringConstants.RETRY_BUTTON,
-                                    backButton = StringConstants.BACK_BUTTON,
-                                    playButton = StringConstants.PLAY_BUTTON
-                                ),
-                                buttons = ButtonConfiguration(
-                                    primaryButtonColor = Color.Blue,
-                                    secondaryButtonColor = Color.Gray,
-                                    buttonTextColor = Color.White,
-                                    buttonCornerRadius = StringConstants.BUTTON_CORNER_RADIUS
-                                )
-                            ),
+                            uiConfig = domainUiConfig,
                             error = null,
                             meta = Meta(
                                 timestamp = System.currentTimeMillis().toString(),
@@ -452,7 +466,7 @@ class McpClient(private val context: Context) : MovieApiService {
                                 version = StringConstants.VERSION_2_0_0
                             )
                         ),
-                        uiConfig = null
+                        uiConfig = domainUiConfig
                     )
                 } else {
                     Result.Error(StringConstants.INVALID_MOVIE_DETAILS_DATA)

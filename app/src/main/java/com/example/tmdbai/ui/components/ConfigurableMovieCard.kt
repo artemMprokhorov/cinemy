@@ -1,5 +1,6 @@
 package com.example.tmdbai.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
+import com.example.tmdbai.BuildConfig
 import com.example.tmdbai.R
 import com.example.tmdbai.data.model.Movie
 import com.example.tmdbai.data.model.UiConfiguration
@@ -67,15 +69,36 @@ fun ConfigurableMovieCard(
     // Extract color configuration from UiConfig
     val colorScheme = uiConfig?.colors
 
-    // Determine colors with fallback to Material3 defaults
-    val cardColor = colorScheme?.surface ?: MaterialTheme.colorScheme.surface
-    val textColor = colorScheme?.onSurface ?: MaterialTheme.colorScheme.onSurface
-    val primaryColor = colorScheme?.primary ?: MaterialTheme.colorScheme.primary
+    // Determine colors with PRIORITY to uiConfig colors
+    val cardColor = if (uiConfig?.colors != null) {
+        colorScheme?.surface ?: Color(0xFF1E1E1E) // Force dark surface
+    } else {
+        MaterialTheme.colorScheme.surface
+    }
+    
+    val textColor = if (uiConfig?.colors != null) {
+        colorScheme?.onSurface ?: Color.White // Force white text
+    } else {
+        MaterialTheme.colorScheme.onSurface
+    }
+    
+    val primaryColor = if (uiConfig?.colors != null) {
+        colorScheme?.primary ?: Color(0xFF2196F3) // Force blue primary
+    } else {
+        MaterialTheme.colorScheme.primary
+    }
+
+    // Debug logging for color application
+    if (BuildConfig.DEBUG) {
+        Log.d("ConfigurableMovieCard", "Movie card colors - Surface: $cardColor, Text: $textColor, Primary: $primaryColor, Using AI colors: ${uiConfig?.colors != null}, Movie: '${movie.title}'")
+        Log.d("ConfigurableMovieCard", "FORCED COLORS - Card: $cardColor, Text: $textColor, Primary: $primaryColor")
+    }
 
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .clickable { onClick() }
+            .background(cardColor), // FORCE background color with absolute priority
         colors = CardDefaults.cardColors(
             containerColor = cardColor
         ),

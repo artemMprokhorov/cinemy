@@ -757,6 +757,15 @@
   },
   "uiConfig": {
     "colors": {
+      "primary": "#2196F3",
+      "secondary": "#4CAF50",
+      "accent": "#FF9800",
+      "background": "#121212",
+      "surface": "#1E1E1E",
+      "onPrimary": "#FFFFFF",
+      "onSecondary": "#FFFFFF",
+      "onBackground": "#FFFFFF",
+      "onSurface": "#FFFFFF",
       "moviePosterColors": [
         {
           "name": "Blue",
@@ -779,6 +788,21 @@
           "value": "#1A237E"
         }
       ]
+    },
+    "texts": {
+      "appTitle": "TMDB AI Movies",
+      "loadingText": "Loading movies...",
+      "errorMessage": "Something went wrong",
+      "noMoviesFound": "No movies found",
+      "retryButton": "Retry",
+      "backButton": "Back",
+      "playButton": "Play"
+    },
+    "buttons": {
+      "primaryButtonColor": "#2196F3",
+      "secondaryButtonColor": "#4CAF50",
+      "buttonTextColor": "#FFFFFF",
+      "buttonCornerRadius": 8
     }
   },
   "meta": {

@@ -16,14 +16,11 @@ import com.example.tmdbai.ui.theme.*
 
 @Composable
 fun SentimentAnalysisCard(
-    onAnalyzeText: (String) -> Unit,
     sentimentResult: SentimentResult?,
     isLoading: Boolean = false,
     error: String? = null,
     modifier: Modifier = Modifier
 ) {
-    var reviewText by remember { mutableStateOf("") }
-    
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -36,36 +33,16 @@ fun SentimentAnalysisCard(
             verticalArrangement = Arrangement.spacedBy(Dimens12)
         ) {
             Text(
-                text = "🤖 Анализ тональности v2.0",
+                text = "🤖 Анализ тональности отзывов",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
             
             Text(
-                text = "Enhanced Keyword Model • 85%+ точность",
+                text = "Готовые отзывы от N8N бэкенда • AI-анализ",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = Float07)
-            )
-            
-            OutlinedTextField(
-                value = reviewText,
-                onValueChange = { reviewText = it },
-                label = { Text("Введите отзыв о фильме") },
-                placeholder = { Text("Например: This movie is absolutely amazing!") },
-                modifier = Modifier.fillMaxWidth(),
-                maxLines = 3,
-                shape = RoundedCornerShape(Dimens8),
-                isError = error != null
-            )
-            
-            // Кнопка анализа
-            ConfigurableButton(
-                text = if (isLoading) "Анализирую..." else "Анализировать",
-                onClick = { onAnalyzeText(reviewText) },
-                enabled = reviewText.isNotBlank() && !isLoading,
-                modifier = Modifier.fillMaxWidth(),
-                uiConfig = null
             )
             
             // Отображение ошибки
@@ -80,6 +57,15 @@ fun SentimentAnalysisCard(
             // Результат анализа
             sentimentResult?.let { result ->
                 SentimentResultCard(result = result)
+            }
+            
+            // Показываем сообщение если нет результатов
+            if (sentimentResult == null && !isLoading && error == null) {
+                Text(
+                    text = "Отзывы будут загружены с бэкенда...",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = Float07)
+                )
             }
         }
     }
@@ -154,7 +140,6 @@ private fun SentimentResultCard(
 private fun SentimentAnalysisCardPreview() {
     MaterialTheme {
         SentimentAnalysisCard(
-            onAnalyzeText = {},
             sentimentResult = null,
             isLoading = false
         )

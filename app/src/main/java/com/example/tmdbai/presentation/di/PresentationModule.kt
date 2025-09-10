@@ -9,5 +9,5 @@ val presentationModule = module {
 
     // ViewModels
     viewModel { MoviesListViewModel(get()) }
-    viewModel { MovieDetailViewModel(get(), get()) }
+    viewModel { MovieDetailViewModel(get()) }
 }

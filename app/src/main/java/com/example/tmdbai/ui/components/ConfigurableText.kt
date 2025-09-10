@@ -1,5 +1,6 @@
 package com.example.tmdbai.ui.components
 
+import android.util.Log
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -7,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import com.example.tmdbai.BuildConfig
 import com.example.tmdbai.R
 import com.example.tmdbai.data.model.UiConfiguration
 
@@ -34,14 +36,19 @@ fun ConfigurableText(
 ) {
     // Determine text color with priority: explicit color > UiConfig > Material3 default
     val textColor = color ?: when {
-        uiConfig != null -> {
+        uiConfig?.colors != null -> {
             // Use appropriate color from UiConfig based on context
-            // For now, default to onBackground, but this could be enhanced
-            // to use specific text configurations from UiConfig
-            uiConfig.colors.onBackground
+            // For cards, use onSurface; for general text, use onBackground
+            uiConfig.colors.onSurface
         }
 
         else -> MaterialTheme.colorScheme.onBackground
+    }
+
+    // Debug logging for color application
+    if (BuildConfig.DEBUG) {
+        Log.d("ConfigurableText", "Text color: $textColor, Using AI colors: ${uiConfig?.colors != null}, Text: '$text'")
+        Log.d("ConfigurableText", "FORCED COLOR - Text: $textColor, Using onSurface: ${uiConfig?.colors?.onSurface}")
     }
 
     Text(

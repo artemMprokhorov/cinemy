@@ -22,9 +22,8 @@ data class MovieDetailState(
     val showFullDescription: Boolean = PresentationConstants.DEFAULT_SHOW_FULL_DESCRIPTION,
     val showProductionDetails: Boolean = PresentationConstants.DEFAULT_SHOW_PRODUCTION_DETAILS,
     
-    // ML поля:
+    // ML поля (только для отображения готовых отзывов):
     val sentimentResult: SentimentResult? = null,
-    val isSentimentAnalyzing: Boolean = false,
     val sentimentError: String? = null
 ) {
     val formattedRuntime: String

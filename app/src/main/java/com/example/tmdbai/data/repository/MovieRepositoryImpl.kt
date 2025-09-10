@@ -1,5 +1,7 @@
 package com.example.tmdbai.data.repository
 
+import android.util.Log
+import com.example.tmdbai.BuildConfig
 import com.example.tmdbai.data.mcp.McpClient
 import com.example.tmdbai.data.model.MovieDetailsResponse
 import com.example.tmdbai.data.model.MovieListResponse
@@ -13,6 +15,17 @@ class MovieRepositoryImpl(
     override suspend fun getPopularMovies(page: Int): Result<MovieListResponse> {
         return runCatching {
             val response = mcpClient.getPopularMoviesViaMcp(page)
+            
+            // Debug logging for repository response
+            if (BuildConfig.DEBUG) {
+                val uiConfigInfo = when (response) {
+                    is Result.Success -> response.uiConfig?.colors?.primary?.toString() ?: "null"
+                    is Result.Error -> response.uiConfig?.colors?.primary?.toString() ?: "null"
+                    is Result.Loading -> "loading"
+                }
+                Log.d("REPOSITORY", "getPopularMovies response - success: ${response is Result.Success}, uiConfig: $uiConfigInfo")
+            }
+            
             when (response) {
                 is Result.Success -> {
                     Result.Success(
@@ -33,6 +46,17 @@ class MovieRepositoryImpl(
     override suspend fun getMovieDetails(movieId: Int): Result<MovieDetailsResponse> {
         return runCatching {
             val response = mcpClient.getMovieDetailsViaMcp(movieId)
+            
+            // Debug logging for repository response
+            if (BuildConfig.DEBUG) {
+                val uiConfigInfo = when (response) {
+                    is Result.Success -> response.uiConfig?.colors?.primary?.toString() ?: "null"
+                    is Result.Error -> response.uiConfig?.colors?.primary?.toString() ?: "null"
+                    is Result.Loading -> "loading"
+                }
+                Log.d("REPOSITORY", "getMovieDetails response - success: ${response is Result.Success}, uiConfig: $uiConfigInfo")
+            }
+            
             when (response) {
                 is Result.Success -> {
                     Result.Success(

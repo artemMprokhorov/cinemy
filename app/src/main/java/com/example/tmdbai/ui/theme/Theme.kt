@@ -33,18 +33,9 @@ fun TmdbAiTheme(
     dynamicColor: Boolean = false, // Disabled to use our custom background
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
+    // CRITICAL FIX: Use default MaterialTheme WITHOUT custom colorScheme
+    // This allows ConfigurableComponents to use uiConfig colors without override
     MaterialTheme(
-        colorScheme = colorScheme,
         typography = Typography,
         content = content
     )

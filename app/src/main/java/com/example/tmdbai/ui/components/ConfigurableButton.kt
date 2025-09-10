@@ -1,5 +1,7 @@
 package com.example.tmdbai.ui.components
 
+import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -8,7 +10,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.tmdbai.BuildConfig
 import com.example.tmdbai.data.model.UiConfiguration
 import com.example.tmdbai.ui.theme.Dimens16
 import com.example.tmdbai.ui.theme.Dimens8
@@ -39,21 +43,37 @@ fun ConfigurableButton(
     enabled: Boolean = true,
     contentPadding: PaddingValues = PaddingValues(horizontal = Dimens16, vertical = Dimens8)
 ) {
-    // Extract button configuration from UiConfig
-    val buttonConfig = uiConfig?.buttons
+    // Extract color configuration from UiConfig
+    val colorScheme = uiConfig?.colors
 
-    // Determine button colors with fallback to Material3 defaults
+    // Determine button colors with PRIORITY to uiConfig colors
     val buttonColor = when {
-        isSecondary -> buttonConfig?.secondaryButtonColor ?: MaterialTheme.colorScheme.secondary
-        else -> buttonConfig?.primaryButtonColor ?: MaterialTheme.colorScheme.primary
+        uiConfig?.colors != null -> {
+            if (isSecondary) colorScheme?.secondary ?: Color(0xFF4CAF50) // Force green
+            else colorScheme?.primary ?: Color(0xFF2196F3) // Force blue
+        }
+        else -> {
+            if (isSecondary) MaterialTheme.colorScheme.secondary
+            else MaterialTheme.colorScheme.primary
+        }
     }
 
-    val textColor = buttonConfig?.buttonTextColor ?: MaterialTheme.colorScheme.onPrimary
-    val cornerRadius = buttonConfig?.buttonCornerRadius?.dp ?: Dimens8
+    val textColor = if (uiConfig?.colors != null) {
+        colorScheme?.onPrimary ?: Color.White // Force white text
+    } else {
+        MaterialTheme.colorScheme.onPrimary
+    }
+    val cornerRadius = uiConfig?.buttons?.buttonCornerRadius?.dp ?: Dimens8
+
+    // Debug logging for color application
+    if (BuildConfig.DEBUG) {
+        Log.d("ConfigurableButton", "Button colors - Primary: ${colorScheme?.primary}, Secondary: ${colorScheme?.secondary}, Text: $textColor, Using AI colors: ${uiConfig?.colors != null}")
+        Log.d("ConfigurableButton", "FORCED COLORS - Button: $buttonColor, Text: $textColor, IsSecondary: $isSecondary")
+    }
 
     Button(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier.background(buttonColor), // FORCE background color with absolute priority
         enabled = enabled,
         contentPadding = contentPadding,
         colors = ButtonDefaults.buttonColors(

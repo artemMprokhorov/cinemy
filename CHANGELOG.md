@@ -10,6 +10,48 @@
 
 ## 📅 **Version History**
 
+### **v2.5.0** - Server-Driven UI Implementation & Material Theme Fixes
+**Date**: September 10, 2024
+**Status**: ✅ **RELEASED**
+
+#### 🎨 **Server-Driven UI (SDUI)**
+- **AI-Powered Dynamic Theming**: N8N backend generates personalized color schemes via Perplexity AI
+- **ConfigurableComponents**: Special UI components that adapt to uiConfig from backend
+- **Real-time Theme Updates**: Dynamic color changes without app restart
+- **Fallback System**: Automatic fallback to Material Theme when uiConfig unavailable
+
+#### 🔧 **ConfigurableComponents**
+- **ConfigurableMovieCard**: Movie cards with AI-generated colors
+- **ConfigurableButton**: Buttons with dynamic color schemes
+- **ConfigurableText**: Text components with adaptive colors
+- **Forced Color Application**: Absolute priority for uiConfig colors over Material Theme
+
+#### 🐛 **Critical Fixes**
+- **Material Theme Conflicts**: Fixed TmdbAiTheme overriding uiConfig colors
+- **Color Application**: Added `.background()` modifiers for absolute color priority
+- **MCP Flow**: Complete uiConfig flow from N8N → MCP → Repository → ViewModel → UI
+- **Diagnostic Logging**: Comprehensive logging for MCP response debugging
+
+#### 📊 **uiConfig Structure**
+```json
+{
+  "uiConfig": {
+    "colors": {
+      "primary": "#2196F3",
+      "secondary": "#4CAF50", 
+      "background": "#121212",
+      "surface": "#1E1E1E"
+    }
+  }
+}
+```
+
+#### 🚀 **MCP Integration**
+- **HTTP Response Logging**: Full MCP client response debugging
+- **Repository Logging**: uiConfig parsing verification
+- **ViewModel Logging**: State update confirmation
+- **Component Logging**: Color application verification
+
 ### **v2.4.1** - Enhanced ML Model v2.0.0 Integration  
 **Date**: September 10, 2024
 **Status**: ✅ **RELEASED**

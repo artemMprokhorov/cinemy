@@ -29,12 +29,24 @@ class AssetDataLoader(private val context: Context) {
             if (jsonString != null) {
                 val jsonObject = JSONObject(jsonString)
                 val uiConfigJson = jsonObject.optJSONObject(StringConstants.FIELD_UI_CONFIG)
+                
+                // Debug logging for uiConfig loading
+                if (BuildConfig.DEBUG) {
+                    Log.d("ASSET_LOADER", "loadUiConfig - uiConfigJson found: ${uiConfigJson != null}")
+                }
+                
                 if (uiConfigJson != null) {
                     parseUiConfigFromJson(uiConfigJson)
                 } else {
+                    if (BuildConfig.DEBUG) {
+                        Log.d("ASSET_LOADER", "loadUiConfig - using default config")
+                    }
                     createDefaultUiConfig()
                 }
             } else {
+                if (BuildConfig.DEBUG) {
+                    Log.d("ASSET_LOADER", "loadUiConfig - jsonString is null, using default config")
+                }
                 createDefaultUiConfig()
             }
         }.getOrElse { e ->
@@ -117,6 +129,14 @@ class AssetDataLoader(private val context: Context) {
         val colorsJson = uiConfigJson.optJSONObject(StringConstants.FIELD_COLORS)
         val textsJson = uiConfigJson.optJSONObject(StringConstants.FIELD_TEXTS)
         val buttonsJson = uiConfigJson.optJSONObject(StringConstants.FIELD_BUTTONS)
+
+        // Debug logging for JSON parsing
+        if (BuildConfig.DEBUG) {
+            Log.d("ASSET_LOADER", "parseUiConfigFromJson - colorsJson: ${colorsJson != null}, textsJson: ${textsJson != null}, buttonsJson: ${buttonsJson != null}")
+            if (colorsJson != null) {
+                Log.d("ASSET_LOADER", "Colors found - primary: ${colorsJson.optString(StringConstants.FIELD_PRIMARY)}, secondary: ${colorsJson.optString(StringConstants.FIELD_SECONDARY)}")
+            }
+        }
 
         return UiConfigurationDto(
             colors = if (colorsJson != null) {

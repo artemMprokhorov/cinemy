@@ -1,5 +1,6 @@
 package com.example.tmdbai.presentation.movieslist
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tmdbai.BuildConfig
@@ -59,6 +60,12 @@ class MoviesListViewModel(
             when (val result = movieRepository.getPopularMovies(page)) {
                 is Result.Success -> {
                     val response = result.data
+                    
+                    // Debug logging for ViewModel uiConfig
+                    if (BuildConfig.DEBUG) {
+                        Log.d("VIEWMODEL", "MoviesListViewModel uiConfig received - primary: ${result.uiConfig?.colors?.primary}, secondary: ${result.uiConfig?.colors?.secondary}")
+                    }
+                    
                     _state.value = _state.value.copy(
                         isLoading = PresentationConstants.DEFAULT_BOOLEAN_FALSE,
                         movies = response.data.movies,
@@ -73,7 +80,7 @@ class MoviesListViewModel(
                         retryCount = PresentationConstants.DEFAULT_RETRY_COUNT,
                         canRetry = PresentationConstants.DEFAULT_CAN_RETRY,
 
-                        uiConfig = response.uiConfig,
+                        uiConfig = result.uiConfig,
                         meta = response.meta
                     )
                 }

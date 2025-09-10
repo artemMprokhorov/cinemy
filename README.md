@@ -36,6 +36,55 @@ TmdbAi - это современное Android-приложение для по�
 3. Введите отзыв: "This movie is absolutely incredible!"
 4. Получите точный результат с объяснением ключевых слов
 
+## 🎨 Server-Driven UI (SDUI)
+
+### AI-Powered Dynamic Theming
+Приложение поддерживает **Server-Driven UI** - динамическое изменение внешнего вида через конфигурацию от N8N бэкенда с AI-генерацией цветов.
+
+#### ✨ Возможности:
+- **AI-генерация цветов** - N8N + Perplexity AI создают персонализированные цветовые схемы
+- **Динамическое обновление** - Изменение темы без перезапуска приложения
+- **ConfigurableComponents** - Специальные компоненты, адаптирующиеся под uiConfig
+- **Fallback система** - Автоматический откат к Material Theme при отсутствии конфигурации
+
+#### 🔧 Компоненты:
+- **ConfigurableMovieCard** - Карточки фильмов с AI цветами
+- **ConfigurableButton** - Кнопки с динамическими цветами
+- **ConfigurableText** - Текст с адаптивными цветами
+
+#### 📊 uiConfig Structure:
+```json
+{
+  "uiConfig": {
+    "colors": {
+      "primary": "#2196F3",
+      "secondary": "#4CAF50", 
+      "background": "#121212",
+      "surface": "#1E1E1E",
+      "onPrimary": "#FFFFFF",
+      "onSecondary": "#FFFFFF",
+      "onBackground": "#FFFFFF",
+      "onSurface": "#FFFFFF"
+    },
+    "texts": {
+      "appTitle": "TMDB AI Movies",
+      "loadingText": "Loading movies...",
+      "errorMessage": "Something went wrong"
+    },
+    "buttons": {
+      "buttonCornerRadius": 8
+    }
+  }
+}
+```
+
+#### 🚀 MCP Flow:
+```
+N8N Backend → MCP Client → Repository → ViewModel → ConfigurableComponents
+     ↓              ↓           ↓          ↓              ↓
+  AI Colors    HTTP Response  Parsing   State Update   Visual Apply
+```
+
 ## 🏗️ Архитектура
 
 Проект построен на принципах **Clean Architecture** с использованием **MVI (Model-View-Intent)** паттерна:
