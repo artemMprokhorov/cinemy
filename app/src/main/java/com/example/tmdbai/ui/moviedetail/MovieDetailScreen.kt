@@ -49,6 +49,7 @@ import com.example.tmdbai.ui.theme.Dimens12
 import com.example.tmdbai.ui.theme.Dimens16
 import com.example.tmdbai.ui.theme.Dimens400
 import com.example.tmdbai.ui.theme.Dimens8
+import com.example.tmdbai.ui.theme.ImageConfig
 import com.example.tmdbai.ui.theme.SplashBackground
 import com.example.tmdbai.ui.theme.TmdbAiTheme
 
@@ -186,7 +187,7 @@ private fun MovieDetailsContent(
     ) {
         // Movie poster
         AsyncImage(
-            model = movieDetails.posterPath,
+            model = ImageConfig.buildPosterUrl(movieDetails.posterPath),
             contentDescription = movieDetails.title,
             modifier = Modifier
                 .fillMaxWidth()
@@ -252,19 +253,12 @@ private fun MovieDetailsContent(
                 )
             }
 
-            // Runtime
-            if (movieDetails.runtime > MIN_RUNTIME) {
-                Text(
-                    text = stringResource(R.string.runtime_label, movieDetails.runtime),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White
-                )
-            }
         }
         
         // ML Sentiment Analysis Card
         SentimentAnalysisCard(
             sentimentResult = state.sentimentResult,
+            sentimentReviews = state.sentimentReviews,
             isLoading = false,
             error = state.sentimentError,
             modifier = Modifier.padding(horizontal = Dimens16)

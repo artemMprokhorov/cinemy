@@ -176,6 +176,11 @@ object StringConstants {
     const val FIELD_BACKGROUND = "background"
     const val FIELD_SURFACE = "surface"
     const val FIELD_ON_PRIMARY = "onPrimary"
+    
+    // Sentiment Reviews Field Names
+    const val FIELD_SENTIMENT_REVIEWS = "sentimentReviews"
+    const val FIELD_POSITIVE = "positive"
+    const val FIELD_NEGATIVE = "negative"
     const val FIELD_ON_SECONDARY = "onSecondary"
     const val FIELD_ON_BACKGROUND = "onBackground"
     const val FIELD_ON_SURFACE = "onSurface"
@@ -244,7 +249,7 @@ object StringConstants {
     const val FAKE_INTERCEPTOR_TOTAL_PAGES = 3
 
     // HTTP Timeout Constants
-    const val HTTP_REQUEST_TIMEOUT_MS = 15000L
+    const val HTTP_REQUEST_TIMEOUT_MS = 30000L
     const val HTTP_CONNECT_TIMEOUT_MS = 10000L
 
     // MCP HTTP Client User-Facing Messages

@@ -34,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -220,19 +221,20 @@ private fun MoviesGrid(
     snackbarHostState: SnackbarHostState
 ) {
     val listState = rememberLazyListState()
-    var showPaginationControls by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     var lastSnackbarTime by remember { mutableStateOf(0L) }
     val lastPageMessage = stringResource(R.string.last_page_message)
 
     // Track scroll position to show pagination controls when at bottom
-    LaunchedEffect(listState.layoutInfo) {
-        val layoutInfo = listState.layoutInfo
-        val isAtBottom = layoutInfo.visibleItemsInfo.lastOrNull()?.let { lastVisibleItem ->
-            lastVisibleItem.index >= movies.size - 1
-        } ?: false
-
-        showPaginationControls = isAtBottom && pagination != null
+    // Use derivedStateOf to prevent infinite recompositions
+    val showPaginationControls by remember {
+        derivedStateOf {
+            val layoutInfo = listState.layoutInfo
+            val isAtBottom = layoutInfo.visibleItemsInfo.lastOrNull()?.let { lastVisibleItem ->
+                lastVisibleItem.index >= movies.size - 1
+            } ?: false
+            isAtBottom && pagination != null
+        }
     }
 
     Box(

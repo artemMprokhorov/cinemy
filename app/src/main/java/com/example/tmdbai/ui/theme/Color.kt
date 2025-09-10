@@ -16,3 +16,13 @@ val SplashBackground = Color(0xFF2B3A4B)
 
 // Text colors
 val TextSecondary = Color(0xFF9E9E9E)
+
+// Sentiment analysis colors
+val SentimentPositive = Color(0xFF4CAF50)
+val SentimentNegative = Color(0xFFF44336)
+val SentimentNeutral = Color(0xFF9E9E9E)
+
+// UI colors
+val PrimaryBlue = Color(0xFF2196F3)
+val SecondaryGreen = Color(0xFF4CAF50)
+val DarkSurface = Color(0xFF1E1E1E)

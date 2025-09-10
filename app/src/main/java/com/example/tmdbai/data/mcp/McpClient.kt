@@ -435,18 +435,30 @@ class McpClient(private val context: Context) : MovieApiService {
                     val domainMovieDetails =
                         MovieMapper.mapMovieDetailsDtoToMovieDetails(movieDetails)
 
+                    // Parse sentiment reviews from response data
+                    val sentimentReviewsData = data[StringConstants.FIELD_SENTIMENT_REVIEWS] as? Map<String, Any>
+                    val sentimentReviews = sentimentReviewsData?.let { reviewsData ->
+                        val positive = (reviewsData[StringConstants.FIELD_POSITIVE] as? List<*>)?.mapNotNull { it as? String } ?: emptyList()
+                        val negative = (reviewsData[StringConstants.FIELD_NEGATIVE] as? List<*>)?.mapNotNull { it as? String } ?: emptyList()
+                        com.example.tmdbai.data.model.SentimentReviews(positive = positive, negative = negative)
+                    }
+
                     val uiConfig = assetDataLoader.loadUiConfig()
                     val domainUiConfig = MovieMapper.mapUiConfigurationDtoToUiConfiguration(uiConfig)
                     
                     // Debug logging for uiConfig
                     if (BuildConfig.DEBUG) {
                         Log.d("MCP_CLIENT", "getMovieDetailsViaMcp uiConfig loaded - primary: ${uiConfig.colors.primary}, secondary: ${uiConfig.colors.secondary}")
+                        Log.d("MCP_CLIENT", "getMovieDetailsViaMcp sentimentReviews loaded - positive: ${sentimentReviews?.positive?.size ?: 0}, negative: ${sentimentReviews?.negative?.size ?: 0}")
                     }
 
                     Result.Success(
                         data = MovieDetailsResponse(
                             success = true,
-                            data = MovieDetailsData(movieDetails = domainMovieDetails),
+                            data = MovieDetailsData(
+                                movieDetails = domainMovieDetails,
+                                sentimentReviews = sentimentReviews
+                            ),
                             uiConfig = domainUiConfig,
                             error = null,
                             meta = Meta(

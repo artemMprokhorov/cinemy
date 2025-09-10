@@ -16,6 +16,8 @@ import com.example.tmdbai.BuildConfig
 import com.example.tmdbai.data.model.UiConfiguration
 import com.example.tmdbai.ui.theme.Dimens16
 import com.example.tmdbai.ui.theme.Dimens8
+import com.example.tmdbai.ui.theme.PrimaryBlue
+import com.example.tmdbai.ui.theme.SecondaryGreen
 import com.example.tmdbai.ui.theme.Float12
 import com.example.tmdbai.ui.theme.Float38
 
@@ -49,8 +51,8 @@ fun ConfigurableButton(
     // Determine button colors with PRIORITY to uiConfig colors
     val buttonColor = when {
         uiConfig?.colors != null -> {
-            if (isSecondary) colorScheme?.secondary ?: Color(0xFF4CAF50) // Force green
-            else colorScheme?.primary ?: Color(0xFF2196F3) // Force blue
+            if (isSecondary) colorScheme?.secondary ?: SecondaryGreen // Force green
+            else colorScheme?.primary ?: PrimaryBlue // Force blue
         }
         else -> {
             if (isSecondary) MaterialTheme.colorScheme.secondary
@@ -65,11 +67,11 @@ fun ConfigurableButton(
     }
     val cornerRadius = uiConfig?.buttons?.buttonCornerRadius?.dp ?: Dimens8
 
-    // Debug logging for color application
-    if (BuildConfig.DEBUG) {
-        Log.d("ConfigurableButton", "Button colors - Primary: ${colorScheme?.primary}, Secondary: ${colorScheme?.secondary}, Text: $textColor, Using AI colors: ${uiConfig?.colors != null}")
-        Log.d("ConfigurableButton", "FORCED COLORS - Button: $buttonColor, Text: $textColor, IsSecondary: $isSecondary")
-    }
+    // Debug logging for color application (removed to prevent infinite loop)
+    // if (BuildConfig.DEBUG) {
+    //     Log.d("ConfigurableButton", "Button colors - Primary: ${colorScheme?.primary}, Secondary: ${colorScheme?.secondary}, Text: $textColor, Using AI colors: ${uiConfig?.colors != null}")
+    //     Log.d("ConfigurableButton", "FORCED COLORS - Button: $buttonColor, Text: $textColor, IsSecondary: $isSecondary")
+    // }
 
     Button(
         onClick = onClick,

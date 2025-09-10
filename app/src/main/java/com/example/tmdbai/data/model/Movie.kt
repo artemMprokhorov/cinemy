@@ -152,5 +152,6 @@ data class MovieDetailsResponse(
 )
 
 data class MovieDetailsData(
-    val movieDetails: MovieDetails
+    val movieDetails: MovieDetails,
+    val sentimentReviews: SentimentReviews? = null
 )

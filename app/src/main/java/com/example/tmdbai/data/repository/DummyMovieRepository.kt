@@ -70,10 +70,12 @@ class DummyMovieRepository(
 
         // Load mock movie details from assets
         val movieDetails = loadMockMovieDetailsFromAssets()
+        val sentimentReviews = loadSentimentReviewsFromAssets()
 
         // Create data wrapper
         val movieDetailsData = MovieDetailsData(
-            movieDetails = movieDetails
+            movieDetails = movieDetails,
+            sentimentReviews = sentimentReviews
         )
 
         // Create UI config and meta (using defaults for now)
@@ -111,6 +113,27 @@ class DummyMovieRepository(
         }.getOrElse {
             createDefaultMovieDetails()
         }
+    }
+    
+    /**
+     * Loads sentiment reviews from assets
+     */
+    private fun loadSentimentReviewsFromAssets(): com.example.tmdbai.data.model.SentimentReviews? {
+        return runCatching {
+            val jsonString = loadJsonFromAssets(StringConstants.ASSET_MOCK_MOVIE_DETAILS)
+            if (jsonString != null) {
+                val jsonObject = JSONObject(jsonString)
+                val dataJson = jsonObject.optJSONObject(StringConstants.FIELD_DATA)
+                val sentimentReviewsJson = dataJson?.optJSONObject(StringConstants.FIELD_SENTIMENT_REVIEWS)
+                if (sentimentReviewsJson != null) {
+                    parseSentimentReviewsFromJson(sentimentReviewsJson)
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
+        }.getOrElse { null }
     }
 
     /**
@@ -237,6 +260,34 @@ class DummyMovieRepository(
             budget = StringConstants.DEFAULT_LONG_VALUE,
             revenue = StringConstants.DEFAULT_LONG_VALUE,
             status = StringConstants.EMPTY_STRING
+        )
+    }
+    
+    /**
+     * Parses sentiment reviews from JSON
+     */
+    private fun parseSentimentReviewsFromJson(jsonObject: JSONObject): com.example.tmdbai.data.model.SentimentReviews {
+        val positiveJson = jsonObject.optJSONArray(StringConstants.FIELD_POSITIVE)
+        val positive = if (positiveJson != null) {
+            (0 until positiveJson.length()).map { i ->
+                positiveJson.getString(i)
+            }
+        } else {
+            emptyList()
+        }
+        
+        val negativeJson = jsonObject.optJSONArray(StringConstants.FIELD_NEGATIVE)
+        val negative = if (negativeJson != null) {
+            (0 until negativeJson.length()).map { i ->
+                negativeJson.getString(i)
+            }
+        } else {
+            emptyList()
+        }
+        
+        return com.example.tmdbai.data.model.SentimentReviews(
+            positive = positive,
+            negative = negative
         )
     }
 

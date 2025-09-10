@@ -13,6 +13,6 @@ sealed class MovieDetailIntent : CommonIntent {
     object Refresh : MovieDetailIntent()
     object BackPressed : MovieDetailIntent()
     
-    // ML интенты (только для отображения готовых отзывов):
+    // ML intents (only for displaying ready reviews):
     object ClearSentimentResult : MovieDetailIntent()
 }

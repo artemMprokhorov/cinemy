@@ -48,6 +48,21 @@
       "budget": 185000000,
       "revenue": 1004558444,
       "status": "Released"
+    },
+    "sentimentReviews": {
+      "positive": [
+        "Outstanding performances from Heath Ledger and Christian Bale",
+        "Engaging storyline with excellent character development",
+        "Brilliant direction by Christopher Nolan",
+        "One of the best superhero movies ever made",
+        "Exceptional cinematography and visual effects"
+      ],
+      "negative": [
+        "Predictable plot in some parts",
+        "Disappointing storyline for some characters",
+        "Too dark and intense for younger audiences",
+        "Some scenes felt unnecessarily long"
+      ]
     }
   },
   "uiConfig": {

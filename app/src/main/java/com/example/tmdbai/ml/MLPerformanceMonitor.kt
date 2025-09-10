@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 
 /**
- * Мониторинг производительности ML компонентов
+ * ML components performance monitoring
  */
 class MLPerformanceMonitor private constructor() {
     
@@ -34,7 +34,7 @@ class MLPerformanceMonitor private constructor() {
     private val performanceData = ConcurrentHashMap<String, PerformanceMetric>()
     
     /**
-     * Записать метрику выполнения анализа
+     * Record analysis execution metric
      */
     fun recordAnalysis(
         textLength: Int,
@@ -49,7 +49,7 @@ class MLPerformanceMonitor private constructor() {
             errorCount.incrementAndGet()
         }
         
-        // Группируем по длине текста
+        // Group by text length
         val lengthGroup = when {
             textLength <= 50 -> "short"
             textLength <= 200 -> "medium"
@@ -70,14 +70,14 @@ class MLPerformanceMonitor private constructor() {
             )
         }
         
-        // Логируем каждые 10 анализов
+        // Log every 10 analyses
         if (analysisCount.get() % 10 == 0) {
             logPerformanceStats()
         }
     }
     
     /**
-     * Получить статистику производительности
+     * Get performance statistics
      */
     fun getPerformanceStats(): PerformanceStats {
         val count = analysisCount.get()
@@ -92,7 +92,7 @@ class MLPerformanceMonitor private constructor() {
     }
     
     /**
-     * Сбросить статистику
+     * Reset statistics
      */
     fun resetStats() {
         analysisCount.set(0)
@@ -102,7 +102,7 @@ class MLPerformanceMonitor private constructor() {
     }
     
     /**
-     * Логирование статистики
+     * Log statistics
      */
     private fun logPerformanceStats() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -125,7 +125,7 @@ class MLPerformanceMonitor private constructor() {
 }
 
 /**
- * Метрика производительности для группы
+ * Performance metric for group
  */
 data class PerformanceMetric(
     var count: Int,
@@ -135,7 +135,7 @@ data class PerformanceMetric(
 )
 
 /**
- * Общая статистика производительности
+ * Overall performance statistics
  */
 data class PerformanceStats(
     val totalAnalyses: Int,

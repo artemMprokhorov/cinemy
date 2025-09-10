@@ -230,3 +230,10 @@ data class PaginationDto(
     @SerializedName(StringConstants.SERIALIZED_HAS_PREVIOUS)
     val hasPrevious: Boolean
 )
+
+data class SentimentReviewsDto(
+    @SerializedName(StringConstants.FIELD_POSITIVE)
+    val positive: List<String> = emptyList(),
+    @SerializedName(StringConstants.FIELD_NEGATIVE)
+    val negative: List<String> = emptyList()
+)

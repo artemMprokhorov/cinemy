@@ -8,8 +8,8 @@ import java.io.IOException
 import kotlin.math.abs
 
 /**
- * Анализатор тональности на основе ключевых слов для TmdbAi
- * Быстрая и эффективная реализация для мобильных устройств
+ * Keyword-based sentiment analyzer for TmdbAi
+ * Fast and efficient implementation for mobile devices
  */
 class SentimentAnalyzer private constructor(private val context: Context) {
     
@@ -28,7 +28,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
     
     /**
-     * Инициализация анализатора (вызывать при старте приложения)
+     * Initialize analyzer (call at app startup)
      */
     suspend fun initialize(): Boolean = withContext(Dispatchers.IO) {
         try {
@@ -49,11 +49,11 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
     
     /**
-     * Анализ тональности текста
+     * Analyze text sentiment
      */
     suspend fun analyzeSentiment(text: String): SentimentResult = withContext(Dispatchers.Default) {
         if (!isInitialized || model == null) {
-            return@withContext SentimentResult.error("Анализатор не инициализирован")
+            return@withContext SentimentResult.error("Analyzer not initialized")
         }
         
         if (text.isBlank()) {
@@ -63,24 +63,24 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         try {
             analyzeWithKeywords(text, model!!)
         } catch (e: Exception) {
-            SentimentResult.error("Ошибка анализа: ${e.message}")
+            SentimentResult.error("Analysis error: ${e.message}")
         }
     }
     
     /**
-     * Пакетный анализ нескольких текстов
+     * Batch analysis of multiple texts
      */
     suspend fun analyzeBatch(texts: List<String>): List<SentimentResult> = withContext(Dispatchers.Default) {
         texts.map { text -> analyzeSentiment(text) }
     }
     
     /**
-     * Получение информации о модели
+     * Get model information
      */
     fun getModelInfo(): ModelInfo? = model?.modelInfo
     
     /**
-     * Создание простой модели для тестирования
+     * Create simple model for testing
      */
     private fun createSimpleModel(): KeywordSentimentModel {
         val modelInfo = ModelInfo(
@@ -165,20 +165,20 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
     
     /**
-     * Основной алгоритм анализа по ключевым словам с fallback
+     * Main keyword analysis algorithm with fallback
      */
     private fun analyzeWithKeywords(text: String, model: KeywordSentimentModel): SentimentResult {
         return try {
-            // Используем улучшенный алгоритм
+            // Use enhanced algorithm
             analyzeWithEnhancedKeywords(text, model)
         } catch (e: Exception) {
-            // Fallback к простому алгоритму если что-то пошло не так
+            // Fallback to simple algorithm if something went wrong
             analyzeWithSimpleKeywords(text, model)
         }
     }
     
     /**
-     * Улучшенный алгоритм анализа с поддержкой всех новых возможностей
+     * Enhanced analysis algorithm with support for all new features
      */
     private fun analyzeWithEnhancedKeywords(text: String, model: KeywordSentimentModel): SentimentResult {
         val textLower = text.lowercase()
@@ -189,7 +189,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         var neutralScore = 0.0
         var foundWords = mutableListOf<String>()
         
-        // Базовый анализ по ключевым словам
+        // Basic keyword analysis
         for (word in words) {
             when {
                 model.positiveKeywords.contains(word) -> {
@@ -207,7 +207,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             }
         }
         
-        // Применение модификаторов интенсивности
+        // Apply intensity modifiers
         model.intensityModifiers?.forEach { (modifier, multiplier) ->
             if (textLower.contains(modifier)) {
                 when {
@@ -216,7 +216,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                         negativeScore *= multiplier
                     }
                     multiplier < 0 -> {
-                        // Инвертируем значения для отрицательных модификаторов
+                        // Invert values for negative modifiers
                         val temp = positiveScore
                         positiveScore = negativeScore * abs(multiplier)
                         negativeScore = temp * abs(multiplier)
@@ -230,7 +230,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             }
         }
         
-        // Контекстные усилители (если есть в модели)
+        // Context boosters (if available in model)
         model.contextBoosters?.let { boosters ->
             boosters.movieTerms?.forEach { term ->
                 if (textLower.contains(term)) {
@@ -253,7 +253,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             }
         }
         
-        // Определение результата с улучшенной логикой
+        // Determine result with enhanced logic
         val algorithm = model.algorithm
         val totalScore = positiveScore + negativeScore + neutralScore
         
@@ -284,7 +284,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
     
     /**
-     * Простой алгоритм как fallback для обратной совместимости
+     * Simple algorithm as fallback for backward compatibility
      */
     private fun analyzeWithSimpleKeywords(text: String, model: KeywordSentimentModel): SentimentResult {
         val textLower = text.lowercase()
@@ -328,7 +328,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 }
 
 /**
- * Результат анализа тональности
+ * Sentiment analysis result
  */
 data class SentimentResult(
     val sentiment: SentimentType,
@@ -353,25 +353,25 @@ data class SentimentResult(
     }
     
     /**
-     * Возвращает человекочитаемое описание
+     * Returns human-readable description
      */
     fun getDescription(): String = when {
-        !isSuccess -> "Ошибка: $errorMessage"
-        sentiment == SentimentType.POSITIVE -> "Положительный (${(confidence * 100).toInt()}%)"
-        sentiment == SentimentType.NEGATIVE -> "Отрицательный (${(confidence * 100).toInt()}%)"
-        else -> "Нейтральный"
+        !isSuccess -> "Error: $errorMessage"
+        sentiment == SentimentType.POSITIVE -> "Positive (${(confidence * 100).toInt()}%)"
+        sentiment == SentimentType.NEGATIVE -> "Negative (${(confidence * 100).toInt()}%)"
+        else -> "Neutral"
     }
 }
 
 /**
- * Типы тональности
+ * Sentiment types
  */
 enum class SentimentType {
     POSITIVE, NEGATIVE, NEUTRAL
 }
 
 /**
- * Модель данных для keyword-based анализа
+ * Data model for keyword-based analysis
  */
 data class KeywordSentimentModel(
     val modelInfo: ModelInfo,

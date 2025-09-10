@@ -14,6 +14,7 @@ import com.example.tmdbai.data.model.Pagination
 import com.example.tmdbai.data.model.ProductionCompany
 import com.example.tmdbai.data.model.Result
 import com.example.tmdbai.data.model.SearchInfo
+import com.example.tmdbai.data.model.SentimentReviews
 import com.example.tmdbai.data.model.StringConstants
 import com.example.tmdbai.data.model.TextConfiguration
 import com.example.tmdbai.data.model.UiConfiguration
@@ -29,6 +30,7 @@ import com.example.tmdbai.data.remote.dto.MovieDto
 import com.example.tmdbai.data.remote.dto.PaginationDto
 import com.example.tmdbai.data.remote.dto.ProductionCompanyDto
 import com.example.tmdbai.data.remote.dto.SearchInfoDto
+import com.example.tmdbai.data.remote.dto.SentimentReviewsDto
 import com.example.tmdbai.data.remote.dto.TextConfigurationDto
 import com.example.tmdbai.data.remote.dto.UiConfigurationDto
 import android.graphics.Color as AndroidColor
@@ -243,6 +245,15 @@ object MovieMapper {
         } else {
             val uiConfig = mapUiConfigurationDtoToUiConfiguration(mcpResponse.uiConfig)
             Result.Error(mcpResponse.error ?: StringConstants.ERROR_UNKNOWN, uiConfig)
+        }
+    }
+    
+    fun mapSentimentReviewsDtoToSentimentReviews(dto: SentimentReviewsDto?): SentimentReviews? {
+        return dto?.let {
+            SentimentReviews(
+                positive = it.positive,
+                negative = it.negative
+            )
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.tmdbai.presentation.moviedetail
 
 import com.example.tmdbai.data.model.Meta
 import com.example.tmdbai.data.model.MovieDetails
+import com.example.tmdbai.data.model.SentimentReviews
 import com.example.tmdbai.data.model.UiConfiguration
 import com.example.tmdbai.ml.SentimentResult
 import com.example.tmdbai.presentation.PresentationConstants
@@ -22,9 +23,10 @@ data class MovieDetailState(
     val showFullDescription: Boolean = PresentationConstants.DEFAULT_SHOW_FULL_DESCRIPTION,
     val showProductionDetails: Boolean = PresentationConstants.DEFAULT_SHOW_PRODUCTION_DETAILS,
     
-    // ML поля (только для отображения готовых отзывов):
+    // ML fields (only for displaying ready reviews):
     val sentimentResult: SentimentResult? = null,
-    val sentimentError: String? = null
+    val sentimentError: String? = null,
+    val sentimentReviews: SentimentReviews? = null
 ) {
     val formattedRuntime: String
         get() = movieDetails?.runtime?.let {

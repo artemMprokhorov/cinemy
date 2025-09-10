@@ -35,6 +35,8 @@ import com.example.tmdbai.ui.theme.Dimens2
 import com.example.tmdbai.ui.theme.Dimens200
 import com.example.tmdbai.ui.theme.Dimens4
 import com.example.tmdbai.ui.theme.Dimens8
+import com.example.tmdbai.ui.theme.DarkSurface
+import com.example.tmdbai.ui.theme.PrimaryBlue
 import com.example.tmdbai.ui.theme.Float05
 import com.example.tmdbai.ui.theme.Float06
 import com.example.tmdbai.ui.theme.Float07
@@ -71,7 +73,7 @@ fun ConfigurableMovieCard(
 
     // Determine colors with PRIORITY to uiConfig colors
     val cardColor = if (uiConfig?.colors != null) {
-        colorScheme?.surface ?: Color(0xFF1E1E1E) // Force dark surface
+        colorScheme?.surface ?: DarkSurface // Force dark surface
     } else {
         MaterialTheme.colorScheme.surface
     }
@@ -83,16 +85,16 @@ fun ConfigurableMovieCard(
     }
     
     val primaryColor = if (uiConfig?.colors != null) {
-        colorScheme?.primary ?: Color(0xFF2196F3) // Force blue primary
+        colorScheme?.primary ?: PrimaryBlue // Force blue primary
     } else {
         MaterialTheme.colorScheme.primary
     }
 
-    // Debug logging for color application
-    if (BuildConfig.DEBUG) {
-        Log.d("ConfigurableMovieCard", "Movie card colors - Surface: $cardColor, Text: $textColor, Primary: $primaryColor, Using AI colors: ${uiConfig?.colors != null}, Movie: '${movie.title}'")
-        Log.d("ConfigurableMovieCard", "FORCED COLORS - Card: $cardColor, Text: $textColor, Primary: $primaryColor")
-    }
+    // Debug logging for color application (removed to prevent infinite loop)
+    // if (BuildConfig.DEBUG) {
+    //     Log.d("ConfigurableMovieCard", "Movie card colors - Surface: $cardColor, Text: $textColor, Primary: $primaryColor, Using AI colors: ${uiConfig?.colors != null}, Movie: '${movie.title}'")
+    //     Log.d("ConfigurableMovieCard", "FORCED COLORS - Card: $cardColor, Text: $textColor, Primary: $primaryColor")
+    // }
 
     Card(
         modifier = modifier
