@@ -167,69 +167,69 @@ ui/
 - [x] Ngrok tunnel configuration
 - [x] Local AI model setup (Ollama/Llama)
 - [x] MCP server implementation
-- [x] TMDB API integration в AI agent
+- [x] TMDB API integration in AI agent
 
-### ФАЗА 3: ANDROID CORE ✅ **ЗАВЕРШЕНО** (2-3 недели)
+### PHASE 3: ANDROID CORE ✅ **COMPLETED** (2-3 weeks)
 
-- [x] Clean Architecture без domain слоя
+- [x] Clean Architecture without domain layer
 - [x] MVI pattern implementation
 - [x] Navigation 3.0 type-safe setup
 - [x] Koin DI configuration
 - [x] Base UI components package
 
-### ФАЗА 4: UI & UX ✅ **ЗАВЕРШЕНО** (2-3 недели)
+### PHASE 4: UI & UX ✅ **COMPLETED** (2-3 weeks)
 
 - [x] Server-driven UI implementation
 - [x] Dynamic theming system
 - [x] Jetpack Coil image loading
 - [x] Standardized network layer
-- [x] Responsive design для всех экранов
+- [x] Responsive design for all screens
 
-### ФАЗА 5: AI INTEGRATION ✅ **ЗАВЕРШЕНО** (1-2 недели)
+### PHASE 5: AI INTEGRATION ✅ **COMPLETED** (1-2 weeks)
 
-- [x] MCP protocol полная интеграция
-- [x] AI model fine-tuning для UI generation
+- [x] MCP protocol full integration
+- [x] AI model fine-tuning for UI generation
 - [x] Performance optimization
-- [x] Error handling и fallbacks
+- [x] Error handling and fallbacks
 
-### ФАЗА 6: TESTING & POLISH ✅ **ЗАВЕРШЕНО** (1-2 недели)
+### PHASE 6: TESTING & POLISH ✅ **COMPLETED** (1-2 weeks)
 
-- [x] Unit tests coverage (минимум 80%)
-- [x] UI tests для критических flows
-- [x] Performance testing и optimization
-- [x] APK generation и signing verification
+- [x] Unit tests coverage (minimum 80%)
+- [x] UI tests for critical flows
+- [x] Performance testing and optimization
+- [x] APK generation and signing verification
 
 ## 🎯 AI MODELS TRAINING ROADMAP
 
-### Базовые модели для изучения:
+### Base Models for Learning:
 
-1. **Ollama + Llama 3.1** - основная модель для MCP ✅ **ГОТОВО К НАСТРОЙКЕ**
-2. **Color Palette Extraction** - CV модель для анализа постеров ✅ **ГОТОВО К НАСТРОЙКЕ**
-3. **UI Configuration Generator** - fine-tuned модель для стилей ✅ **ГОТОВО К НАСТРОЙКЕ**
-4. **Content Enhancement** - NLP модель для обогащения описаний ✅ **ГОТОВО К НАСТРОЙКЕ**
+1. **Ollama + Llama 3.1** - main model for MCP ✅ **READY FOR CONFIGURATION**
+2. **Color Palette Extraction** - CV model for poster analysis ✅ **READY FOR CONFIGURATION**
+3. **UI Configuration Generator** - fine-tuned model for styles ✅ **READY FOR CONFIGURATION**
+4. **Content Enhancement** - NLP model for description enrichment ✅ **READY FOR CONFIGURATION**
 
-### Обучающие материалы:
+### Training Materials:
 
-- ✅ Создание custom datasets из TMDB данных
-- ✅ Fine-tuning transformer моделей для UI задач
-- ✅ RAG системы для контекстных ответов
-- ✅ MLOps для мобильных приложений
+- ✅ Creating custom datasets from TMDB data
+- ✅ Fine-tuning transformer models for UI tasks
+- ✅ RAG systems for contextual responses
+- ✅ MLOps for mobile applications
 
-## 🚀 CURSOR AI PROMPTS ШАБЛОНЫ
+## 🚀 CURSOR AI PROMPTS TEMPLATES
 
-### Для архитектурных компонентов:
+### For Architectural Components:
 
 ```
 "Generate MVI ViewModel for [Feature] following Clean Architecture without domain layer, using StateFlow for state management and Koin for DI"
 ```
 
-### Для UI компонентов:
+### For UI Components:
 
 ```
 "Create Jetpack Compose component for [Component] with server-driven styling support, accepting UiConfig parameter for dynamic theming"
 ```
 
-### Для MCP integration:
+### For MCP Integration:
 
 ```
 "Implement MCP client method for [endpoint] with proper error handling using Result sealed class and Kotlin coroutines"
@@ -237,51 +237,51 @@ ui/
 
 ## 🔧 TROUBLESHOOTING GUIDE
 
-### Общие проблемы и решения:
+### Common Issues and Solutions:
 
-- **MCP Connection Issues:** ✅ Проверить Ngrok tunnel и Docker containers (готово к настройке)
-- **UI Config Not Applied:** ✅ Валидация JSON parsing и color conversion
-- **Image Loading Problems:** ✅ Coil configuration и TMDB URL validation
-- **Navigation Issues:** ✅ Type-safe routes и proper serialization
+- **MCP Connection Issues:** ✅ Check Ngrok tunnel and Docker containers (ready for configuration)
+- **UI Config Not Applied:** ✅ Validate JSON parsing and color conversion
+- **Image Loading Problems:** ✅ Coil configuration and TMDB URL validation
+- **Navigation Issues:** ✅ Type-safe routes and proper serialization
 
-## 📊 КАЧЕСТВЕННЫЕ МЕТРИКИ
+## 📊 QUALITY METRICS
 
 ### Code Quality Targets:
 
-- **Test Coverage:** ✅ > 80% (базовая структура готова)
-- **Build Time:** ✅ < 2 минуты
+- **Test Coverage:** ✅ > 80% (basic structure ready)
+- **Build Time:** ✅ < 2 minutes
 - **APK Size:** ✅ < 50MB
-- **Startup Time:** ✅ < 3 секунды
+- **Startup Time:** ✅ < 3 seconds
 - **Memory Usage:** ✅ < 150MB peak
 
 ### AI Model Performance:
 
-- **UI Config Generation:** ✅ < 500ms response time (готово к настройке)
-- **Content Enhancement:** ✅ > 85% user satisfaction (готово к настройке)
-- **Color Palette Accuracy:** ✅ > 90% aesthetic approval (готово к настройке)
+- **UI Config Generation:** ✅ < 500ms response time (ready for configuration)
+- **Content Enhancement:** ✅ > 85% user satisfaction (ready for configuration)
+- **Color Palette Accuracy:** ✅ > 90% aesthetic approval (ready for configuration)
 
-## 🎉 CONTACT POINTS С AI ASSISTANT
+## 🎉 CONTACT POINTS WITH AI ASSISTANT
 
-### Для новых чатов используйте формат:
+### For New Chats Use This Format:
 
 ```
-🎯 ПРОЕКТ: TmdbAi Android App с AI MCP Backend
-📋 ФАЗА: ✅ ЗАВЕРШЕНО - MCP интеграция и Server-Driven UI
-🔗 REFERENCE: [Ссылка на этот файл в GitHub]
-❓ ЗАДАЧА: [Конкретный вопрос/задача]
+🎯 PROJECT: TmdbAi Android App with AI MCP Backend
+📋 PHASE: ✅ COMPLETED - MCP integration and Server-Driven UI
+🔗 REFERENCE: [Link to this file in GitHub]
+❓ TASK: [Specific question/task]
 ```
 
-### Типы взаимодействия:
+### Types of Interaction:
 
-1. **Architectural Reviews:** ✅ Анализ через GitHub URLs
-2. **Code Generation:** ✅ Промпты для Cursor + direct code помощь
-3. **Debugging:** ✅ Прямые файлы и error logs
-4. **AI Training:** 🔄 Datasets, model configs, training scripts (готово к настройке)
+1. **Architectural Reviews:** ✅ Analysis through GitHub URLs
+2. **Code Generation:** ✅ Prompts for Cursor + direct code assistance
+3. **Debugging:** ✅ Direct files and error logs
+4. **AI Training:** 🔄 Datasets, model configs, training scripts (ready for configuration)
 5. **Progress Tracking:** ✅ Regular checkpoint reviews
 
-## 📚 РЕСУРСЫ И ССЫЛКИ
+## 📚 RESOURCES AND LINKS
 
-### Документация:
+### Documentation:
 
 - [MCP Protocol Spec](https://spec.modelcontextprotocol.io/)
 - [Jetpack Compose Docs](https://developer.android.com/jetpack/compose)
@@ -294,18 +294,18 @@ ui/
 - [Hugging Face Transformers](https://huggingface.co/transformers)
 - [MLflow for Experiment Tracking](https://mlflow.org/)
 
-## 🔄 СЛЕДУЮЩИЕ ШАГИ
+## 🔄 NEXT STEPS
 
-### Немедленные задачи:
+### Immediate Tasks:
 
-1. **Настройка Backend Infrastructure:**
+1. **Backend Infrastructure Setup:**
    - Docker + N8N environment
    - Ngrok tunnel configuration
    - Local AI model setup (Ollama/Llama)
 
 2. **AI Model Integration:**
    - MCP server implementation
-   - TMDB API integration в AI agent
+   - TMDB API integration in AI agent
    - UI configuration generation
 
 3. **Testing & Optimization:**
@@ -313,7 +313,7 @@ ui/
    - UI tests implementation
    - Performance optimization
 
-### Долгосрочные цели:
+### Long-term Goals:
 
 1. **Production Readiness:**
    - Complete test coverage
@@ -340,24 +340,24 @@ ui/
 
 -----
 
-## 🎯 ЗАКЛЮЧЕНИЕ
+## 🎯 CONCLUSION
 
-**Проект TmdbAi успешно завершен на уровне Android приложения!** 
+**TmdbAi project successfully completed at the Android application level!** 
 
-✅ **Все основные компоненты реализованы:**
-- MVI архитектура с Clean Architecture
-- MCP протокол интеграция
-- Server-Driven UI система
-- Type-safe навигация
-- Configurable UI компоненты
-- Repository слой с MCP клиентом
+✅ **All main components implemented:**
+- MVI architecture with Clean Architecture
+- MCP protocol integration
+- Server-Driven UI system
+- Type-safe navigation
+- Configurable UI components
+- Repository layer with MCP client
 
-🔄 **Готово к настройке Backend Infrastructure:**
+🔄 **Ready for Backend Infrastructure Configuration:**
 - Docker + N8N environment
 - Ngrok tunnel
 - Local AI models
 - MCP server
 
-🚀 **Приложение готово к production использованию** и служит отличным примером современной Android архитектуры с AI интеграцией!
+🚀 **Application ready for production use** and serves as an excellent example of modern Android architecture with AI integration!
 
-*Этот документ обновляется по мере развития проекта. Всегда ссылайтесь на latest version в GitHub.*
+*This document is updated as the project evolves. Always refer to the latest version in GitHub.*
