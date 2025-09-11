@@ -1,7 +1,11 @@
 package org.studioapp.cinemy.ml
 
 import org.junit.Test
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import org.junit.Assert.assertFalse
 
 /**
  * Test for Enhanced ML Model v2.0.0

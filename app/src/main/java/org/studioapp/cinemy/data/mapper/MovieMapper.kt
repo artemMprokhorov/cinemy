@@ -33,7 +33,7 @@ import org.studioapp.cinemy.data.remote.dto.SearchInfoDto
 import org.studioapp.cinemy.data.remote.dto.SentimentReviewsDto
 import org.studioapp.cinemy.data.remote.dto.TextConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
-import android.graphics.Color as AndroidColor
+import org.studioapp.cinemy.data.util.ColorUtils
 
 object MovieMapper {
 
@@ -169,15 +169,15 @@ object MovieMapper {
 
     fun mapColorSchemeDtoToColorScheme(dto: ColorSchemeDto): ColorScheme {
         return ColorScheme(
-            primary = Color(AndroidColor.parseColor(dto.primary)),
-            secondary = Color(AndroidColor.parseColor(dto.secondary)),
-            background = Color(AndroidColor.parseColor(dto.background)),
-            surface = Color(AndroidColor.parseColor(dto.surface)),
-            onPrimary = Color(AndroidColor.parseColor(dto.onPrimary)),
-            onSecondary = Color(AndroidColor.parseColor(dto.onSecondary)),
-            onBackground = Color(AndroidColor.parseColor(dto.onBackground)),
-            onSurface = Color(AndroidColor.parseColor(dto.onSurface)),
-            moviePosterColors = dto.moviePosterColors.map { Color(AndroidColor.parseColor(it)) }
+            primary = ColorUtils.parseColor(dto.primary),
+            secondary = ColorUtils.parseColor(dto.secondary),
+            background = ColorUtils.parseColor(dto.background),
+            surface = ColorUtils.parseColor(dto.surface),
+            onPrimary = ColorUtils.parseColor(dto.onPrimary),
+            onSecondary = ColorUtils.parseColor(dto.onSecondary),
+            onBackground = ColorUtils.parseColor(dto.onBackground),
+            onSurface = ColorUtils.parseColor(dto.onSurface),
+            moviePosterColors = dto.moviePosterColors.map { ColorUtils.parseColor(it) }
         )
     }
 
@@ -195,9 +195,9 @@ object MovieMapper {
 
     fun mapButtonConfigurationDtoToButtonConfiguration(dto: ButtonConfigurationDto): ButtonConfiguration {
         return ButtonConfiguration(
-            primaryButtonColor = Color(AndroidColor.parseColor(dto.primaryButtonColor)),
-            secondaryButtonColor = Color(AndroidColor.parseColor(dto.secondaryButtonColor)),
-            buttonTextColor = Color(AndroidColor.parseColor(dto.buttonTextColor)),
+            primaryButtonColor = ColorUtils.parseColor(dto.primaryButtonColor),
+            secondaryButtonColor = ColorUtils.parseColor(dto.secondaryButtonColor),
+            buttonTextColor = ColorUtils.parseColor(dto.buttonTextColor),
             buttonCornerRadius = dto.buttonCornerRadius
         )
     }
