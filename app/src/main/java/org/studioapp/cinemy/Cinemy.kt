@@ -37,10 +37,7 @@ class CinemyApplication : Application() {
         
         // Initialize ML analyzer
         CoroutineScope(Dispatchers.IO).launch {
-            runCatching {
-                val success = sentimentAnalyzer.initialize()
-            }.onFailure { e ->
-            }
+            sentimentAnalyzer.initialize()
         }
     }
 }
