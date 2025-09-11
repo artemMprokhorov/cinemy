@@ -529,4 +529,107 @@ class SimplePresentationTests {
         // When & Then
         assertEquals(meta, state.meta)
     }
+
+    @Test
+    fun `PresentationConstants should have correct runtime formatting values`() {
+        // Given & When & Then
+        assertEquals(60, PresentationConstants.MINUTES_PER_HOUR)
+        assertEquals("h", PresentationConstants.RUNTIME_HOURS_FORMAT)
+        assertEquals("m", PresentationConstants.RUNTIME_MINUTES_FORMAT)
+    }
+
+    @Test
+    fun `PresentationConstants should have correct budget formatting values`() {
+        // Given & When & Then
+        assertEquals(1_000_000, PresentationConstants.BUDGET_DIVISOR)
+        assertEquals("$", PresentationConstants.BUDGET_CURRENCY_SYMBOL)
+        assertEquals("M", PresentationConstants.BUDGET_SUFFIX)
+        assertEquals(0, PresentationConstants.BUDGET_THRESHOLD)
+    }
+
+    @Test
+    fun `PresentationConstants should have correct message values`() {
+        // Given & When & Then
+        assertEquals("Using demo data", PresentationConstants.MESSAGE_USING_DEMO_DATA)
+        assertEquals("Backend unavailable - showing demo data", PresentationConstants.MESSAGE_BACKEND_UNAVAILABLE)
+        assertEquals("Connected to live data", PresentationConstants.MESSAGE_CONNECTED_TO_LIVE_DATA)
+        assertEquals("", PresentationConstants.MESSAGE_EMPTY)
+    }
+
+    @Test
+    fun `PresentationConstants should have correct keyword values`() {
+        // Given & When & Then
+        assertEquals("backend unavailable", PresentationConstants.BACKEND_UNAVAILABLE_KEYWORD)
+        assertEquals("mock", PresentationConstants.MOCK_KEYWORD)
+    }
+
+    @Test
+    fun `PresentationConstants should have correct pagination values`() {
+        // Given & When & Then
+        assertEquals(1, PresentationConstants.PAGE_INCREMENT)
+        assertEquals(1, PresentationConstants.PAGE_DECREMENT)
+    }
+
+    @Test
+    fun `PresentationConstants should have correct UI state values`() {
+        // Given & When & Then
+        assertFalse(PresentationConstants.DEFAULT_SHOW_FULL_DESCRIPTION)
+        assertFalse(PresentationConstants.DEFAULT_SHOW_PRODUCTION_DETAILS)
+        assertTrue(PresentationConstants.DEFAULT_HAS_MORE)
+        assertFalse(PresentationConstants.DEFAULT_CAN_RETRY)
+    }
+
+    @Test
+    fun `MoviesListState should handle all connection status values`() {
+        // Given & When & Then
+        assertEquals(MoviesListState.ConnectionStatus.Unknown, MoviesListState.ConnectionStatus.Unknown)
+        assertEquals(MoviesListState.ConnectionStatus.Connected, MoviesListState.ConnectionStatus.Connected)
+        assertEquals(MoviesListState.ConnectionStatus.Disconnected, MoviesListState.ConnectionStatus.Disconnected)
+        assertEquals(MoviesListState.ConnectionStatus.MockOnly, MoviesListState.ConnectionStatus.MockOnly)
+    }
+
+    @Test
+    fun `MoviesListState should handle different page numbers`() {
+        // Given
+        val state = MoviesListState(currentPage = 5)
+
+        // When & Then
+        assertEquals(5, state.currentPage)
+    }
+
+    @Test
+    fun `MovieDetailState should handle different movie IDs`() {
+        // Given
+        val state = MovieDetailState(movieId = 999)
+
+        // When & Then
+        assertEquals(999, state.movieId)
+    }
+
+    @Test
+    fun `MovieDetailState should handle different error messages`() {
+        // Given
+        val state = MovieDetailState(error = "Custom error message")
+
+        // When & Then
+        assertEquals("Custom error message", state.error)
+    }
+
+    @Test
+    fun `MoviesListState should handle different error messages`() {
+        // Given
+        val state = MoviesListState(error = "Custom error message")
+
+        // When & Then
+        assertEquals("Custom error message", state.error)
+    }
+
+    @Test
+    fun `MovieDetailState should handle different sentiment error messages`() {
+        // Given
+        val state = MovieDetailState(sentimentError = "Custom sentiment error")
+
+        // When & Then
+        assertEquals("Custom sentiment error", state.sentimentError)
+    }
 }
