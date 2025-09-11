@@ -1,6 +1,5 @@
 package org.studioapp.cinemy.ui.moviedetail
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

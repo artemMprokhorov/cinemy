@@ -1,7 +1,6 @@
 package org.studioapp.cinemy.data.mcp
 
 import android.content.Context
-import android.util.Log
 import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.model.StringConstants
 import org.studioapp.cinemy.data.remote.dto.ButtonConfigurationDto

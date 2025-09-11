@@ -1,6 +1,5 @@
 package org.studioapp.cinemy.data.di
 
-import android.util.Log
 import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.mcp.AssetDataLoader
 import org.studioapp.cinemy.data.mcp.McpClient
@@ -13,13 +12,7 @@ val dataModule = module {
 
     // MCP HTTP Client
     single<McpHttpClient> {
-        McpHttpClient(get()).also {
-            if (BuildConfig.DEBUG) {
-                Log.d("DI", "McpHttpClient created - USE_MOCK_DATA: ${BuildConfig.USE_MOCK_DATA}")
-                Log.d("DI", "MCP_SERVER_URL: ${BuildConfig.MCP_SERVER_URL}")
-                Log.d("DI", "FLAVOR_NAME: ${BuildConfig.FLAVOR_NAME}")
-            }
-        }
+        McpHttpClient(get())
     }
 
     // Asset Data Loader
