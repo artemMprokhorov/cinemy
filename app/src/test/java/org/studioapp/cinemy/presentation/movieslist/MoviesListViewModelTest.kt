@@ -411,11 +411,16 @@ class MoviesListViewModelTest {
             every { this@mockk.hasNext } returns hasNext
         }
         
+        val uiConfig = createMockUiConfiguration()
+        val meta = createMockMeta()
+        
         return mockk<MovieListResponse> {
-            every { this@mockk.data } returns mockk {
-                every { this@mockk.movies } returns movies
-                every { this@mockk.pagination } returns pagination
+            every { data } returns mockk {
+                every { movies } returns movies
+                every { pagination } returns pagination
             }
+            every { uiConfig } returns uiConfig
+            every { meta } returns meta
         }
     }
 

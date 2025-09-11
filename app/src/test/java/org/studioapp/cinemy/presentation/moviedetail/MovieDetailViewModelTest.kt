@@ -375,12 +375,12 @@ class MovieDetailViewModelTest {
         meta: Meta
     ): MovieDetailsResponse {
         return mockk<MovieDetailsResponse> {
-            every { this@mockk.data } returns mockk {
-                every { this@mockk.movieDetails } returns movieDetails
-                every { this@mockk.sentimentReviews } returns null
+            every { data } returns mockk {
+                every { movieDetails } returns movieDetails
+                every { sentimentReviews } returns null
             }
-            every { this@mockk.uiConfig } returns uiConfig
-            every { this@mockk.meta } returns meta
+            every { uiConfig } returns uiConfig
+            every { meta } returns meta
         }
     }
 
