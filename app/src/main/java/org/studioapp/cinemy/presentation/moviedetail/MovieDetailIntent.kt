@@ -6,10 +6,8 @@ package org.studioapp.cinemy.presentation.moviedetail
  */
 sealed class MovieDetailIntent {
     data class LoadMovieDetails(val movieId: Int) : MovieDetailIntent()
-    object LoadRecommendations : MovieDetailIntent()
     object Retry : MovieDetailIntent()
     object Refresh : MovieDetailIntent()
-    object BackPressed : MovieDetailIntent()
 
     // ML intents (only for displaying ready reviews):
     object ClearSentimentResult : MovieDetailIntent()

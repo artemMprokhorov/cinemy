@@ -7,8 +7,6 @@ package org.studioapp.cinemy.presentation.movieslist
 sealed class MoviesListIntent {
     object LoadPopularMovies : MoviesListIntent()
     object LoadMoreMovies : MoviesListIntent()
-
-    data class NavigateToDetails(val movieId: Int) : MoviesListIntent()
     object RetryLastOperation : MoviesListIntent()
 
     // NEW: Enhanced error handling intents

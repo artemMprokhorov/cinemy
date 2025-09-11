@@ -40,16 +40,6 @@ class MovieDetailIntentTest {
         assertFalse(intent1 == intent2)
     }
 
-    @Test
-    fun `LoadRecommendations should be singleton object`() {
-        // Given
-        val intent1 = MovieDetailIntent.LoadRecommendations
-        val intent2 = MovieDetailIntent.LoadRecommendations
-
-        // When & Then
-        assertEquals(intent1, intent2)
-        assertTrue(intent1 === intent2)
-    }
 
     @Test
     fun `Retry should be singleton object`() {
@@ -73,16 +63,6 @@ class MovieDetailIntentTest {
         assertTrue(intent1 === intent2)
     }
 
-    @Test
-    fun `BackPressed should be singleton object`() {
-        // Given
-        val intent1 = MovieDetailIntent.BackPressed
-        val intent2 = MovieDetailIntent.BackPressed
-
-        // When & Then
-        assertEquals(intent1, intent2)
-        assertTrue(intent1 === intent2)
-    }
 
     @Test
     fun `ClearSentimentResult should be singleton object`() {
@@ -100,10 +80,8 @@ class MovieDetailIntentTest {
         // Given
         val intents = listOf(
             MovieDetailIntent.LoadMovieDetails(123),
-            MovieDetailIntent.LoadRecommendations,
             MovieDetailIntent.Retry,
             MovieDetailIntent.Refresh,
-            MovieDetailIntent.BackPressed,
             MovieDetailIntent.ClearSentimentResult
         )
 
@@ -143,10 +121,8 @@ class MovieDetailIntentTest {
     fun `singleton intents should have correct string representation`() {
         // Given
         val intents = listOf(
-            MovieDetailIntent.LoadRecommendations,
             MovieDetailIntent.Retry,
             MovieDetailIntent.Refresh,
-            MovieDetailIntent.BackPressed,
             MovieDetailIntent.ClearSentimentResult
         )
 

@@ -27,10 +27,6 @@ class MoviesListViewModel(
         when (intent) {
             is MoviesListIntent.LoadPopularMovies -> loadPopularMovies()
             is MoviesListIntent.LoadMoreMovies -> loadMoreMovies()
-            is MoviesListIntent.NavigateToDetails -> {
-                // This will be handled by the UI layer for navigation
-            }
-
             is MoviesListIntent.RetryLastOperation -> retryLastOperation()
 
             // NEW: Connection handling cases

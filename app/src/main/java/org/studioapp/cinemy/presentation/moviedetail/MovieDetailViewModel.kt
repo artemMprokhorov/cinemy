@@ -28,10 +28,6 @@ class MovieDetailViewModel(
                 loadMovieDetails(intent.movieId)
             }
 
-            is MovieDetailIntent.LoadRecommendations -> {
-                // TODO: Implement recommendations loading
-            }
-
             is MovieDetailIntent.Retry -> {
                 // Retry loading the current movie details using stored movie ID
                 if (currentMovieId > PresentationConstants.DEFAULT_MOVIE_ID) {
@@ -44,10 +40,6 @@ class MovieDetailViewModel(
                 if (currentMovieId > PresentationConstants.DEFAULT_MOVIE_ID) {
                     loadMovieDetails(currentMovieId)
                 }
-            }
-
-            is MovieDetailIntent.BackPressed -> {
-                // This will be handled by the UI layer
             }
 
             is MovieDetailIntent.ClearSentimentResult -> clearSentimentResult()
