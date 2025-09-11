@@ -5,31 +5,18 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Assert.assertFalse
 import org.studioapp.cinemy.data.mcp.AssetDataLoader
-import org.studioapp.cinemy.data.model.ButtonConfiguration
-import org.studioapp.cinemy.data.model.ColorScheme
-import org.studioapp.cinemy.data.model.GeminiColors
 import org.studioapp.cinemy.data.model.Genre
-import org.studioapp.cinemy.data.model.Meta
-import org.studioapp.cinemy.data.model.Movie
 import org.studioapp.cinemy.data.model.MovieDetails
-import org.studioapp.cinemy.data.model.MovieListData
-import org.studioapp.cinemy.data.model.MovieListResponse
-import org.studioapp.cinemy.data.model.Pagination
 import org.studioapp.cinemy.data.model.ProductionCompany
 import org.studioapp.cinemy.data.model.Result
-import org.studioapp.cinemy.data.model.SearchInfo
 import org.studioapp.cinemy.data.model.SentimentReviews
-import org.studioapp.cinemy.data.model.StringConstants
-import org.studioapp.cinemy.data.model.TextConfiguration
-import org.studioapp.cinemy.data.model.UiConfiguration
 import org.studioapp.cinemy.data.remote.dto.MovieDto
 
 class DummyMovieRepositoryTest {
@@ -43,7 +30,7 @@ class DummyMovieRepositoryTest {
         mockContext = mockk()
         mockAssetDataLoader = mockk()
         dummyRepository = DummyMovieRepository(mockContext)
-        
+
         // Use reflection to replace the private assetDataLoader
         val field = DummyMovieRepository::class.java.getDeclaredField("assetDataLoader")
         field.isAccessible = true
@@ -82,7 +69,7 @@ class DummyMovieRepositoryTest {
                 adult = false
             )
         )
-        
+
         every { mockAssetDataLoader.loadMockMovies() } returns mockMovies
 
         // When
@@ -92,7 +79,7 @@ class DummyMovieRepositoryTest {
         assertTrue(result is Result.Success)
         val successResult = result as Result.Success
         val response = successResult.data
-        
+
         assertTrue(response.success)
         assertEquals(2, response.data.movies.size)
         assertEquals("Test Movie 1", response.data.movies[0].title)
@@ -100,7 +87,7 @@ class DummyMovieRepositoryTest {
         assertEquals(page, response.data.pagination.page)
         assertTrue(response.data.pagination.hasNext)
         assertFalse(response.data.pagination.hasPrevious)
-        
+
         verify { mockAssetDataLoader.loadMockMovies() }
     }
 
@@ -109,7 +96,7 @@ class DummyMovieRepositoryTest {
         // Given
         val page = 3
         val mockMovies = listOf(createMockMovieDto())
-        
+
         every { mockAssetDataLoader.loadMockMovies() } returns mockMovies
 
         // When
@@ -119,11 +106,11 @@ class DummyMovieRepositoryTest {
         assertTrue(result is Result.Success)
         val successResult = result as Result.Success
         val response = successResult.data
-        
+
         assertEquals(page, response.data.pagination.page)
         assertTrue(response.data.pagination.hasPrevious) // page > 1
         assertTrue(response.data.pagination.hasNext) // page < totalPages
-        
+
         verify { mockAssetDataLoader.loadMockMovies() }
     }
 
@@ -131,7 +118,7 @@ class DummyMovieRepositoryTest {
     fun `getMovieDetails should return Success with mock data`() = runBlocking {
         // Given
         val movieId = 123
-        
+
         // When
         val result = dummyRepository.getMovieDetails(movieId)
 
@@ -139,7 +126,7 @@ class DummyMovieRepositoryTest {
         assertTrue(result is Result.Success)
         val successResult = result as Result.Success
         val response = successResult.data
-        
+
         assertTrue(response.success)
         assertNotNull(response.data.movieDetails)
         // sentimentReviews can be null if not found in assets
@@ -151,7 +138,7 @@ class DummyMovieRepositoryTest {
         // Given
         val page = 1
         val mockMovies = listOf(createMockMovieDto())
-        
+
         every { mockAssetDataLoader.loadMockMovies() } returns mockMovies
 
         // When
@@ -161,11 +148,11 @@ class DummyMovieRepositoryTest {
         assertTrue(result is Result.Success)
         val successResult = result as Result.Success
         val pagination = successResult.data.data.pagination
-        
+
         assertEquals(1, pagination.page)
         assertFalse(pagination.hasPrevious) // First page
         assertTrue(pagination.hasNext) // Has next page
-        
+
         verify { mockAssetDataLoader.loadMockMovies() }
     }
 
@@ -174,7 +161,7 @@ class DummyMovieRepositoryTest {
         // Given
         val page = 8 // totalPages = 8 according to StringConstants
         val mockMovies = listOf(createMockMovieDto())
-        
+
         every { mockAssetDataLoader.loadMockMovies() } returns mockMovies
 
         // When
@@ -184,11 +171,11 @@ class DummyMovieRepositoryTest {
         assertTrue(result is Result.Success)
         val successResult = result as Result.Success
         val pagination = successResult.data.data.pagination
-        
+
         assertEquals(page, pagination.page)
         assertTrue(pagination.hasPrevious) // Not first page
         assertFalse(pagination.hasNext) // Last page
-        
+
         verify { mockAssetDataLoader.loadMockMovies() }
     }
 
@@ -197,7 +184,7 @@ class DummyMovieRepositoryTest {
         // Given
         val page = 1
         val emptyMovies = emptyList<MovieDto>()
-        
+
         every { mockAssetDataLoader.loadMockMovies() } returns emptyMovies
 
         // When
@@ -207,11 +194,11 @@ class DummyMovieRepositoryTest {
         assertTrue(result is Result.Success)
         val successResult = result as Result.Success
         val response = successResult.data
-        
+
         assertTrue(response.success)
         assertTrue(response.data.movies.isEmpty())
         assertEquals(0, response.data.movies.size)
-        
+
         verify { mockAssetDataLoader.loadMockMovies() }
     }
 
@@ -228,10 +215,10 @@ class DummyMovieRepositoryTest {
         // Then
         assertTrue(result1 is Result.Success)
         assertTrue(result2 is Result.Success)
-        
+
         val successResult1 = result1 as Result.Success
         val successResult2 = result2 as Result.Success
-        
+
         assertTrue(successResult1.data.success)
         assertTrue(successResult2.data.success)
     }
@@ -241,7 +228,7 @@ class DummyMovieRepositoryTest {
         // Given
         val page = 1
         val mockMovies = listOf(createMockMovieDto())
-        
+
         every { mockAssetDataLoader.loadMockMovies() } returns mockMovies
 
         // When
@@ -251,12 +238,12 @@ class DummyMovieRepositoryTest {
         assertTrue(result is Result.Success)
         val successResult = result as Result.Success
         val response = successResult.data
-        
+
         assertNotNull(response.uiConfig)
         assertNotNull(response.uiConfig.colors)
         assertNotNull(response.uiConfig.texts)
         assertNotNull(response.uiConfig.buttons)
-        
+
         verify { mockAssetDataLoader.loadMockMovies() }
     }
 
@@ -272,7 +259,7 @@ class DummyMovieRepositoryTest {
         assertTrue(result is Result.Success)
         val successResult = result as Result.Success
         val response = successResult.data
-        
+
         assertNotNull(response.uiConfig)
         assertNotNull(response.uiConfig.colors)
         assertNotNull(response.uiConfig.texts)
@@ -284,7 +271,7 @@ class DummyMovieRepositoryTest {
         // Given
         val page = 1
         val mockMovies = listOf(createMockMovieDto())
-        
+
         every { mockAssetDataLoader.loadMockMovies() } returns mockMovies
 
         // When
@@ -294,12 +281,12 @@ class DummyMovieRepositoryTest {
         assertTrue(result is Result.Success)
         val successResult = result as Result.Success
         val response = successResult.data
-        
+
         assertNotNull(response.meta)
         assertNotNull(response.meta.timestamp)
         assertNotNull(response.meta.method)
         assertNotNull(response.meta.version)
-        
+
         verify { mockAssetDataLoader.loadMockMovies() }
     }
 
@@ -315,7 +302,7 @@ class DummyMovieRepositoryTest {
         assertTrue(result is Result.Success)
         val successResult = result as Result.Success
         val response = successResult.data
-        
+
         assertNotNull(response.meta)
         assertNotNull(response.meta.timestamp)
         assertNotNull(response.meta.method)

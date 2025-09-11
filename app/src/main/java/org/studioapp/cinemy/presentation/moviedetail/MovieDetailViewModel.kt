@@ -2,15 +2,14 @@ package org.studioapp.cinemy.presentation.moviedetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import org.studioapp.cinemy.BuildConfig
-import org.studioapp.cinemy.data.model.Result
-import org.studioapp.cinemy.data.repository.MovieRepository
-import org.studioapp.cinemy.ml.SentimentAnalyzer
-import org.studioapp.cinemy.presentation.PresentationConstants
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.studioapp.cinemy.data.model.Result
+import org.studioapp.cinemy.data.repository.MovieRepository
+import org.studioapp.cinemy.ml.SentimentAnalyzer
+import org.studioapp.cinemy.presentation.PresentationConstants
 
 class MovieDetailViewModel(
     private val movieRepository: MovieRepository,
@@ -50,7 +49,7 @@ class MovieDetailViewModel(
             is MovieDetailIntent.BackPressed -> {
                 // This will be handled by the UI layer
             }
-            
+
             is MovieDetailIntent.ClearSentimentResult -> clearSentimentResult()
         }
     }
@@ -67,8 +66,8 @@ class MovieDetailViewModel(
             when (result) {
                 is Result.Success -> {
                     val response = result.data
-                    
-                    
+
+
                     _state.value = _state.value.copy(
                         movieDetails = response.data.movieDetails,
                         isLoading = PresentationConstants.DEFAULT_BOOLEAN_FALSE,
@@ -77,7 +76,7 @@ class MovieDetailViewModel(
                         meta = response.meta,
                         sentimentReviews = response.data.sentimentReviews
                     )
-                    
+
                     // Analyze sentiment using local AI model
                     response.data.sentimentReviews?.let { reviews ->
                         analyzeSentimentWithLocalModel(reviews)
@@ -99,34 +98,34 @@ class MovieDetailViewModel(
             }
         }
     }
-    
+
     private fun clearSentimentResult() {
         _state.value = _state.value.copy(
             sentimentResult = null,
             sentimentError = null
         )
     }
-    
+
     private fun analyzeSentimentWithLocalModel(reviews: org.studioapp.cinemy.data.model.SentimentReviews) {
         viewModelScope.launch {
-        runCatching {
-            // Analyze positive reviews
-            val positiveResults = sentimentAnalyzer.analyzeBatch(reviews.positive)
-            val negativeResults = sentimentAnalyzer.analyzeBatch(reviews.negative)
-            
-            
-            // Update state with analysis results
-            _state.value = _state.value.copy(
-                sentimentResult = org.studioapp.cinemy.ml.SentimentResult.positive(
-                    confidence = 0.8,
-                    keywords = listOf("local_ai_analysis")
+            runCatching {
+                // Analyze positive reviews
+                val positiveResults = sentimentAnalyzer.analyzeBatch(reviews.positive)
+                val negativeResults = sentimentAnalyzer.analyzeBatch(reviews.negative)
+
+
+                // Update state with analysis results
+                _state.value = _state.value.copy(
+                    sentimentResult = org.studioapp.cinemy.ml.SentimentResult.positive(
+                        confidence = 0.8,
+                        keywords = listOf("local_ai_analysis")
+                    )
                 )
-            )
-        }.onFailure { e ->
-            _state.value = _state.value.copy(
-                sentimentError = "Local AI analysis failed: ${e.message}"
-            )
-        }
+            }.onFailure { e ->
+                _state.value = _state.value.copy(
+                    sentimentError = "Local AI analysis failed: ${e.message}"
+                )
+            }
         }
     }
 }

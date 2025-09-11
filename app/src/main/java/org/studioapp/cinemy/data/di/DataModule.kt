@@ -1,12 +1,11 @@
 package org.studioapp.cinemy.data.di
 
-import org.studioapp.cinemy.BuildConfig
+import org.koin.dsl.module
 import org.studioapp.cinemy.data.mcp.AssetDataLoader
 import org.studioapp.cinemy.data.mcp.McpClient
 import org.studioapp.cinemy.data.mcp.McpHttpClient
 import org.studioapp.cinemy.data.repository.MovieRepository
 import org.studioapp.cinemy.data.repository.MovieRepositoryImpl
-import org.koin.dsl.module
 
 val dataModule = module {
 

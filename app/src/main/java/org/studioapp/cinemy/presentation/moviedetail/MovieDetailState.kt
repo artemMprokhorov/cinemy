@@ -22,7 +22,7 @@ data class MovieDetailState(
     // UI helpers
     val showFullDescription: Boolean = PresentationConstants.DEFAULT_SHOW_FULL_DESCRIPTION,
     val showProductionDetails: Boolean = PresentationConstants.DEFAULT_SHOW_PRODUCTION_DETAILS,
-    
+
     // ML fields (only for displaying ready reviews):
     val sentimentResult: SentimentResult? = null,
     val sentimentError: String? = null,

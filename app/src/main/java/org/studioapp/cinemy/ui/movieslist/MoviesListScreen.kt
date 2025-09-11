@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -31,7 +30,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -43,11 +41,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import org.studioapp.cinemy.BuildConfig
+import kotlinx.coroutines.launch
 import org.studioapp.cinemy.R
 import org.studioapp.cinemy.data.model.Movie
 import org.studioapp.cinemy.data.model.UiConfiguration
@@ -56,16 +52,14 @@ import org.studioapp.cinemy.presentation.movieslist.MoviesListState
 import org.studioapp.cinemy.presentation.movieslist.MoviesListViewModel
 import org.studioapp.cinemy.ui.components.ConfigurableMovieCard
 import org.studioapp.cinemy.ui.components.PullToReloadArrow
+import org.studioapp.cinemy.ui.theme.CinemyTheme
 import org.studioapp.cinemy.ui.theme.Dimens100
 import org.studioapp.cinemy.ui.theme.Dimens112
 import org.studioapp.cinemy.ui.theme.Dimens12
 import org.studioapp.cinemy.ui.theme.Dimens16
 import org.studioapp.cinemy.ui.theme.Dimens8
-import org.studioapp.cinemy.ui.theme.Dimens88
 import org.studioapp.cinemy.ui.theme.Float02
 import org.studioapp.cinemy.ui.theme.SplashBackground
-import org.studioapp.cinemy.ui.theme.CinemyTheme
-import kotlinx.coroutines.launch
 
 private const val SWIPE_THRESHOLD = 50
 private const val SNACKBAR_DEBOUNCE_MS = 2000

@@ -10,13 +10,13 @@ data class SentimentReviews(
 ) {
     val hasPositiveReviews: Boolean
         get() = positive.isNotEmpty()
-    
+
     val hasNegativeReviews: Boolean
         get() = negative.isNotEmpty()
-    
+
     val hasAnyReviews: Boolean
         get() = hasPositiveReviews || hasNegativeReviews
-    
+
     val totalReviewsCount: Int
         get() = positive.size + negative.size
 }

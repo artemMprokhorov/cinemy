@@ -12,7 +12,7 @@ sealed class MovieDetailIntent : CommonIntent {
     object Retry : MovieDetailIntent()
     object Refresh : MovieDetailIntent()
     object BackPressed : MovieDetailIntent()
-    
+
     // ML intents (only for displaying ready reviews):
     object ClearSentimentResult : MovieDetailIntent()
 }

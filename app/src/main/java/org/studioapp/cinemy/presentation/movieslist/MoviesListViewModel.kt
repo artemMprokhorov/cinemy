@@ -2,14 +2,14 @@ package org.studioapp.cinemy.presentation.movieslist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import org.studioapp.cinemy.BuildConfig
-import org.studioapp.cinemy.data.model.Result
-import org.studioapp.cinemy.data.repository.MovieRepository
-import org.studioapp.cinemy.presentation.PresentationConstants
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.studioapp.cinemy.BuildConfig
+import org.studioapp.cinemy.data.model.Result
+import org.studioapp.cinemy.data.repository.MovieRepository
+import org.studioapp.cinemy.presentation.PresentationConstants
 
 class MoviesListViewModel(
     private val movieRepository: MovieRepository
@@ -59,8 +59,8 @@ class MoviesListViewModel(
             when (val result = movieRepository.getPopularMovies(page)) {
                 is Result.Success -> {
                     val response = result.data
-                    
-                    
+
+
                     _state.value = _state.value.copy(
                         isLoading = PresentationConstants.DEFAULT_BOOLEAN_FALSE,
                         movies = response.data.movies,

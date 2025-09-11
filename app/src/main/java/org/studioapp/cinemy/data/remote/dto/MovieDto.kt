@@ -1,7 +1,7 @@
 package org.studioapp.cinemy.data.remote.dto
 
-import org.studioapp.cinemy.data.model.StringConstants
 import com.google.gson.annotations.SerializedName
+import org.studioapp.cinemy.data.model.StringConstants
 
 // Movie Data DTOs
 data class MovieDto(

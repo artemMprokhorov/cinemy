@@ -1,11 +1,9 @@
 package org.studioapp.cinemy.ml
 
-import org.junit.Test
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Assert.assertFalse
+import org.junit.Test
 
 /**
  * Test for Enhanced ML Model v2.0.0
@@ -17,20 +15,20 @@ class SentimentAnalyzerTest {
     fun testEnhancedModelCreation() {
         // Test that the enhanced model can be created with all new fields
         val model = createTestModel()
-        
+
         // Verify model info
         assertEquals("2.0.0", model.modelInfo.version)
         assertEquals("85%+", model.modelInfo.accuracy)
-        
+
         // Verify enhanced features
         assertNotNull("Neutral indicators should be present", model.neutralIndicators)
         assertNotNull("Intensity modifiers should be present", model.intensityModifiers)
         assertNotNull("Context boosters should be present", model.contextBoosters)
-        
+
         // Verify expanded dictionary
         assertTrue("Should have more positive keywords", model.positiveKeywords.size > 20)
         assertTrue("Should have more negative keywords", model.negativeKeywords.size > 20)
-        
+
         // Verify new algorithm config
         assertEquals(0.6, model.algorithm.baseConfidence, 0.01)
         assertNotNull("Keyword weight should be set", model.algorithm.keywordWeight)
@@ -41,20 +39,26 @@ class SentimentAnalyzerTest {
     @Test
     fun testIntensityModifiers() {
         val model = createTestModel()
-        
+
         // Test positive intensity modifiers
-        assertTrue("Should contain 'absolutely' modifier", 
-            model.intensityModifiers?.containsKey("absolutely") == true)
+        assertTrue(
+            "Should contain 'absolutely' modifier",
+            model.intensityModifiers?.containsKey("absolutely") == true
+        )
         assertEquals(1.5, model.intensityModifiers?.get("absolutely") ?: 0.0, 0.01)
-        
+
         // Test negative intensity modifiers
-        assertTrue("Should contain 'not' modifier", 
-            model.intensityModifiers?.containsKey("not") == true)
+        assertTrue(
+            "Should contain 'not' modifier",
+            model.intensityModifiers?.containsKey("not") == true
+        )
         assertEquals(-1.0, model.intensityModifiers?.get("not") ?: 0.0, 0.01)
-        
+
         // Test neutral intensity modifiers
-        assertTrue("Should contain 'pretty' modifier", 
-            model.intensityModifiers?.containsKey("pretty") == true)
+        assertTrue(
+            "Should contain 'pretty' modifier",
+            model.intensityModifiers?.containsKey("pretty") == true
+        )
         assertEquals(0.8, model.intensityModifiers?.get("pretty") ?: 0.0, 0.01)
     }
 
@@ -62,32 +66,44 @@ class SentimentAnalyzerTest {
     fun testContextBoosters() {
         val model = createTestModel()
         val boosters = model.contextBoosters
-        
+
         assertNotNull("Context boosters should be present", boosters)
-        
+
         // Test movie terms
-        assertTrue("Should contain movie terms", 
-            boosters?.movieTerms?.isNotEmpty() == true)
-        assertTrue("Should contain 'cinematography'", 
-            boosters?.movieTerms?.contains("cinematography") == true)
-        
+        assertTrue(
+            "Should contain movie terms",
+            boosters?.movieTerms?.isNotEmpty() == true
+        )
+        assertTrue(
+            "Should contain 'cinematography'",
+            boosters?.movieTerms?.contains("cinematography") == true
+        )
+
         // Test positive context
-        assertTrue("Should contain positive context", 
-            boosters?.positiveContext?.isNotEmpty() == true)
-        assertTrue("Should contain 'masterpiece'", 
-            boosters?.positiveContext?.contains("masterpiece") == true)
-        
+        assertTrue(
+            "Should contain positive context",
+            boosters?.positiveContext?.isNotEmpty() == true
+        )
+        assertTrue(
+            "Should contain 'masterpiece'",
+            boosters?.positiveContext?.contains("masterpiece") == true
+        )
+
         // Test negative context
-        assertTrue("Should contain negative context", 
-            boosters?.negativeContext?.isNotEmpty() == true)
-        assertTrue("Should contain 'flop'", 
-            boosters?.negativeContext?.contains("flop") == true)
+        assertTrue(
+            "Should contain negative context",
+            boosters?.negativeContext?.isNotEmpty() == true
+        )
+        assertTrue(
+            "Should contain 'flop'",
+            boosters?.negativeContext?.contains("flop") == true
+        )
     }
 
     @Test
     fun testNeutralIndicators() {
         val model = createTestModel()
-        
+
         assertNotNull("Neutral indicators should be present", model.neutralIndicators)
         assertTrue("Should contain 'okay'", model.neutralIndicators?.contains("okay") == true)
         assertTrue("Should contain 'decent'", model.neutralIndicators?.contains("decent") == true)
@@ -97,12 +113,12 @@ class SentimentAnalyzerTest {
     @Test
     fun testExpandedKeywords() {
         val model = createTestModel()
-        
+
         // Test new positive keywords
         assertTrue("Should contain 'phenomenal'", model.positiveKeywords.contains("phenomenal"))
         assertTrue("Should contain 'spectacular'", model.positiveKeywords.contains("spectacular"))
         assertTrue("Should contain 'remarkable'", model.positiveKeywords.contains("remarkable"))
-        
+
         // Test new negative keywords
         assertTrue("Should contain 'atrocious'", model.negativeKeywords.contains("atrocious"))
         assertTrue("Should contain 'unwatchable'", model.negativeKeywords.contains("unwatchable"))
@@ -117,7 +133,7 @@ class SentimentAnalyzerTest {
             accuracy = "85%+",
             speed = "very_fast"
         )
-        
+
         val positiveKeywords = listOf(
             "amazing", "fantastic", "great", "excellent", "wonderful", "brilliant",
             "outstanding", "superb", "magnificent", "perfect", "incredible", "awesome",
@@ -125,7 +141,7 @@ class SentimentAnalyzerTest {
             "phenomenal", "spectacular", "remarkable", "exceptional", "marvelous",
             "stunning", "impressive", "captivating", "engaging", "compelling"
         )
-        
+
         val negativeKeywords = listOf(
             "terrible", "awful", "horrible", "bad", "worst", "hate", "disgusting",
             "boring", "stupid", "dumb", "annoying", "frustrating", "disappointing",
@@ -133,12 +149,12 @@ class SentimentAnalyzerTest {
             "atrocious", "dreadful", "appalling", "mediocre", "unwatchable",
             "cringe", "cheesy", "predictable", "cliché", "overrated"
         )
-        
+
         val neutralIndicators = listOf(
             "okay", "decent", "average", "fine", "acceptable", "reasonable",
             "standard", "typical", "normal", "ordinary", "mediocre", "so-so"
         )
-        
+
         val intensityModifiers = mapOf(
             "absolutely" to 1.5,
             "completely" to 1.4,
@@ -154,7 +170,7 @@ class SentimentAnalyzerTest {
             "never" to -1.0,
             "barely" to -0.5
         )
-        
+
         val contextBoosters = ContextBoosters(
             movieTerms = listOf(
                 "cinematography", "acting", "plot", "story", "director", "performance",
@@ -169,7 +185,7 @@ class SentimentAnalyzerTest {
                 "mangled", "butchered", "torture", "nightmare"
             )
         )
-        
+
         val algorithm = AlgorithmConfig(
             baseConfidence = 0.6,
             keywordWeight = 1.0,
@@ -179,7 +195,7 @@ class SentimentAnalyzerTest {
             minConfidence = 0.3,
             maxConfidence = 0.9
         )
-        
+
         return KeywordSentimentModel(
             modelInfo = modelInfo,
             positiveKeywords = positiveKeywords,

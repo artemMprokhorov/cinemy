@@ -6,12 +6,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import org.koin.androidx.compose.koinViewModel
 import org.studioapp.cinemy.presentation.moviedetail.MovieDetailViewModel
 import org.studioapp.cinemy.presentation.movieslist.MoviesListViewModel
 import org.studioapp.cinemy.ui.moviedetail.MovieDetailScreen
 import org.studioapp.cinemy.ui.movieslist.MoviesListScreen
 import org.studioapp.cinemy.ui.splash.MovieAppSplashScreen
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AppNavigation(navController: NavHostController) {

@@ -29,7 +29,7 @@
     <string name="page_info">Page %1$d of %2$d</string>
     <string name="splash_subtitle">Discover new films with AI</string>
     <string name="tmdb_disclaimer">This product uses the TMDB API but is not endorsed or certified by TMDB.</string>
-    
+
     <!-- Sentiment Analysis -->
     <string name="sentiment_analysis_title">🤖 Sentiment Analysis Reviews</string>
     <string name="sentiment_analysis_subtitle">Ready reviews • AI-analysis</string>
@@ -41,7 +41,7 @@
     <string name="sentiment_positive_emoji">😊</string>
     <string name="sentiment_negative_emoji">😞</string>
     <string name="sentiment_neutral_emoji">😐</string>
-    
+
     <!-- Movie Card -->
     <string name="movie_poster_description">Poster for %1$s</string>
     <string name="movie_rating_format">★ %1$.1f (%2$d)</string>

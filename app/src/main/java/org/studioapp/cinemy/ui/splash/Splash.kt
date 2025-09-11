@@ -71,7 +71,7 @@ fun MovieAppSplashScreen(
                 fontFamily = FontFamily.Default
             )
         }
-        
+
         // TMDB disclaimer at bottom
         Text(
             modifier = Modifier

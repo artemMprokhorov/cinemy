@@ -34,7 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
-import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.R
 import org.studioapp.cinemy.data.model.MovieDetails
 import org.studioapp.cinemy.data.model.UiConfiguration
@@ -43,6 +42,7 @@ import org.studioapp.cinemy.presentation.moviedetail.MovieDetailState
 import org.studioapp.cinemy.presentation.moviedetail.MovieDetailViewModel
 import org.studioapp.cinemy.ui.components.PullToReloadArrow
 import org.studioapp.cinemy.ui.components.SentimentAnalysisCard
+import org.studioapp.cinemy.ui.theme.CinemyTheme
 import org.studioapp.cinemy.ui.theme.Dimens100
 import org.studioapp.cinemy.ui.theme.Dimens12
 import org.studioapp.cinemy.ui.theme.Dimens16
@@ -50,7 +50,6 @@ import org.studioapp.cinemy.ui.theme.Dimens400
 import org.studioapp.cinemy.ui.theme.Dimens8
 import org.studioapp.cinemy.ui.theme.ImageConfig
 import org.studioapp.cinemy.ui.theme.SplashBackground
-import org.studioapp.cinemy.ui.theme.CinemyTheme
 
 private const val MIN_RUNTIME = 0
 
@@ -250,7 +249,7 @@ private fun MovieDetailsContent(
             }
 
         }
-        
+
         // ML Sentiment Analysis Card
         SentimentAnalysisCard(
             sentimentResult = state.sentimentResult,
@@ -259,7 +258,7 @@ private fun MovieDetailsContent(
             error = state.sentimentError,
             modifier = Modifier.padding(horizontal = Dimens16)
         )
-        
+
         Spacer(modifier = Modifier.height(Dimens16))
     }
 }

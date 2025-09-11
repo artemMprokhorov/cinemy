@@ -2,6 +2,8 @@ package org.studioapp.cinemy.data.repository
 
 import android.content.Context
 import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.delay
+import org.json.JSONObject
 import org.studioapp.cinemy.data.mapper.MovieMapper
 import org.studioapp.cinemy.data.mcp.AssetDataLoader
 import org.studioapp.cinemy.data.model.Meta
@@ -14,8 +16,6 @@ import org.studioapp.cinemy.data.model.Pagination
 import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.model.StringConstants
 import org.studioapp.cinemy.data.model.UiConfiguration
-import kotlinx.coroutines.delay
-import org.json.JSONObject
 
 /**
  * Dummy implementation of MovieRepository for testing and development purposes.
@@ -114,7 +114,7 @@ class DummyMovieRepository(
             createDefaultMovieDetails()
         }
     }
-    
+
     /**
      * Loads sentiment reviews from assets
      */
@@ -124,7 +124,8 @@ class DummyMovieRepository(
             if (jsonString != null) {
                 val jsonObject = JSONObject(jsonString)
                 val dataJson = jsonObject.optJSONObject(StringConstants.FIELD_DATA)
-                val sentimentReviewsJson = dataJson?.optJSONObject(StringConstants.FIELD_SENTIMENT_REVIEWS)
+                val sentimentReviewsJson =
+                    dataJson?.optJSONObject(StringConstants.FIELD_SENTIMENT_REVIEWS)
                 if (sentimentReviewsJson != null) {
                     parseSentimentReviewsFromJson(sentimentReviewsJson)
                 } else {
@@ -262,7 +263,7 @@ class DummyMovieRepository(
             status = StringConstants.EMPTY_STRING
         )
     }
-    
+
     /**
      * Parses sentiment reviews from JSON
      */
@@ -275,7 +276,7 @@ class DummyMovieRepository(
         } else {
             emptyList()
         }
-        
+
         val negativeJson = jsonObject.optJSONArray(StringConstants.FIELD_NEGATIVE)
         val negative = if (negativeJson != null) {
             (0 until negativeJson.length()).map { i ->
@@ -284,7 +285,7 @@ class DummyMovieRepository(
         } else {
             emptyList()
         }
-        
+
         return org.studioapp.cinemy.data.model.SentimentReviews(
             positive = positive,
             negative = negative

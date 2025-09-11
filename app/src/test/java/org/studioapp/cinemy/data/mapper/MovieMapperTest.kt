@@ -1,17 +1,13 @@
 package org.studioapp.cinemy.data.mapper
 
 import androidx.compose.ui.graphics.Color
-import org.junit.Test
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Assert.assertFalse
-import org.studioapp.cinemy.data.util.TestColorUtils
+import org.junit.Test
 import org.studioapp.cinemy.data.model.ButtonConfiguration
 import org.studioapp.cinemy.data.model.ColorScheme
 import org.studioapp.cinemy.data.remote.dto.ButtonConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.ColorSchemeDto
+import org.studioapp.cinemy.data.util.TestColorUtils
 
 /**
  * Test wrapper for MovieMapper that uses TestColorUtils instead of ColorUtils

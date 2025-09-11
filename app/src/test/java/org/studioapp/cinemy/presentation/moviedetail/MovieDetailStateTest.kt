@@ -12,7 +12,6 @@ import org.studioapp.cinemy.data.model.MovieDetails
 import org.studioapp.cinemy.data.model.SentimentReviews
 import org.studioapp.cinemy.data.model.UiConfiguration
 import org.studioapp.cinemy.ml.SentimentResult
-import org.studioapp.cinemy.presentation.PresentationConstants
 
 class MovieDetailStateTest {
 

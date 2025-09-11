@@ -11,14 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.model.UiConfiguration
 import org.studioapp.cinemy.ui.theme.Dimens16
 import org.studioapp.cinemy.ui.theme.Dimens8
-import org.studioapp.cinemy.ui.theme.PrimaryBlue
-import org.studioapp.cinemy.ui.theme.SecondaryGreen
 import org.studioapp.cinemy.ui.theme.Float12
 import org.studioapp.cinemy.ui.theme.Float38
+import org.studioapp.cinemy.ui.theme.PrimaryBlue
+import org.studioapp.cinemy.ui.theme.SecondaryGreen
 
 /**
  * Configurable button component that supports server-driven styling
@@ -53,6 +52,7 @@ fun ConfigurableButton(
             if (isSecondary) colorScheme?.secondary ?: SecondaryGreen // Force green
             else colorScheme?.primary ?: PrimaryBlue // Force blue
         }
+
         else -> {
             if (isSecondary) MaterialTheme.colorScheme.secondary
             else MaterialTheme.colorScheme.primary

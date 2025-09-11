@@ -1,12 +1,10 @@
 package org.studioapp.cinemy.data.mcp
 
 import android.content.Context
-import androidx.compose.ui.graphics.Color
-import org.studioapp.cinemy.BuildConfig
+import com.google.gson.Gson
+import kotlinx.coroutines.delay
 import org.studioapp.cinemy.data.mapper.MovieMapper
 import org.studioapp.cinemy.data.mcp.models.McpRequest
-import org.studioapp.cinemy.data.model.ButtonConfiguration
-import org.studioapp.cinemy.data.model.ColorScheme
 import org.studioapp.cinemy.data.model.GeminiColors
 import org.studioapp.cinemy.data.model.Meta
 import org.studioapp.cinemy.data.model.MovieDetailsData
@@ -14,8 +12,6 @@ import org.studioapp.cinemy.data.model.MovieDetailsResponse
 import org.studioapp.cinemy.data.model.MovieListResponse
 import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.model.StringConstants
-import org.studioapp.cinemy.data.model.TextConfiguration
-import org.studioapp.cinemy.data.model.UiConfiguration
 import org.studioapp.cinemy.data.remote.api.MovieApiService
 import org.studioapp.cinemy.data.remote.dto.GeminiColorsDto
 import org.studioapp.cinemy.data.remote.dto.GenreDto
@@ -26,8 +22,6 @@ import org.studioapp.cinemy.data.remote.dto.MovieDetailsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDto
 import org.studioapp.cinemy.data.remote.dto.PaginationDto
 import org.studioapp.cinemy.data.remote.dto.ProductionCompanyDto
-import com.google.gson.Gson
-import kotlinx.coroutines.delay
 import java.io.IOException
 
 class McpClient(private val context: Context) : MovieApiService {
@@ -90,7 +84,7 @@ class McpClient(private val context: Context) : MovieApiService {
             )
 
             val uiConfig = assetDataLoader.loadUiConfig()
-            
+
             // Debug logging for uiConfig
 
             McpResponseDto(
@@ -212,7 +206,7 @@ class McpClient(private val context: Context) : MovieApiService {
                 )
 
                 val uiConfig = assetDataLoader.loadUiConfig()
-                
+
                 // Debug logging for uiConfig
 
                 McpResponseDto(
@@ -334,7 +328,7 @@ class McpClient(private val context: Context) : MovieApiService {
                 )
 
                 val uiConfig = assetDataLoader.loadUiConfig()
-                
+
                 // Debug logging for uiConfig
 
                 Result.Success(
@@ -419,16 +413,25 @@ class McpClient(private val context: Context) : MovieApiService {
                         MovieMapper.mapMovieDetailsDtoToMovieDetails(movieDetails)
 
                     // Parse sentiment reviews from response data
-                    val sentimentReviewsData = data[StringConstants.FIELD_SENTIMENT_REVIEWS] as? Map<String, Any>
+                    val sentimentReviewsData =
+                        data[StringConstants.FIELD_SENTIMENT_REVIEWS] as? Map<String, Any>
                     val sentimentReviews = sentimentReviewsData?.let { reviewsData ->
-                        val positive = (reviewsData[StringConstants.FIELD_POSITIVE] as? List<*>)?.mapNotNull { it as? String } ?: emptyList()
-                        val negative = (reviewsData[StringConstants.FIELD_NEGATIVE] as? List<*>)?.mapNotNull { it as? String } ?: emptyList()
-                        org.studioapp.cinemy.data.model.SentimentReviews(positive = positive, negative = negative)
+                        val positive =
+                            (reviewsData[StringConstants.FIELD_POSITIVE] as? List<*>)?.mapNotNull { it as? String }
+                                ?: emptyList()
+                        val negative =
+                            (reviewsData[StringConstants.FIELD_NEGATIVE] as? List<*>)?.mapNotNull { it as? String }
+                                ?: emptyList()
+                        org.studioapp.cinemy.data.model.SentimentReviews(
+                            positive = positive,
+                            negative = negative
+                        )
                     }
 
                     val uiConfig = assetDataLoader.loadUiConfig()
-                    val domainUiConfig = MovieMapper.mapUiConfigurationDtoToUiConfiguration(uiConfig)
-                    
+                    val domainUiConfig =
+                        MovieMapper.mapUiConfigurationDtoToUiConfiguration(uiConfig)
+
                     // Debug logging for uiConfig
 
                     Result.Success(

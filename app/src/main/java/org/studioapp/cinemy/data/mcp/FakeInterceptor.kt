@@ -1,12 +1,11 @@
 package org.studioapp.cinemy.data.mcp
 
 import android.content.Context
-import org.studioapp.cinemy.BuildConfig
+import kotlinx.coroutines.delay
+import org.json.JSONObject
 import org.studioapp.cinemy.data.mcp.models.McpRequest
 import org.studioapp.cinemy.data.mcp.models.McpResponse
 import org.studioapp.cinemy.data.model.StringConstants
-import kotlinx.coroutines.delay
-import org.json.JSONObject
 
 /**
  * Fake interceptor for dummy configuration that provides mock responses

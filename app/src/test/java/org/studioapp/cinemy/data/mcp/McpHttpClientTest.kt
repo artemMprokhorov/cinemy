@@ -3,21 +3,18 @@ package org.studioapp.cinemy.data.mcp
 import android.content.Context
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
-import org.junit.Test
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Assert.assertFalse
+import org.junit.Before
+import org.junit.Test
 import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.mcp.models.McpRequest
 import org.studioapp.cinemy.data.mcp.models.McpResponse
-import org.studioapp.cinemy.data.model.StringConstants
 
 class McpHttpClientTest {
 
@@ -29,10 +26,10 @@ class McpHttpClientTest {
     fun setUp() {
         mockContext = mockk()
         mockFakeInterceptor = mockk()
-        
+
         // Create McpHttpClient and use reflection to inject mock
         mcpHttpClient = McpHttpClient(mockContext)
-        
+
         // Use reflection to replace the private fakeInterceptor
         val field = McpHttpClient::class.java.getDeclaredField("fakeInterceptor")
         field.isAccessible = true
@@ -52,7 +49,7 @@ class McpHttpClientTest {
             error = null,
             message = "Mock response"
         )
-        
+
         coEvery { mockFakeInterceptor.intercept<Map<String, Any>>(request) } returns expectedResponse
 
         // When
@@ -79,12 +76,12 @@ class McpHttpClientTest {
             params = mapOf("param1" to "value1")
         )
         val exception = RuntimeException("Mock error")
-        
+
         coEvery { mockFakeInterceptor.intercept<Map<String, Any>>(request) } throws exception
 
         // When
         mcpHttpClient.sendRequest<Map<String, Any>>(request)
-        
+
         // Then
         // Exception should be thrown
         coVerify { mockFakeInterceptor.intercept<Map<String, Any>>(request) }
@@ -101,7 +98,7 @@ class McpHttpClientTest {
             method = "getMovieDetails",
             params = mapOf("movieId" to "123")
         )
-        
+
         val response1 = McpResponse<List<Map<String, Any>>>(
             success = true,
             data = listOf(mapOf("id" to 1, "title" to "Movie 1")),
@@ -114,7 +111,7 @@ class McpHttpClientTest {
             error = null,
             message = "Success"
         )
-        
+
         coEvery { mockFakeInterceptor.intercept<List<Map<String, Any>>>(request1) } returns response1
         coEvery { mockFakeInterceptor.intercept<Map<String, Any>>(request2) } returns response2
 
@@ -150,7 +147,7 @@ class McpHttpClientTest {
             error = null,
             message = "Mock response"
         )
-        
+
         coEvery { mockFakeInterceptor.intercept<Map<String, Any>>(request) } returns expectedResponse
 
         // When
@@ -180,7 +177,7 @@ class McpHttpClientTest {
             error = "No data available",
             message = "Error response"
         )
-        
+
         coEvery { mockFakeInterceptor.intercept<Map<String, Any>>(request) } returns expectedResponse
 
         // When
@@ -227,7 +224,7 @@ class McpHttpClientTest {
             error = null,
             message = "Complex data response"
         )
-        
+
         coEvery { mockFakeInterceptor.intercept<Map<String, Any>>(request) } returns expectedResponse
 
         // When
@@ -258,7 +255,7 @@ class McpHttpClientTest {
             error = "Network error",
             message = "Request failed"
         )
-        
+
         coEvery { mockFakeInterceptor.intercept<Map<String, Any>>(request) } returns expectedResponse
 
         // When
@@ -285,7 +282,7 @@ class McpHttpClientTest {
             method = "testMethod",
             params = mapOf("param1" to "value1")
         )
-        
+
         // Since FakeInterceptor returns the same response for unknown methods regardless of generic type,
         // we need to test that the method works with different generic types
         val stringResponse = McpResponse<String>(
@@ -294,21 +291,21 @@ class McpHttpClientTest {
             error = "Unknown method: testMethod",
             message = "Unknown method: testMethod"
         )
-        
+
         val intResponse = McpResponse<Int>(
             success = false,
             data = null,
             error = "Unknown method: testMethod",
             message = "Unknown method: testMethod"
         )
-        
+
         val listResponse = McpResponse<List<String>>(
             success = false,
             data = null,
             error = "Unknown method: testMethod",
             message = "Unknown method: testMethod"
         )
-        
+
         coEvery { mockFakeInterceptor.intercept<String>(request) } returns stringResponse
         coEvery { mockFakeInterceptor.intercept<Int>(request) } returns intResponse
         coEvery { mockFakeInterceptor.intercept<List<String>>(request) } returns listResponse
@@ -344,7 +341,7 @@ class McpHttpClientTest {
         val httpClientField = McpHttpClient::class.java.getDeclaredField("httpClient")
         httpClientField.isAccessible = true
         val httpClient = httpClientField.get(mcpHttpClient)
-        
+
         // We can't easily mock the HttpClient, so we'll just verify the method doesn't throw
         // When
         mcpHttpClient.close()
@@ -361,14 +358,14 @@ class McpHttpClientTest {
             method = "testMethod",
             params = mapOf("param1" to "value1")
         )
-        
+
         val expectedResponse = McpResponse<Map<String, Any>>(
             success = false,
             data = null,
             error = "Test error",
             message = "Test message"
         )
-        
+
         coEvery { mockFakeInterceptor.intercept<Map<String, Any>>(request) } returns expectedResponse
 
         // When
@@ -401,7 +398,7 @@ class McpHttpClientTest {
             error = "Test error",
             message = "Test message"
         )
-        
+
         coEvery { mockFakeInterceptor.intercept<Map<String, Any>>(request) } returns expectedResponse
 
         // When

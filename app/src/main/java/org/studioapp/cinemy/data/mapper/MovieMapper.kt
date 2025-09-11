@@ -247,7 +247,7 @@ object MovieMapper {
             Result.Error(mcpResponse.error ?: StringConstants.ERROR_UNKNOWN, uiConfig)
         }
     }
-    
+
     fun mapSentimentReviewsDtoToSentimentReviews(dto: SentimentReviewsDto?): SentimentReviews? {
         return dto?.let {
             SentimentReviews(

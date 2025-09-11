@@ -41,7 +41,10 @@ class SimplePresentationTests {
         assertEquals("M", PresentationConstants.BUDGET_SUFFIX)
         assertEquals(0, PresentationConstants.BUDGET_THRESHOLD)
         assertEquals("Using demo data", PresentationConstants.MESSAGE_USING_DEMO_DATA)
-        assertEquals("Backend unavailable - showing demo data", PresentationConstants.MESSAGE_BACKEND_UNAVAILABLE)
+        assertEquals(
+            "Backend unavailable - showing demo data",
+            PresentationConstants.MESSAGE_BACKEND_UNAVAILABLE
+        )
         assertEquals("Connected to live data", PresentationConstants.MESSAGE_CONNECTED_TO_LIVE_DATA)
         assertEquals("", PresentationConstants.MESSAGE_EMPTY)
         assertEquals("backend unavailable", PresentationConstants.BACKEND_UNAVAILABLE_KEYWORD)
@@ -552,7 +555,10 @@ class SimplePresentationTests {
     fun `PresentationConstants should have correct message values`() {
         // Given & When & Then
         assertEquals("Using demo data", PresentationConstants.MESSAGE_USING_DEMO_DATA)
-        assertEquals("Backend unavailable - showing demo data", PresentationConstants.MESSAGE_BACKEND_UNAVAILABLE)
+        assertEquals(
+            "Backend unavailable - showing demo data",
+            PresentationConstants.MESSAGE_BACKEND_UNAVAILABLE
+        )
         assertEquals("Connected to live data", PresentationConstants.MESSAGE_CONNECTED_TO_LIVE_DATA)
         assertEquals("", PresentationConstants.MESSAGE_EMPTY)
     }
@@ -583,10 +589,22 @@ class SimplePresentationTests {
     @Test
     fun `MoviesListState should handle all connection status values`() {
         // Given & When & Then
-        assertEquals(MoviesListState.ConnectionStatus.Unknown, MoviesListState.ConnectionStatus.Unknown)
-        assertEquals(MoviesListState.ConnectionStatus.Connected, MoviesListState.ConnectionStatus.Connected)
-        assertEquals(MoviesListState.ConnectionStatus.Disconnected, MoviesListState.ConnectionStatus.Disconnected)
-        assertEquals(MoviesListState.ConnectionStatus.MockOnly, MoviesListState.ConnectionStatus.MockOnly)
+        assertEquals(
+            MoviesListState.ConnectionStatus.Unknown,
+            MoviesListState.ConnectionStatus.Unknown
+        )
+        assertEquals(
+            MoviesListState.ConnectionStatus.Connected,
+            MoviesListState.ConnectionStatus.Connected
+        )
+        assertEquals(
+            MoviesListState.ConnectionStatus.Disconnected,
+            MoviesListState.ConnectionStatus.Disconnected
+        )
+        assertEquals(
+            MoviesListState.ConnectionStatus.MockOnly,
+            MoviesListState.ConnectionStatus.MockOnly
+        )
     }
 
     @Test
@@ -640,7 +658,7 @@ class SimplePresentationTests {
         val state1 = MoviesListState(currentPage = 1)
         val state2 = MoviesListState(currentPage = 5)
         val state3 = MoviesListState(currentPage = 10)
-        
+
         assertEquals(1, state1.currentPage)
         assertEquals(5, state2.currentPage)
         assertEquals(10, state3.currentPage)
@@ -651,7 +669,7 @@ class SimplePresentationTests {
         val state1 = MoviesListState(retryCount = 0)
         val state2 = MoviesListState(retryCount = 3)
         val state3 = MoviesListState(retryCount = 5)
-        
+
         assertEquals(0, state1.retryCount)
         assertEquals(3, state2.retryCount)
         assertEquals(5, state3.retryCount)
@@ -659,12 +677,18 @@ class SimplePresentationTests {
 
     @Test
     fun `MoviesListState should handle various connection statuses`() {
-        val connectedState = MoviesListState(connectionStatus = MoviesListState.ConnectionStatus.Connected)
-        val disconnectedState = MoviesListState(connectionStatus = MoviesListState.ConnectionStatus.Disconnected)
-        val mockOnlyState = MoviesListState(connectionStatus = MoviesListState.ConnectionStatus.MockOnly)
-        
+        val connectedState =
+            MoviesListState(connectionStatus = MoviesListState.ConnectionStatus.Connected)
+        val disconnectedState =
+            MoviesListState(connectionStatus = MoviesListState.ConnectionStatus.Disconnected)
+        val mockOnlyState =
+            MoviesListState(connectionStatus = MoviesListState.ConnectionStatus.MockOnly)
+
         assertEquals(MoviesListState.ConnectionStatus.Connected, connectedState.connectionStatus)
-        assertEquals(MoviesListState.ConnectionStatus.Disconnected, disconnectedState.connectionStatus)
+        assertEquals(
+            MoviesListState.ConnectionStatus.Disconnected,
+            disconnectedState.connectionStatus
+        )
         assertEquals(MoviesListState.ConnectionStatus.MockOnly, mockOnlyState.connectionStatus)
     }
 
@@ -673,7 +697,7 @@ class SimplePresentationTests {
         val state1 = MovieDetailState(movieId = 1)
         val state2 = MovieDetailState(movieId = 100)
         val state3 = MovieDetailState(movieId = 999)
-        
+
         assertEquals(1, state1.movieId)
         assertEquals(100, state2.movieId)
         assertEquals(999, state3.movieId)
@@ -683,7 +707,7 @@ class SimplePresentationTests {
     fun `MovieDetailState should handle various loading states`() {
         val loadingState = MovieDetailState(isLoading = true)
         val notLoadingState = MovieDetailState(isLoading = false)
-        
+
         assertTrue(loadingState.isLoading)
         assertFalse(notLoadingState.isLoading)
     }
@@ -692,7 +716,7 @@ class SimplePresentationTests {
     fun `MovieDetailState should handle various error states`() {
         val errorState = MovieDetailState(error = "Network error")
         val noErrorState = MovieDetailState(error = null)
-        
+
         assertEquals("Network error", errorState.error)
         assertNull(noErrorState.error)
     }
@@ -701,7 +725,7 @@ class SimplePresentationTests {
     fun `MoviesListState should handle various loading states`() {
         val loadingState = MoviesListState(isLoading = true)
         val notLoadingState = MoviesListState(isLoading = false)
-        
+
         assertTrue(loadingState.isLoading)
         assertFalse(notLoadingState.isLoading)
     }
@@ -710,7 +734,7 @@ class SimplePresentationTests {
     fun `MoviesListState should handle various error states`() {
         val errorState = MoviesListState(error = "API error")
         val noErrorState = MoviesListState(error = null)
-        
+
         assertEquals("API error", errorState.error)
         assertNull(noErrorState.error)
     }
@@ -719,7 +743,7 @@ class SimplePresentationTests {
     fun `MoviesListState should handle various hasMore states`() {
         val hasMoreState = MoviesListState(hasMore = true)
         val noMoreState = MoviesListState(hasMore = false)
-        
+
         assertTrue(hasMoreState.hasMore)
         assertFalse(noMoreState.hasMore)
     }
@@ -728,7 +752,7 @@ class SimplePresentationTests {
     fun `MoviesListState should handle various canRetry states`() {
         val canRetryState = MoviesListState(canRetry = true)
         val cannotRetryState = MoviesListState(canRetry = false)
-        
+
         assertTrue(canRetryState.canRetry)
         assertFalse(cannotRetryState.canRetry)
     }
@@ -737,7 +761,7 @@ class SimplePresentationTests {
     fun `MoviesListState should handle various isUsingMockData states`() {
         val mockDataState = MoviesListState(isUsingMockData = true)
         val realDataState = MoviesListState(isUsingMockData = false)
-        
+
         assertTrue(mockDataState.isUsingMockData)
         assertFalse(realDataState.isUsingMockData)
     }
@@ -746,7 +770,7 @@ class SimplePresentationTests {
     fun `MovieDetailState should handle various sentiment result states`() {
         val sentimentState = MovieDetailState(sentimentResult = mockk<SentimentResult>())
         val noSentimentState = MovieDetailState(sentimentResult = null)
-        
+
         assertNotNull(sentimentState.sentimentResult)
         assertNull(noSentimentState.sentimentResult)
     }
@@ -755,7 +779,7 @@ class SimplePresentationTests {
     fun `MovieDetailState should handle various sentiment error states`() {
         val errorState = MovieDetailState(sentimentError = "Analysis failed")
         val noErrorState = MovieDetailState(sentimentError = null)
-        
+
         assertEquals("Analysis failed", errorState.sentimentError)
         assertNull(noErrorState.sentimentError)
     }
@@ -764,7 +788,7 @@ class SimplePresentationTests {
     fun `MovieDetailState should handle various sentiment reviews states`() {
         val reviewsState = MovieDetailState(sentimentReviews = mockk<SentimentReviews>())
         val noReviewsState = MovieDetailState(sentimentReviews = null)
-        
+
         assertNotNull(reviewsState.sentimentReviews)
         assertNull(noReviewsState.sentimentReviews)
     }
@@ -786,7 +810,7 @@ class SimplePresentationTests {
     fun `MoviesListState should handle different lastSyncTime values`() {
         val state1 = MoviesListState(lastSyncTime = null)
         val state2 = MoviesListState(lastSyncTime = 1640995200000L)
-        
+
         assertNull(state1.lastSyncTime)
         assertEquals(1640995200000L, state2.lastSyncTime)
     }
@@ -795,7 +819,7 @@ class SimplePresentationTests {
     fun `MovieDetailState should handle different UI config states`() {
         val withConfigState = MovieDetailState(uiConfig = mockk<UiConfiguration>())
         val noConfigState = MovieDetailState(uiConfig = null)
-        
+
         assertNotNull(withConfigState.uiConfig)
         assertNull(noConfigState.uiConfig)
     }
@@ -804,7 +828,7 @@ class SimplePresentationTests {
     fun `MovieDetailState should handle different meta states`() {
         val withMetaState = MovieDetailState(meta = mockk<Meta>())
         val noMetaState = MovieDetailState(meta = null)
-        
+
         assertNotNull(withMetaState.meta)
         assertNull(noMetaState.meta)
     }
@@ -813,7 +837,7 @@ class SimplePresentationTests {
     fun `MoviesListState should handle different UI config states`() {
         val withConfigState = MoviesListState(uiConfig = mockk<UiConfiguration>())
         val noConfigState = MoviesListState(uiConfig = null)
-        
+
         assertNotNull(withConfigState.uiConfig)
         assertNull(noConfigState.uiConfig)
     }
@@ -822,7 +846,7 @@ class SimplePresentationTests {
     fun `MoviesListState should handle different meta states`() {
         val withMetaState = MoviesListState(meta = mockk<Meta>())
         val noMetaState = MoviesListState(meta = null)
-        
+
         assertNotNull(withMetaState.meta)
         assertNull(noMetaState.meta)
     }
@@ -831,7 +855,7 @@ class SimplePresentationTests {
     fun `MoviesListState should handle different pagination states`() {
         val withPaginationState = MoviesListState(pagination = mockk<Pagination>())
         val noPaginationState = MoviesListState(pagination = null)
-        
+
         assertNotNull(withPaginationState.pagination)
         assertNull(noPaginationState.pagination)
     }
@@ -840,7 +864,7 @@ class SimplePresentationTests {
     fun `MovieDetailState should handle different movie details states`() {
         val withDetailsState = MovieDetailState(movieDetails = mockk<MovieDetails>())
         val noDetailsState = MovieDetailState(movieDetails = null)
-        
+
         assertNotNull(withDetailsState.movieDetails)
         assertNull(noDetailsState.movieDetails)
     }
@@ -849,7 +873,7 @@ class SimplePresentationTests {
     fun `MoviesListState should handle different movies list states`() {
         val withMoviesState = MoviesListState(movies = listOf(mockk<Movie>()))
         val emptyMoviesState = MoviesListState(movies = emptyList())
-        
+
         assertTrue(withMoviesState.movies.isNotEmpty())
         assertTrue(emptyMoviesState.movies.isEmpty())
     }
@@ -866,7 +890,7 @@ class SimplePresentationTests {
         val state1 = MoviesListState(currentPage = 1)
         val state2 = MoviesListState(currentPage = 5)
         val state3 = MoviesListState(currentPage = 10)
-        
+
         assertEquals(1, state1.currentPage)
         assertEquals(5, state2.currentPage)
         assertEquals(10, state3.currentPage)
@@ -877,7 +901,7 @@ class SimplePresentationTests {
         val state1 = MovieDetailState(movieId = 1)
         val state2 = MovieDetailState(movieId = 100)
         val state3 = MovieDetailState(movieId = 999)
-        
+
         assertEquals(1, state1.movieId)
         assertEquals(100, state2.movieId)
         assertEquals(999, state3.movieId)

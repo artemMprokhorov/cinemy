@@ -24,22 +24,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
-import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.R
 import org.studioapp.cinemy.data.model.Movie
 import org.studioapp.cinemy.data.model.UiConfiguration
+import org.studioapp.cinemy.ui.theme.DarkSurface
 import org.studioapp.cinemy.ui.theme.Dimens12
 import org.studioapp.cinemy.ui.theme.Dimens16
 import org.studioapp.cinemy.ui.theme.Dimens2
 import org.studioapp.cinemy.ui.theme.Dimens200
 import org.studioapp.cinemy.ui.theme.Dimens4
 import org.studioapp.cinemy.ui.theme.Dimens8
-import org.studioapp.cinemy.ui.theme.DarkSurface
-import org.studioapp.cinemy.ui.theme.PrimaryBlue
 import org.studioapp.cinemy.ui.theme.Float05
 import org.studioapp.cinemy.ui.theme.Float06
 import org.studioapp.cinemy.ui.theme.Float07
 import org.studioapp.cinemy.ui.theme.ImageConfig
+import org.studioapp.cinemy.ui.theme.PrimaryBlue
 
 private const val POPULARITY_THRESHOLD = 0.0
 private const val MAX_LINES_TITLE = 2
@@ -76,13 +75,13 @@ fun ConfigurableMovieCard(
     } else {
         MaterialTheme.colorScheme.surface
     }
-    
+
     val textColor = if (uiConfig?.colors != null) {
         colorScheme?.onSurface ?: Color.White // Force white text
     } else {
         MaterialTheme.colorScheme.onSurface
     }
-    
+
     val primaryColor = if (uiConfig?.colors != null) {
         colorScheme?.primary ?: PrimaryBlue // Force blue primary
     } else {
@@ -120,7 +119,10 @@ fun ConfigurableMovieCard(
                 imagePath?.let { path ->
                     AsyncImage(
                         model = path,
-                        contentDescription = stringResource(R.string.movie_poster_description, movie.title),
+                        contentDescription = stringResource(
+                            R.string.movie_poster_description,
+                            movie.title
+                        ),
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
@@ -151,7 +153,11 @@ fun ConfigurableMovieCard(
                         shape = RoundedCornerShape(Dimens16)
                     ) {
                         ConfigurableText(
-                            text = stringResource(R.string.movie_rating_format, movie.rating, movie.voteCount),
+                            text = stringResource(
+                                R.string.movie_rating_format,
+                                movie.rating,
+                                movie.voteCount
+                            ),
                             style = MaterialTheme.typography.labelSmall,
                             uiConfig = uiConfig,
                             color = Color.White,

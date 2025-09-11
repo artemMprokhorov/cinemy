@@ -1,6 +1,7 @@
 package org.studioapp.cinemy.data.mcp
 
 import android.content.Context
+import androidx.compose.ui.graphics.Color
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -8,13 +9,15 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
-import org.junit.Test
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Assert.assertFalse
+import org.junit.Before
+import org.junit.Test
+import org.studioapp.cinemy.data.mapper.MovieMapper
+import org.studioapp.cinemy.data.mcp.models.McpResponse
 import org.studioapp.cinemy.data.model.ButtonConfiguration
 import org.studioapp.cinemy.data.model.ColorScheme
 import org.studioapp.cinemy.data.model.GeminiColors
@@ -28,8 +31,6 @@ import org.studioapp.cinemy.data.model.Pagination
 import org.studioapp.cinemy.data.model.ProductionCompany
 import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.model.SearchInfo
-import org.studioapp.cinemy.data.model.SentimentReviews
-import org.studioapp.cinemy.data.model.StringConstants
 import org.studioapp.cinemy.data.model.TextConfiguration
 import org.studioapp.cinemy.data.model.UiConfiguration
 import org.studioapp.cinemy.data.remote.dto.ButtonConfigurationDto
@@ -37,23 +38,16 @@ import org.studioapp.cinemy.data.remote.dto.ColorSchemeDto
 import org.studioapp.cinemy.data.remote.dto.GeminiColorsDto
 import org.studioapp.cinemy.data.remote.dto.GenreDto
 import org.studioapp.cinemy.data.remote.dto.McpMovieListResponseDto
-import org.studioapp.cinemy.data.remote.dto.McpResponseDto
 import org.studioapp.cinemy.data.remote.dto.MetaDto
 import org.studioapp.cinemy.data.remote.dto.MovieDetailsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDto
 import org.studioapp.cinemy.data.remote.dto.PaginationDto
 import org.studioapp.cinemy.data.remote.dto.ProductionCompanyDto
 import org.studioapp.cinemy.data.remote.dto.SearchInfoDto
-import org.studioapp.cinemy.data.remote.dto.SentimentReviewsDto
 import org.studioapp.cinemy.data.remote.dto.TextConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
-import org.studioapp.cinemy.data.mcp.models.McpResponse
-import org.studioapp.cinemy.data.util.TestColorUtils
 import org.studioapp.cinemy.data.util.ColorUtils
-import androidx.compose.ui.graphics.Color
-import org.studioapp.cinemy.data.model.MovieDetailsResponse
-import org.studioapp.cinemy.data.model.MovieDetailsData
-import org.studioapp.cinemy.data.mapper.MovieMapper
+import org.studioapp.cinemy.data.util.TestColorUtils
 
 object TestMovieMapper {
     fun mapUiConfigurationDtoToUiConfiguration(dto: UiConfigurationDto): UiConfiguration {
@@ -204,7 +198,11 @@ object TestMovieMapper {
             releaseDate = dto.releaseDate,
             runtime = dto.runtime ?: 0,
             genres = dto.genres.map { mapGenreDtoToGenre(it) },
-            productionCompanies = dto.productionCompanies.map { mapProductionCompanyDtoToProductionCompany(it) },
+            productionCompanies = dto.productionCompanies.map {
+                mapProductionCompanyDtoToProductionCompany(
+                    it
+                )
+            },
             budget = dto.budget,
             revenue = dto.revenue,
             status = dto.status
@@ -241,27 +239,27 @@ class McpClientTest {
         mockContext = mockk()
         mockAssetDataLoader = mockk()
         mockMcpHttpClient = mockk()
-        
+
         // Create McpClient and use reflection to inject mocks
         mcpClient = McpClient(mockContext)
-        
+
         // Use reflection to replace private fields
         val assetDataLoaderField = McpClient::class.java.getDeclaredField("assetDataLoader")
         assetDataLoaderField.isAccessible = true
         assetDataLoaderField.set(mcpClient, mockAssetDataLoader)
-        
+
         val mcpHttpClientField = McpClient::class.java.getDeclaredField("mcpHttpClient")
         mcpHttpClientField.isAccessible = true
         mcpHttpClientField.set(mcpClient, mockMcpHttpClient)
-        
+
         // Mock ColorUtils to use TestColorUtils
         mockkObject(ColorUtils)
-        every { ColorUtils.parseColor(any()) } answers { 
+        every { ColorUtils.parseColor(any()) } answers {
             val colorString = firstArg<String>()
             println("ColorUtils.parseColor called with: $colorString")
             TestColorUtils.parseColor(colorString)
         }
-        
+
         // Mock MovieMapper methods to use TestMovieMapper
         mockkObject(MovieMapper)
         every { MovieMapper.mapMcpMovieListResponseDtoToMovieListResponse(any()) } answers { call ->
@@ -285,7 +283,7 @@ class McpClientTest {
         val mockResponse = createMockMcpResponse()
         val mockUiConfig = createMockUiConfigDto()
         val mockMeta = createMockMetaDto()
-        
+
         coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
         every { mockAssetDataLoader.loadUiConfig() } returns mockUiConfig
         every { mockAssetDataLoader.loadMetaData(any(), any()) } returns mockMeta
@@ -300,7 +298,7 @@ class McpClientTest {
         assertNotNull(result.meta)
         assertEquals(1, result.data?.movies?.size)
         assertEquals("Test Movie", result.data?.movies?.get(0)?.title)
-        
+
         coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
         verify { mockAssetDataLoader.loadUiConfig() }
         verify { mockAssetDataLoader.loadMetaData(any(), any()) }
@@ -317,7 +315,7 @@ class McpClientTest {
         )
         val mockUiConfig = createMockUiConfigDto()
         val mockMeta = createMockMetaDto()
-        
+
         coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
         every { mockAssetDataLoader.loadUiConfig() } returns mockUiConfig
         every { mockAssetDataLoader.loadMetaData(any(), any()) } returns mockMeta
@@ -331,7 +329,7 @@ class McpClientTest {
         assertEquals("Network error", result.error)
         assertNotNull(result.uiConfig)
         assertNotNull(result.meta)
-        
+
         coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
         verify { mockAssetDataLoader.loadUiConfig() }
         verify { mockAssetDataLoader.loadMetaData(any(), any()) }
@@ -344,7 +342,7 @@ class McpClientTest {
         val mockResponse = createMockMovieDetailsMcpResponse()
         val mockUiConfig = createMockUiConfigDto()
         val mockMeta = createMockMetaDto()
-        
+
         coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
         every { mockAssetDataLoader.loadUiConfig() } returns mockUiConfig
         every { mockAssetDataLoader.loadMetaData(any(), any(), any()) } returns mockMeta
@@ -359,7 +357,7 @@ class McpClientTest {
         assertNotNull(result.meta)
         assertEquals(movieId, result.data?.id)
         assertEquals("Test Movie Details", result.data?.title)
-        
+
         coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
         verify { mockAssetDataLoader.loadUiConfig() }
         verify { mockAssetDataLoader.loadMetaData(any(), any(), any()) }
@@ -376,7 +374,7 @@ class McpClientTest {
         )
         val mockUiConfig = createMockUiConfigDto()
         val mockMeta = createMockMetaDto()
-        
+
         coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
         every { mockAssetDataLoader.loadUiConfig() } returns mockUiConfig
         every { mockAssetDataLoader.loadMetaData(any(), any(), any()) } returns mockMeta
@@ -390,7 +388,7 @@ class McpClientTest {
         assertEquals("Movie not found", result.error)
         assertNotNull(result.uiConfig)
         assertNotNull(result.meta)
-        
+
         coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
         verify { mockAssetDataLoader.loadUiConfig() }
         verify { mockAssetDataLoader.loadMetaData(any(), any(), any()) }
@@ -403,7 +401,7 @@ class McpClientTest {
         val mockResponse = createMockMcpResponse()
         val mockUiConfig = createMockUiConfigDto()
         val mockMeta = createMockMetaDto()
-        
+
         coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
         every { mockAssetDataLoader.loadUiConfig() } returns mockUiConfig
         every { mockAssetDataLoader.loadMetaData(any(), any()) } returns mockMeta
@@ -418,7 +416,7 @@ class McpClientTest {
         val successResult = result as Result.Success
         assertNotNull(successResult.data)
         assertNotNull(successResult.uiConfig)
-        
+
         coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
         verify { mockAssetDataLoader.loadUiConfig() }
     }
@@ -432,7 +430,7 @@ class McpClientTest {
             data = null,
             error = "Network error"
         )
-        
+
         coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
 
         // When
@@ -442,7 +440,7 @@ class McpClientTest {
         assertTrue(result is Result.Error)
         val errorResult = result as Result.Error
         assertTrue(errorResult.message.contains("Network error"))
-        
+
         coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
     }
 
@@ -453,7 +451,7 @@ class McpClientTest {
         val mockResponse = createMockMovieDetailsMcpResponse()
         val mockUiConfig = createMockUiConfigDto()
         val mockMeta = createMockMetaDto()
-        
+
         coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
         every { mockAssetDataLoader.loadUiConfig() } returns mockUiConfig
         every { mockAssetDataLoader.loadMetaData(any(), any(), any()) } returns mockMeta
@@ -466,7 +464,7 @@ class McpClientTest {
         val successResult = result as Result.Success
         assertNotNull(successResult.data)
         assertNotNull(successResult.uiConfig)
-        
+
         coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
         verify { mockAssetDataLoader.loadUiConfig() }
     }
@@ -480,7 +478,7 @@ class McpClientTest {
             data = null,
             error = "Movie not found"
         )
-        
+
         coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
 
         // When
@@ -490,7 +488,7 @@ class McpClientTest {
         assertTrue(result is Result.Error)
         val errorResult = result as Result.Error
         assertTrue(errorResult.message.contains("Movie not found"))
-        
+
         coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
     }
 
@@ -499,7 +497,7 @@ class McpClientTest {
         // Given
         val page = 1
         val exception = RuntimeException("Network failure")
-        
+
         coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } throws exception
 
         // When
@@ -509,7 +507,7 @@ class McpClientTest {
         assertTrue(result is Result.Error)
         val errorResult = result as Result.Error
         assertTrue(errorResult.message.contains("Network failure"))
-        
+
         coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
     }
 
@@ -518,7 +516,7 @@ class McpClientTest {
         // Given
         val movieId = 123
         val exception = RuntimeException("Service unavailable")
-        
+
         coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } throws exception
 
         // When
@@ -528,7 +526,7 @@ class McpClientTest {
         assertTrue(result is Result.Error)
         val errorResult = result as Result.Error
         assertTrue(errorResult.message.contains("Service unavailable"))
-        
+
         coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
     }
 
@@ -537,7 +535,7 @@ class McpClientTest {
         // Given
         val page = 1
         val mockMovies = listOf(createMockMovieDto())
-        
+
         every { mockAssetDataLoader.loadMockMovies() } returns mockMovies
         every { mockAssetDataLoader.loadUiConfig() } returns createMockUiConfigDto()
         every { mockAssetDataLoader.loadMetaData(any(), any()) } returns createMockMetaDto()
@@ -552,7 +550,7 @@ class McpClientTest {
         assertNotNull(result.meta)
         assertEquals(1, result.data?.movies?.size)
         assertTrue(result.data?.movies?.get(0)?.title?.startsWith("Top Rated") == true)
-        
+
         verify { mockAssetDataLoader.loadMockMovies() }
         verify { mockAssetDataLoader.loadUiConfig() }
         verify { mockAssetDataLoader.loadMetaData(any(), any()) }
@@ -563,7 +561,7 @@ class McpClientTest {
         // Given
         val page = 1
         val mockMovies = listOf(createMockMovieDto())
-        
+
         every { mockAssetDataLoader.loadMockMovies() } returns mockMovies
         every { mockAssetDataLoader.loadUiConfig() } returns createMockUiConfigDto()
         every { mockAssetDataLoader.loadMetaData(any(), any()) } returns createMockMetaDto()
@@ -578,7 +576,7 @@ class McpClientTest {
         assertNotNull(result.meta)
         assertEquals(1, result.data?.movies?.size)
         assertTrue(result.data?.movies?.get(0)?.title?.startsWith("Now Playing") == true)
-        
+
         verify { mockAssetDataLoader.loadMockMovies() }
         verify { mockAssetDataLoader.loadUiConfig() }
         verify { mockAssetDataLoader.loadMetaData(any(), any()) }
@@ -590,7 +588,7 @@ class McpClientTest {
         val movieId = 123
         val page = 1
         val mockMovies = listOf(createMockMovieDto())
-        
+
         every { mockAssetDataLoader.loadMockMovies() } returns mockMovies
         every { mockAssetDataLoader.loadUiConfig() } returns createMockUiConfigDto()
         every { mockAssetDataLoader.loadMetaData(any(), any()) } returns createMockMetaDto()
@@ -605,7 +603,7 @@ class McpClientTest {
         assertNotNull(result.meta)
         assertEquals(1, result.data?.movies?.size)
         assertTrue(result.data?.movies?.get(0)?.title?.startsWith("Recommended") == true)
-        
+
         verify { mockAssetDataLoader.loadMockMovies() }
         verify { mockAssetDataLoader.loadUiConfig() }
         verify { mockAssetDataLoader.loadMetaData(any(), any()) }
@@ -639,7 +637,7 @@ class McpClientTest {
                 "adult" to false
             )
         )
-        
+
         val paginationData = mapOf(
             "page" to 1,
             "totalPages" to 10,
@@ -647,12 +645,12 @@ class McpClientTest {
             "hasNext" to true,
             "hasPrevious" to false
         )
-        
+
         val responseData = mapOf(
             "movies" to moviesData,
             "pagination" to paginationData
         )
-        
+
         return McpResponse(
             success = true,
             data = responseData,
@@ -687,11 +685,11 @@ class McpClientTest {
             "revenue" to 2000000L,
             "status" to "Released"
         )
-        
+
         val responseData = mapOf(
             "movieDetails" to movieDetailsData
         )
-        
+
         return McpResponse(
             success = true,
             data = responseData,

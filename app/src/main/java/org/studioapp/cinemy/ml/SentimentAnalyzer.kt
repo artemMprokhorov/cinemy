@@ -4,40 +4,38 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import java.io.IOException
 import kotlin.math.abs
-import org.studioapp.cinemy.BuildConfig
 
 /**
  * Keyword-based sentiment analyzer for Cinemy
  * Fast and efficient implementation for mobile devices
  */
 class SentimentAnalyzer private constructor(private val context: Context) {
-    
+
     private var model: KeywordSentimentModel? = null
     private var isInitialized = false
-    
+
     companion object {
         @Volatile
         private var INSTANCE: SentimentAnalyzer? = null
-        
+
         fun getInstance(context: Context): SentimentAnalyzer {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: SentimentAnalyzer(context.applicationContext).also { INSTANCE = it }
             }
         }
-        
+
         // Model constants
         private const val MODEL_TYPE = "keyword_sentiment_analysis"
         private const val MODEL_VERSION = "2.0.0"
         private const val MODEL_LANGUAGE = "en"
         private const val MODEL_ACCURACY = "85%+"
         private const val MODEL_SPEED = "very_fast"
-        
+
         // Error messages
         private const val ERROR_ANALYZER_NOT_INITIALIZED = "Analyzer not initialized"
         private const val ERROR_ANALYSIS_ERROR = "Analysis error: "
-        
+
         // Performance thresholds
         private const val BASE_CONFIDENCE = 0.6
         private const val KEYWORD_WEIGHT = 1.0
@@ -46,7 +44,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         private const val NEUTRAL_THRESHOLD = 0.5
         private const val MIN_CONFIDENCE = 0.3
         private const val MAX_CONFIDENCE = 0.9
-        
+
         // Intensity modifiers
         private const val INTENSITY_ABSOLUTELY = 1.5
         private const val INTENSITY_COMPLETELY = 1.4
@@ -62,34 +60,34 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         private const val INTENSITY_NEVER = -1.0
         private const val INTENSITY_BARELY = -0.5
     }
-    
+
     /**
      * Initialize analyzer (call at app startup)
      */
     suspend fun initialize(): Boolean = withContext(Dispatchers.IO) {
         runCatching {
             if (isInitialized) return@withContext true
-            
+
             // Try to load enhanced model from assets first
             val modelJson = runCatching {
                 context.assets.open("ml_models/enhanced_keyword_v2_model.json").use { inputStream ->
                     inputStream.bufferedReader().readText()
                 }
             }.getOrNull()
-            
+
             model = if (modelJson != null) {
                 loadModelFromJson(modelJson)
             } else {
                 createSimpleModel()
             }
-            
+
             isInitialized = true
             true
         }.getOrElse { e ->
             false
         }
     }
-    
+
     /**
      * Analyze text sentiment
      */
@@ -97,30 +95,31 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         if (!isInitialized || model == null) {
             return@withContext SentimentResult.error(ERROR_ANALYZER_NOT_INITIALIZED)
         }
-        
+
         if (text.isBlank()) {
             return@withContext SentimentResult.neutral()
         }
-        
+
         runCatching {
             analyzeWithKeywords(text, model!!)
         }.getOrElse { e ->
             SentimentResult.error("$ERROR_ANALYSIS_ERROR${e.message}")
         }
     }
-    
+
     /**
      * Batch analysis of multiple texts
      */
-    suspend fun analyzeBatch(texts: List<String>): List<SentimentResult> = withContext(Dispatchers.Default) {
-        texts.map { text -> analyzeSentiment(text) }
-    }
-    
+    suspend fun analyzeBatch(texts: List<String>): List<SentimentResult> =
+        withContext(Dispatchers.Default) {
+            texts.map { text -> analyzeSentiment(text) }
+        }
+
     /**
      * Get model information
      */
     fun getModelInfo(): ModelInfo? = model?.modelInfo
-    
+
     /**
      * Load model from JSON string
      */
@@ -128,7 +127,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         return runCatching {
             val json = Json { ignoreUnknownKeys = true }
             val modelData = json.decodeFromString<EnhancedModelData>(jsonString)
-            
+
             val modelInfo = ModelInfo(
                 type = modelData.model_info.type,
                 version = modelData.model_info.version,
@@ -136,7 +135,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 accuracy = modelData.model_info.accuracy,
                 speed = modelData.model_info.speed
             )
-            
+
             val algorithm = AlgorithmConfig(
                 baseConfidence = modelData.algorithm.base_confidence,
                 keywordWeight = 1.0,
@@ -146,13 +145,13 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 minConfidence = modelData.algorithm.min_confidence,
                 maxConfidence = modelData.algorithm.max_confidence
             )
-            
+
             val contextBoosters = ContextBoosters(
                 movieTerms = null, // Not in v2 model
                 positiveContext = modelData.context_patterns?.strong_positive,
                 negativeContext = modelData.context_patterns?.strong_negative
             )
-            
+
             KeywordSentimentModel(
                 modelInfo = modelInfo,
                 positiveKeywords = modelData.positive_keywords,
@@ -166,7 +165,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             createSimpleModel()
         }
     }
-    
+
     /**
      * Create simple model for testing
      */
@@ -178,7 +177,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             accuracy = MODEL_ACCURACY,
             speed = MODEL_SPEED
         )
-        
+
         val positiveKeywords = listOf(
             "amazing", "fantastic", "great", "excellent", "wonderful", "brilliant",
             "outstanding", "superb", "magnificent", "perfect", "incredible", "awesome",
@@ -186,7 +185,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             "phenomenal", "spectacular", "remarkable", "exceptional", "marvelous",
             "stunning", "impressive", "captivating", "engaging", "compelling"
         )
-        
+
         val negativeKeywords = listOf(
             "terrible", "awful", "horrible", "bad", "worst", "hate", "disgusting",
             "boring", "stupid", "dumb", "annoying", "frustrating", "disappointing",
@@ -194,12 +193,12 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             "atrocious", "dreadful", "appalling", "mediocre", "unwatchable",
             "cringe", "cheesy", "predictable", "cliché", "overrated"
         )
-        
+
         val neutralIndicators = listOf(
             "okay", "decent", "average", "fine", "acceptable", "reasonable",
             "standard", "typical", "normal", "ordinary", "mediocre", "so-so"
         )
-        
+
         val intensityModifiers = mapOf(
             "absolutely" to INTENSITY_ABSOLUTELY,
             "completely" to INTENSITY_COMPLETELY,
@@ -215,7 +214,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             "never" to INTENSITY_NEVER,
             "barely" to INTENSITY_BARELY
         )
-        
+
         val contextBoosters = ContextBoosters(
             movieTerms = listOf(
                 "cinematography", "acting", "plot", "story", "director", "performance",
@@ -230,7 +229,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 "mangled", "butchered", "torture", "nightmare"
             )
         )
-        
+
         val algorithm = AlgorithmConfig(
             baseConfidence = BASE_CONFIDENCE,
             keywordWeight = KEYWORD_WEIGHT,
@@ -240,7 +239,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             minConfidence = MIN_CONFIDENCE,
             maxConfidence = MAX_CONFIDENCE
         )
-        
+
         return KeywordSentimentModel(
             modelInfo = modelInfo,
             positiveKeywords = positiveKeywords,
@@ -251,7 +250,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             algorithm = algorithm
         )
     }
-    
+
     /**
      * Main keyword analysis algorithm with fallback
      */
@@ -264,19 +263,22 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             analyzeWithSimpleKeywords(text, model)
         }
     }
-    
+
     /**
      * Enhanced analysis algorithm with support for all new features
      */
-    private fun analyzeWithEnhancedKeywords(text: String, model: KeywordSentimentModel): SentimentResult {
+    private fun analyzeWithEnhancedKeywords(
+        text: String,
+        model: KeywordSentimentModel
+    ): SentimentResult {
         val textLower = text.lowercase()
         val words = textLower.split(Regex("\\W+")).filter { it.isNotBlank() }
-        
+
         var positiveScore = 0.0
         var negativeScore = 0.0
         var neutralScore = 0.0
         var foundWords = mutableListOf<String>()
-        
+
         // Basic keyword analysis
         for (word in words) {
             when {
@@ -284,17 +286,19 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                     positiveScore += 1.0
                     foundWords.add("+$word")
                 }
+
                 model.negativeKeywords.contains(word) -> {
                     negativeScore += 1.0
                     foundWords.add("-$word")
                 }
+
                 model.neutralIndicators?.contains(word) == true -> {
                     neutralScore += 0.5
                     foundWords.add("~$word")
                 }
             }
         }
-        
+
         // Apply intensity modifiers
         model.intensityModifiers?.forEach { (modifier, multiplier) ->
             if (textLower.contains(modifier)) {
@@ -303,12 +307,14 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                         positiveScore *= multiplier
                         negativeScore *= multiplier
                     }
+
                     multiplier < 0 -> {
                         // Invert values for negative modifiers
                         val temp = positiveScore
                         positiveScore = negativeScore * abs(multiplier)
                         negativeScore = temp * abs(multiplier)
                     }
+
                     else -> {
                         positiveScore *= multiplier
                         negativeScore *= multiplier
@@ -317,7 +323,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 foundWords.add("*$modifier")
             }
         }
-        
+
         // Context boosters (if available in model)
         model.contextBoosters?.let { boosters ->
             boosters.movieTerms?.forEach { term ->
@@ -325,14 +331,14 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                     foundWords.add("🎬$term")
                 }
             }
-            
+
             boosters.positiveContext?.forEach { context ->
                 if (textLower.contains(context)) {
                     positiveScore += 0.3
                     foundWords.add("✨$context")
                 }
             }
-            
+
             boosters.negativeContext?.forEach { context ->
                 if (textLower.contains(context)) {
                     negativeScore += 0.3
@@ -340,7 +346,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 }
             }
         }
-        
+
         // Enhanced context pattern matching (v2.0 feature)
         model.contextBoosters?.let { boosters ->
             boosters.positiveContext?.forEach { pattern ->
@@ -349,7 +355,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                     foundWords.add("🔥$pattern")
                 }
             }
-            
+
             boosters.negativeContext?.forEach { pattern ->
                 if (textLower.contains(pattern)) {
                     negativeScore += 0.5 // Higher bonus for context patterns
@@ -357,48 +363,57 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 }
             }
         }
-        
+
         // Determine result with enhanced logic
         val algorithm = model.algorithm
         val totalScore = positiveScore + negativeScore + neutralScore
-        
+
         return when {
             totalScore == 0.0 -> SentimentResult.neutral()
-            
+
             positiveScore > negativeScore && positiveScore > neutralScore -> {
                 val confidence = minOf(
                     algorithm.maxConfidence,
-                    algorithm.baseConfidence + (positiveScore - maxOf(negativeScore, neutralScore)) * 0.15
+                    algorithm.baseConfidence + (positiveScore - maxOf(
+                        negativeScore,
+                        neutralScore
+                    )) * 0.15
                 )
                 SentimentResult.positive(confidence, foundWords)
             }
-            
+
             negativeScore > positiveScore && negativeScore > neutralScore -> {
                 val confidence = minOf(
                     algorithm.maxConfidence,
-                    algorithm.baseConfidence + (negativeScore - maxOf(positiveScore, neutralScore)) * 0.15
+                    algorithm.baseConfidence + (negativeScore - maxOf(
+                        positiveScore,
+                        neutralScore
+                    )) * 0.15
                 )
                 SentimentResult.negative(confidence, foundWords)
             }
-            
+
             else -> {
                 val confidence = algorithm.baseConfidence
                 SentimentResult.neutral(confidence, foundWords)
             }
         }
     }
-    
+
     /**
      * Simple algorithm as fallback for backward compatibility
      */
-    private fun analyzeWithSimpleKeywords(text: String, model: KeywordSentimentModel): SentimentResult {
+    private fun analyzeWithSimpleKeywords(
+        text: String,
+        model: KeywordSentimentModel
+    ): SentimentResult {
         val textLower = text.lowercase()
         val words = textLower.split(Regex("\\W+")).filter { it.isNotBlank() }
-        
+
         var positiveScore = 0.0
         var negativeScore = 0.0
         var foundWords = mutableListOf<String>()
-        
+
         for (word in words) {
             if (model.positiveKeywords.contains(word)) {
                 positiveScore += 1.0
@@ -409,9 +424,9 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 foundWords.add("-$word")
             }
         }
-        
+
         val algorithm = model.algorithm
-        
+
         return when {
             positiveScore > negativeScore -> {
                 val confidence = minOf(
@@ -420,6 +435,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 )
                 SentimentResult.positive(confidence, foundWords)
             }
+
             negativeScore > positiveScore -> {
                 val confidence = minOf(
                     algorithm.maxConfidence,
@@ -427,6 +443,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 )
                 SentimentResult.negative(confidence, foundWords)
             }
+
             else -> SentimentResult.neutral()
         }
     }
@@ -444,19 +461,19 @@ data class SentimentResult(
     val processingTimeMs: Long = 0L
 ) {
     companion object {
-        fun positive(confidence: Double, keywords: List<String> = emptyList()) = 
+        fun positive(confidence: Double, keywords: List<String> = emptyList()) =
             SentimentResult(SentimentType.POSITIVE, confidence, foundKeywords = keywords)
-            
-        fun negative(confidence: Double, keywords: List<String> = emptyList()) = 
+
+        fun negative(confidence: Double, keywords: List<String> = emptyList()) =
             SentimentResult(SentimentType.NEGATIVE, confidence, foundKeywords = keywords)
-            
-        fun neutral(confidence: Double = 0.5, keywords: List<String> = emptyList()) = 
+
+        fun neutral(confidence: Double = 0.5, keywords: List<String> = emptyList()) =
             SentimentResult(SentimentType.NEUTRAL, confidence, foundKeywords = keywords)
-            
-        fun error(message: String) = 
+
+        fun error(message: String) =
             SentimentResult(SentimentType.NEUTRAL, 0.0, false, message)
     }
-    
+
     /**
      * Returns human-readable description
      */

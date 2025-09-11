@@ -1,6 +1,5 @@
 package org.studioapp.cinemy.data.repository
 
-import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.mcp.McpClient
 import org.studioapp.cinemy.data.model.MovieDetailsResponse
 import org.studioapp.cinemy.data.model.MovieListResponse
@@ -14,8 +13,8 @@ class MovieRepositoryImpl(
     override suspend fun getPopularMovies(page: Int): Result<MovieListResponse> {
         return runCatching {
             val response = mcpClient.getPopularMoviesViaMcp(page)
-            
-            
+
+
             when (response) {
                 is Result.Success -> {
                     Result.Success(
@@ -36,8 +35,8 @@ class MovieRepositoryImpl(
     override suspend fun getMovieDetails(movieId: Int): Result<MovieDetailsResponse> {
         return runCatching {
             val response = mcpClient.getMovieDetailsViaMcp(movieId)
-            
-            
+
+
             when (response) {
                 is Result.Success -> {
                     Result.Success(

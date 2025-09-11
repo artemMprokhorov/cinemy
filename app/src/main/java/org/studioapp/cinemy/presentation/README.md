@@ -280,11 +280,11 @@ composable(Screen.Details.route) { backStackEntry ->
 class MoviesListViewModel(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
-    
+
     private fun loadMovies() {
         viewModelScope.launch {
             val result = movieRepository.getPopularMovies(_state.value.currentPage)
-            
+
             when (result) {
                 is Result.Success -> {
                     val movieListResponse = result.data as MovieListResponse

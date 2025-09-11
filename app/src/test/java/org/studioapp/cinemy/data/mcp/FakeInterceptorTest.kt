@@ -5,15 +5,14 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
-import org.junit.Test
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Assert.assertFalse
+import org.junit.Before
+import org.junit.Test
 import org.studioapp.cinemy.data.mcp.models.McpRequest
-import org.studioapp.cinemy.data.mcp.models.McpResponse
 import org.studioapp.cinemy.data.model.StringConstants
 
 class FakeInterceptorTest {
@@ -54,7 +53,7 @@ class FakeInterceptorTest {
             method = StringConstants.MCP_METHOD_GET_POPULAR_MOVIES,
             params = mapOf("page" to "1")
         )
-        
+
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
         // When
@@ -65,7 +64,7 @@ class FakeInterceptorTest {
         assertNull(result.data)
         assertEquals(StringConstants.ERROR_LOADING_MOCK_DATA, result.error)
         assertEquals(StringConstants.ERROR_LOADING_MOCK_DATA, result.message)
-        
+
         verify { mockContext.assets.open(StringConstants.ASSET_MOCK_MOVIES) }
     }
 
@@ -76,7 +75,7 @@ class FakeInterceptorTest {
             method = StringConstants.MCP_METHOD_GET_MOVIE_DETAILS,
             params = mapOf("movieId" to "123")
         )
-        
+
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
         // When
@@ -87,7 +86,7 @@ class FakeInterceptorTest {
         assertNull(result.data)
         assertEquals(StringConstants.ERROR_LOADING_MOCK_DATA, result.error)
         assertEquals(StringConstants.ERROR_LOADING_MOCK_DATA, result.message)
-        
+
         verify { mockContext.assets.open(StringConstants.ASSET_MOCK_MOVIE_DETAILS) }
     }
 
@@ -98,7 +97,7 @@ class FakeInterceptorTest {
             method = StringConstants.MCP_METHOD_GET_POPULAR_MOVIES,
             params = mapOf("page" to "1")
         )
-        
+
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
         // When
@@ -109,7 +108,7 @@ class FakeInterceptorTest {
         assertNull(result.data)
         assertEquals(StringConstants.ERROR_LOADING_MOCK_DATA, result.error)
         assertEquals(StringConstants.ERROR_LOADING_MOCK_DATA, result.message)
-        
+
         verify { mockContext.assets.open(StringConstants.ASSET_MOCK_MOVIES) }
     }
 
@@ -120,7 +119,7 @@ class FakeInterceptorTest {
             method = StringConstants.MCP_METHOD_GET_MOVIE_DETAILS,
             params = mapOf("movieId" to "123")
         )
-        
+
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
         // When
@@ -131,7 +130,7 @@ class FakeInterceptorTest {
         assertNull(result.data)
         assertEquals(StringConstants.ERROR_LOADING_MOCK_DATA, result.error)
         assertEquals(StringConstants.ERROR_LOADING_MOCK_DATA, result.message)
-        
+
         verify { mockContext.assets.open(StringConstants.ASSET_MOCK_MOVIE_DETAILS) }
     }
 
@@ -142,7 +141,7 @@ class FakeInterceptorTest {
             method = StringConstants.MCP_METHOD_GET_POPULAR_MOVIES,
             params = mapOf("page" to "1")
         )
-        
+
         // Mock asset loading to return fallback response (simulating asset not found)
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
@@ -155,7 +154,7 @@ class FakeInterceptorTest {
         assertNull(result.data)
         assertNotNull(result.error)
         assertTrue(result.error!!.contains("Failed to load mock data from assets"))
-        
+
         verify { mockContext.assets.open(StringConstants.ASSET_MOCK_MOVIES) }
     }
 
@@ -166,7 +165,7 @@ class FakeInterceptorTest {
             method = StringConstants.MCP_METHOD_GET_MOVIE_DETAILS,
             params = mapOf("movieId" to "123")
         )
-        
+
         val mockJson = """{
             "success": true,
             "data": {
@@ -178,7 +177,7 @@ class FakeInterceptorTest {
             },
             "message": "Success"
         }"""
-        
+
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
         // When
@@ -190,7 +189,7 @@ class FakeInterceptorTest {
         assertNull(result.data)
         assertNotNull(result.error)
         assertTrue(result.error!!.contains("Failed to load mock data from assets"))
-        
+
         verify { mockContext.assets.open(StringConstants.ASSET_MOCK_MOVIE_DETAILS) }
     }
 
@@ -209,7 +208,7 @@ class FakeInterceptorTest {
             method = StringConstants.MCP_METHOD_GET_POPULAR_MOVIES,
             params = mapOf("page" to "3")
         )
-        
+
         val mockJson = """{
             "success": true,
             "data": {
@@ -224,7 +223,7 @@ class FakeInterceptorTest {
             },
             "message": "Success"
         }"""
-        
+
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
         // When
@@ -237,7 +236,7 @@ class FakeInterceptorTest {
         assertFalse(result1.success)
         assertFalse(result2.success)
         assertFalse(result3.success)
-        
+
         // All should have error messages
         assertNotNull(result1.error)
         assertNotNull(result2.error)
@@ -245,7 +244,7 @@ class FakeInterceptorTest {
         assertTrue(result1.error!!.contains("Failed to load mock data from assets"))
         assertTrue(result2.error!!.contains("Failed to load mock data from assets"))
         assertTrue(result3.error!!.contains("Failed to load mock data from assets"))
-        
+
         verify(exactly = 3) { mockContext.assets.open(StringConstants.ASSET_MOCK_MOVIES) }
     }
 
@@ -256,7 +255,7 @@ class FakeInterceptorTest {
             method = StringConstants.MCP_METHOD_GET_POPULAR_MOVIES,
             params = emptyMap()
         )
-        
+
         val mockJson = """{
             "success": true,
             "data": {
@@ -267,7 +266,7 @@ class FakeInterceptorTest {
             },
             "message": "Success"
         }"""
-        
+
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
         // When
@@ -278,7 +277,7 @@ class FakeInterceptorTest {
         assertNull(result.data)
         assertNotNull(result.error)
         assertTrue(result.error!!.contains("Failed to load mock data from assets"))
-        
+
         verify { mockContext.assets.open(StringConstants.ASSET_MOCK_MOVIES) }
     }
 
@@ -289,7 +288,7 @@ class FakeInterceptorTest {
             method = StringConstants.MCP_METHOD_GET_POPULAR_MOVIES,
             params = mapOf("page" to "invalid")
         )
-        
+
         val mockJson = """{
             "success": true,
             "data": {
@@ -300,7 +299,7 @@ class FakeInterceptorTest {
             },
             "message": "Success"
         }"""
-        
+
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
         // When
@@ -311,7 +310,7 @@ class FakeInterceptorTest {
         assertNull(result.data)
         assertNotNull(result.error)
         assertTrue(result.error!!.contains("Failed to load mock data from assets"))
-        
+
         verify { mockContext.assets.open(StringConstants.ASSET_MOCK_MOVIES) }
     }
 
@@ -322,7 +321,7 @@ class FakeInterceptorTest {
             method = StringConstants.MCP_METHOD_GET_POPULAR_MOVIES,
             params = mapOf("page" to "1")
         )
-        
+
         val mockJson = """{
             "success": true,
             "data": {
@@ -332,7 +331,7 @@ class FakeInterceptorTest {
             },
             "message": "Success"
         }"""
-        
+
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
         // When
@@ -345,18 +344,18 @@ class FakeInterceptorTest {
         assertFalse(mapResult.success)
         assertFalse(listResult.success)
         assertFalse(stringResult.success)
-        
+
         assertNull(mapResult.data)
         assertNull(listResult.data)
         assertNull(stringResult.data)
-        
+
         assertNotNull(mapResult.error)
         assertNotNull(listResult.error)
         assertNotNull(stringResult.error)
         assertTrue(mapResult.error!!.contains("Failed to load mock data from assets"))
         assertTrue(listResult.error!!.contains("Failed to load mock data from assets"))
         assertTrue(stringResult.error!!.contains("Failed to load mock data from assets"))
-        
+
         verify(exactly = 3) { mockContext.assets.open(StringConstants.ASSET_MOCK_MOVIES) }
     }
 
@@ -367,7 +366,7 @@ class FakeInterceptorTest {
             method = StringConstants.MCP_METHOD_GET_POPULAR_MOVIES,
             params = mapOf("page" to "1")
         )
-        
+
         val mockJson = """{
             "success": true,
             "data": {
@@ -375,7 +374,7 @@ class FakeInterceptorTest {
             },
             "message": "Success"
         }"""
-        
+
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
         // When
@@ -386,7 +385,7 @@ class FakeInterceptorTest {
         assertNull(result.data)
         assertNotNull(result.error)
         assertTrue(result.error!!.contains("Failed to load mock data from assets"))
-        
+
         verify { mockContext.assets.open(StringConstants.ASSET_MOCK_MOVIES) }
     }
 
@@ -397,13 +396,13 @@ class FakeInterceptorTest {
             method = StringConstants.MCP_METHOD_GET_MOVIE_DETAILS,
             params = mapOf("movieId" to "123")
         )
-        
+
         val mockJson = """{
             "success": true,
             "data": null,
             "message": "Success"
         }"""
-        
+
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
         // When
@@ -415,7 +414,7 @@ class FakeInterceptorTest {
         assertNull(result.data)
         assertNotNull(result.error)
         assertTrue(result.error!!.contains("Failed to load mock data from assets"))
-        
+
         verify { mockContext.assets.open(StringConstants.ASSET_MOCK_MOVIE_DETAILS) }
     }
 
@@ -426,7 +425,7 @@ class FakeInterceptorTest {
             method = StringConstants.MCP_METHOD_GET_POPULAR_MOVIES,
             params = mapOf("page" to "1")
         )
-        
+
         val mockJson = """{
             "data": {
                 "movies": [
@@ -435,7 +434,7 @@ class FakeInterceptorTest {
             },
             "message": "Success"
         }"""
-        
+
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
         // When
@@ -447,7 +446,7 @@ class FakeInterceptorTest {
         assertNull(result.data)
         assertNotNull(result.error)
         assertTrue(result.error!!.contains("Failed to load mock data from assets"))
-        
+
         verify { mockContext.assets.open(StringConstants.ASSET_MOCK_MOVIES) }
     }
 
@@ -458,7 +457,7 @@ class FakeInterceptorTest {
             method = StringConstants.MCP_METHOD_GET_MOVIE_DETAILS,
             params = mapOf("movieId" to "123")
         )
-        
+
         val mockJson = """{
             "success": true,
             "data": {
@@ -468,7 +467,7 @@ class FakeInterceptorTest {
                 }
             }
         }"""
-        
+
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
         // When
@@ -480,7 +479,7 @@ class FakeInterceptorTest {
         assertNotNull(result.error)
         assertTrue(result.error!!.contains("Failed to load mock data from assets"))
         assertNotNull(result.message) // Should use default message
-        
+
         verify { mockContext.assets.open(StringConstants.ASSET_MOCK_MOVIE_DETAILS) }
     }
 }

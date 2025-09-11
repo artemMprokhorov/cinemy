@@ -1,10 +1,6 @@
 package org.studioapp.cinemy.data.mcp
 
 import android.content.Context
-import org.studioapp.cinemy.BuildConfig
-import org.studioapp.cinemy.data.mcp.models.McpRequest
-import org.studioapp.cinemy.data.mcp.models.McpResponse
-import org.studioapp.cinemy.data.model.StringConstants
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.android.Android
@@ -18,6 +14,10 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import org.json.JSONArray
 import org.json.JSONObject
+import org.studioapp.cinemy.BuildConfig
+import org.studioapp.cinemy.data.mcp.models.McpRequest
+import org.studioapp.cinemy.data.mcp.models.McpResponse
+import org.studioapp.cinemy.data.model.StringConstants
 import java.io.InputStream
 
 class McpHttpClient(private val context: Context) {

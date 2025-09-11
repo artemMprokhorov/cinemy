@@ -1,7 +1,7 @@
 package org.studioapp.cinemy.data.util
 
-import android.graphics.Color as AndroidColor
 import androidx.compose.ui.graphics.Color
+import android.graphics.Color as AndroidColor
 
 /**
  * Utility class for color parsing that can be mocked in tests

@@ -4,31 +4,13 @@ import android.content.Context
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.Before
-import org.junit.Test
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Assert.assertFalse
-import java.io.BufferedReader
-import kotlin.Function1
+import org.junit.Before
+import org.junit.Test
 import org.studioapp.cinemy.data.model.StringConstants
-import org.studioapp.cinemy.data.remote.dto.ButtonConfigurationDto
-import org.studioapp.cinemy.data.remote.dto.ColorSchemeDto
-import org.studioapp.cinemy.data.remote.dto.GeminiColorsDto
-import org.studioapp.cinemy.data.remote.dto.GenreDto
-import org.studioapp.cinemy.data.remote.dto.McpMovieListResponseDto
-import org.studioapp.cinemy.data.remote.dto.McpResponseDto
-import org.studioapp.cinemy.data.remote.dto.MetaDto
-import org.studioapp.cinemy.data.remote.dto.MovieDetailsDto
-import org.studioapp.cinemy.data.remote.dto.MovieDto
-import org.studioapp.cinemy.data.remote.dto.PaginationDto
-import org.studioapp.cinemy.data.remote.dto.ProductionCompanyDto
-import org.studioapp.cinemy.data.remote.dto.SearchInfoDto
-import org.studioapp.cinemy.data.remote.dto.SentimentReviewsDto
-import org.studioapp.cinemy.data.remote.dto.TextConfigurationDto
-import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
 
 class AssetDataLoaderTest {
 
@@ -84,7 +66,7 @@ class AssetDataLoaderTest {
         val method = "testMethod"
         val resultsCount = 10
         val movieId = 123
-        
+
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
         // When
@@ -106,7 +88,7 @@ class AssetDataLoaderTest {
         val method = "testMethod"
         val resultsCount = 5
         val movieId: Int? = null
-        
+
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
         // When
@@ -181,7 +163,7 @@ class AssetDataLoaderTest {
         val method = "testMethod"
         val resultsCount = 5
         val movieId: Int? = null
-        
+
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
 
         // When
@@ -317,7 +299,7 @@ class AssetDataLoaderTest {
     fun `loadMetaData should handle JSON parsing exception gracefully`() {
         // Given
         every { mockContext.assets.open(any()) } throws Exception("Asset not found")
-        
+
         val method = "testMethod"
         val resultsCount = 5
         val movieId = 123

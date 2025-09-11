@@ -19,7 +19,7 @@ object TestColorUtils {
         } else {
             colorString
         }
-        
+
         // Parse the hex color and ensure alpha channel is set to 1.0 (0xFF)
         // Format: ARGB (Alpha, Red, Green, Blue)
         val colorValue = when (cleanColor.length) {
@@ -27,7 +27,7 @@ object TestColorUtils {
             8 -> cleanColor.toLong(16) // Already has alpha
             else -> cleanColor.toLong(16) // Fallback
         }
-        
+
         return Color(colorValue)
     }
 }

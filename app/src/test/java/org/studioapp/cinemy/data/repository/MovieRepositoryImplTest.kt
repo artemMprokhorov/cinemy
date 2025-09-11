@@ -2,17 +2,12 @@ package org.studioapp.cinemy.data.repository
 
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Assert.assertFalse
 import org.studioapp.cinemy.data.mcp.McpClient
 import org.studioapp.cinemy.data.model.ButtonConfiguration
 import org.studioapp.cinemy.data.model.ColorScheme
@@ -21,18 +16,16 @@ import org.studioapp.cinemy.data.model.Genre
 import org.studioapp.cinemy.data.model.Meta
 import org.studioapp.cinemy.data.model.Movie
 import org.studioapp.cinemy.data.model.MovieDetails
+import org.studioapp.cinemy.data.model.MovieDetailsData
+import org.studioapp.cinemy.data.model.MovieDetailsResponse
 import org.studioapp.cinemy.data.model.MovieListData
 import org.studioapp.cinemy.data.model.MovieListResponse
 import org.studioapp.cinemy.data.model.Pagination
 import org.studioapp.cinemy.data.model.ProductionCompany
 import org.studioapp.cinemy.data.model.Result
-import org.studioapp.cinemy.data.model.SearchInfo
 import org.studioapp.cinemy.data.model.SentimentReviews
-import org.studioapp.cinemy.data.model.StringConstants
 import org.studioapp.cinemy.data.model.TextConfiguration
 import org.studioapp.cinemy.data.model.UiConfiguration
-import org.studioapp.cinemy.data.model.MovieDetailsResponse
-import org.studioapp.cinemy.data.model.MovieDetailsData
 
 class MovieRepositoryImplTest {
 
@@ -51,9 +44,9 @@ class MovieRepositoryImplTest {
         val page = 1
         val mockMovieListResponse = createMockMovieListResponse()
         val mockUiConfig = createMockUiConfig()
-        
-        coEvery { 
-            mockMcpClient.getPopularMoviesViaMcp(page) 
+
+        coEvery {
+            mockMcpClient.getPopularMoviesViaMcp(page)
         } returns Result.Success(
             data = mockMovieListResponse,
             uiConfig = mockUiConfig
@@ -67,7 +60,7 @@ class MovieRepositoryImplTest {
         val successResult = result as Result.Success
         assertEquals(mockMovieListResponse, successResult.data)
         assertEquals(mockUiConfig, successResult.uiConfig)
-        
+
         coVerify { mockMcpClient.getPopularMoviesViaMcp(page) }
     }
 
@@ -77,9 +70,9 @@ class MovieRepositoryImplTest {
         val page = 1
         val errorMessage = "Network error"
         val mockUiConfig = createMockUiConfig()
-        
-        coEvery { 
-            mockMcpClient.getPopularMoviesViaMcp(page) 
+
+        coEvery {
+            mockMcpClient.getPopularMoviesViaMcp(page)
         } returns Result.Error(errorMessage, mockUiConfig)
 
         // When
@@ -90,7 +83,7 @@ class MovieRepositoryImplTest {
         val errorResult = result as Result.Error
         assertEquals(errorMessage, errorResult.message)
         assertEquals(mockUiConfig, errorResult.uiConfig)
-        
+
         coVerify { mockMcpClient.getPopularMoviesViaMcp(page) }
     }
 
@@ -98,9 +91,9 @@ class MovieRepositoryImplTest {
     fun `getPopularMovies should return Loading when MCP client returns Loading`() = runBlocking {
         // Given
         val page = 1
-        
-        coEvery { 
-            mockMcpClient.getPopularMoviesViaMcp(page) 
+
+        coEvery {
+            mockMcpClient.getPopularMoviesViaMcp(page)
         } returns Result.Loading
 
         // When
@@ -108,7 +101,7 @@ class MovieRepositoryImplTest {
 
         // Then
         assertTrue(result is Result.Loading)
-        
+
         coVerify { mockMcpClient.getPopularMoviesViaMcp(page) }
     }
 
@@ -117,9 +110,9 @@ class MovieRepositoryImplTest {
         // Given
         val page = 1
         val exception = RuntimeException("Network failure")
-        
-        coEvery { 
-            mockMcpClient.getPopularMoviesViaMcp(page) 
+
+        coEvery {
+            mockMcpClient.getPopularMoviesViaMcp(page)
         } throws exception
 
         // When
@@ -130,7 +123,7 @@ class MovieRepositoryImplTest {
         val errorResult = result as Result.Error
         assertTrue(errorResult.message.contains("Network failure"))
         assertTrue(errorResult.message.contains("Network error"))
-        
+
         coVerify { mockMcpClient.getPopularMoviesViaMcp(page) }
     }
 
@@ -140,9 +133,9 @@ class MovieRepositoryImplTest {
         val movieId = 123
         val mockMovieDetailsResponse = createMockMovieDetailsResponse()
         val mockUiConfig = createMockUiConfig()
-        
-        coEvery { 
-            mockMcpClient.getMovieDetailsViaMcp(movieId) 
+
+        coEvery {
+            mockMcpClient.getMovieDetailsViaMcp(movieId)
         } returns Result.Success(
             data = mockMovieDetailsResponse,
             uiConfig = mockUiConfig
@@ -156,7 +149,7 @@ class MovieRepositoryImplTest {
         val successResult = result as Result.Success
         assertEquals(mockMovieDetailsResponse, successResult.data)
         assertEquals(mockUiConfig, successResult.uiConfig)
-        
+
         coVerify { mockMcpClient.getMovieDetailsViaMcp(movieId) }
     }
 
@@ -166,9 +159,9 @@ class MovieRepositoryImplTest {
         val movieId = 123
         val errorMessage = "Movie not found"
         val mockUiConfig = createMockUiConfig()
-        
-        coEvery { 
-            mockMcpClient.getMovieDetailsViaMcp(movieId) 
+
+        coEvery {
+            mockMcpClient.getMovieDetailsViaMcp(movieId)
         } returns Result.Error(errorMessage, mockUiConfig)
 
         // When
@@ -179,7 +172,7 @@ class MovieRepositoryImplTest {
         val errorResult = result as Result.Error
         assertEquals(errorMessage, errorResult.message)
         assertEquals(mockUiConfig, errorResult.uiConfig)
-        
+
         coVerify { mockMcpClient.getMovieDetailsViaMcp(movieId) }
     }
 
@@ -187,9 +180,9 @@ class MovieRepositoryImplTest {
     fun `getMovieDetails should return Loading when MCP client returns Loading`() = runBlocking {
         // Given
         val movieId = 123
-        
-        coEvery { 
-            mockMcpClient.getMovieDetailsViaMcp(movieId) 
+
+        coEvery {
+            mockMcpClient.getMovieDetailsViaMcp(movieId)
         } returns Result.Loading
 
         // When
@@ -197,7 +190,7 @@ class MovieRepositoryImplTest {
 
         // Then
         assertTrue(result is Result.Loading)
-        
+
         coVerify { mockMcpClient.getMovieDetailsViaMcp(movieId) }
     }
 
@@ -206,9 +199,9 @@ class MovieRepositoryImplTest {
         // Given
         val movieId = 123
         val exception = RuntimeException("Service unavailable")
-        
-        coEvery { 
-            mockMcpClient.getMovieDetailsViaMcp(movieId) 
+
+        coEvery {
+            mockMcpClient.getMovieDetailsViaMcp(movieId)
         } throws exception
 
         // When
@@ -219,7 +212,7 @@ class MovieRepositoryImplTest {
         val errorResult = result as Result.Error
         assertTrue(errorResult.message.contains("Service unavailable"))
         assertTrue(errorResult.message.contains("Network error"))
-        
+
         coVerify { mockMcpClient.getMovieDetailsViaMcp(movieId) }
     }
 
@@ -228,9 +221,9 @@ class MovieRepositoryImplTest {
         // Given
         val page = 1
         val exception = RuntimeException()
-        
-        coEvery { 
-            mockMcpClient.getPopularMoviesViaMcp(page) 
+
+        coEvery {
+            mockMcpClient.getPopularMoviesViaMcp(page)
         } throws exception
 
         // When
@@ -240,7 +233,7 @@ class MovieRepositoryImplTest {
         assertTrue(result is Result.Error)
         val errorResult = result as Result.Error
         assertTrue(errorResult.message.contains("Unknown error"))
-        
+
         coVerify { mockMcpClient.getPopularMoviesViaMcp(page) }
     }
 
@@ -249,9 +242,9 @@ class MovieRepositoryImplTest {
         // Given
         val movieId = 123
         val exception = RuntimeException()
-        
-        coEvery { 
-            mockMcpClient.getMovieDetailsViaMcp(movieId) 
+
+        coEvery {
+            mockMcpClient.getMovieDetailsViaMcp(movieId)
         } throws exception
 
         // When
@@ -261,7 +254,7 @@ class MovieRepositoryImplTest {
         assertTrue(result is Result.Error)
         val errorResult = result as Result.Error
         assertTrue(errorResult.message.contains("Unknown error"))
-        
+
         coVerify { mockMcpClient.getMovieDetailsViaMcp(movieId) }
     }
 

@@ -1,7 +1,8 @@
 package org.studioapp.cinemy.data.mcp
 
 import android.content.Context
-import org.studioapp.cinemy.BuildConfig
+import org.json.JSONArray
+import org.json.JSONObject
 import org.studioapp.cinemy.data.model.StringConstants
 import org.studioapp.cinemy.data.remote.dto.ButtonConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.ColorSchemeDto
@@ -10,8 +11,6 @@ import org.studioapp.cinemy.data.remote.dto.MetaDto
 import org.studioapp.cinemy.data.remote.dto.MovieDto
 import org.studioapp.cinemy.data.remote.dto.TextConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
-import org.json.JSONArray
-import org.json.JSONObject
 
 /**
  * Loads UI configuration and meta data from asset files
@@ -28,8 +27,8 @@ class AssetDataLoader(private val context: Context) {
             if (jsonString != null) {
                 val jsonObject = JSONObject(jsonString)
                 val uiConfigJson = jsonObject.optJSONObject(StringConstants.FIELD_UI_CONFIG)
-                
-                
+
+
                 if (uiConfigJson != null) {
                     parseUiConfigFromJson(uiConfigJson)
                 } else {
