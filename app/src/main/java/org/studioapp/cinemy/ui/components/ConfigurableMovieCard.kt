@@ -239,28 +239,3 @@ fun ConfigurableMovieCard(
         }
     }
 }
-
-/**
- * Compact version of the movie card for list views
- *
- * @param movie The movie data to display
- * @param onClick The action to perform when the card is clicked
- * @param uiConfig Optional UI configuration for dynamic styling
- * @param modifier Modifier to apply to the card
- */
-@Composable
-fun ConfigurableMovieCardCompact(
-    movie: Movie,
-    onClick: () -> Unit,
-    uiConfig: UiConfiguration? = null,
-    modifier: Modifier = Modifier
-) {
-    ConfigurableMovieCard(
-        movie = movie,
-        onClick = onClick,
-        uiConfig = uiConfig,
-        modifier = modifier,
-        showRating = false,
-        showReleaseDate = false
-    )
-}
