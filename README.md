@@ -295,7 +295,6 @@ User Action → Intent → ViewModel → Repository → MCP Client
 - [ ] UI tests
 
 ### 📋 Planned
-- [ ] Movie search
 - [ ] Filters and sorting
 - [ ] Favorites
 - [ ] Push notifications
