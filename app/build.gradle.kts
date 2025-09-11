@@ -58,6 +58,8 @@ android {
 
         create("prod") {
             dimension = "environment"
+            applicationIdSuffix = ".prod"
+            versionNameSuffix = "-prod"
 
             buildConfigField("Boolean", "USE_MOCK_DATA", "false")
             buildConfigField(
