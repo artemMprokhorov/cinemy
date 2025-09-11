@@ -4,7 +4,7 @@
 
 ## PROJECT OVERVIEW
 
-**Repository:** https://github.com/artemMprokhorov/Cinemy.git  
+**Repository:** https://github.com/artemMprokhorov/cinemy.git  
 **Project Type:** Educational Android project (not for Play Store publication)  
 **Goal:** Demonstrate modern Android architecture with AI integration  
 **Status:** ✅ **COMPLETED** - MCP integration and Server-Driven UI fully implemented

@@ -44,8 +44,8 @@
 
 1. **Clone Repository**
    ```bash
-   git clone https://github.com/your-username/Cinemy.git
-   cd Cinemy
+   git clone https://github.com/artemMprokhorov/cinemy.git
+   cd cinemy
    ```
 
 2. **Environment Variables Setup**

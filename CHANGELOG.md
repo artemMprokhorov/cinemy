@@ -3,7 +3,7 @@
 ## 🎯 **PROJECT OVERVIEW**
 **Cinemy** is a modern Android application demonstrating MVI architecture with MCP (Model Context Protocol) integration and server-driven UI capabilities.
 
-**Repository**: https://github.com/artemMprokhorov/Cinemy.git  
+**Repository**: https://github.com/artemMprokhorov/cinemy.git  
 **Status**: ✅ **COMPLETE** - Android application fully implemented with MCP integration
 
 ---
@@ -503,7 +503,7 @@
 ## 📞 **Support & Contact**
 
 ### **Project Information**
-- **Repository**: https://github.com/artemMprokhorov/Cinemy.git
+- **Repository**: https://github.com/artemMprokhorov/cinemy.git
 - **Status**: Active development
 - **License**: MIT License
 - **Contributing**: Open for contributions

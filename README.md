@@ -170,8 +170,8 @@ The project is built on **Clean Architecture** principles using the **MVI (Model
 
 1. **Clone Repository**
    ```bash
-   git clone https://github.com/artemMprokhorov/Cinemy.git
-   cd Cinemy
+   git clone https://github.com/artemMprokhorov/cinemy.git
+   cd cinemy
    ```
 
 2. **Environment Variables Setup**
@@ -195,8 +195,8 @@ The project is built on **Clean Architecture** principles using the **MVI (Model
 
 #### Development (Mock Data):
 ```bash
-git clone https://github.com/artemMprokhorov/Cinemy.git
-cd Cinemy
+git clone https://github.com/artemMprokhorov/cinemy.git
+cd cinemy
 ./gradlew installDummyDebug
 # Or manually install:
 adb install -r app/build/outputs/apk/dummy/debug/app-dummy-debug.apk
@@ -559,9 +559,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contacts
 
-- **Developer**: [Your Name]
-- **Email**: [your.email@example.com]
-- **GitHub**: [@your-username]
+- **Developer**: Artem Prokhorov
+- **Email**: artem.prokhorov@example.com
+- **GitHub**: [@artemMprokhorov](https://github.com/artemMprokhorov)
+- **Repository**: [https://github.com/artemMprokhorov/cinemy.git](https://github.com/artemMprokhorov/cinemy.git)
 
 ## 🙏 Acknowledgments
 
