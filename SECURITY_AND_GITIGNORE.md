@@ -1,4 +1,4 @@
-# Security and .gitignore Updates for TmdbAi
+# Security and .gitignore Updates for Cinemy
 
 ## 🔒 **Security Improvements Made**
 
@@ -175,4 +175,4 @@ git log --oneline -10
 
 ---
 
-*This document ensures that TmdbAi maintains the highest security standards while providing a robust development environment.*
+*This document ensures that Cinemy maintains the highest security standards while providing a robust development environment.*

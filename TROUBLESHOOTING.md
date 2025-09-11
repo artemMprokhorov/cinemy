@@ -1,4 +1,4 @@
-# TmdbAi Troubleshooting
+# Cinemy Troubleshooting
 
 ## Build Issues
 

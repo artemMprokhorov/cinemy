@@ -1,10 +1,10 @@
-# AI ASSISTANT GUIDE - TmdbAi Project
+# AI ASSISTANT GUIDE - Cinemy Project
 
-> **IMPORTANT:** This document is a reference guide for interacting with AI assistant on the TmdbAi project. Copy the link to this file at the beginning of each new chat with AI.
+> **IMPORTANT:** This document is a reference guide for interacting with AI assistant on the Cinemy project. Copy the link to this file at the beginning of each new chat with AI.
 
 ## PROJECT OVERVIEW
 
-**Repository:** https://github.com/artemMprokhorov/TmdbAi.git  
+**Repository:** https://github.com/artemMprokhorov/Cinemy.git  
 **Project Type:** Educational Android project (not for Play Store publication)  
 **Goal:** Demonstrate modern Android architecture with AI integration  
 **Status:** ✅ **COMPLETED** - MCP integration and Server-Driven UI fully implemented
@@ -265,7 +265,7 @@ ui/
 ### For New Chats Use This Format:
 
 ```
-🎯 PROJECT: TmdbAi Android App with AI MCP Backend
+🎯 PROJECT: Cinemy Android App with AI MCP Backend
 📋 PHASE: ✅ COMPLETED - MCP integration and Server-Driven UI
 🔗 REFERENCE: [Link to this file in GitHub]
 ❓ TASK: [Specific question/task]
@@ -342,7 +342,7 @@ ui/
 
 ## 🎯 CONCLUSION
 
-**TmdbAi project successfully completed at the Android application level!** 
+**Cinemy project successfully completed at the Android application level!** 
 
 ✅ **All main components implemented:**
 - MVI architecture with Clean Architecture

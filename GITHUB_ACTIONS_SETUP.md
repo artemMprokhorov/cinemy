@@ -1,8 +1,8 @@
-# GitHub Actions Setup for TmdbAi
+# GitHub Actions Setup for Cinemy
 
 ## Overview
 
-This document summarizes the comprehensive GitHub Actions setup implemented for the TmdbAi Android project. The setup includes automated CI/CD, testing, security scanning, and deployment workflows.
+This document summarizes the comprehensive GitHub Actions setup implemented for the Cinemy Android project. The setup includes automated CI/CD, testing, security scanning, and deployment workflows.
 
 ## Recent Updates (v2.4.1)
 
@@ -120,9 +120,9 @@ SNYK_TOKEN               # Snyk API token for vulnerability scanning
 - **Environment Support**: Different versions for different environments
 
 ### Multi-Flavor Building
-- **Development**: `com.example.tmdbai.dev` with debug features
-- **Staging**: `com.example.tmdbai.staging` for testing
-- **Production**: `com.example.tmdbai` for release
+- **Development**: `org.studioapp.cinemy.dev` with debug features
+- **Staging**: `org.studioapp.cinemy.staging` for testing
+- **Production**: `org.studioapp.cinemy` for release
 
 ### Security and Quality
 - **Lint Checks**: Code quality and style validation
@@ -270,4 +270,4 @@ For questions or issues:
 
 ---
 
-*This setup provides a robust, automated CI/CD pipeline for the TmdbAi Android application with comprehensive testing, security scanning, and deployment automation.*
+*This setup provides a robust, automated CI/CD pipeline for the Cinemy Android application with comprehensive testing, security scanning, and deployment automation.*

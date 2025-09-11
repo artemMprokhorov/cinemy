@@ -1,6 +1,6 @@
 # DEVELOPMENT_GUIDE.md
 
-**TmdbAi - Development Guide**  
+**Cinemy - Development Guide**  
 **Created**: 2024-12-19  
 **Last Updated**: 2024-12-10  
 **Version**: 2.4.0
@@ -44,8 +44,8 @@
 
 1. **Clone Repository**
    ```bash
-   git clone https://github.com/your-username/TmdbAi.git
-   cd TmdbAi
+   git clone https://github.com/your-username/Cinemy.git
+   cd Cinemy
    ```
 
 2. **Environment Variables Setup**
@@ -83,20 +83,20 @@ The project supports three build variants:
 
 | Variant | Purpose | Data Source | Package ID |
 |---------|---------|-------------|------------|
-| **dummyDebug** | Development | Mock data only | `com.example.tmdbai.dummy.debug` |
-| **prodDebug** | Testing | Real backend + fallback | `com.example.tmdbai.debug` |
-| **prodRelease** | Production | Real backend only | `com.example.tmdbai` |
+| **dummyDebug** | Development | Mock data only | `org.studioapp.cinemy.dummy.debug` |
+| **prodDebug** | Testing | Real backend + fallback | `org.studioapp.cinemy.debug` |
+| **prodRelease** | Production | Real backend only | `org.studioapp.cinemy` |
 
 #### Installation and Launch
 
 ```bash
 # Dummy version (mock data)
 ./gradlew installDummyDebug
-adb shell am start -n com.example.tmdbai.dummy.debug/com.example.tmdbai.MainActivity
+adb shell am start -n org.studioapp.cinemy.dummy.debug/org.studioapp.cinemy.MainActivity
 
 # Production version (real backend)
 ./gradlew installProdDebug
-adb shell am start -n com.example.tmdbai.debug/com.example.tmdbai.MainActivity
+adb shell am start -n org.studioapp.cinemy.debug/org.studioapp.cinemy.MainActivity
 ```
 
 ## 🎨 Edge-to-Edge Display
@@ -981,7 +981,7 @@ class MoviesListScreenTest {
         
         // When
         composeTestRule.setContent {
-            TmdbAiTheme {
+            CinemyTheme {
                 MoviesListScreen(
                     onMovieClick = {},
                     onBackPressed = {},
@@ -1016,7 +1016,7 @@ class MoviesListScreenUITest {
         
         // When
         composeTestRule.setContent {
-            TmdbAiTheme {
+            CinemyTheme {
                 MoviesListScreen(
                     onMovieClick = { movieId -> clickedMovieId = movieId },
                     onBackPressed = {},

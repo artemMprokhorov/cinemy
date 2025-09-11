@@ -1,9 +1,9 @@
-# TmdbAi Project Changelog
+# Cinemy Project Changelog
 
 ## 🎯 **PROJECT OVERVIEW**
-**TmdbAi** is a modern Android application demonstrating MVI architecture with MCP (Model Context Protocol) integration and server-driven UI capabilities.
+**Cinemy** is a modern Android application demonstrating MVI architecture with MCP (Model Context Protocol) integration and server-driven UI capabilities.
 
-**Repository**: https://github.com/artemMprokhorov/TmdbAi.git  
+**Repository**: https://github.com/artemMprokhorov/Cinemy.git  
 **Status**: ✅ **COMPLETE** - Android application fully implemented with MCP integration
 
 ---
@@ -78,7 +78,7 @@
 - **Forced Color Application**: Absolute priority for uiConfig colors over Material Theme
 
 #### 🐛 **Critical Fixes**
-- **Material Theme Conflicts**: Fixed TmdbAiTheme overriding uiConfig colors
+- **Material Theme Conflicts**: Fixed CinemyTheme overriding uiConfig colors
 - **Color Application**: Added `.background()` modifiers for absolute color priority
 - **MCP Flow**: Complete uiConfig flow from N8N → MCP → Repository → ViewModel → UI
 - **Diagnostic Logging**: Comprehensive logging for MCP response debugging
@@ -503,7 +503,7 @@
 ## 📞 **Support & Contact**
 
 ### **Project Information**
-- **Repository**: https://github.com/artemMprokhorov/TmdbAi.git
+- **Repository**: https://github.com/artemMprokhorov/Cinemy.git
 - **Status**: Active development
 - **License**: MIT License
 - **Contributing**: Open for contributions
@@ -518,7 +518,7 @@
 
 ## 🎊 **Conclusion**
 
-**TmdbAi v1.0.0 represents a significant milestone in modern Android development**, demonstrating:
+**Cinemy v1.0.0 represents a significant milestone in modern Android development**, demonstrating:
 
 - ✅ **Complete MVI Architecture** with MCP integration
 - ✅ **Server-Driven UI** capabilities
@@ -532,4 +532,4 @@ The project serves as an **excellent example** of how to implement modern Androi
 
 ---
 
-*This changelog is maintained as part of the TmdbAi project documentation. For the latest updates, always refer to the GitHub repository.*
+*This changelog is maintained as part of the Cinemy project documentation. For the latest updates, always refer to the GitHub repository.*

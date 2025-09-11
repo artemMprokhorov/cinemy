@@ -3,8 +3,8 @@
 -keep public class * extends androidx.activity.ComponentActivity
 
 # Keep data models  
--keep class com.example.tmdbai.data.model.** { *; }
--keep class com.example.tmdbai.data.remote.dto.** { *; }
+-keep class org.studioapp.cinemy.data.model.** { *; }
+-keep class org.studioapp.cinemy.data.remote.dto.** { *; }
 
 # Gson
 -keepattributes Signature

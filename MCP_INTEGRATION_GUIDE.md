@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides a comprehensive guide to the **MCP (Model Context Protocol)** integration in the TmdbAi Android application. The MCP integration is **fully implemented** and operational, enabling server-driven UI and AI-powered backend communication.
+This document provides a comprehensive guide to the **MCP (Model Context Protocol)** integration in the Cinemy Android application. The MCP integration is **fully implemented** and operational, enabling server-driven UI and AI-powered backend communication.
 
 ## 🎯 **INTEGRATION STATUS: COMPLETE**
 
@@ -530,7 +530,7 @@ Log.d("Performance", "MCP call took ${duration}ms")
 
 ## 🎉 **CONCLUSION**
 
-The **MCP integration in TmdbAi is complete and fully operational**. The application now has:
+The **MCP integration in Cinemy is complete and fully operational**. The application now has:
 
 - ✅ **Complete MCP Protocol Implementation**
 - ✅ **Server-Driven UI Capabilities**

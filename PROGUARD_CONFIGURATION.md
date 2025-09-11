@@ -1,13 +1,13 @@
-# ProGuard Configuration for TmdbAi
+# ProGuard Configuration for Cinemy
 
 ## Overview
 
-This document explains the ProGuard/R8 configuration used in the TmdbAi Android application. ProGuard is a code shrinker, optimizer, and obfuscator that helps reduce APK size and protect your code from reverse engineering.
+This document explains the ProGuard/R8 configuration used in the Cinemy Android application. ProGuard is a code shrinker, optimizer, and obfuscator that helps reduce APK size and protect your code from reverse engineering.
 
 ## Configuration Files
 
 ### 1. `app/proguard-rules.pro`
-- **Purpose**: Custom ProGuard rules specific to TmdbAi
+- **Purpose**: Custom ProGuard rules specific to Cinemy
 - **Location**: `app/proguard-rules.pro`
 - **Scope**: Application-specific obfuscation and optimization rules
 
@@ -89,14 +89,14 @@ buildTypes {
 ### 6. Project-Specific Classes
 ```proguard
 # Keep main app classes
--keep class com.example.tmdbai.MainActivity { *; }
--keep class com.example.tmdbai.TmdbAiApplication { *; }
+-keep class org.studioapp.cinemy.MainActivity { *; }
+-keep class org.studioapp.cinemy.CinemyApplication { *; }
 
 # Keep ViewModels
--keep class com.example.tmdbai.presentation.**.ViewModel { *; }
+-keep class org.studioapp.cinemy.presentation.**.ViewModel { *; }
 
 # Keep data models
--keep class com.example.tmdbai.data.model.** { *; }
+-keep class org.studioapp.cinemy.data.model.** { *; }
 ```
 
 ## Optimization Features
@@ -319,7 +319,7 @@ git commit -m "Add ProGuard mapping files for version X.X.X"
 
 ## Conclusion
 
-The ProGuard configuration for TmdbAi provides:
+The ProGuard configuration for Cinemy provides:
 
 1. **🔒 Security**: Code obfuscation and protection
 2. **📦 Optimization**: Reduced APK size and improved performance

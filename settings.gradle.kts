@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "TmdbAi"
+rootProject.name = "Cinemy"
 include(":app")
  

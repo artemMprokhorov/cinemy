@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TmdbAi</string>
+    <string name="app_name">Cinemy</string>
 
     <!-- UI Text -->
     <string name="movies_title">Movies</string>
@@ -13,7 +13,7 @@
     <string name="next_button">Next</string>
     <string name="adult_content_indicator">18+</string>
     <string name="popularity_label">Popularity: %1$.1f</string>
-    <string name="app_title">Movie App</string>
+    <string name="app_title">Cinemy</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="pull_progress_animation">pull_progress</string>
     <string name="movie_details">movie details</string>
@@ -27,7 +27,7 @@
     <string name="last_page_message">This is the last available page</string>
     <string name="pull_to_refresh_try_again">Pull to refresh to try again</string>
     <string name="page_info">Page %1$d of %2$d</string>
-    <string name="splash_subtitle">Discover new films from TMDB</string>
+    <string name="splash_subtitle">Discover new films with AI</string>
     
     <!-- Sentiment Analysis -->
     <string name="sentiment_analysis_title">🤖 Sentiment Analysis Reviews</string>

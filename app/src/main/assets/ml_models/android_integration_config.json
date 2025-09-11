@@ -1,6 +1,6 @@
 {
   "project_info": {
-    "name": "TmdbAi Sentiment Analysis",
+    "name": "Cinemy Sentiment Analysis",
     "version": "1.0.0",
     "integration_type": "keyword_based_primary",
     "created_date": "2024-09-09"
@@ -22,7 +22,7 @@
   "android_integration": {
     "min_sdk": 24,
     "target_sdk": 34,
-    "package_name": "com.tmdbai.ml",
+    "package_name": "org.studioapp.cinemy.ml",
     "main_class": "SentimentAnalyzer",
     "assets_folder": "ml_models",
     "permissions": []

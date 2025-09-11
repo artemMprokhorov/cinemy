@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.tmdbai"
+    namespace = "org.studioapp.cinemy"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.tmdbai"
+        applicationId = "org.studioapp.cinemy"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -53,7 +53,7 @@ android {
             buildConfigField("String", "FLAVOR_NAME", "\"Dummy\"")
             buildConfigField("String", "TMDB_IMAGE_BASE_URL", "\"https://image.tmdb.org/t/p/\"")
 
-            resValue("string", "app_name", "TmdbAi Dummy")
+            resValue("string", "app_name", "Cinemy Dummy")
         }
 
         create("prod") {
@@ -68,7 +68,7 @@ android {
             buildConfigField("String", "FLAVOR_NAME", "\"Production\"")
             buildConfigField("String", "TMDB_IMAGE_BASE_URL", "\"https://image.tmdb.org/t/p/\"")
 
-            resValue("string", "app_name", "TmdbAi")
+            resValue("string", "app_name", "Cinemy")
         }
     }
 

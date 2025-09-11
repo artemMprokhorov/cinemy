@@ -1,6 +1,6 @@
-# GitHub Actions for TmdbAi
+# GitHub Actions for Cinemy
 
-This directory contains GitHub Actions workflows and configurations for automated CI/CD, testing, and deployment of the TmdbAi Android application.
+This directory contains GitHub Actions workflows and configurations for automated CI/CD, testing, and deployment of the Cinemy Android application.
 
 ## Workflows Overview
 

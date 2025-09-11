@@ -1,6 +1,6 @@
 # PROJECT_STATUS.md
 
-**TmdbAi - Project Status**  
+**Cinemy - Project Status**  
 **Created**: 2024-12-19  
 **Last Updated**: 2024-12-10  
 **Version**: 2.4.0  

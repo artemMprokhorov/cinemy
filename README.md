@@ -1,4 +1,4 @@
-# TmdbAi - AI-Powered Movie Discovery App
+# Cinemy - AI-Powered Movie Discovery App
 
 [![Android](https://img.shields.io/badge/Android-API%2024+-green.svg)](https://developer.android.com/about/versions/android-14.0)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9.22-blue.svg)](https://kotlinlang.org/)
@@ -7,7 +7,7 @@
 
 ## 📱 Project Description
 
-TmdbAi is a modern Android application for discovering and exploring movies, using artificial intelligence through MCP (Model Context Protocol) for personalized recommendations and content analysis.
+Cinemy is a modern Android application for discovering and exploring movies, using artificial intelligence through MCP (Model Context Protocol) for personalized recommendations and content analysis.
 
 ### 🎯 Main Goals
 - Provide users with personalized movie recommendations
@@ -170,8 +170,8 @@ The project is built on **Clean Architecture** principles using the **MVI (Model
 
 1. **Clone Repository**
    ```bash
-   git clone https://github.com/artemMprokhorov/TmdbAi.git
-   cd TmdbAi
+   git clone https://github.com/artemMprokhorov/Cinemy.git
+   cd Cinemy
    ```
 
 2. **Environment Variables Setup**
@@ -195,8 +195,8 @@ The project is built on **Clean Architecture** principles using the **MVI (Model
 
 #### Development (Mock Data):
 ```bash
-git clone https://github.com/artemMprokhorov/TmdbAi.git
-cd TmdbAi
+git clone https://github.com/artemMprokhorov/Cinemy.git
+cd Cinemy
 ./gradlew installDummyDebug
 # Or manually install:
 adb install -r app/build/outputs/apk/dummy/debug/app-dummy-debug.apk
@@ -224,8 +224,8 @@ buildConfigField("String", "MCP_SERVER_URL", "\"https://your-backend.ngrok.io\""
 ## 📁 Project Structure
 
 ```
-app/src/main/java/com/example/tmdbai/
-├── TmdbAi.kt                    # Main application class
+app/src/main/java/org/studioapp/cinemy/
+├── Cinemy.kt                    # Main application class
 ├── navigation/                   # Navigation
 │   ├── Navigation.kt            # Main navigation
 │   └── Screen.kt                # Screen definitions

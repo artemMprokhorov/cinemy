@@ -1,6 +1,6 @@
 # DOCUMENTATION_OVERVIEW.md
 
-**TmdbAi - Documentation Overview**  
+**Cinemy - Documentation Overview**  
 **Created**: 2024-12-19  
 **Version**: 1.0.0-dev
 
@@ -131,7 +131,7 @@
 
 ## 🎉 Conclusion
 
-Created **complete and current documentation** for the TmdbAi project that covers:
+Created **complete and current documentation** for the Cinemy project that covers:
 
 ✅ **All development aspects**  
 ✅ **Modern practices**  

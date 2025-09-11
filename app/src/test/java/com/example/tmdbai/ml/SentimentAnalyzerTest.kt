@@ -1,4 +1,4 @@
-package com.example.tmdbai.ml
+package org.studioapp.cinemy.ml
 
 import org.junit.Test
 import org.junit.Assert.*

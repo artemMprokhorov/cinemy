@@ -1,12 +1,12 @@
 # ARCHITECTURE_GUIDE.md
 
-**TmdbAi - Architecture Guide**  
+**Cinemy - Architecture Guide**  
 **Created**: 2024-12-19  
 **Version**: 1.0.0-dev
 
 ## 🏗️ Architecture Overview
 
-TmdbAi is built on **Clean Architecture** principles using the **MVI (Model-View-Intent)** pattern. The architecture ensures clear separation of concerns, testability, and scalability.
+Cinemy is built on **Clean Architecture** principles using the **MVI (Model-View-Intent)** pattern. The architecture ensures clear separation of concerns, testability, and scalability.
 
 ## 🎯 MVI (Model-View-Intent) Pattern
 
@@ -97,8 +97,8 @@ MVI is an architectural pattern that ensures **unidirectional data flow** and **
 ## 📁 Folder Structure
 
 ```
-app/src/main/java/com/example/tmdbai/
-├── TmdbAi.kt                    # Main application class
+app/src/main/java/org/studioapp/cinemy/
+├── Cinemy.kt                    # Main application class
 ├── navigation/                   # Navigation
 │   ├── Navigation.kt            # Main navigation
 │   └── Screen.kt                # Screen definitions

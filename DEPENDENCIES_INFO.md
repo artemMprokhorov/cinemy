@@ -1,6 +1,6 @@
 # DEPENDENCIES_INFO.md
 
-**TmdbAi - Dependencies Information**  
+**Cinemy - Dependencies Information**  
 **Creation Date**: 2024-12-19  
 **Version**: 1.0.0-dev
 
