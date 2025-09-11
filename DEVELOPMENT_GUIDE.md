@@ -51,6 +51,18 @@
 - **Test coverage must meet minimum requirements (85%)**
 - **Fix all failing tests before proceeding with any development**
 
+## 🆕 Latest Updates (v2.4.3)
+
+### 🔧 Code Quality & Build System Improvements
+- **String Constants**: Moved hardcoded error messages to `StringConstants.kt` for better maintainability
+- **Package Name Conflicts**: Fixed production debug build package name conflicts
+- **Build Variants**: All three build variants now work correctly:
+  - `org.studioapp.cinemy.debug` (regular debug)
+  - `org.studioapp.cinemy.dummy.debug` (dummy debug)
+  - `org.studioapp.cinemy.prod.debug` (production debug)
+- **Sentiment Analysis**: Fixed unused variables in sentiment analysis implementation
+- **Error Handling**: Improved error message consistency using constants
+
 ## 🚀 Development Environment Setup
 
 ### 📋 Prerequisites
