@@ -105,17 +105,56 @@ class MovieDetailViewModel(
                 val positiveResults = sentimentAnalyzer.analyzeBatch(reviews.positive)
                 val negativeResults = sentimentAnalyzer.analyzeBatch(reviews.negative)
 
+                // Calculate overall sentiment from batch results
+                val overallSentiment = calculateOverallSentiment(positiveResults, negativeResults)
 
                 // Update state with analysis results
                 _state.value = _state.value.copy(
-                    sentimentResult = org.studioapp.cinemy.ml.SentimentResult.positive(
-                        confidence = 0.8,
-                        keywords = listOf("local_ai_analysis")
-                    )
+                    sentimentResult = overallSentiment
                 )
             }.onFailure { e ->
                 _state.value = _state.value.copy(
                     sentimentError = "Local AI analysis failed: ${e.message}"
+                )
+            }
+        }
+    }
+
+    private fun calculateOverallSentiment(
+        positiveResults: List<org.studioapp.cinemy.ml.SentimentResult>,
+        negativeResults: List<org.studioapp.cinemy.ml.SentimentResult>
+    ): org.studioapp.cinemy.ml.SentimentResult {
+        // Calculate average confidence for positive and negative results
+        val positiveConfidence = if (positiveResults.isNotEmpty()) {
+            positiveResults.filter { it.isSuccess }.map { it.confidence }.average()
+        } else 0.0
+
+        val negativeConfidence = if (negativeResults.isNotEmpty()) {
+            negativeResults.filter { it.isSuccess }.map { it.confidence }.average()
+        } else 0.0
+
+        // Collect all found keywords
+        val allKeywords = (positiveResults.flatMap { it.foundKeywords } + 
+                          negativeResults.flatMap { it.foundKeywords }).distinct()
+
+        // Determine overall sentiment based on confidence comparison
+        return when {
+            positiveConfidence > negativeConfidence && positiveConfidence > 0.5 -> {
+                org.studioapp.cinemy.ml.SentimentResult.positive(
+                    confidence = positiveConfidence,
+                    keywords = allKeywords
+                )
+            }
+            negativeConfidence > positiveConfidence && negativeConfidence > 0.5 -> {
+                org.studioapp.cinemy.ml.SentimentResult.negative(
+                    confidence = negativeConfidence,
+                    keywords = allKeywords
+                )
+            }
+            else -> {
+                org.studioapp.cinemy.ml.SentimentResult.neutral(
+                    confidence = maxOf(positiveConfidence, negativeConfidence),
+                    keywords = allKeywords
                 )
             }
         }
