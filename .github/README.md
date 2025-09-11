@@ -1,104 +1,82 @@
-# GitHub Actions for Cinemy
+# GitHub Actions & CI/CD
 
-This directory contains GitHub Actions workflows and configurations for automated CI/CD, testing, and deployment of the Cinemy Android application.
+This directory contains GitHub Actions workflows and configurations for the Cinemy Android application.
 
-## Workflows Overview
+## 📁 Directory Structure
 
-### 1. Android CI/CD (`android-ci-cd.yml`)
-Main workflow that handles:
-- **Build and Test**: Compiles the app, runs tests, and builds debug APKs for all flavors
-- **Release Build**: Creates signed release APKs and bundles for production
-- **Security Checks**: Runs lint, dependency analysis, and vulnerability scans
-- **Documentation**: Generates version information and build metadata
+```
+.github/
+├── README.md                    # This file - GitHub Actions overview
+├── workflows/                   # CI/CD workflows
+│   ├── WORKFLOWS.md            # Detailed workflows documentation
+│   ├── android-ci-cd.yml       # Main CI/CD pipeline
+│   ├── build-release-apk.yml   # Release build workflow
+│   ├── dependency-update.yml   # Dependency management
+│   ├── pull-request.yml        # PR validation
+│   └── simple-test.yml         # Quick testing
+└── actions/                     # Reusable actions
+    └── setup-android/          # Android environment setup
+        └── action.yml
+```
 
-**Triggers:**
-- Push to `main` or `develop` branches
-- Pull requests to `main` or `develop` branches
-- Release publication
+## 🚀 Quick Start
 
-### 2. Pull Request Checks (`pull-request.yml`)
-Comprehensive PR validation including:
-- **Code Quality**: Formatting checks, static analysis, and linting
-- **Security**: Vulnerability scanning and dependency analysis
-- **Build Verification**: Ensures all flavors compile successfully
-- **PR Comments**: Automatically comments with check results
+### Main Workflows
+- **[android-ci-cd.yml](workflows/android-ci-cd.yml)** - Main CI/CD pipeline
+- **[pull-request.yml](workflows/pull-request.yml)** - PR validation
+- **[dependency-update.yml](workflows/dependency-update.yml)** - Automated dependency updates
 
-**Triggers:**
-- Pull requests to `main` or `develop` branches
+### Documentation
+- **[WORKFLOWS.md](workflows/WORKFLOWS.md)** - Detailed workflows documentation
+- **[Main Project README](../README.md)** - Project overview and setup
 
-### 3. Dependency Update (`dependency-update.yml`)
-Automated dependency management:
-- **Weekly Checks**: Runs every Monday at 9:00 AM UTC
-- **Update Detection**: Identifies outdated dependencies
-- **Automated PRs**: Creates PRs for dependency updates
-- **Manual Trigger**: Can be run manually via workflow dispatch
+## 🔧 Setup
 
-**Triggers:**
-- Scheduled (weekly)
-- Manual dispatch
+### Required Secrets
+Configure these secrets in your GitHub repository settings:
 
-## Reusable Actions
-
-### Setup Android Environment (`actions/setup-android/action.yml`)
-Reusable action for setting up Android development environment:
-- Java JDK setup
-- Gradle configuration
-- Android SDK installation
-- Caching optimization
-
-## Required Secrets
-
-To use these workflows, you need to configure the following secrets in your GitHub repository:
-
-### For Signing (Release Builds)
 ```bash
+# For Release Builds
 KEYSTORE_BASE64          # Base64 encoded keystore file
 KEY_ALIAS                # Keystore alias
 KEYSTORE_PASSWORD        # Keystore password
 KEY_PASSWORD             # Key password
+
+# For Security Scanning
+SNYK_TOKEN               # Snyk API token
+
+# For Notifications (Optional)
+SLACK_WEBHOOK_URL        # Slack webhook
+DISCORD_WEBHOOK_URL      # Discord webhook
 ```
 
-### For Security Scanning
+### Build Variants
+- **dummyDebug** - Development with mock data
+- **prodDebug** - Testing with real backend
+- **prodRelease** - Production release
+
+## 📊 Workflow Status
+
+| Workflow | Status | Description |
+|----------|--------|-------------|
+| [android-ci-cd](workflows/android-ci-cd.yml) | ✅ Active | Main CI/CD pipeline |
+| [pull-request](workflows/pull-request.yml) | ✅ Active | PR validation |
+| [dependency-update](workflows/dependency-update.yml) | ✅ Active | Weekly dependency checks |
+| [build-release-apk](workflows/build-release-apk.yml) | ✅ Active | Release builds |
+| [simple-test](workflows/simple-test.yml) | ✅ Active | Quick testing |
+
+## 🛠️ Usage
+
+### Manual Triggers
 ```bash
-SNYK_TOKEN               # Snyk API token for vulnerability scanning
-```
-
-### For Notifications (Optional)
-```bash
-SLACK_WEBHOOK_URL        # Slack webhook for build notifications
-DISCORD_WEBHOOK_URL      # Discord webhook for build notifications
-```
-
-## Configuration
-
-### Version Management
-The workflows automatically generate version information:
-- `VERSION_NAME`: Based on branch name and build number
-- `VERSION_CODE`: Incremental build number
-- `GITHUB_SHA`: Git commit hash
-- `BUILD_TIME`: Timestamp of build
-
-### Build Flavors
-The app supports multiple build flavors:
-- **development**: Development environment with debug features
-- **staging**: Staging environment for testing
-- **production**: Production release builds
-
-### Signing Configuration
-Release builds are automatically signed using:
-- V1, V2, V3, and V4 signing for maximum compatibility
-- Environment-based keystore configuration
-- Secure secret management
-
-## Usage Examples
-
-### Manual Workflow Dispatch
-```bash
-# Trigger dependency update check
+# Trigger dependency update
 gh workflow run dependency-update.yml
 
 # Trigger manual build
 gh workflow run android-ci-cd.yml
+
+# Trigger release build
+gh workflow run build-release-apk.yml
 ```
 
 ### Branch Protection
@@ -107,105 +85,36 @@ Configure branch protection rules to require:
 - Security scans to complete
 - Build verification to succeed
 
-### Release Process
-1. Create a new release tag
-2. Workflow automatically builds signed APK and bundle
-3. Assets are uploaded to the release
-4. Release notes are generated
+## 📚 Documentation
 
-## Customization
+- **[WORKFLOWS.md](workflows/WORKFLOWS.md)** - Complete workflows documentation
+- **[Main README](../README.md)** - Project overview and setup
+- **[Development Guide](../DEVELOPMENT_GUIDE.md)** - Development guidelines
+- **[Project Guide](../PROJECT_GUIDE.md)** - Project documentation
 
-### Adding New Flavors
-1. Update `app/build.gradle.kts` with new flavor configuration
-2. Add corresponding build steps in workflows
-3. Update artifact upload paths
-
-### Modifying Build Steps
-1. Edit the appropriate workflow file
-2. Add or remove steps as needed
-3. Update dependencies and tools
-
-### Environment-Specific Configuration
-Use GitHub Environments to manage:
-- Different signing keys per environment
-- Environment-specific build parameters
-- Deployment targets
-
-## Troubleshooting
+## 🔍 Troubleshooting
 
 ### Common Issues
-
-#### Build Failures
-- Check Gradle version compatibility
-- Verify Android SDK installation
-- Review dependency conflicts
-
-#### Signing Issues
-- Ensure keystore secrets are properly configured
-- Verify keystore file format and encoding
-- Check alias and password configuration
-
-#### Cache Issues
-- Clear GitHub Actions cache if needed
-- Verify cache key configuration
-- Check cache size limits
+- **Build Failures**: Check Gradle version and Android SDK
+- **Signing Issues**: Verify keystore secrets configuration
+- **Cache Issues**: Clear GitHub Actions cache if needed
 
 ### Debug Mode
-Enable debug logging by setting:
+Enable debug logging:
 ```bash
 GRADLE_OPTS="-Dorg.gradle.debug=true"
 ```
 
-## Performance Optimization
+## 📞 Support
 
-### Caching Strategy
-- Gradle packages and dependencies
-- Android SDK components
-- Build artifacts between jobs
-
-### Parallel Execution
-- Multiple jobs run in parallel where possible
-- Dependency-based job ordering
-- Resource optimization
-
-### Resource Management
-- Memory allocation for Gradle builds
-- CPU optimization for compilation
-- Network bandwidth for artifact uploads
-
-## Security Considerations
-
-### Secret Management
-- Never commit secrets to version control
-- Use GitHub Secrets for sensitive data
-- Rotate keys regularly
-
-### Dependency Scanning
-- Regular vulnerability checks
-- Automated security updates
-- Compliance monitoring
-
-### Build Integrity
-- Signed builds for verification
-- Checksum validation
-- Audit trail maintenance
-
-## Support and Maintenance
-
-### Regular Tasks
-- Update workflow dependencies
-- Review security advisories
-- Monitor build performance
-- Update documentation
-
-### Monitoring
-- Build success rates
-- Performance metrics
-- Security scan results
-- Dependency update frequency
-
-For questions or issues, please:
-1. Check the workflow logs
-2. Review the configuration
-3. Consult the troubleshooting guide
+For questions or issues:
+1. Check workflow logs
+2. Review configuration
+3. Consult [WORKFLOWS.md](workflows/WORKFLOWS.md)
 4. Create an issue in the repository
+
+---
+
+**Last Updated**: 2025-01-XX  
+**Version**: 2.4.4  
+**Status**: Active

@@ -565,6 +565,13 @@ The project implements a complete constants system for the UI layer to eliminate
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## 📚 Documentation
+
+- **[Development Guide](DEVELOPMENT_GUIDE.md)** - Development guidelines and best practices
+- **[Project Guide](PROJECT_GUIDE.md)** - Project documentation and changelog
+- **[GitHub Actions](.github/README.md)** - CI/CD workflows and automation
+- **[Workflows Documentation](.github/workflows/WORKFLOWS.md)** - Detailed workflows guide
+
 ## 📞 Contacts
 
 - **Developer**: Artem Prokhorov
