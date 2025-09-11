@@ -89,10 +89,6 @@ fun ConfigurableMovieCard(
         MaterialTheme.colorScheme.primary
     }
 
-    // Debug logging for color application (removed to prevent infinite loop)
-    // if (BuildConfig.DEBUG) {
-    // }
-
     Card(
         modifier = modifier
             .fillMaxWidth()

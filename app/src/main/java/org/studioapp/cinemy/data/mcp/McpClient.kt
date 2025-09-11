@@ -45,8 +45,6 @@ class McpClient(private val context: Context) : MovieApiService {
         val response = mcpHttpClient.sendRequest<Map<String, Any>>(request)
 
         // Debug logging for MCP response
-        if (BuildConfig.DEBUG) {
-        }
 
         return if (response.success && response.data != null) {
             // Convert the response data to DTO format
@@ -94,8 +92,6 @@ class McpClient(private val context: Context) : MovieApiService {
             val uiConfig = assetDataLoader.loadUiConfig()
             
             // Debug logging for uiConfig
-            if (BuildConfig.DEBUG) {
-            }
 
             McpResponseDto(
                 success = true,
@@ -164,11 +160,6 @@ class McpClient(private val context: Context) : MovieApiService {
 
         val response = mcpHttpClient.sendRequest<Map<String, Any>>(request)
 
-        // Debug logging for MCP response
-        if (BuildConfig.DEBUG) {
-            if (BuildConfig.DEBUG) {
-            }
-        }
 
         return if (response.success && response.data != null) {
             // Convert the response data to DTO format
@@ -223,10 +214,6 @@ class McpClient(private val context: Context) : MovieApiService {
                 val uiConfig = assetDataLoader.loadUiConfig()
                 
                 // Debug logging for uiConfig
-                if (BuildConfig.DEBUG) {
-                    if (BuildConfig.DEBUG) {
-                    }
-                }
 
                 McpResponseDto(
                     success = true,
@@ -349,10 +336,6 @@ class McpClient(private val context: Context) : MovieApiService {
                 val uiConfig = assetDataLoader.loadUiConfig()
                 
                 // Debug logging for uiConfig
-                if (BuildConfig.DEBUG) {
-                    if (BuildConfig.DEBUG) {
-                    }
-                }
 
                 Result.Success(
                     data = movieListResponse,
@@ -447,10 +430,6 @@ class McpClient(private val context: Context) : MovieApiService {
                     val domainUiConfig = MovieMapper.mapUiConfigurationDtoToUiConfiguration(uiConfig)
                     
                     // Debug logging for uiConfig
-                    if (BuildConfig.DEBUG) {
-                        if (BuildConfig.DEBUG) {
-                        }
-                    }
 
                     Result.Success(
                         data = MovieDetailsResponse(

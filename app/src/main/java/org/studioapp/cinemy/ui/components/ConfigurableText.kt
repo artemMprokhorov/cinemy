@@ -45,8 +45,6 @@ fun ConfigurableText(
     }
 
     // Debug logging for color application (removed to prevent infinite loop)
-    // if (BuildConfig.DEBUG) {
-    // }
 
     Text(
         text = text,

@@ -67,8 +67,6 @@ fun ConfigurableButton(
     val cornerRadius = uiConfig?.buttons?.buttonCornerRadius?.dp ?: Dimens8
 
     // Debug logging for color application (removed to prevent infinite loop)
-    // if (BuildConfig.DEBUG) {
-    // }
 
     Button(
         onClick = onClick,

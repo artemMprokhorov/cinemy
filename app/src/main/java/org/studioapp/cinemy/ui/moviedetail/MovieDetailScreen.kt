@@ -87,8 +87,6 @@ private fun MovieDetailContent(
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.isLoading,
         onRefresh = {
-            if (BuildConfig.DEBUG) {
-            }
             onIntent(MovieDetailIntent.Retry)
         }
     )

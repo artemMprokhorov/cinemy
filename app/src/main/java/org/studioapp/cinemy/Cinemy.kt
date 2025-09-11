@@ -39,11 +39,7 @@ class CinemyApplication : Application() {
         CoroutineScope(Dispatchers.IO).launch {
             runCatching {
                 val success = sentimentAnalyzer.initialize()
-                if (BuildConfig.DEBUG) {
-                }
             }.onFailure { e ->
-                if (BuildConfig.DEBUG) {
-                }
             }
         }
     }

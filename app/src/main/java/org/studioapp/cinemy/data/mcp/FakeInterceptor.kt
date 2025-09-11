@@ -94,8 +94,6 @@ class FakeInterceptor(private val context: Context) {
                 createFallbackResponse()
             }
         }.getOrElse { e ->
-            if (BuildConfig.DEBUG) {
-            }
             createFallbackResponse()
         }
     }
@@ -119,8 +117,6 @@ class FakeInterceptor(private val context: Context) {
                 createFallbackResponse()
             }
         }.getOrElse { e ->
-            if (BuildConfig.DEBUG) {
-            }
             createFallbackResponse()
         }
     }
@@ -132,8 +128,6 @@ class FakeInterceptor(private val context: Context) {
         return runCatching {
             context.assets.open(fileName).bufferedReader().use { it.readText() }
         }.getOrElse { e ->
-            if (BuildConfig.DEBUG) {
-            }
             null
         }
     }

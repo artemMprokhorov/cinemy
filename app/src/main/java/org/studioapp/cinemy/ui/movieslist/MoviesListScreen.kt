@@ -97,8 +97,6 @@ private fun MoviesListContent(
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.isLoading,
         onRefresh = {
-            if (BuildConfig.DEBUG) {
-            }
             onIntent(MoviesListIntent.LoadPopularMovies)
         }
     )
@@ -280,8 +278,6 @@ private fun MoviesGrid(
                 bottom = if (showPaginationControls) {
                     // Calculate based on actual content: text + spacing + buttons + padding
                     // Text height (~20dp) + spacing (12dp) + button height (~48dp) + padding (16dp * 2) = ~112dp
-                    if (BuildConfig.DEBUG) {
-                    }
                     Dimens112
                 } else Dimens8
             )

@@ -15,14 +15,6 @@ class MovieRepositoryImpl(
         return runCatching {
             val response = mcpClient.getPopularMoviesViaMcp(page)
             
-            // Debug logging for repository response
-            if (BuildConfig.DEBUG) {
-                val uiConfigInfo = when (response) {
-                    is Result.Success -> response.uiConfig?.colors?.primary?.toString() ?: "null"
-                    is Result.Error -> response.uiConfig?.colors?.primary?.toString() ?: "null"
-                    is Result.Loading -> "loading"
-                }
-            }
             
             when (response) {
                 is Result.Success -> {
@@ -45,14 +37,6 @@ class MovieRepositoryImpl(
         return runCatching {
             val response = mcpClient.getMovieDetailsViaMcp(movieId)
             
-            // Debug logging for repository response
-            if (BuildConfig.DEBUG) {
-                val uiConfigInfo = when (response) {
-                    is Result.Success -> response.uiConfig?.colors?.primary?.toString() ?: "null"
-                    is Result.Error -> response.uiConfig?.colors?.primary?.toString() ?: "null"
-                    is Result.Loading -> "loading"
-                }
-            }
             
             when (response) {
                 is Result.Success -> {
