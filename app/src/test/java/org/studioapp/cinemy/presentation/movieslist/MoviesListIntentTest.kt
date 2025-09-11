@@ -140,7 +140,7 @@ class MoviesListIntentTest {
     }
 
     @Test
-    fun `all intents should implement CommonIntent`() {
+    fun `all intents should be MoviesListIntent instances`() {
         // Given
         val intents = listOf(
             MoviesListIntent.LoadPopularMovies,

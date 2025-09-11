@@ -9,8 +9,6 @@ The presentation layer is structured as follows:
 
 ```
 presentation/
-├── commons/                   # Common base classes
-│   └── CommonIntent.kt       # Base interface for all intents
 ├── movieslist/               # Movies list screen implementation
 │   ├── MoviesListState.kt    # State data class
 │   ├── MoviesListIntent.kt   # Intent sealed class
@@ -45,9 +43,8 @@ This implementation **fully complies with MVI (Model-View-Intent) architecture p
 
 #### **3. INTENT (User Interactions)**
 
-- **Sealed Classes**: Type-safe intent definitions
+- **Sealed Classes**: Type-safe intent definitions with proper inheritance
 - **Comprehensive Coverage**: All user interactions captured
-- **Interface Inheritance**: Proper `CommonIntent` interface structure
 - **Search Support**: Complete search functionality with `SearchMovies`, `ClearSearch`
 - **Examples**: `LoadPopularMovies`, `SearchMovies`, `LoadMoreMovies`, `RetryLastOperation`
 
@@ -120,17 +117,7 @@ val state by viewModel.state.collectAsState()
 
 ## Key Components
 
-### 1. Common Layer (`commons/`)
-
-#### CommonIntent.kt
-
-- **CommonIntent**: Base interface for all intents
-    - `Retry`: Retry the current operation
-    - `Refresh`: Refresh the current data
-    - `BackPressed`: Handle back button press
-- **Inheritance**: All specific intents implement this interface
-
-### 2. Movies List Screen (`movieslist/`)
+### 1. Movies List Screen (`movieslist/`)
 
 #### MoviesListState.kt
 
@@ -171,7 +158,7 @@ val state by viewModel.state.collectAsState()
 - **Search Functionality**: Supports movie search with query
 - **Error Handling**: Graceful error recovery with retry functionality
 
-### 3. Movie Details Screen (`moviedetail/`)
+### 2. Movie Details Screen (`moviedetail/`)
 
 #### MovieDetailState.kt
 
@@ -198,7 +185,7 @@ val state by viewModel.state.collectAsState()
 - **Repository Integration**: Uses MovieRepository for data fetching
 - **Error Handling**: Graceful error recovery with retry functionality
 
-### 4. Dependency Injection (`di/`)
+### 3. Dependency Injection (`di/`)
 
 #### PresentationModule.kt
 

@@ -96,7 +96,7 @@ class MovieDetailIntentTest {
     }
 
     @Test
-    fun `all intents should implement CommonIntent`() {
+    fun `all intents should be MovieDetailIntent instances`() {
         // Given
         val intents = listOf(
             MovieDetailIntent.LoadMovieDetails(123),

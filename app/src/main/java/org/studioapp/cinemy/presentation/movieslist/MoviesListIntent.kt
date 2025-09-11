@@ -1,12 +1,10 @@
 package org.studioapp.cinemy.presentation.movieslist
 
-import org.studioapp.cinemy.presentation.commons.CommonIntent
-
 /**
  * Intent class for the Movies List screen
  * Defines all possible user interactions for the movies list functionality
  */
-sealed class MoviesListIntent : CommonIntent {
+sealed class MoviesListIntent {
     object LoadPopularMovies : MoviesListIntent()
     object LoadMoreMovies : MoviesListIntent()
 
