@@ -1,5 +1,6 @@
 package org.studioapp.cinemy.presentation.movieslist
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import org.studioapp.cinemy.BuildConfig
@@ -60,10 +61,6 @@ class MoviesListViewModel(
                 is Result.Success -> {
                     val response = result.data
                     
-                    // Debug logging for ViewModel uiConfig
-                    if (BuildConfig.DEBUG) {
-                        Log.d("VIEWMODEL", "MoviesListViewModel uiConfig received - primary: ${result.uiConfig?.colors?.primary}, secondary: ${result.uiConfig?.colors?.secondary}")
-                    }
                     
                     _state.value = _state.value.copy(
                         isLoading = PresentationConstants.DEFAULT_BOOLEAN_FALSE,

@@ -71,16 +71,11 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             if (isInitialized) return@withContext true
             
             // Try to load enhanced model from assets first
-            val modelJson = try {
+            val modelJson = runCatching {
                 context.assets.open("ml_models/enhanced_keyword_v2_model.json").use { inputStream ->
                     inputStream.bufferedReader().readText()
                 }
-            } catch (e: IOException) {
-                if (BuildConfig.DEBUG) {
-                    android.util.Log.w("SentimentAnalyzer", "Failed to load enhanced model, using fallback")
-                }
-                null
-            }
+            }.getOrNull()
             
             model = if (modelJson != null) {
                 loadModelFromJson(modelJson)
@@ -91,9 +86,6 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             isInitialized = true
             true
         }.getOrElse { e ->
-            if (BuildConfig.DEBUG) {
-                android.util.Log.e("SentimentAnalyzer", "Failed to initialize analyzer", e)
-            }
             false
         }
     }
@@ -171,9 +163,6 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 algorithm = algorithm
             )
         }.getOrElse { e ->
-            if (BuildConfig.DEBUG) {
-                android.util.Log.w("SentimentAnalyzer", "Failed to parse enhanced model, using fallback", e)
-            }
             createSimpleModel()
         }
     }

@@ -1,6 +1,7 @@
 package org.studioapp.cinemy.data.mcp
 
 import android.content.Context
+import android.util.Log
 import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.mcp.models.McpRequest
 import org.studioapp.cinemy.data.mcp.models.McpResponse
@@ -35,14 +36,8 @@ class McpHttpClient(private val context: Context) {
 
     suspend fun <T> sendRequest(request: McpRequest): McpResponse<T> {
         return if (BuildConfig.USE_MOCK_DATA) {
-            if (BuildConfig.DEBUG) {
-                Log.d("MCP", "Using mock data for method: ${request.method}")
-            }
             fakeInterceptor.intercept<T>(request)
         } else {
-            if (BuildConfig.DEBUG) {
-                Log.d("MCP", "Attempting real request to: ${BuildConfig.MCP_SERVER_URL}")
-            }
             sendRealRequest(request)
         }
     }
@@ -50,18 +45,9 @@ class McpHttpClient(private val context: Context) {
     private suspend fun <T> sendRealRequest(request: McpRequest): McpResponse<T> {
         return runCatching {
             if (BuildConfig.MCP_SERVER_URL.isBlank()) {
-                if (BuildConfig.DEBUG) {
-                    Log.w("MCP", "MCP_SERVER_URL is blank, falling back to mock")
-                }
                 return fakeInterceptor.intercept<T>(request)
             }
 
-            if (BuildConfig.DEBUG) {
-                Log.d(
-                    "MCP",
-                    "Sending real request: ${request.method} to ${BuildConfig.MCP_SERVER_URL}"
-                )
-            }
 
             // Manually create JSON request body to avoid serialization issues
             val requestBody = buildString {
@@ -85,9 +71,6 @@ class McpHttpClient(private val context: Context) {
             for (endpoint in endpoints) {
                 runCatching {
                     val url = "${BuildConfig.MCP_SERVER_URL}$endpoint"
-                    if (BuildConfig.DEBUG) {
-                        Log.d("MCP", "Trying endpoint: $url")
-                    }
 
                     val response = httpClient.post(url) {
                         contentType(ContentType.Application.Json)
@@ -95,9 +78,6 @@ class McpHttpClient(private val context: Context) {
                     }
 
                     val responseText = response.body<String>()
-                    if (BuildConfig.DEBUG) {
-                        Log.d("MCP", "Response from $url: $responseText")
-                    }
 
                     // Check if response looks like an error page or is not JSON
                     if (responseText.contains(StringConstants.HTML_DOCTYPE) ||
@@ -108,25 +88,13 @@ class McpHttpClient(private val context: Context) {
                             .startsWith(StringConstants.JSON_OPEN_BRACE) && !responseText.trimStart()
                             .startsWith(StringConstants.JSON_ARRAY_START)
                     ) {
-                        if (BuildConfig.DEBUG) {
-                            Log.w(
-                                "MCP",
-                                "Endpoint $url returned error page or non-JSON response, trying next..."
-                            )
-                        }
                         return@runCatching null
                     }
 
                     // If we get here, the response looks good
                     successfulResponse = responseText
-                    if (BuildConfig.DEBUG) {
-                        Log.d("MCP", "Found working endpoint: $url")
-                    }
                     responseText
                 }.onFailure { e ->
-                    if (BuildConfig.DEBUG) {
-                        Log.w("MCP", "Endpoint $endpoint failed: ${e.message}")
-                    }
                     lastError = e as? Exception ?: Exception(e.message)
                 }
             }
@@ -146,14 +114,8 @@ class McpHttpClient(private val context: Context) {
                     message = jsonResponse[StringConstants.FIELD_MESSAGE] as? String
                         ?: StringConstants.MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL
                 )
-                if (BuildConfig.DEBUG) {
-                    Log.d("MCP", "Real request successful: ${request.method}")
-                }
                 mcpResponse
             }.getOrElse { e ->
-                if (BuildConfig.DEBUG) {
-                    Log.w("MCP", "Failed to parse JSON response: ${e.message}")
-                }
                 // Return a successful response with the raw data
                 McpResponse<T>(
                     success = true,
@@ -164,9 +126,6 @@ class McpHttpClient(private val context: Context) {
             }
 
         }.getOrElse { e ->
-            if (BuildConfig.DEBUG) {
-                Log.w("MCP", "Real request failed: ${e.message}, falling back to mock")
-            }
             // Graceful fallback to mock data
             val mockResponse = fakeInterceptor.intercept<T>(request)
             // Add indicator that this is fallback data
@@ -183,9 +142,6 @@ class McpHttpClient(private val context: Context) {
             val inputStream: InputStream = context.assets.open(fileName)
             inputStream.bufferedReader().use { it.readText() }
         }.getOrElse { e ->
-            if (BuildConfig.DEBUG) {
-                Log.e("McpHttpClient", "Error loading JSON from assets: $fileName", e)
-            }
             null
         }
     }

@@ -1,6 +1,7 @@
 package org.studioapp.cinemy.data.mcp
 
 import android.content.Context
+import android.util.Log
 import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.mcp.models.McpRequest
 import org.studioapp.cinemy.data.mcp.models.McpResponse

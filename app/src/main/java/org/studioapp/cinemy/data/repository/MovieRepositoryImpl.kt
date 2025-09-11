@@ -1,5 +1,6 @@
 package org.studioapp.cinemy.data.repository
 
+import android.util.Log
 import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.mcp.McpClient
 import org.studioapp.cinemy.data.model.MovieDetailsResponse

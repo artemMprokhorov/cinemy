@@ -1,5 +1,6 @@
 package org.studioapp.cinemy.presentation.moviedetail
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import org.studioapp.cinemy.BuildConfig
@@ -68,10 +69,6 @@ class MovieDetailViewModel(
                 is Result.Success -> {
                     val response = result.data
                     
-                    // Debug logging for ViewModel uiConfig
-                    if (BuildConfig.DEBUG) {
-                        Log.d("VIEWMODEL", "MovieDetailViewModel uiConfig received - primary: ${result.uiConfig?.colors?.primary}, secondary: ${result.uiConfig?.colors?.secondary}")
-                    }
                     
                     _state.value = _state.value.copy(
                         movieDetails = response.data.movieDetails,
@@ -118,12 +115,6 @@ class MovieDetailViewModel(
             val positiveResults = sentimentAnalyzer.analyzeBatch(reviews.positive)
             val negativeResults = sentimentAnalyzer.analyzeBatch(reviews.negative)
             
-            // Log analysis results
-            if (BuildConfig.DEBUG) {
-                Log.d("ML_ANALYSIS", "Analyzed ${reviews.positive.size} positive and ${reviews.negative.size} negative reviews")
-                Log.d("ML_ANALYSIS", "Positive results: ${positiveResults.map { it.sentiment }}")
-                Log.d("ML_ANALYSIS", "Negative results: ${negativeResults.map { it.sentiment }}")
-            }
             
             // Update state with analysis results
             _state.value = _state.value.copy(
@@ -133,9 +124,6 @@ class MovieDetailViewModel(
                 )
             )
         }.onFailure { e ->
-            if (BuildConfig.DEBUG) {
-                Log.e("ML_ANALYSIS", "Error analyzing sentiment with local model", e)
-            }
             _state.value = _state.value.copy(
                 sentimentError = "Local AI analysis failed: ${e.message}"
             )

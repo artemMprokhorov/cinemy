@@ -1,6 +1,7 @@
 package org.studioapp.cinemy.data.mcp
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.mapper.MovieMapper

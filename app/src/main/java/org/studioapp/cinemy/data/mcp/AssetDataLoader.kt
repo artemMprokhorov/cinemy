@@ -1,6 +1,7 @@
 package org.studioapp.cinemy.data.mcp
 
 import android.content.Context
+import android.util.Log
 import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.model.StringConstants
 import org.studioapp.cinemy.data.remote.dto.ButtonConfigurationDto
@@ -29,29 +30,16 @@ class AssetDataLoader(private val context: Context) {
                 val jsonObject = JSONObject(jsonString)
                 val uiConfigJson = jsonObject.optJSONObject(StringConstants.FIELD_UI_CONFIG)
                 
-                // Debug logging for uiConfig loading
-                if (BuildConfig.DEBUG) {
-                    Log.d("ASSET_LOADER", "loadUiConfig - uiConfigJson found: ${uiConfigJson != null}")
-                }
                 
                 if (uiConfigJson != null) {
                     parseUiConfigFromJson(uiConfigJson)
                 } else {
-                    if (BuildConfig.DEBUG) {
-                        Log.d("ASSET_LOADER", "loadUiConfig - using default config")
-                    }
                     createDefaultUiConfig()
                 }
             } else {
-                if (BuildConfig.DEBUG) {
-                    Log.d("ASSET_LOADER", "loadUiConfig - jsonString is null, using default config")
-                }
                 createDefaultUiConfig()
             }
         }.getOrElse { e ->
-            if (BuildConfig.DEBUG) {
-                Log.e("AssetDataLoader", "Error loading UI config from assets", e)
-            }
             createDefaultUiConfig()
         }
     }
@@ -74,9 +62,6 @@ class AssetDataLoader(private val context: Context) {
                 createDefaultMeta(method, resultsCount, movieId)
             }
         }.getOrElse { e ->
-            if (BuildConfig.DEBUG) {
-                Log.e("AssetDataLoader", "Error loading meta data from assets", e)
-            }
             createDefaultMeta(method, resultsCount, movieId)
         }
     }
@@ -100,9 +85,6 @@ class AssetDataLoader(private val context: Context) {
                 emptyList()
             }
         }.getOrElse { e ->
-            if (BuildConfig.DEBUG) {
-                Log.e("AssetDataLoader", "Error loading mock movies from assets", e)
-            }
             emptyList()
         }
     }
@@ -114,9 +96,6 @@ class AssetDataLoader(private val context: Context) {
         return runCatching {
             context.assets.open(fileName).bufferedReader().use { it.readText() }
         }.getOrElse { e ->
-            if (BuildConfig.DEBUG) {
-                Log.e("AssetDataLoader", "Error loading asset: $fileName", e)
-            }
             null
         }
     }
@@ -129,13 +108,6 @@ class AssetDataLoader(private val context: Context) {
         val textsJson = uiConfigJson.optJSONObject(StringConstants.FIELD_TEXTS)
         val buttonsJson = uiConfigJson.optJSONObject(StringConstants.FIELD_BUTTONS)
 
-        // Debug logging for JSON parsing
-        if (BuildConfig.DEBUG) {
-            Log.d("ASSET_LOADER", "parseUiConfigFromJson - colorsJson: ${colorsJson != null}, textsJson: ${textsJson != null}, buttonsJson: ${buttonsJson != null}")
-            if (colorsJson != null) {
-                Log.d("ASSET_LOADER", "Colors found - primary: ${colorsJson.optString(StringConstants.FIELD_PRIMARY)}, secondary: ${colorsJson.optString(StringConstants.FIELD_SECONDARY)}")
-            }
-        }
 
         return UiConfigurationDto(
             colors = if (colorsJson != null) {

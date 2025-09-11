@@ -1,5 +1,6 @@
 package org.studioapp.cinemy.ui.movieslist
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement

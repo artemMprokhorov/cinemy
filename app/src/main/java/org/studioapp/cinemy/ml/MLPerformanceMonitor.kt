@@ -1,5 +1,6 @@
 package org.studioapp.cinemy.ml
 
+import android.util.Log
 import org.studioapp.cinemy.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
