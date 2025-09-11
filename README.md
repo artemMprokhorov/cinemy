@@ -569,6 +569,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **[Development Guide](DEVELOPMENT_GUIDE.md)** - Development guidelines and best practices
 - **[Project Guide](PROJECT_GUIDE.md)** - Project documentation and changelog
+- **[Project Rules](PROJECT_RULES.md)** - Project rules and conventions
 - **[GitHub Actions](.github/GITHUB_ACTIONS.md)** - CI/CD workflows and automation
 - **[Workflows Documentation](.github/workflows/WORKFLOWS.md)** - Detailed workflows guide
 
