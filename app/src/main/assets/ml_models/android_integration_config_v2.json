@@ -1,0 +1,33 @@
+{
+  "project_info": {
+    "name": "Cinemy Sentiment Analysis v2.0",
+    "version": "2.0.0",
+    "integration_type": "enhanced_keyword_production",
+    "created_date": "2024-09-11",
+    "improvements": "expanded_dictionaries_context_patterns_neutral_detection"
+  },
+  "models": {
+    "primary": {
+      "file": "enhanced_keyword_v2_model.json",
+      "type": "enhanced_keyword",
+      "speed": "ultra_fast", 
+      "accuracy": "67%_production_optimized",
+      "offline": true,
+      "memory_usage_mb": 0.002
+    }
+  },
+  "android_integration": {
+    "min_sdk": 24,
+    "target_sdk": 34,
+    "package_name": "org.studioapp.cinemy.ml",
+    "main_class": "SentimentAnalyzer",
+    "assets_folder": "ml_models",
+    "permissions": []
+  },
+  "performance": {
+    "target_inference_time_ms": 5,
+    "memory_usage_mb": 0.002,
+    "battery_impact": "negligible", 
+    "offline_capable": true
+  }
+}
