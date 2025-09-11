@@ -6,6 +6,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import java.io.IOException
 import kotlin.math.abs
+import org.studioapp.cinemy.BuildConfig
 
 /**
  * Keyword-based sentiment analyzer for Cinemy
@@ -69,16 +70,30 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         runCatching {
             if (isInitialized) return@withContext true
             
-            // Load model from assets (currently using built-in model)
-            // val modelJson = context.assets.open("ml_models/keyword_sentiment_model.json").use { inputStream ->
-            //     inputStream.bufferedReader().readText()
-            // }
+            // Try to load enhanced model from assets first
+            val modelJson = try {
+                context.assets.open("ml_models/enhanced_keyword_v2_model.json").use { inputStream ->
+                    inputStream.bufferedReader().readText()
+                }
+            } catch (e: IOException) {
+                if (BuildConfig.DEBUG) {
+                    android.util.Log.w("SentimentAnalyzer", "Failed to load enhanced model, using fallback")
+                }
+                null
+            }
             
-            model = createSimpleModel()
+            model = if (modelJson != null) {
+                loadModelFromJson(modelJson)
+            } else {
+                createSimpleModel()
+            }
+            
             isInitialized = true
             true
         }.getOrElse { e ->
-            e.printStackTrace()
+            if (BuildConfig.DEBUG) {
+                android.util.Log.e("SentimentAnalyzer", "Failed to initialize analyzer", e)
+            }
             false
         }
     }
@@ -113,6 +128,55 @@ class SentimentAnalyzer private constructor(private val context: Context) {
      * Get model information
      */
     fun getModelInfo(): ModelInfo? = model?.modelInfo
+    
+    /**
+     * Load model from JSON string
+     */
+    private fun loadModelFromJson(jsonString: String): KeywordSentimentModel {
+        return runCatching {
+            val json = Json { ignoreUnknownKeys = true }
+            val modelData = json.decodeFromString<EnhancedModelData>(jsonString)
+            
+            val modelInfo = ModelInfo(
+                type = modelData.model_info.type,
+                version = modelData.model_info.version,
+                language = modelData.model_info.language,
+                accuracy = modelData.model_info.accuracy,
+                speed = modelData.model_info.speed
+            )
+            
+            val algorithm = AlgorithmConfig(
+                baseConfidence = modelData.algorithm.base_confidence,
+                keywordWeight = 1.0,
+                contextWeight = 0.3,
+                modifierWeight = 0.4,
+                neutralThreshold = modelData.algorithm.neutral_threshold,
+                minConfidence = modelData.algorithm.min_confidence,
+                maxConfidence = modelData.algorithm.max_confidence
+            )
+            
+            val contextBoosters = ContextBoosters(
+                movieTerms = null, // Not in v2 model
+                positiveContext = modelData.context_patterns?.strong_positive,
+                negativeContext = modelData.context_patterns?.strong_negative
+            )
+            
+            KeywordSentimentModel(
+                modelInfo = modelInfo,
+                positiveKeywords = modelData.positive_keywords,
+                negativeKeywords = modelData.negative_keywords,
+                neutralIndicators = modelData.neutral_indicators,
+                intensityModifiers = modelData.intensity_modifiers,
+                contextBoosters = contextBoosters,
+                algorithm = algorithm
+            )
+        }.getOrElse { e ->
+            if (BuildConfig.DEBUG) {
+                android.util.Log.w("SentimentAnalyzer", "Failed to parse enhanced model, using fallback", e)
+            }
+            createSimpleModel()
+        }
+    }
     
     /**
      * Create simple model for testing
@@ -288,6 +352,23 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             }
         }
         
+        // Enhanced context pattern matching (v2.0 feature)
+        model.contextBoosters?.let { boosters ->
+            boosters.positiveContext?.forEach { pattern ->
+                if (textLower.contains(pattern)) {
+                    positiveScore += 0.5 // Higher bonus for context patterns
+                    foundWords.add("🔥$pattern")
+                }
+            }
+            
+            boosters.negativeContext?.forEach { pattern ->
+                if (textLower.contains(pattern)) {
+                    negativeScore += 0.5 // Higher bonus for context patterns
+                    foundWords.add("💀$pattern")
+                }
+            }
+        }
+        
         // Determine result with enhanced logic
         val algorithm = model.algorithm
         val totalScore = positiveScore + negativeScore + neutralScore
@@ -440,4 +521,40 @@ data class ContextBoosters(
     val movieTerms: List<String>? = null,
     val positiveContext: List<String>? = null,
     val negativeContext: List<String>? = null
+)
+
+/**
+ * Data classes for enhanced model JSON structure
+ */
+data class EnhancedModelData(
+    val model_info: EnhancedModelInfo,
+    val positive_keywords: List<String>,
+    val negative_keywords: List<String>,
+    val neutral_indicators: List<String>,
+    val intensity_modifiers: Map<String, Double>,
+    val context_patterns: ContextPatterns? = null,
+    val algorithm: EnhancedAlgorithmConfig
+)
+
+data class EnhancedModelInfo(
+    val type: String,
+    val version: String,
+    val language: String,
+    val accuracy: String,
+    val speed: String,
+    val improvements: String? = null
+)
+
+data class ContextPatterns(
+    val strong_positive: List<String>? = null,
+    val strong_negative: List<String>? = null
+)
+
+data class EnhancedAlgorithmConfig(
+    val base_confidence: Double,
+    val keyword_threshold: Int,
+    val neutral_threshold: Double,
+    val min_confidence: Double,
+    val max_confidence: Double,
+    val context_bonus: Double
 )
