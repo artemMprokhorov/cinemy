@@ -12,7 +12,6 @@ object StringConstants {
     const val ERROR_GENERIC = "Error"
 
     // Error Messages with Parameters
-    const val ERROR_NETWORK_HTTP = "Network error: %d"
     const val ERROR_FETCHING_POPULAR_MOVIES = "Error fetching popular movies: %s"
     const val ERROR_FETCHING_MOVIE_DETAILS = "Error fetching movie details: %s"
     const val ERROR_NETWORK_WITH_MESSAGE = "Network error: %s"
@@ -33,6 +32,93 @@ object StringConstants {
     const val BACK_BUTTON = "Back"
     const val PLAY_BUTTON = "Play"
 
+
+
+
+    // Error Messages
+    const val SIMULATED_NETWORK_ERROR = "Simulated network error"
+    const val UNKNOWN_MOVIE_TITLE = "Unknown Movie"
+    const val NO_DESCRIPTION_AVAILABLE = "No description available"
+
+    // Movie Category Prefixes
+    const val TOP_RATED_PREFIX = "Top Rated: "
+    const val NOW_PLAYING_PREFIX = "Now Playing: "
+    const val RECOMMENDED_PREFIX = "Recommended: "
+
+    // Asset File Names
+    const val ASSET_MOCK_MOVIES = "mock_movies.json"
+    const val ASSET_MOCK_MOVIE_DETAILS = "mock_movie_details.json"
+
+    // Error Messages for Mock Data
+    const val ERROR_UNKNOWN_METHOD = "Unknown method: %s"
+    const val ERROR_LOADING_MOCK_DATA = "Failed to load mock data from assets"
+
+    // Pagination Constants
+    const val PAGINATION_TOP_RATED_TOTAL_PAGES = 8
+    const val PAGINATION_TOP_RATED_TOTAL_RESULTS = 80
+    const val PAGINATION_NOW_PLAYING_TOTAL_PAGES = 5
+    const val PAGINATION_NOW_PLAYING_TOTAL_RESULTS = 50
+    const val PAGINATION_RECOMMENDATIONS_TOTAL_PAGES = 4
+    const val PAGINATION_RECOMMENDATIONS_TOTAL_RESULTS = 40
+    const val PAGINATION_FIRST_PAGE = 1
+
+    // Meta Data Constants
+    const val META_METHOD_UNKNOWN = "unknown"
+    const val META_RESULTS_COUNT_ZERO = 0
+
+    // Network Simulation Constants
+    const val NETWORK_DELAY_BASE_MS = 500L
+    const val NETWORK_DELAY_RANDOM_MAX_MS = 1000L
+    const val NETWORK_ERROR_PROBABILITY = 0.05
+
+    // Fake Interceptor Delay Constants
+    const val FAKE_INTERCEPTOR_DELAY_BASE_MS = 300L
+    const val FAKE_INTERCEPTOR_DELAY_RANDOM_MAX_MS = 500L
+
+    // Fake Interceptor Pagination Constants
+    const val FAKE_INTERCEPTOR_MOVIES_PER_PAGE = 15
+    const val FAKE_INTERCEPTOR_TOTAL_PAGES = 3
+
+    // HTTP Timeout Constants
+    const val HTTP_REQUEST_TIMEOUT_MS = 30000L
+    const val HTTP_CONNECT_TIMEOUT_MS = 10000L
+
+    // MCP HTTP Client User-Facing Messages
+    const val MCP_MESSAGE_ALL_ENDPOINTS_FAILED = "All endpoints failed"
+    const val MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL = "Real request successful"
+    const val MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE = "Real request successful (raw response)"
+    const val MCP_MESSAGE_USING_MOCK_BACKEND_UNAVAILABLE = "Using mock data (backend unavailable)"
+    const val MCP_MESSAGE_MOCK_DATA_LOADED_SUCCESSFULLY = "Mock data loaded successfully"
+
+    // JSON Structure Constants
+    const val JSON_OPEN_BRACE = "{"
+    const val JSON_CLOSE_BRACE = "}"
+    const val JSON_METHOD_FIELD = "\"method\":\"%s\","
+    const val JSON_PARAMS_FIELD = "\"params\":{"
+    const val JSON_PARAM_ENTRY = "\"%s\":\"%s\""
+    const val JSON_COMMA = ","
+
+    // HTML Error Detection Constants
+    const val HTML_DOCTYPE = "<!DOCTYPE html>"
+    const val HTML_CANNOT_POST = "Cannot POST"
+    const val HTML_TAG = "<html"
+    const val HTML_ERROR_TITLE = "<title>Error</title>"
+    const val JSON_ARRAY_START = "["
+
+    // Common String Constants
+    const val EMPTY_STRING = ""
+
+    // Default Value Constants
+    const val DEFAULT_INT_VALUE = 0
+    const val DEFAULT_DOUBLE_VALUE = 0.0
+    const val DEFAULT_LONG_VALUE = 0L
+    const val DEFAULT_PAGE_NUMBER = 1
+    const val DEFAULT_TOTAL_PAGES = 1
+    const val DEFAULT_BOOLEAN_VALUE = false
+
+    // UI Constants
+    const val BUTTON_CORNER_RADIUS = 8
+
     // Color Constants
     const val COLOR_PRIMARY = "#2C5F6F"
     const val COLOR_SECONDARY = "#4A90A4"
@@ -46,21 +132,9 @@ object StringConstants {
     const val COLOR_BUTTON_TEXT = "#FFFFFF"
     const val COLOR_ERROR = "#FF0000"
 
-
     // Version and Status Constants
     const val VERSION_2_0_0 = "2.0.0"
     const val METHOD_UNKNOWN = "unknown"
-
-    // Error Messages
-    const val SIMULATED_NETWORK_ERROR = "Simulated network error"
-    const val UNKNOWN_MOVIE_TITLE = "Unknown Movie"
-    const val NO_DESCRIPTION_AVAILABLE = "No description available"
-
-    // Movie Category Prefixes
-    const val TOP_RATED_PREFIX = "Top Rated: "
-    const val NOW_PLAYING_PREFIX = "Now Playing: "
-    const val RECOMMENDED_PREFIX = "Recommended: "
-
 
     // JSON Field Names
     const val FIELD_TITLE = "title"
@@ -151,80 +225,9 @@ object StringConstants {
     const val PARAM_MOVIE_ID = "movieId"
 
 
-    // Asset File Names
-    const val ASSET_MOCK_MOVIES = "mock_movies.json"
-    const val ASSET_MOCK_MOVIE_DETAILS = "mock_movie_details.json"
-
-    // Error Messages for Mock Data
-    const val ERROR_UNKNOWN_METHOD = "Unknown method: %s"
-    const val ERROR_LOADING_MOCK_DATA = "Failed to load mock data from assets"
-
-    // Pagination Constants
-    const val PAGINATION_TOP_RATED_TOTAL_PAGES = 8
-    const val PAGINATION_TOP_RATED_TOTAL_RESULTS = 80
-    const val PAGINATION_NOW_PLAYING_TOTAL_PAGES = 5
-    const val PAGINATION_NOW_PLAYING_TOTAL_RESULTS = 50
-    const val PAGINATION_RECOMMENDATIONS_TOTAL_PAGES = 4
-    const val PAGINATION_RECOMMENDATIONS_TOTAL_RESULTS = 40
-    const val PAGINATION_FIRST_PAGE = 1
-
-    // Meta Data Constants
-    const val META_METHOD_UNKNOWN = "unknown"
-    const val META_RESULTS_COUNT_ZERO = 0
-
-    // Network Simulation Constants
-    const val NETWORK_DELAY_BASE_MS = 500L
-    const val NETWORK_DELAY_RANDOM_MAX_MS = 1000L
-    const val NETWORK_ERROR_PROBABILITY = 0.05
-
-    // Fake Interceptor Delay Constants
-    const val FAKE_INTERCEPTOR_DELAY_BASE_MS = 300L
-    const val FAKE_INTERCEPTOR_DELAY_RANDOM_MAX_MS = 500L
-
-    // Fake Interceptor Pagination Constants
-    const val FAKE_INTERCEPTOR_MOVIES_PER_PAGE = 15
-    const val FAKE_INTERCEPTOR_TOTAL_PAGES = 3
-
-    // HTTP Timeout Constants
-    const val HTTP_REQUEST_TIMEOUT_MS = 30000L
-    const val HTTP_CONNECT_TIMEOUT_MS = 10000L
-
-    // MCP HTTP Client User-Facing Messages
-    const val MCP_MESSAGE_ALL_ENDPOINTS_FAILED = "All endpoints failed"
-    const val MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL = "Real request successful"
-    const val MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE = "Real request successful (raw response)"
-    const val MCP_MESSAGE_USING_MOCK_BACKEND_UNAVAILABLE = "Using mock data (backend unavailable)"
-    const val MCP_MESSAGE_MOCK_DATA_LOADED_SUCCESSFULLY = "Mock data loaded successfully"
-
-    // JSON Structure Constants
-    const val JSON_OPEN_BRACE = "{"
-    const val JSON_CLOSE_BRACE = "}"
-    const val JSON_METHOD_FIELD = "\"method\":\"%s\","
-    const val JSON_PARAMS_FIELD = "\"params\":{"
-    const val JSON_PARAM_ENTRY = "\"%s\":\"%s\""
-    const val JSON_COMMA = ","
-
-    // HTML Error Detection Constants
-    const val HTML_DOCTYPE = "<!DOCTYPE html>"
-    const val HTML_CANNOT_POST = "Cannot POST"
-    const val HTML_TAG = "<html"
-    const val HTML_ERROR_TITLE = "<title>Error</title>"
-    const val JSON_ARRAY_START = "["
 
 
-    // Common String Constants
-    const val EMPTY_STRING = ""
 
-    // Default Value Constants
-    const val DEFAULT_INT_VALUE = 0
-    const val DEFAULT_DOUBLE_VALUE = 0.0
-    const val DEFAULT_LONG_VALUE = 0L
-    const val DEFAULT_PAGE_NUMBER = 1
-    const val DEFAULT_TOTAL_PAGES = 1
-    const val DEFAULT_BOOLEAN_VALUE = false
-
-    // UI Constants
-    const val BUTTON_CORNER_RADIUS = 8
 
     // Serialized Name Constants for MovieDto
     // Movie Data Fields

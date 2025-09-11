@@ -2,7 +2,6 @@
     <string name="app_name">Cinemy</string>
 
     <!-- UI Text -->
-    <string name="movies_title">Movies</string>
     <string name="loading_text">Loading...</string>
     <string name="no_movies_found">No movies found</string>
     <string name="retry_button">Retry</string>
@@ -63,25 +62,4 @@
     <string name="error_generic_unknown">An unexpected error occurred</string>
     <string name="error_generic_unexpected">Something went wrong</string>
 
-    <!-- User-friendly Error Messages -->
-    <string name="error_user_check_connection">Please check your internet connection</string>
-    <string name="error_user_try_again">Request timed out. Please try again</string>
-    <string name="error_user_server_unavailable">Server is temporarily unavailable</string>
-    <string name="error_user_network_error">Network error occurred</string>
-    <string name="error_user_not_found">Resource not found</string>
-    <string name="error_user_server_error">Server error occurred</string>
-    <string name="error_user_process_data">Failed to process data</string>
-    <string name="error_user_invalid_data">Invalid data received</string>
-    <string name="error_user_no_data">No data found</string>
-    <string name="error_user_service_connection">Service connection failed</string>
-    <string name="error_user_service_response">Invalid service response</string>
-    <string name="error_user_service_error">Service error occurred</string>
-    <string name="error_user_unexpected">An unexpected error occurred</string>
-    <string name="error_user_something_wrong">Something went wrong</string>
-
-    <!-- Error Messages with Parameters -->
-    <string name="error_network_http">Network error: %1$d</string>
-    <string name="error_fetching_popular_movies">Error fetching popular movies: %1$s</string>
-    <string name="error_fetching_movie_details">Error fetching movie details: %1$s</string>
-    <string name="error_network_with_message">Network error: %1$s</string>
 </resources>

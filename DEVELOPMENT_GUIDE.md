@@ -63,6 +63,26 @@
 - **Sentiment Analysis**: Fixed unused variables in sentiment analysis implementation
 - **Error Handling**: Improved error message consistency using constants
 
+### v2.4.4 - Code Cleanup & Optimization (2025-01-XX)
+
+#### **Unused Code Removal**
+- **Removed unused string resources** from `strings.xml` (18 unused strings)
+- **Deleted unused functions** from `VersionUtils.kt` (3 unused functions)
+- **Cleaned unused imports** from `Cinemy.kt` (1 unused import)
+- **Removed unused constants** from `StringConstants.kt` (multiple unused constants)
+
+#### **Code Quality Improvements**
+- **Improved code cleanliness** with systematic unused code removal
+- **Reduced APK size** by removing unused string resources
+- **Better maintainability** with cleaner codebase
+- **Enhanced performance** with less unused code
+
+#### **Build & Launch Verification**
+- **Successful build verification** for both dummy and production variants
+- **App launch testing** confirmed functionality after cleanup
+- **No regressions detected** during cleanup process
+- **All build variants working correctly** after optimization
+
 ## 🚀 Development Environment Setup
 
 ### 📋 Prerequisites

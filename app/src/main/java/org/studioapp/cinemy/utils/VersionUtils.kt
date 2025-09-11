@@ -34,36 +34,3 @@ object VersionUtils {
     }
 }
 
-/**
- * Checks if the current device supports edge-to-edge display
- *
- * @return true if edge-to-edge is supported, false otherwise
- */
-fun supportsEdgeToEdge(): Boolean {
-    return Build.VERSION.SDK_INT >= VersionUtils.Versions.ANDROID_5
-}
-
-/**
- * Gets a human-readable Android version name
- *
- * @return String representation of the Android version
- */
-fun getAndroidVersionName(): String {
-    return when (Build.VERSION.SDK_INT) {
-        Build.VERSION_CODES.UPSIDE_DOWN_CAKE -> "Android 14"
-        Build.VERSION_CODES.TIRAMISU -> "Android 13"
-        Build.VERSION_CODES.S_V2 -> "Android 12"
-        Build.VERSION_CODES.R -> "Android 11"
-        Build.VERSION_CODES.Q -> "Android 10"
-        else -> "Android ${Build.VERSION.RELEASE}"
-    }
-}
-
-/**
- * Gets the Android API level
- *
- * @return API level as integer
- */
-fun getApiLevel(): Int {
-    return Build.VERSION.SDK_INT
-}
