@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import org.studioapp.cinemy.R
 import org.studioapp.cinemy.ui.theme.Dimens32
@@ -43,10 +44,11 @@ fun MovieAppSplashScreen(
             .fillMaxSize()
             .background(SplashBackground)
             .systemBarsPadding()
-            .padding(Dimens32),
-        contentAlignment = Alignment.Center
+            .padding(Dimens32)
     ) {
+        // Main content centered
         Column(
+            modifier = Modifier.align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -69,6 +71,18 @@ fun MovieAppSplashScreen(
                 fontFamily = FontFamily.Default
             )
         }
+        
+        // TMDB disclaimer at bottom
+        Text(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = Dimens8),
+            text = stringResource(R.string.tmdb_disclaimer),
+            fontSize = Typography16,
+            color = TextSecondary,
+            fontFamily = FontFamily.Default,
+            textAlign = TextAlign.Center
+        )
     }
 }
 

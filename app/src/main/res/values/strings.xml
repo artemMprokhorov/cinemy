@@ -28,6 +28,7 @@
     <string name="pull_to_refresh_try_again">Pull to refresh to try again</string>
     <string name="page_info">Page %1$d of %2$d</string>
     <string name="splash_subtitle">Discover new films with AI</string>
+    <string name="tmdb_disclaimer">This product uses the TMDB API but is not endorsed or certified by TMDB.</string>
     
     <!-- Sentiment Analysis -->
     <string name="sentiment_analysis_title">🤖 Sentiment Analysis Reviews</string>
