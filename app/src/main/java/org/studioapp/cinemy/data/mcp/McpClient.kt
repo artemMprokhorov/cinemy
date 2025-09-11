@@ -1,7 +1,6 @@
 package org.studioapp.cinemy.data.mcp
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.mapper.MovieMapper
@@ -47,7 +46,6 @@ class McpClient(private val context: Context) : MovieApiService {
 
         // Debug logging for MCP response
         if (BuildConfig.DEBUG) {
-            Log.d("MCP_CLIENT", "getPopularMovies response - success: ${response.success}, data: ${response.data}, error: ${response.error}")
         }
 
         return if (response.success && response.data != null) {
@@ -97,7 +95,6 @@ class McpClient(private val context: Context) : MovieApiService {
             
             // Debug logging for uiConfig
             if (BuildConfig.DEBUG) {
-                Log.d("MCP_CLIENT", "getPopularMovies uiConfig loaded - primary: ${uiConfig.colors.primary}, secondary: ${uiConfig.colors.secondary}")
             }
 
             McpResponseDto(
@@ -170,7 +167,6 @@ class McpClient(private val context: Context) : MovieApiService {
         // Debug logging for MCP response
         if (BuildConfig.DEBUG) {
             if (BuildConfig.DEBUG) {
-                Log.d("MCP_CLIENT", "getMovieDetails response - success: ${response.success}, data: ${response.data}, error: ${response.error}")
             }
         }
 
@@ -229,7 +225,6 @@ class McpClient(private val context: Context) : MovieApiService {
                 // Debug logging for uiConfig
                 if (BuildConfig.DEBUG) {
                     if (BuildConfig.DEBUG) {
-                        Log.d("MCP_CLIENT", "getMovieDetails uiConfig loaded - primary: ${uiConfig.colors.primary}, secondary: ${uiConfig.colors.secondary}")
                     }
                 }
 
@@ -356,7 +351,6 @@ class McpClient(private val context: Context) : MovieApiService {
                 // Debug logging for uiConfig
                 if (BuildConfig.DEBUG) {
                     if (BuildConfig.DEBUG) {
-                        Log.d("MCP_CLIENT", "getPopularMoviesViaMcp uiConfig loaded - primary: ${uiConfig.colors.primary}, secondary: ${uiConfig.colors.secondary}")
                     }
                 }
 
@@ -455,8 +449,6 @@ class McpClient(private val context: Context) : MovieApiService {
                     // Debug logging for uiConfig
                     if (BuildConfig.DEBUG) {
                         if (BuildConfig.DEBUG) {
-                            Log.d("MCP_CLIENT", "getMovieDetailsViaMcp uiConfig loaded - primary: ${uiConfig.colors.primary}, secondary: ${uiConfig.colors.secondary}")
-                            Log.d("MCP_CLIENT", "getMovieDetailsViaMcp sentimentReviews loaded - positive: ${sentimentReviews?.positive?.size ?: 0}, negative: ${sentimentReviews?.negative?.size ?: 0}")
                         }
                     }
 

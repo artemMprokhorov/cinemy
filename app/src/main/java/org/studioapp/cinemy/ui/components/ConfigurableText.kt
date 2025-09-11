@@ -46,8 +46,6 @@ fun ConfigurableText(
 
     // Debug logging for color application (removed to prevent infinite loop)
     // if (BuildConfig.DEBUG) {
-    //     Log.d("ConfigurableText", "Text color: $textColor, Using AI colors: ${uiConfig?.colors != null}, Text: '$text'")
-    //     Log.d("ConfigurableText", "FORCED COLOR - Text: $textColor, Using onSurface: ${uiConfig?.colors?.onSurface}")
     // }
 
     Text(

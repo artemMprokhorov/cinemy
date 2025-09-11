@@ -91,8 +91,6 @@ fun ConfigurableMovieCard(
 
     // Debug logging for color application (removed to prevent infinite loop)
     // if (BuildConfig.DEBUG) {
-    //     Log.d("ConfigurableMovieCard", "Movie card colors - Surface: $cardColor, Text: $textColor, Primary: $primaryColor, Using AI colors: ${uiConfig?.colors != null}, Movie: '${movie.title}'")
-    //     Log.d("ConfigurableMovieCard", "FORCED COLORS - Card: $cardColor, Text: $textColor, Primary: $primaryColor")
     // }
 
     Card(

@@ -1,7 +1,6 @@
 package org.studioapp.cinemy.data.mcp
 
 import android.content.Context
-import android.util.Log
 import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.mcp.models.McpRequest
 import org.studioapp.cinemy.data.mcp.models.McpResponse
@@ -96,7 +95,6 @@ class FakeInterceptor(private val context: Context) {
             }
         }.getOrElse { e ->
             if (BuildConfig.DEBUG) {
-                Log.e("FakeInterceptor", "Error loading mock data from assets", e)
             }
             createFallbackResponse()
         }
@@ -122,7 +120,6 @@ class FakeInterceptor(private val context: Context) {
             }
         }.getOrElse { e ->
             if (BuildConfig.DEBUG) {
-                Log.e("FakeInterceptor", "Error loading mock data from assets", e)
             }
             createFallbackResponse()
         }
@@ -136,7 +133,6 @@ class FakeInterceptor(private val context: Context) {
             context.assets.open(fileName).bufferedReader().use { it.readText() }
         }.getOrElse { e ->
             if (BuildConfig.DEBUG) {
-                Log.e("FakeInterceptor", "Error loading asset: $fileName", e)
             }
             null
         }

@@ -68,8 +68,6 @@ fun ConfigurableButton(
 
     // Debug logging for color application (removed to prevent infinite loop)
     // if (BuildConfig.DEBUG) {
-    //     Log.d("ConfigurableButton", "Button colors - Primary: ${colorScheme?.primary}, Secondary: ${colorScheme?.secondary}, Text: $textColor, Using AI colors: ${uiConfig?.colors != null}")
-    //     Log.d("ConfigurableButton", "FORCED COLORS - Button: $buttonColor, Text: $textColor, IsSecondary: $isSecondary")
     // }
 
     Button(

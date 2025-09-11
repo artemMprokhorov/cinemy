@@ -1,6 +1,5 @@
 package org.studioapp.cinemy.ui.movieslist
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -99,7 +98,6 @@ private fun MoviesListContent(
         refreshing = state.isLoading,
         onRefresh = {
             if (BuildConfig.DEBUG) {
-                Log.d("MoviesList", "Pull to refresh triggered")
             }
             onIntent(MoviesListIntent.LoadPopularMovies)
         }
@@ -283,7 +281,6 @@ private fun MoviesGrid(
                     // Calculate based on actual content: text + spacing + buttons + padding
                     // Text height (~20dp) + spacing (12dp) + button height (~48dp) + padding (16dp * 2) = ~112dp
                     if (BuildConfig.DEBUG) {
-                        Log.d("PaginationControls", "Using calculated height: $Dimens112")
                     }
                     Dimens112
                 } else Dimens8

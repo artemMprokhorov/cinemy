@@ -1,6 +1,5 @@
 package org.studioapp.cinemy.presentation.moviedetail
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import org.studioapp.cinemy.BuildConfig

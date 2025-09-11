@@ -1,6 +1,5 @@
 package org.studioapp.cinemy.ui.moviedetail
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -89,7 +88,6 @@ private fun MovieDetailContent(
         refreshing = state.isLoading,
         onRefresh = {
             if (BuildConfig.DEBUG) {
-                Log.d("MovieDetail", "Pull to refresh triggered")
             }
             onIntent(MovieDetailIntent.Retry)
         }

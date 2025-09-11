@@ -1,6 +1,5 @@
 package org.studioapp.cinemy.ml
 
-import android.util.Log
 import org.studioapp.cinemy.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -129,17 +128,11 @@ class MLPerformanceMonitor private constructor() {
         CoroutineScope(Dispatchers.IO).launch {
             runCatching {
                 val stats = getPerformanceStats()
-                Log.i(TAG, LOG_PERFORMANCE_STATS)
-                Log.i(TAG, "$LOG_TOTAL_ANALYSES${stats.totalAnalyses}")
-                Log.i(TAG, "$LOG_AVERAGE_TIME${stats.averageProcessingTimeMs.toInt()}ms")
-                Log.i(TAG, "$LOG_ERROR_RATE${(stats.errorRate * 100).toInt()}%")
                 
                 stats.detailedMetrics.forEach { (group, metric) ->
                     val avgTime = metric.totalTime.toDouble() / metric.count
-                    Log.i(TAG, "$LOG_GROUP_STATS$group: ${metric.count} analyses, avg ${avgTime.toInt()}ms")
                 }
             }.onFailure { e ->
-                Log.e(TAG, LOG_ERROR_LOGGING, e)
             }
         }
     }

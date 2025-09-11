@@ -40,11 +40,9 @@ class CinemyApplication : Application() {
             runCatching {
                 val success = sentimentAnalyzer.initialize()
                 if (BuildConfig.DEBUG) {
-                    android.util.Log.d("Cinemy_ML", "ML analyzer initialized: $success")
                 }
             }.onFailure { e ->
                 if (BuildConfig.DEBUG) {
-                    android.util.Log.e("Cinemy_ML", "ML initialization error", e)
                 }
             }
         }

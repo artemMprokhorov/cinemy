@@ -1,6 +1,5 @@
 package org.studioapp.cinemy.data.repository
 
-import android.util.Log
 import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.mcp.McpClient
 import org.studioapp.cinemy.data.model.MovieDetailsResponse
@@ -23,7 +22,6 @@ class MovieRepositoryImpl(
                     is Result.Error -> response.uiConfig?.colors?.primary?.toString() ?: "null"
                     is Result.Loading -> "loading"
                 }
-                Log.d("REPOSITORY", "getPopularMovies response - success: ${response is Result.Success}, uiConfig: $uiConfigInfo")
             }
             
             when (response) {
@@ -54,7 +52,6 @@ class MovieRepositoryImpl(
                     is Result.Error -> response.uiConfig?.colors?.primary?.toString() ?: "null"
                     is Result.Loading -> "loading"
                 }
-                Log.d("REPOSITORY", "getMovieDetails response - success: ${response is Result.Success}, uiConfig: $uiConfigInfo")
             }
             
             when (response) {
