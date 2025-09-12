@@ -11,7 +11,7 @@
 
 ## 📌 Introduction
 
-I am an Android developer with **10+ years of experience** in building production-grade mobile applications.
+Hi, i am an Android developer with **10+ years of experience** in building production-grade mobile applications.
 
 **Cinemy** is an **experimental project**, not intended for production use. Its purpose is to **demonstrate modern technologies**, including:
 - Clean + MVI architectural patterns,
