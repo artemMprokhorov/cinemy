@@ -139,7 +139,7 @@ Special thanks to TMDB for comprehensive movie data, the Material Design team fo
 
 ## 📞 Contact
 
-**Project Maintainer**: [artemMprokhorov](https://github.com/artemMprokhorov)
+**Project Maintainer**: [Artem Prokhorov](https://github.com/artemMprokhorov)
 
 **Repository**: [https://github.com/artemMprokhorov/cinemy](https://github.com/artemMprokhorov/cinemy)
 
