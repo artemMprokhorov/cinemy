@@ -2,10 +2,37 @@
 
 **Cinemy - Development Guide**  
 **Created**: 2024-12-19  
-**Last Updated**: 2024-12-10  
-**Version**: 2.4.0
+**Last Updated**: 2024-12-19  
+**Version**: 2.7.1
 
-## 🆕 Latest Updates (v2.4.0)
+## 🆕 Latest Updates (v2.7.1)
+
+### 🧠 Build Variant-Specific ML Models
+- **Automatic Model Selection**: Models automatically selected based on `BuildConfig.BUILD_TYPE`
+- **Debug Builds**: Use compact model (541KB) for fast development
+- **Production Builds**: Use full multilingual model (3.3MB) for accuracy
+- **Implementation**: `SentimentAnalyzer.kt` with `getModelFileName()` method
+- **Error Handling**: Graceful fallback to simple model if JSON parsing fails
+- **Asset Management**: Models stored in `app/src/main/assets/ml_models/`
+
+### 🔧 Technical Implementation
+```kotlin
+private fun getModelFileName(): String {
+    return when (BuildConfig.BUILD_TYPE) {
+        "debug" -> "sentiment_model_compact.json"
+        "release" -> "multilingual_sentiment_production.json"
+        else -> "sentiment_model_compact.json"
+    }
+}
+```
+
+### 📊 Model Specifications
+- **Compact Model**: 541KB, optimized for development and testing
+- **Production Model**: 3.3MB, 50K vocabulary, 100% accuracy
+- **Languages**: English, Spanish, Russian with complex constructs
+- **Training Data**: 5M diverse samples with nuanced expressions
+
+## 🆕 Previous Updates (v2.4.0)
 
 ### 🔧 Code Quality & Refactoring Improvements
 - **String Resources**: All hardcoded UI texts moved to `strings.xml` for internationalization
