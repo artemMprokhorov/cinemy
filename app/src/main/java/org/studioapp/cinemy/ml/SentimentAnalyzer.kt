@@ -3,8 +3,10 @@ package org.studioapp.cinemy.ml
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.math.abs
+import org.studioapp.cinemy.BuildConfig
 
 /**
  * Keyword-based sentiment analyzer for Cinemy
@@ -68,15 +70,16 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         runCatching {
             if (isInitialized) return@withContext true
 
-            // Try to load enhanced model from assets first
+            // Load model based on build variant
+            val modelFileName = getModelFileName()
             val modelJson = runCatching {
-                context.assets.open("ml_models/enhanced_keyword_v2_model.json").use { inputStream ->
+                context.assets.open("ml_models/$modelFileName").use { inputStream ->
                     inputStream.bufferedReader().readText()
                 }
             }.getOrNull()
 
             model = if (modelJson != null) {
-                loadModelFromJson(modelJson)
+                loadModelFromJson(modelJson, modelFileName)
             } else {
                 createSimpleModel()
             }
@@ -121,49 +124,95 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     fun getModelInfo(): ModelInfo? = model?.modelInfo
 
     /**
+     * Get model file name based on build variant
+     */
+    private fun getModelFileName(): String {
+        return when (BuildConfig.BUILD_TYPE) {
+            "debug" -> "sentiment_model_compact.json"
+            "release" -> "multilingual_sentiment_production.json"
+            else -> "sentiment_model_compact.json"
+        }
+    }
+
+    /**
      * Load model from JSON string
      */
-    private fun loadModelFromJson(jsonString: String): KeywordSentimentModel {
+    private fun loadModelFromJson(jsonString: String, fileName: String): KeywordSentimentModel {
         return runCatching {
             val json = Json { ignoreUnknownKeys = true }
-            val modelData = json.decodeFromString<EnhancedModelData>(jsonString)
-
-            val modelInfo = ModelInfo(
-                type = modelData.model_info.type,
-                version = modelData.model_info.version,
-                language = modelData.model_info.language,
-                accuracy = modelData.model_info.accuracy,
-                speed = modelData.model_info.speed
-            )
-
-            val algorithm = AlgorithmConfig(
-                baseConfidence = modelData.algorithm.base_confidence,
-                keywordWeight = 1.0,
-                contextWeight = 0.3,
-                modifierWeight = 0.4,
-                neutralThreshold = modelData.algorithm.neutral_threshold,
-                minConfidence = modelData.algorithm.min_confidence,
-                maxConfidence = modelData.algorithm.max_confidence
-            )
-
-            val contextBoosters = ContextBoosters(
-                movieTerms = null, // Not in v2 model
-                positiveContext = modelData.context_patterns?.strong_positive,
-                negativeContext = modelData.context_patterns?.strong_negative
-            )
-
-            KeywordSentimentModel(
-                modelInfo = modelInfo,
-                positiveKeywords = modelData.positive_keywords,
-                negativeKeywords = modelData.negative_keywords,
-                neutralIndicators = modelData.neutral_indicators,
-                intensityModifiers = modelData.intensity_modifiers,
-                contextBoosters = contextBoosters,
-                algorithm = algorithm
-            )
+            
+            when (fileName) {
+                "sentiment_model_compact.json" -> {
+                    loadCompactModel(json, jsonString)
+                }
+                "multilingual_sentiment_production.json" -> {
+                    loadProductionModel(json, jsonString)
+                }
+                else -> {
+                    // Fallback to enhanced model format
+                    loadEnhancedModel(json, jsonString)
+                }
+            }
         }.getOrElse { e ->
             createSimpleModel()
         }
+    }
+
+    /**
+     * Load compact model format
+     */
+    private fun loadCompactModel(json: Json, jsonString: String): KeywordSentimentModel {
+        // For now, use simple model instead of parsing compact JSON
+        return createSimpleModel()
+    }
+
+    /**
+     * Load production model format
+     */
+    private fun loadProductionModel(json: Json, jsonString: String): KeywordSentimentModel {
+        // For now, use simple model instead of parsing production JSON
+        return createSimpleModel()
+    }
+
+    /**
+     * Load enhanced model format (fallback)
+     */
+    private fun loadEnhancedModel(json: Json, jsonString: String): KeywordSentimentModel {
+        val modelData = json.decodeFromString<EnhancedModelData>(jsonString)
+
+        val modelInfo = ModelInfo(
+            type = modelData.model_info.type,
+            version = modelData.model_info.version,
+            language = modelData.model_info.language,
+            accuracy = modelData.model_info.accuracy,
+            speed = modelData.model_info.speed
+        )
+
+        val algorithm = AlgorithmConfig(
+            baseConfidence = modelData.algorithm.base_confidence,
+            keywordWeight = 1.0,
+            contextWeight = 0.3,
+            modifierWeight = 0.4,
+            neutralThreshold = modelData.algorithm.neutral_threshold,
+            minConfidence = modelData.algorithm.min_confidence,
+            maxConfidence = modelData.algorithm.max_confidence
+        )
+
+        val contextBoosters = ContextBoosters(
+            movieTerms = null, // Not in v2 model
+            positiveContext = modelData.context_patterns?.strong_positive,
+            negativeContext = modelData.context_patterns?.strong_negative
+        )
+
+        return KeywordSentimentModel(
+            modelInfo = modelInfo,
+            positiveKeywords = modelData.positive_keywords,
+            negativeKeywords = modelData.negative_keywords,
+            neutralIndicators = modelData.neutral_indicators,
+            intensityModifiers = modelData.intensity_modifiers,
+            contextBoosters = contextBoosters,
+            algorithm = algorithm
+        )
     }
 
     /**

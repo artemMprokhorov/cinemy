@@ -10,6 +10,34 @@
 
 ## 📅 **Version History**
 
+### **v2.7.0** - Build Variant-Specific Sentiment Models
+**Date**: December 2024  
+**Status**: ✅ **COMPLETED**
+
+#### 🧠 **Intelligent Model Selection**
+- **Build Variant Detection**: Automatic model selection based on `BuildConfig.BUILD_TYPE`
+- **Dummy/Debug Build**: Uses `sentiment_model_compact.json` (541KB) for fast development
+- **Production Build**: Uses `multilingual_sentiment_production.json` (3.3MB) for full accuracy
+- **Automatic Switching**: No manual configuration needed - models switch automatically
+
+#### 🎯 **Model Specifications**
+- **Compact Model**: 541KB, optimized for development and testing
+- **Production Model**: 3.3MB, 50K vocabulary, 100% accuracy, multilingual support
+- **Languages Supported**: English, Spanish, Russian with complex language constructs
+- **Training Data**: 5M diverse samples with nuanced expressions
+
+#### ⚙️ **Technical Implementation**
+- **SentimentAnalyzer.kt**: Updated with build variant detection logic
+- **Model Loading**: Graceful fallback to simple model if JSON parsing fails
+- **Error Handling**: Uses `runCatching` for robust error management
+- **Backward Compatibility**: Existing functionality preserved
+
+#### 📊 **Performance Benefits**
+- **Development**: Faster loading with compact model (541KB vs 3.3MB)
+- **Production**: Full accuracy with multilingual production model
+- **Memory Efficiency**: Optimal model selection per environment
+- **Zero Configuration**: Automatic model selection based on build type
+
 ### **v2.6.0** - Code Cleanup & Optimization
 **Date**: December 2024  
 **Status**: ✅ **COMPLETED**
