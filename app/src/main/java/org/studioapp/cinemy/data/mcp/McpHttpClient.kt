@@ -126,11 +126,21 @@ class McpHttpClient(private val context: Context) {
 
         }.getOrElse { e ->
             // Graceful fallback to mock data
-            val mockResponse = fakeInterceptor.intercept<T>(request)
-            // Add indicator that this is fallback data
-            mockResponse.copy(
-                message = StringConstants.MCP_MESSAGE_USING_MOCK_BACKEND_UNAVAILABLE
-            )
+            runCatching {
+                val mockResponse = fakeInterceptor.intercept<T>(request)
+                // Add indicator that this is fallback data
+                mockResponse.copy(
+                    message = StringConstants.MCP_MESSAGE_USING_MOCK_BACKEND_UNAVAILABLE
+                )
+            }.getOrElse { mockException ->
+                // If mock interceptor also fails, return a basic error response
+                McpResponse<T>(
+                    success = false,
+                    data = null,
+                    error = "Both real request and mock fallback failed: ${mockException.message}",
+                    message = "Request failed completely"
+                )
+            }
         }
     }
 
