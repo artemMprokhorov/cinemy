@@ -4,9 +4,6 @@
 *.ap_
 *.aab
 
-# Large ML model files (use Git LFS or external storage)
-app/src/main/assets/ml_models/multilingual_sentiment_production.json
-
 
 # Files for the ART/Dalvik VM
 *.dex

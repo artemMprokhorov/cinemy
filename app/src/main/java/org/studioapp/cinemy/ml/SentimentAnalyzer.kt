@@ -12,7 +12,6 @@ import org.studioapp.cinemy.BuildConfig
  * Keyword-based sentiment analyzer for Cinemy
  * Fast and efficient implementation for mobile devices
  */
-
 class SentimentAnalyzer private constructor(private val context: Context) {
 
     private var model: KeywordSentimentModel? = null
