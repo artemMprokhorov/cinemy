@@ -40,7 +40,7 @@ object TestUtils {
         val configContent = """
         {
           "tensorflow_lite": {
-            "model_file": "test_sentiment_model.tflite",
+            "model_file": "production_sentiment_full_manual.tflite",
             "model_type": "sentiment_analysis",
             "version": "1.0.0",
             "input_config": {
@@ -130,7 +130,7 @@ object TestUtils {
         
         // Setup mock responses
         every { 
-            mockAssetManager.open("ml_models/test_sentiment_model.tflite") 
+            mockAssetManager.open("ml_models/production_sentiment_full_manual.tflite") 
         } returns tfliteInputStream
         
         every { 
@@ -138,7 +138,7 @@ object TestUtils {
         } returns configInputStream
         
         every { 
-            mockAssetManager.open("ml_models/sentiment_model_compact.json") 
+            mockAssetManager.open("ml_models/multilingual_sentiment_production.json") 
         } returns keywordModelInputStream
         
         every { 

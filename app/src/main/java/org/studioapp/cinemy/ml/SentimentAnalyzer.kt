@@ -160,9 +160,9 @@ class SentimentAnalyzer private constructor(private val context: Context) {
      */
     private fun getModelFileName(): String {
         return when (BuildConfig.BUILD_TYPE) {
-            "debug" -> "sentiment_model_compact.json"
+            "debug" -> "multilingual_sentiment_production.json"
             "release" -> "multilingual_sentiment_production.json"
-            else -> "sentiment_model_compact.json"
+            else -> "multilingual_sentiment_production.json"
         }
     }
 
@@ -174,9 +174,6 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             val json = Json { ignoreUnknownKeys = true }
             
             when (fileName) {
-                "sentiment_model_compact.json" -> {
-                    loadCompactModel(json, jsonString)
-                }
                 "multilingual_sentiment_production.json" -> {
                     loadProductionModel(json, jsonString)
                 }
@@ -550,9 +547,10 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     private fun shouldUseTensorFlow(text: String): Boolean {
         val config = hybridConfig?.modelSelection ?: return false
         
-        // Check text complexity
-        val complexityThreshold = config.complexityThreshold ?: 50
-        if (text.length > complexityThreshold) {
+        // Check text complexity by word count
+        val complexityThreshold = config.complexityThreshold ?: 5
+        val wordCount = text.split("\\s+".toRegex()).filter { it.isNotBlank() }.size
+        if (wordCount >= complexityThreshold) {
             return true
         }
         

@@ -443,6 +443,131 @@ class McpHttpClient {
 - **Intent processing**: `processIntent(intent: Intent)`
 - **Repository methods**: `get{Entity}()`, `save{Entity}()`
 
+## 🤖 Machine Learning Architecture
+
+### 🧠 ML Model Integration
+
+Cinemy features a sophisticated **hybrid ML system** that combines production-grade TensorFlow Lite models with keyword-based fallback for robust sentiment analysis.
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Text Input    │───▶│  SentimentAnalyzer │───▶│  SentimentResult │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                │
+                                ▼
+                    ┌─────────────────────┐
+                    │  Model Selection    │
+                    │  Logic              │
+                    └─────────────────────┘
+                                │
+                    ┌───────────┴───────────┐
+                    ▼                       ▼
+        ┌─────────────────────┐    ┌─────────────────────┐
+        │ TensorFlowSentiment │    │ KeywordSentiment    │
+        │ Model (BERT)        │    │ Model (Fallback)    │
+        │                     │    │                     │
+        │ • 3.8MB Model       │    │ • Fast Processing   │
+        │ • 30,522 Vocab      │    │ • Rule-based        │
+        │ • 95%+ Accuracy     │    │ • Reliable Fallback │
+        │ • BERT Tokenization │    │ • No Dependencies   │
+        └─────────────────────┘    └─────────────────────┘
+```
+
+### 🔄 ML Data Flow
+
+1. **Text Input** → Raw text from movie reviews
+2. **Model Selection** → Choose between TensorFlow Lite or keyword model
+3. **Text Preprocessing** → BERT tokenization or keyword extraction
+4. **Model Inference** → Run sentiment analysis
+5. **Result Processing** → Apply confidence thresholds
+6. **Fallback Logic** → Switch to keyword model if needed
+7. **Sentiment Result** → Return structured sentiment data
+
+### 🏗️ ML Components
+
+#### **TensorFlowSentimentModel**
+- **Purpose**: Production BERT-based sentiment analysis
+- **Model**: `production_sentiment_full_manual.tflite` (3.8MB)
+- **Input**: 512-token sequences with BERT tokenization
+- **Output**: 3-class sentiment classification
+- **Performance**: NNAPI/XNNPACK acceleration enabled
+
+#### **SentimentAnalyzer (Hybrid Coordinator)**
+- **Purpose**: Orchestrates ML model selection and fallback
+- **Logic**: Complex text → TensorFlow, Simple text → Keyword
+- **Fallback**: Automatic fallback on ML errors
+- **Caching**: Optional result caching for performance
+
+#### **KeywordSentimentModel**
+- **Purpose**: Fast, reliable fallback sentiment analysis
+- **Method**: Rule-based keyword matching
+- **Dependencies**: None (pure Kotlin)
+- **Performance**: Sub-millisecond processing
+
+### 📊 Model Specifications
+
+#### **BERT Production Model**
+```kotlin
+// Model Configuration
+MODEL_FILE = "production_sentiment_full_manual.tflite"
+VOCAB_SIZE = 30522
+MAX_SEQUENCE_LENGTH = 512
+CONFIDENCE_THRESHOLD = 0.75
+
+// Special Tokens
+UNK_TOKEN = "[UNK]"
+CLS_TOKEN = "[CLS]" 
+SEP_TOKEN = "[SEP]"
+PAD_TOKEN = "[PAD]"
+MASK_TOKEN = "[MASK]"
+```
+
+#### **Input/Output Shapes**
+- **Input**: `[1, 512]` - Batch size 1, sequence length 512
+- **Output**: `[1, 3]` - Batch size 1, 3 sentiment classes
+- **Classes**: `["negative", "neutral", "positive"]`
+
+### 🔧 ML Configuration
+
+#### **TensorFlow Lite Settings**
+```json
+{
+  "tensorflow_lite": {
+    "model_file": "production_sentiment_full_manual.tflite",
+    "model_type": "bert_sentiment_analysis",
+    "input_config": {
+      "input_shape": [1, 512],
+      "input_type": "int32",
+      "vocab_size": 30522
+    },
+    "output_config": {
+      "output_shape": [1, 3],
+      "confidence_threshold": 0.75
+    },
+    "performance": {
+      "use_nnapi": true,
+      "enable_xnnpack": true,
+      "num_threads": 4
+    }
+  }
+}
+```
+
+### 🚀 Performance Considerations
+
+#### **ML Optimizations**
+- **Model Quantization**: 3.8MB optimized BERT model
+- **Hardware Acceleration**: NNAPI and XNNPACK enabled
+- **Memory Management**: Efficient tensor allocation
+- **Fallback Strategy**: Graceful degradation on errors
+- **Caching**: Optional result caching for repeated queries
+
+#### **Error Handling**
+- **Model Loading**: Graceful fallback if TensorFlow model fails
+- **Inference Errors**: Automatic switch to keyword model
+- **Vocabulary Issues**: Fallback vocabulary for missing tokens
+- **Performance Monitoring**: ML performance tracking and logging
+
 ## 🚀 Performance Considerations
 
 ### ⚡ Optimizations

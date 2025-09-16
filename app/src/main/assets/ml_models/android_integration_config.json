@@ -1,18 +1,20 @@
 {
   "tensorflow_lite": {
-    "model_file": "test_sentiment_model.tflite",
-    "model_type": "sentiment_analysis",
-    "version": "1.0.0",
+    "model_file": "production_sentiment_full_manual.tflite",
+    "model_type": "bert_sentiment_analysis",
+    "version": "2.0.0",
     "input_config": {
-      "input_tensor_name": "input_text",
+      "input_tensor_name": "input_ids",
       "input_shape": [1, 512],
-      "input_type": "string",
+      "input_type": "int32",
       "preprocessing": {
         "max_length": 512,
         "padding": "post",
         "truncation": true,
         "lowercase": true,
-        "remove_punctuation": false
+        "remove_punctuation": false,
+        "vocab_size": 30522,
+        "vocab_file": "vocab.json"
       }
     },
     "output_config": {
@@ -20,7 +22,7 @@
       "output_shape": [1, 3],
       "output_type": "float",
       "class_labels": ["negative", "neutral", "positive"],
-      "confidence_threshold": 0.6
+      "confidence_threshold": 0.75
     },
     "performance": {
       "use_gpu": false,
@@ -45,7 +47,7 @@
         "simple_sentiment",
         "fast_processing"
       ],
-      "complexity_threshold": 50,
+      "complexity_threshold": 5,
       "confidence_threshold": 0.7
     },
     "integration": {

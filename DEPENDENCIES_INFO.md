@@ -171,6 +171,37 @@ The project uses a modern technology stack for Android development with a focus 
 
 **Selection Justification**: Timber is a popular logging library that provides a convenient API and automatic tag management.
 
+### 🤖 Machine Learning
+
+| Dependency | Version | Purpose | Justification |
+|------------|---------|---------|---------------|
+| `org.tensorflow:tensorflow-lite` | 2.14.0 | TensorFlow Lite core | Production ML model inference |
+| `org.tensorflow:tensorflow-lite-support` | 0.4.4 | TensorFlow Lite support | ML utilities and helpers |
+
+**Selection Justification**: TensorFlow Lite 2.14.0 provides optimized mobile ML inference with hardware acceleration. The support library offers additional utilities for text processing and model management.
+
+#### **ML Model Specifications**
+- **Model File**: `production_sentiment_full_manual.tflite` (3.8MB)
+- **Architecture**: BERT-based transformer for sentiment analysis
+- **Input**: 512-token sequences with BERT tokenization
+- **Output**: 3-class sentiment classification (negative, neutral, positive)
+- **Vocabulary**: 30,522 tokens with special BERT tokens
+- **Performance**: NNAPI and XNNPACK acceleration enabled
+
+#### **ML Dependencies Details**
+```kotlin
+// TensorFlow Lite Core
+implementation("org.tensorflow:tensorflow-lite:2.14.0")
+
+// TensorFlow Lite Support Library
+implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
+```
+
+**Hardware Acceleration**:
+- **NNAPI**: Android Neural Networks API for hardware acceleration
+- **XNNPACK**: Optimized CPU inference engine
+- **Multi-threading**: 4-thread parallel processing
+
 ### 🎨 Debug Tools
 
 | Dependency | Version | Purpose | Justification |

@@ -88,9 +88,9 @@ This directory contains comprehensive tests for the Machine Learning components 
 - Supports both successful and failing scenarios
 
 ### Test Assets
-- `test_sentiment_model.tflite` - Mock TensorFlow Lite model
+- `production_sentiment_full_manual.tflite` - Production TensorFlow Lite model
 - `android_integration_config.json` - Configuration for hybrid system
-- `sentiment_model_compact.json` - Keyword model data
+- `multilingual_sentiment_production.json` - Production keyword model data
 
 ## Performance Testing
 

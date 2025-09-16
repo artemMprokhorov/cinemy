@@ -19,9 +19,9 @@
 ```kotlin
 private fun getModelFileName(): String {
     return when (BuildConfig.BUILD_TYPE) {
-        "debug" -> "sentiment_model_compact.json"
+        "debug" -> "multilingual_sentiment_production.json"
         "release" -> "multilingual_sentiment_production.json"
-        else -> "sentiment_model_compact.json"
+        else -> "multilingual_sentiment_production.json"
     }
 }
 ```
