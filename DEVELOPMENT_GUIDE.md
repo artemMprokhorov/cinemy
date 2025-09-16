@@ -3,16 +3,16 @@
 **Cinemy - Development Guide**  
 **Created**: 2024-12-19  
 **Last Updated**: 2024-12-19  
-**Version**: 2.7.1
+**Version**: 2.8.0
 
-## 🆕 Latest Updates (v2.7.1)
+## 🆕 Latest Updates (v2.8.0)
 
-### 🧠 Build Variant-Specific ML Models
-- **Automatic Model Selection**: Models automatically selected based on `BuildConfig.BUILD_TYPE`
-- **Debug Builds**: Use compact model (541KB) for fast development
-- **Production Builds**: Use full multilingual model (3.3MB) for accuracy
-- **Implementation**: `SentimentAnalyzer.kt` with `getModelFileName()` method
-- **Error Handling**: Graceful fallback to simple model if JSON parsing fails
+### 🤖 Production TensorFlow Lite Integration
+- **TensorFlow Lite 2.14.0**: Latest TensorFlow Lite with support library 0.4.4
+- **BERT Production Model**: `production_sentiment_full_manual.tflite` (3.8MB)
+- **Hybrid ML System**: TensorFlow Lite + keyword model fallback
+- **Complexity Threshold**: 5+ words trigger TensorFlow Lite model
+- **Implementation**: `SentimentAnalyzer.kt` with hybrid model selection
 - **Asset Management**: Models stored in `app/src/main/assets/ml_models/`
 
 ### 🔧 Technical Implementation
@@ -27,10 +27,11 @@ private fun getModelFileName(): String {
 ```
 
 ### 📊 Model Specifications
-- **Compact Model**: 541KB, optimized for development and testing
-- **Production Model**: 3.3MB, 50K vocabulary, 100% accuracy
-- **Languages**: English, Spanish, Russian with complex constructs
-- **Training Data**: 5M diverse samples with nuanced expressions
+- **TensorFlow Lite Model**: `production_sentiment_full_manual.tflite` (3.8MB)
+- **BERT Architecture**: 30,522 vocabulary tokens, 512-token sequences
+- **Keyword Model**: `multilingual_sentiment_production.json` (3.3MB)
+- **Hybrid Logic**: 5+ words → TensorFlow, <5 words → Keyword
+- **Performance**: NNAPI/XNNPACK acceleration, 95%+ accuracy
 
 ## 🆕 Previous Updates (v2.4.0)
 

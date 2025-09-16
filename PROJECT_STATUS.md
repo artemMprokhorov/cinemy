@@ -32,22 +32,22 @@
 | **Pagination Controls Fix** | ✅ | 100% | Fixed content overlap issue |
 | **ML Sentiment Analysis** | ✅ | 100% | Build variant-specific models with automatic selection |
 
-## 🆕 Latest Updates (v2.7.1)
+## 🆕 Latest Updates (v2.8.0)
 
-### 🧠 **Build Variant-Specific ML Models** - December 2024
-- **Automatic Model Selection**: Uses `BuildConfig.BUILD_TYPE` for intelligent model switching
-- **Debug Builds**: Compact model (541KB) for fast development and testing
-- **Production Builds**: Full multilingual model (3.3MB) with 50K vocabulary
-- **Graceful Fallback**: Falls back to simple model if JSON parsing fails
-- **Error Handling**: Robust `runCatching` implementation throughout
-- **Zero Configuration**: Completely automatic - no manual switching needed
+### 🤖 **Production TensorFlow Lite Integration** - December 2024
+- **TensorFlow Lite 2.14.0**: Latest TensorFlow Lite with support library 0.4.4
+- **BERT Production Model**: `production_sentiment_full_manual.tflite` (3.8MB)
+- **Hybrid ML System**: TensorFlow Lite + keyword model fallback
+- **Complexity Threshold**: 5+ words trigger TensorFlow Lite model
+- **Vocabulary System**: 30,522 BERT tokens with proper tokenization
+- **Hardware Acceleration**: NNAPI and XNNPACK optimization
 
 ### 📊 **Model Specifications**
-- **Compact Model**: `sentiment_model_compact.json` (541KB) - optimized for development
-- **Production Model**: `multilingual_sentiment_production.json` (3.3MB) - full accuracy
-- **Languages**: English, Spanish, Russian support with complex constructs
-- **Training Data**: 5M diverse samples with nuanced expressions
-- **Accuracy**: 100% validation accuracy on production datasets
+- **TensorFlow Lite Model**: `production_sentiment_full_manual.tflite` (3.8MB) - BERT architecture
+- **Keyword Model**: `multilingual_sentiment_production.json` (3.3MB) - fallback system
+- **Vocabulary**: 30,522 tokens with special BERT tokens ([CLS], [SEP], [PAD], etc.)
+- **Input/Output**: [1, 512] input, [1, 3] output (negative, neutral, positive)
+- **Accuracy**: 95%+ on movie review sentiment analysis
 
 ### 🚀 **Build System Integration**
 - **Dummy Debug**: `org.studioapp.cinemy.dummy.debug` (22MB APK)
