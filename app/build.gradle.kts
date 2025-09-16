@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.compose.compiler)
     id("kotlin-parcelize")
 }
 
@@ -88,6 +89,10 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+
+    aaptOptions {
+        noCompress("tflite")
     }
 
     compileOptions {
@@ -179,6 +184,10 @@ dependencies {
 
     // Timber for logging (using version catalog)
     implementation(libs.timber)
+
+    // TensorFlow Lite for ML sentiment analysis
+    implementation(libs.tensorflow.lite)
+    implementation(libs.tensorflow.lite.support)
 
     // Testing dependencies (using version catalog)
     testImplementation(libs.junit)
