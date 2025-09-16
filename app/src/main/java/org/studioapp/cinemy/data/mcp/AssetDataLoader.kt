@@ -227,7 +227,7 @@ class AssetDataLoader(private val context: Context) {
                 System.currentTimeMillis().toString()
             ),
             method = method,
-            searchQuery = metaJson.optString(StringConstants.FIELD_SEARCH_QUERY, null),
+            searchQuery = metaJson.optString(StringConstants.FIELD_SEARCH_QUERY, null) ?: "",
             movieId = movieId,
             resultsCount = resultsCount,
             aiGenerated = metaJson.optBoolean(StringConstants.FIELD_AI_GENERATED, true),
@@ -277,11 +277,11 @@ class AssetDataLoader(private val context: Context) {
                         StringConstants.FIELD_DESCRIPTION,
                         StringConstants.NO_DESCRIPTION_AVAILABLE
                     ),
-                    posterPath = movieJson.optString(StringConstants.FIELD_POSTER_PATH, null),
-                    backdropPath = movieJson.optString(StringConstants.FIELD_BACKDROP_PATH, null),
+                    posterPath = movieJson.optString(StringConstants.FIELD_POSTER_PATH, null) ?: "",
+                    backdropPath = movieJson.optString(StringConstants.FIELD_BACKDROP_PATH, null) ?: "",
                     rating = movieJson.optDouble(StringConstants.FIELD_RATING, 0.0),
                     voteCount = movieJson.optInt(StringConstants.FIELD_VOTE_COUNT, 0),
-                    releaseDate = movieJson.optString(StringConstants.FIELD_RELEASE_DATE, null),
+                    releaseDate = movieJson.optString(StringConstants.FIELD_RELEASE_DATE, null) ?: "",
                     genreIds = parseGenreIds(movieJson.optJSONArray(StringConstants.FIELD_GENRE_IDS)),
                     popularity = movieJson.optDouble(StringConstants.FIELD_POPULARITY, 0.0),
                     adult = movieJson.optBoolean(StringConstants.FIELD_ADULT, false)
