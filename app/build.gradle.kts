@@ -186,12 +186,7 @@ dependencies {
     implementation(libs.timber)
 
     // TensorFlow Lite for ML sentiment analysis
-    implementation(libs.tensorflow.lite) {
-        exclude(group = "org.tensorflow", module = "tensorflow-lite-api")
-    }
-    implementation(libs.tensorflow.lite.support) {
-        exclude(group = "org.tensorflow", module = "tensorflow-lite-support-api")
-    }
+    implementation(libs.tensorflow.lite)
 
     // Testing dependencies (using version catalog)
     testImplementation(libs.junit)

@@ -6,9 +6,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.tensorflow.lite.Interpreter
-import org.tensorflow.lite.support.common.FileUtil
-import org.tensorflow.lite.support.common.TensorOperator
-import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.io.FileInputStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -232,19 +229,21 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
         
         // Prepare input tensor
         val inputShape = (inputConfig?.inputShape ?: listOf(1, 512)).toIntArray()
-        val inputTensor = TensorBuffer.createFixedSize(inputShape, org.tensorflow.lite.DataType.FLOAT32)
-        inputTensor.loadBuffer(inputBuffer)
-
-        // Prepare output tensor
         val outputShape = (outputConfig?.outputShape ?: listOf(1, 3)).toIntArray()
-        val outputTensor = TensorBuffer.createFixedSize(outputShape, org.tensorflow.lite.DataType.FLOAT32)
+        
+        // Prepare output buffer
+        val outputBuffer = ByteBuffer.allocateDirect(outputShape[1] * 4) // 4 bytes per float
+        outputBuffer.order(ByteOrder.nativeOrder())
 
         // Run inference
-        interpreter?.run(inputTensor.buffer, outputTensor.buffer)
+        interpreter?.run(inputBuffer, outputBuffer)
 
         // Convert output to float array
         val outputArray = FloatArray(outputShape[1])
-        outputTensor.floatArray.copyInto(outputArray)
+        outputBuffer.rewind()
+        for (i in 0 until outputShape[1]) {
+            outputArray[i] = outputBuffer.float
+        }
         
         return outputArray
     }
