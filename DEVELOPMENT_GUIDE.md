@@ -1,8 +1,8 @@
 # DEVELOPMENT_GUIDE.md
 
 **Cinemy - Development Guide**  
-**Created**: 2024-12-19  
-**Last Updated**: 2024-12-19  
+**Created**: 2025-09-19  
+**Last Updated**: 2025-09-19  
 **Version**: 2.8.0
 
 ## 🆕 Latest Updates (v2.8.0)
@@ -1305,6 +1305,6 @@ fun MoviesList(movies: List<Movie>) {
 
 ---
 
-**Last Updated**: 2024-12-19  
+**Last Updated**: 2025-09-19  
 **Document Version**: 1.0.0  
 **Status**: Current

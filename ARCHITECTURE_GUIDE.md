@@ -1,7 +1,7 @@
 # ARCHITECTURE_GUIDE.md
 
 **Cinemy - Architecture Guide**  
-**Created**: 2024-12-19  
+**Created**: 2025-09-19  
 **Version**: 1.0.0-dev
 
 ## 🏗️ Architecture Overview
@@ -629,6 +629,6 @@ MASK_TOKEN = "[MASK]"
 
 ---
 
-**Last Updated**: 2024-12-19  
+**Last Updated**: 2025-09-19  
 **Document Version**: 1.0.0  
 **Status**: Current

@@ -1,7 +1,7 @@
 # DEPENDENCIES_INFO.md
 
 **Cinemy - Dependencies Information**  
-**Creation Date**: 2024-12-19  
+**Creation Date**: 2025-09-19  
 **Version**: 1.0.0-dev
 
 ## 📦 Dependencies Overview
@@ -373,6 +373,6 @@ When updating dependencies:
 
 ---
 
-**Last Updated**: 2024-12-19  
+**Last Updated**: 2025-09-19  
 **Document Version**: 1.0.0  
 **Status**: Current
