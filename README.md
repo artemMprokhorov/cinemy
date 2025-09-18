@@ -11,7 +11,9 @@
 
 ## 📌 Introduction
 
-Hi, i am an Android developer with **10+ years of experience** in building production-grade mobile applications.
+Hi, i am an Android developer with **many years of experience** in building production-grade mobile applications.
+
+Cinemy a **showcase of how an AI agent system, guided only by a developer’s prompts and scenarios, can build a complete Android application with integrated AI features**.
 
 **Cinemy** is an **experimental project**, not intended for production use. Its purpose is to **demonstrate modern technologies**, including:
 - Clean + MVI architectural patterns,
@@ -38,17 +40,9 @@ For review analysis, a **production-grade BERT-based sentiment model** has been 
 - **Accuracy:** 95%+ on movie review sentiment analysis
 - **Integration:** Native Android integration with fallback to keyword model
 
-This makes Cinemy a **showcase of how an AI agent system, guided only by a developer’s prompts and scenarios, can build a complete Android application with integrated AI features**.
-
 ---
 
 ## 🌟 Features
-
-### 🎯 Core Functionality
-- **Popular Movies Browser**: Trending movies with manual pagination
-- **Movie Details**: Comprehensive movie information with AI sentiment analysis
-- **Dynamic UI Theming**: Server-controlled styling and color schemes
-- **Manual Pagination**: Previous/Next buttons with swipe gesture support
 
 ### 🤖 AI-Powered Capabilities
 - **Local Sentiment Analysis**: On-device ML model for review analysis
@@ -102,21 +96,6 @@ Cinemy features intelligent model selection based on build variants, automatical
 - **Graceful Fallback**: Falls back to simple built-in model if JSON models fail
 - **Error Handling**: Uses `runCatching` for robust error management
 - **No Manual Switching**: Completely automatic based on build variant
-
-#### ⚙️ **Hybrid Model Selection Logic**
-```kotlin
-private fun shouldUseTensorFlow(text: String): Boolean {
-    val wordCount = text.split("\\s+".toRegex()).filter { it.isNotBlank() }.size
-    return wordCount >= 5 // 5+ words → TensorFlow Lite BERT model
-}
-
-// Model selection in SentimentAnalyzer
-if (shouldUseTensorFlow(text) && tensorFlowModel?.isReady() == true) {
-    // Use production_sentiment_full_manual.tflite
-} else {
-    // Use multilingual_sentiment_production.json
-}
-```
 
 **Model Specifications:**
 - **TensorFlow Lite**: BERT-based sentiment analysis with 30,522 vocabulary
