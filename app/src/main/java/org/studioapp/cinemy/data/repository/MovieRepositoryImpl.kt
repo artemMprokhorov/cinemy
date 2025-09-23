@@ -1,6 +1,5 @@
 package org.studioapp.cinemy.data.repository
 
-import android.content.Context
 import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.delay
 import org.json.JSONObject
@@ -12,7 +11,6 @@ import org.studioapp.cinemy.data.model.Meta
 import org.studioapp.cinemy.data.model.MovieDetails
 import org.studioapp.cinemy.data.model.MovieDetailsData
 import org.studioapp.cinemy.data.model.MovieDetailsResponse
-import org.studioapp.cinemy.data.model.MovieListData
 import org.studioapp.cinemy.data.model.MovieListResponse
 import org.studioapp.cinemy.data.model.Pagination
 import org.studioapp.cinemy.data.model.Result
@@ -229,7 +227,7 @@ class MovieRepositoryImpl(
      */
     private fun parseGenresFromJson(genresArray: org.json.JSONArray?): List<org.studioapp.cinemy.data.model.Genre> {
         if (genresArray == null) return emptyList()
-        
+
         val genres = mutableListOf<org.studioapp.cinemy.data.model.Genre>()
         for (i in 0 until genresArray.length()) {
             val genreJson = genresArray.optJSONObject(i)
@@ -250,7 +248,7 @@ class MovieRepositoryImpl(
      */
     private fun parseProductionCompaniesFromJson(companiesArray: org.json.JSONArray?): List<org.studioapp.cinemy.data.model.ProductionCompany> {
         if (companiesArray == null) return emptyList()
-        
+
         val companies = mutableListOf<org.studioapp.cinemy.data.model.ProductionCompany>()
         for (i in 0 until companiesArray.length()) {
             val companyJson = companiesArray.optJSONObject(i)
@@ -274,22 +272,22 @@ class MovieRepositoryImpl(
     private fun parseSentimentReviewsFromJson(json: JSONObject): org.studioapp.cinemy.data.model.SentimentReviews {
         val positiveArray = json.optJSONArray("positive")
         val negativeArray = json.optJSONArray("negative")
-        
+
         val positive = mutableListOf<String>()
         val negative = mutableListOf<String>()
-        
+
         if (positiveArray != null) {
             for (i in 0 until positiveArray.length()) {
                 positive.add(positiveArray.optString(i, ""))
             }
         }
-        
+
         if (negativeArray != null) {
             for (i in 0 until negativeArray.length()) {
                 negative.add(negativeArray.optString(i, ""))
             }
         }
-        
+
         return org.studioapp.cinemy.data.model.SentimentReviews(
             positive = positive,
             negative = negative

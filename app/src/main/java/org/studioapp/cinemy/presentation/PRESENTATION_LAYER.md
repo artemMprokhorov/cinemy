@@ -390,16 +390,21 @@ fun MoviesListScreen(
 The presentation layer has been thoroughly cleaned and optimized:
 
 #### **Removed Unused Code:**
-- **MovieDetailState.kt**: Removed unused fields `movieId`, `showFullDescription`, `showProductionDetails`
-- **PresentationConstants.kt**: Removed unused constants `DEFAULT_LONG_VALUE`, `DEFAULT_SHOW_FULL_DESCRIPTION`, `DEFAULT_SHOW_PRODUCTION_DETAILS`
+
+- **MovieDetailState.kt**: Removed unused fields `movieId`, `showFullDescription`,
+  `showProductionDetails`
+- **PresentationConstants.kt**: Removed unused constants `DEFAULT_LONG_VALUE`,
+  `DEFAULT_SHOW_FULL_DESCRIPTION`, `DEFAULT_SHOW_PRODUCTION_DETAILS`
 
 #### **Optimization Results:**
+
 - **Reduced code complexity** - Removed dead code and unused fields
 - **Improved maintainability** - Cleaner, more focused codebase
 - **Better performance** - Fewer unused objects in memory
 - **Enhanced readability** - Simplified state management
 
 #### **Verification:**
+
 - ✅ **All remaining constants are actively used**
 - ✅ **All remaining fields are actively used**
 - ✅ **All methods are actively used**
