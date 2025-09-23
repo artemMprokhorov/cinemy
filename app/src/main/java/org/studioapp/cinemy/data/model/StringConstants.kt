@@ -158,6 +158,9 @@ object StringConstants {
     const val FIELD_GENRE_IDS = "genreIds"
     const val FIELD_POPULARITY = "popularity"
     const val FIELD_ADULT = "adult"
+    const val FIELD_ORIGINAL_LANGUAGE = "originalLanguage"
+    const val FIELD_ORIGINAL_TITLE = "originalTitle"
+    const val FIELD_VIDEO = "video"
     const val FIELD_MOVIES = "movies"
     const val FIELD_PAGINATION = "pagination"
     const val FIELD_MOVIE_DETAILS = "movieDetails"
@@ -192,6 +195,13 @@ object StringConstants {
 
     // Sentiment Reviews Field Names
     const val FIELD_SENTIMENT_REVIEWS = "sentimentReviews"
+    const val FIELD_SENTIMENT_METADATA = "sentimentMetadata"
+    const val FIELD_TOTAL_REVIEWS = "totalReviews"
+    const val FIELD_POSITIVE_COUNT = "positiveCount"
+    const val FIELD_NEGATIVE_COUNT = "negativeCount"
+    const val FIELD_SOURCE = "source"
+    const val FIELD_TIMESTAMP = "timestamp"
+    const val FIELD_API_SUCCESS = "apiSuccess"
     const val FIELD_POSITIVE = "positive"
     const val FIELD_NEGATIVE = "negative"
     const val FIELD_ON_SECONDARY = "onSecondary"
@@ -214,7 +224,6 @@ object StringConstants {
     const val FIELD_PLAY_BUTTON = "playButton"
 
     // Meta Field Names
-    const val FIELD_TIMESTAMP = "timestamp"
     const val FIELD_SEARCH_QUERY = "searchQuery"
     const val FIELD_AI_GENERATED = "aiGenerated"
     const val FIELD_AVG_RATING = "avgRating"
@@ -242,6 +251,13 @@ object StringConstants {
     const val SERIALIZED_GENRE_IDS = "genre_ids"
     const val SERIALIZED_POPULARITY = "popularity"
     const val SERIALIZED_ADULT = "adult"
+    const val SERIALIZED_ORIGINAL_LANGUAGE = "original_language"
+    const val SERIALIZED_ORIGINAL_TITLE = "original_title"
+    const val SERIALIZED_VIDEO = "video"
+    const val SERIALIZED_METADATA = "metadata"
+    const val SERIALIZED_CATEGORY = "category"
+    const val SERIALIZED_MODEL_USED = "model_used"
+    const val SERIALIZED_RATING = "rating"
 
     // Pagination Fields
     const val SERIALIZED_PAGE = "page"

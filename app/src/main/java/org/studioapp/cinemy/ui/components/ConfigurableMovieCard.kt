@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -221,6 +222,118 @@ fun ConfigurableMovieCard(
                             uiConfig = uiConfig,
                             color = Color.White,
                             modifier = Modifier.padding(horizontal = Dimens4, vertical = Dimens2)
+                        )
+                    }
+                }
+            }
+
+            // Original language and title
+            if (movie.originalLanguage.isNotEmpty() || movie.originalTitle.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(Dimens4))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    // Original language
+                    if (movie.originalLanguage.isNotEmpty()) {
+                        ConfigurableText(
+                            text = stringResource(R.string.original_language_label, movie.originalLanguage.uppercase()),
+                            style = MaterialTheme.typography.labelSmall,
+                            uiConfig = uiConfig,
+                            color = textColor.copy(alpha = Float05)
+                        )
+                    }
+                    
+                    // Video indicator
+                    if (movie.video) {
+                        Surface(
+                            color = primaryColor.copy(alpha = Float07),
+                            shape = RoundedCornerShape(Dimens4)
+                        ) {
+                            ConfigurableText(
+                                text = stringResource(R.string.video_available),
+                                style = MaterialTheme.typography.labelSmall,
+                                uiConfig = uiConfig,
+                                color = Color.White,
+                                modifier = Modifier.padding(horizontal = Dimens4, vertical = Dimens2)
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Original title (if different from title)
+            if (movie.originalTitle.isNotEmpty() && movie.originalTitle != movie.title) {
+                Spacer(modifier = Modifier.height(Dimens4))
+                ConfigurableText(
+                    text = stringResource(R.string.original_title_label, movie.originalTitle),
+                    style = MaterialTheme.typography.labelSmall,
+                    uiConfig = uiConfig,
+                    color = textColor.copy(alpha = Float05),
+                    maxLines = 1
+                )
+            }
+
+            // Color metadata indicator
+            if (movie.colors.metadata.modelUsed) {
+                Spacer(modifier = Modifier.height(Dimens4))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ConfigurableText(
+                        text = stringResource(R.string.color_category_label, movie.colors.metadata.category),
+                        style = MaterialTheme.typography.labelSmall,
+                        uiConfig = uiConfig,
+                        color = textColor.copy(alpha = Float05)
+                    )
+                    
+                    // Color preview dots
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(Dimens2)
+                    ) {
+                        // Primary color dot
+                        Box(
+                            modifier = Modifier
+                                .height(Dimens8)
+                                .width(Dimens8)
+                                .background(
+                                    try {
+                                        androidx.compose.ui.graphics.Color(android.graphics.Color.parseColor(movie.colors.primary))
+                                    } catch (e: Exception) {
+                                        primaryColor
+                                    },
+                                    RoundedCornerShape(Dimens4)
+                                )
+                        )
+                        // Secondary color dot
+                        Box(
+                            modifier = Modifier
+                                .height(Dimens8)
+                                .width(Dimens8)
+                                .background(
+                                    try {
+                                        androidx.compose.ui.graphics.Color(android.graphics.Color.parseColor(movie.colors.secondary))
+                                    } catch (e: Exception) {
+                                        primaryColor.copy(alpha = Float07)
+                                    },
+                                    RoundedCornerShape(Dimens4)
+                                )
+                        )
+                        // Accent color dot
+                        Box(
+                            modifier = Modifier
+                                .height(Dimens8)
+                                .width(Dimens8)
+                                .background(
+                                    try {
+                                        androidx.compose.ui.graphics.Color(android.graphics.Color.parseColor(movie.colors.accent))
+                                    } catch (e: Exception) {
+                                        primaryColor.copy(alpha = Float05)
+                                    },
+                                    RoundedCornerShape(Dimens4)
+                                )
                         )
                     }
                 }

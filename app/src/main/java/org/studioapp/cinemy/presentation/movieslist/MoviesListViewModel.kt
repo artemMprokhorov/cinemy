@@ -56,13 +56,21 @@ class MoviesListViewModel(
                 is Result.Success -> {
                     val response = result.data
 
+                    // Create pagination from the new response structure
+                    val pagination = org.studioapp.cinemy.data.model.Pagination(
+                        page = response.page,
+                        totalPages = response.totalPages,
+                        totalResults = response.totalResults,
+                        hasNext = response.page < response.totalPages,
+                        hasPrevious = response.page > 1
+                    )
 
                     _state.value = _state.value.copy(
                         isLoading = PresentationConstants.DEFAULT_BOOLEAN_FALSE,
-                        movies = response.data.movies,
-                        pagination = response.data.pagination,
+                        movies = response.results,
+                        pagination = pagination,
                         currentPage = page,
-                        hasMore = response.data.pagination.hasNext,
+                        hasMore = pagination.hasNext,
 
                         // NEW: Connection status handling
                         isUsingMockData = PresentationConstants.DEFAULT_BOOLEAN_FALSE, // Will be determined by BuildConfig
@@ -72,7 +80,7 @@ class MoviesListViewModel(
                         canRetry = PresentationConstants.DEFAULT_CAN_RETRY,
 
                         uiConfig = result.uiConfig,
-                        meta = response.meta
+                        meta = null // No meta in new contract
                     )
                 }
 

@@ -26,6 +26,16 @@ A key highlight of this project: it was **entirely developed using an AI agent s
 - There is **not a single line of manually written code**.
 - My role was solely as an architect and prompt engineer.
 
+### 🔄 Latest Updates (v2.9.0)
+
+**New Contract Integration & Code Cleanup** - December 2024
+- ✅ **Updated API Contract**: Integrated new movie model with enhanced fields (`originalLanguage`, `originalTitle`, `video`, `colors`)
+- ✅ **Enhanced Data Models**: Added `MovieColors`, `SentimentReviews`, and `SentimentMetadata` for richer movie data
+- ✅ **Backend Compatibility**: Fixed parsing for array-wrapped backend responses
+- ✅ **Dependency Injection**: Fixed flavor-based repository selection (DummyMovieRepository vs MovieRepositoryImpl)
+- ✅ **Code Quality**: Removed all debug logging statements for production readiness
+- ✅ **Bug Fixes**: Resolved pagination issues and backend parsing problems
+
 ### 🤖 Production TensorFlow Lite Model Integration
 
 For review analysis, a **production-grade BERT-based sentiment model** has been integrated using TensorFlow Lite for optimal mobile performance.

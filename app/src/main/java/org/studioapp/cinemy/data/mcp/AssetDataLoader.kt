@@ -5,9 +5,11 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.studioapp.cinemy.data.model.StringConstants
 import org.studioapp.cinemy.data.remote.dto.ButtonConfigurationDto
+import org.studioapp.cinemy.data.remote.dto.ColorMetadataDto
 import org.studioapp.cinemy.data.remote.dto.ColorSchemeDto
 import org.studioapp.cinemy.data.remote.dto.GeminiColorsDto
 import org.studioapp.cinemy.data.remote.dto.MetaDto
+import org.studioapp.cinemy.data.remote.dto.MovieColorsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDto
 import org.studioapp.cinemy.data.remote.dto.TextConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
@@ -71,9 +73,25 @@ class AssetDataLoader(private val context: Context) {
         return runCatching {
             val jsonString = loadJsonFromAssets(StringConstants.ASSET_MOCK_MOVIES)
             if (jsonString != null) {
+                // Try to parse as array first (new contract structure)
+                try {
+                    val jsonArray = JSONArray(jsonString)
+                    if (jsonArray.length() > 0) {
+                        val firstObject = jsonArray.getJSONObject(0)
+                        val moviesJson = firstObject.optJSONArray(StringConstants.SERIALIZED_RESULTS)
+                        if (moviesJson != null) {
+                            return parseMoviesFromJson(moviesJson)
+                        }
+                    }
+                } catch (e: Exception) {
+                    // Fall back to old structure
+                }
+                
+                // Fall back to old structure
                 val jsonObject = JSONObject(jsonString)
                 val dataJson = jsonObject.optJSONObject(StringConstants.FIELD_DATA)
-                val moviesJson = dataJson?.optJSONArray(StringConstants.FIELD_MOVIES)
+                val moviesJson = dataJson?.optJSONArray(StringConstants.FIELD_MOVIES) 
+                    ?: dataJson?.optJSONArray(StringConstants.SERIALIZED_RESULTS)
                 if (moviesJson != null) {
                     parseMoviesFromJson(moviesJson)
                 } else {
@@ -276,19 +294,73 @@ class AssetDataLoader(private val context: Context) {
                     description = movieJson.optString(
                         StringConstants.FIELD_DESCRIPTION,
                         StringConstants.NO_DESCRIPTION_AVAILABLE
+                    ).takeIf { it.isNotEmpty() } ?: movieJson.optString(
+                        StringConstants.SERIALIZED_OVERVIEW,
+                        StringConstants.NO_DESCRIPTION_AVAILABLE
                     ),
-                    posterPath = movieJson.optString(StringConstants.FIELD_POSTER_PATH, null) ?: "",
-                    backdropPath = movieJson.optString(StringConstants.FIELD_BACKDROP_PATH, null) ?: "",
-                    rating = movieJson.optDouble(StringConstants.FIELD_RATING, 0.0),
-                    voteCount = movieJson.optInt(StringConstants.FIELD_VOTE_COUNT, 0),
-                    releaseDate = movieJson.optString(StringConstants.FIELD_RELEASE_DATE, null) ?: "",
-                    genreIds = parseGenreIds(movieJson.optJSONArray(StringConstants.FIELD_GENRE_IDS)),
-                    popularity = movieJson.optDouble(StringConstants.FIELD_POPULARITY, 0.0),
+                    posterPath = movieJson.optString(StringConstants.FIELD_POSTER_PATH, null) 
+                        ?: movieJson.optString(StringConstants.SERIALIZED_POSTER_PATH, null) ?: "",
+                    backdropPath = movieJson.optString(StringConstants.FIELD_BACKDROP_PATH, null) 
+                        ?: movieJson.optString(StringConstants.SERIALIZED_BACKDROP_PATH, null) ?: "",
+                    rating = movieJson.optDouble(StringConstants.FIELD_RATING, 0.0)
+                        .takeIf { it > 0 } ?: movieJson.optDouble(StringConstants.SERIALIZED_VOTE_AVERAGE, 0.0),
+                    voteCount = movieJson.optInt(StringConstants.FIELD_VOTE_COUNT, 0)
+                        .takeIf { it > 0 } ?: movieJson.optInt(StringConstants.SERIALIZED_VOTE_COUNT, 0),
+                    releaseDate = movieJson.optString(StringConstants.FIELD_RELEASE_DATE, null) 
+                        ?: movieJson.optString(StringConstants.SERIALIZED_RELEASE_DATE, null) ?: "",
+                    genreIds = parseGenreIds(movieJson.optJSONArray(StringConstants.FIELD_GENRE_IDS))
+                        .takeIf { it.isNotEmpty() } ?: parseGenreIds(movieJson.optJSONArray(StringConstants.SERIALIZED_GENRE_IDS)),
+                    popularity = movieJson.optDouble(StringConstants.FIELD_POPULARITY, 0.0)
+                        .takeIf { it > 0 } ?: movieJson.optDouble(StringConstants.SERIALIZED_POPULARITY, 0.0),
                     adult = movieJson.optBoolean(StringConstants.FIELD_ADULT, false)
+                        .takeIf { movieJson.has(StringConstants.FIELD_ADULT) } 
+                        ?: movieJson.optBoolean(StringConstants.SERIALIZED_ADULT, false),
+                    originalLanguage = movieJson.optString(StringConstants.FIELD_ORIGINAL_LANGUAGE, null) 
+                        ?: movieJson.optString(StringConstants.SERIALIZED_ORIGINAL_LANGUAGE, null) ?: "en",
+                    originalTitle = movieJson.optString(StringConstants.FIELD_ORIGINAL_TITLE, null) 
+                        ?: movieJson.optString(StringConstants.SERIALIZED_ORIGINAL_TITLE, null) 
+                        ?: movieJson.optString(StringConstants.FIELD_TITLE, StringConstants.UNKNOWN_MOVIE_TITLE),
+                    video = movieJson.optBoolean(StringConstants.FIELD_VIDEO, false)
+                        .takeIf { movieJson.has(StringConstants.FIELD_VIDEO) } 
+                        ?: movieJson.optBoolean(StringConstants.SERIALIZED_VIDEO, false),
+                    colors = parseMovieColors(movieJson)
                 )
             )
         }
         return movies
+    }
+
+    /**
+     * Parses movie colors from JSON object
+     */
+    private fun parseMovieColors(movieJson: JSONObject): MovieColorsDto {
+        val colorsJson = movieJson.optJSONObject("colors")
+        return if (colorsJson != null) {
+            val metadataJson = colorsJson.optJSONObject("metadata")
+            MovieColorsDto(
+                accent = colorsJson.optString("accent", "#3AA1EF"),
+                primary = colorsJson.optString("primary", "#1278D4"),
+                secondary = colorsJson.optString("secondary", "#238EE5"),
+                metadata = ColorMetadataDto(
+                    category = metadataJson?.optString("category", "MEDIUM") ?: "MEDIUM",
+                    modelUsed = metadataJson?.optBoolean("model_used", true) ?: true,
+                    rating = metadataJson?.optDouble("rating", 0.0) ?: 0.0
+                )
+            )
+        } else {
+            // Default colors if not present
+            MovieColorsDto(
+                accent = "#3AA1EF",
+                primary = "#1278D4",
+                secondary = "#238EE5",
+                metadata = ColorMetadataDto(
+                    category = "MEDIUM",
+                    modelUsed = true,
+                    rating = movieJson.optDouble(StringConstants.FIELD_RATING, 0.0)
+                        .takeIf { it > 0 } ?: movieJson.optDouble(StringConstants.SERIALIZED_VOTE_AVERAGE, 0.0)
+                )
+            )
+        }
     }
 
     /**

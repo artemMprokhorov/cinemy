@@ -13,7 +13,11 @@ data class Movie(
     val releaseDate: String,
     val genreIds: List<Int> = emptyList(),
     val popularity: Double,
-    val adult: Boolean
+    val adult: Boolean,
+    val originalLanguage: String,
+    val originalTitle: String,
+    val video: Boolean,
+    val colors: MovieColors
 )
 
 data class MovieDetails(
@@ -45,12 +49,24 @@ data class ProductionCompany(
     val originCountry: String
 )
 
+data class MovieColors(
+    val accent: String,
+    val primary: String,
+    val secondary: String,
+    val metadata: ColorMetadata
+)
+
+data class ColorMetadata(
+    val category: String,
+    val modelUsed: Boolean,
+    val rating: Double
+)
+
 data class MovieListResponse(
-    val success: Boolean,
-    val data: MovieListData,
-    val uiConfig: UiConfiguration,
-    val error: String? = null,
-    val meta: Meta
+    val page: Int,
+    val results: List<Movie>,
+    val totalPages: Int,
+    val totalResults: Int
 )
 
 data class MovieListData(
@@ -151,7 +167,9 @@ data class MovieDetailsResponse(
     val meta: Meta
 )
 
+
 data class MovieDetailsData(
     val movieDetails: MovieDetails,
-    val sentimentReviews: SentimentReviews? = null
+    val sentimentReviews: SentimentReviews? = null,
+    val sentimentMetadata: SentimentMetadata? = null
 )

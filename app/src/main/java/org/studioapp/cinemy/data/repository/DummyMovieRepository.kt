@@ -55,10 +55,10 @@ class DummyMovieRepository(
         val meta = createDefaultMeta()
 
         val response = MovieListResponse(
-            success = true,
-            data = movieListData,
-            uiConfig = uiConfig,
-            meta = meta
+            page = pagination.page,
+            results = movies,
+            totalPages = pagination.totalPages,
+            totalResults = pagination.totalResults
         )
 
         return Result.Success(response)

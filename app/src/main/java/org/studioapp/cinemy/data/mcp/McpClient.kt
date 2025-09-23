@@ -13,15 +13,20 @@ import org.studioapp.cinemy.data.model.MovieListResponse
 import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.model.StringConstants
 import org.studioapp.cinemy.data.remote.api.MovieApiService
+import org.studioapp.cinemy.data.remote.dto.ColorMetadataDto
 import org.studioapp.cinemy.data.remote.dto.GeminiColorsDto
 import org.studioapp.cinemy.data.remote.dto.GenreDto
 import org.studioapp.cinemy.data.remote.dto.McpMovieListResponseDto
 import org.studioapp.cinemy.data.remote.dto.McpResponseDto
 import org.studioapp.cinemy.data.remote.dto.MetaDto
+import org.studioapp.cinemy.data.remote.dto.MovieColorsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDetailsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDto
+import org.studioapp.cinemy.data.remote.dto.MovieListResponseDto
 import org.studioapp.cinemy.data.remote.dto.PaginationDto
 import org.studioapp.cinemy.data.remote.dto.ProductionCompanyDto
+import org.studioapp.cinemy.data.remote.dto.SentimentReviewsDto
+import org.studioapp.cinemy.data.remote.dto.SentimentMetadataDto
 import java.io.IOException
 
 class McpClient(private val context: Context) : MovieApiService {
@@ -30,57 +35,84 @@ class McpClient(private val context: Context) : MovieApiService {
     private val gson = Gson()
     private val mcpHttpClient = McpHttpClient(context)
 
-    override suspend fun getPopularMovies(page: Int): McpResponseDto<McpMovieListResponseDto> {
+    override suspend fun getPopularMovies(page: Int): McpResponseDto<MovieListResponseDto> {
         val request = McpRequest(
             method = StringConstants.MCP_METHOD_GET_POPULAR_MOVIES,
             params = mapOf(StringConstants.FIELD_PAGE to page.toString())
         )
 
-        val response = mcpHttpClient.sendRequest<Map<String, Any>>(request)
+        val response = mcpHttpClient.sendRequest<Any>(request)
 
         // Debug logging for MCP response
 
         return if (response.success && response.data != null) {
-            // Convert the response data to DTO format
-            val data = response.data
+            // Convert the response data to DTO format - new contract structure
+            // Backend returns an array with a single object, so we need to get the first element
+            val responseData = response.data
+            val data = if (responseData is List<*>) {
+                responseData.firstOrNull() as? Map<String, Any>
+            } else {
+                responseData as? Map<String, Any>
+            }
+            
             val movies =
-                (data[StringConstants.FIELD_MOVIES] as? List<Map<String, Any>>)?.map { movieData ->
+                (data?.get(StringConstants.SERIALIZED_RESULTS) as? List<Map<String, Any>>)?.map { movieData ->
+                    val colorsData = movieData[StringConstants.SERIALIZED_COLORS] as? Map<String, Any>
+                    val metadataData = colorsData?.get(StringConstants.SERIALIZED_METADATA) as? Map<String, Any>
+                    
                     MovieDto(
-                        id = (movieData[StringConstants.FIELD_ID] as? Number)?.toInt()
+                        id = (movieData[StringConstants.SERIALIZED_ID] as? Number)?.toInt()
                             ?: StringConstants.DEFAULT_INT_VALUE,
-                        title = movieData[StringConstants.FIELD_TITLE] as? String
+                        title = movieData[StringConstants.SERIALIZED_TITLE] as? String
                             ?: StringConstants.EMPTY_STRING,
-                        description = movieData[StringConstants.FIELD_DESCRIPTION] as? String
+                        description = movieData[StringConstants.SERIALIZED_OVERVIEW] as? String
                             ?: StringConstants.EMPTY_STRING,
-                        posterPath = movieData[StringConstants.FIELD_POSTER_PATH] as? String,
-                        backdropPath = movieData[StringConstants.FIELD_BACKDROP_PATH] as? String,
-                        rating = (movieData[StringConstants.FIELD_RATING] as? Number)?.toDouble()
+                        posterPath = movieData[StringConstants.SERIALIZED_POSTER_PATH] as? String,
+                        backdropPath = movieData[StringConstants.SERIALIZED_BACKDROP_PATH] as? String,
+                        rating = (movieData[StringConstants.SERIALIZED_VOTE_AVERAGE] as? Number)?.toDouble()
                             ?: StringConstants.DEFAULT_DOUBLE_VALUE,
-                        voteCount = (movieData[StringConstants.FIELD_VOTE_COUNT] as? Number)?.toInt()
+                        voteCount = (movieData[StringConstants.SERIALIZED_VOTE_COUNT] as? Number)?.toInt()
                             ?: StringConstants.DEFAULT_INT_VALUE,
-                        releaseDate = movieData[StringConstants.FIELD_RELEASE_DATE] as? String
+                        releaseDate = movieData[StringConstants.SERIALIZED_RELEASE_DATE] as? String
                             ?: StringConstants.EMPTY_STRING,
-                        genreIds = (movieData[StringConstants.FIELD_GENRE_IDS] as? List<Number>)?.map { it.toInt() }
+                        genreIds = (movieData[StringConstants.SERIALIZED_GENRE_IDS] as? List<Number>)?.map { it.toInt() }
                             ?: emptyList(),
-                        popularity = (movieData[StringConstants.FIELD_POPULARITY] as? Number)?.toDouble()
+                        popularity = (movieData[StringConstants.SERIALIZED_POPULARITY] as? Number)?.toDouble()
                             ?: StringConstants.DEFAULT_DOUBLE_VALUE,
-                        adult = movieData[StringConstants.FIELD_ADULT] as? Boolean
-                            ?: StringConstants.DEFAULT_BOOLEAN_VALUE
+                        adult = movieData[StringConstants.SERIALIZED_ADULT] as? Boolean
+                            ?: StringConstants.DEFAULT_BOOLEAN_VALUE,
+                        originalLanguage = movieData[StringConstants.SERIALIZED_ORIGINAL_LANGUAGE] as? String
+                            ?: StringConstants.EMPTY_STRING,
+                        originalTitle = movieData[StringConstants.SERIALIZED_ORIGINAL_TITLE] as? String
+                            ?: StringConstants.EMPTY_STRING,
+                        video = movieData[StringConstants.SERIALIZED_VIDEO] as? Boolean
+                            ?: StringConstants.DEFAULT_BOOLEAN_VALUE,
+                        colors = MovieColorsDto(
+                            accent = colorsData?.get(StringConstants.SERIALIZED_ACCENT) as? String
+                                ?: StringConstants.EMPTY_STRING,
+                            primary = colorsData?.get(StringConstants.SERIALIZED_PRIMARY) as? String
+                                ?: StringConstants.EMPTY_STRING,
+                            secondary = colorsData?.get(StringConstants.SERIALIZED_SECONDARY) as? String
+                                ?: StringConstants.EMPTY_STRING,
+                            metadata = ColorMetadataDto(
+                                category = metadataData?.get(StringConstants.SERIALIZED_CATEGORY) as? String
+                                    ?: StringConstants.EMPTY_STRING,
+                                modelUsed = metadataData?.get(StringConstants.SERIALIZED_MODEL_USED) as? Boolean
+                                    ?: StringConstants.DEFAULT_BOOLEAN_VALUE,
+                                rating = (metadataData?.get(StringConstants.SERIALIZED_RATING) as? Number)?.toDouble()
+                                    ?: StringConstants.DEFAULT_DOUBLE_VALUE
+                            )
+                        )
                     )
                 } ?: emptyList()
 
-            val paginationData = data[StringConstants.FIELD_PAGINATION] as? Map<String, Any>
-            val pagination = PaginationDto(
-                page = (paginationData?.get(StringConstants.FIELD_PAGE) as? Number)?.toInt()
-                    ?: page,
-                totalPages = (paginationData?.get(StringConstants.FIELD_TOTAL_PAGES) as? Number)?.toInt()
+            val movieListResponse = MovieListResponseDto(
+                page = (data?.get(StringConstants.SERIALIZED_PAGE) as? Number)?.toInt() ?: page,
+                results = movies,
+                totalPages = (data?.get(StringConstants.SERIALIZED_TOTAL_PAGES) as? Number)?.toInt()
                     ?: StringConstants.DEFAULT_TOTAL_PAGES,
-                totalResults = (paginationData?.get(StringConstants.FIELD_TOTAL_RESULTS) as? Number)?.toInt()
-                    ?: StringConstants.DEFAULT_INT_VALUE,
-                hasNext = paginationData?.get(StringConstants.FIELD_HAS_NEXT) as? Boolean
-                    ?: StringConstants.DEFAULT_BOOLEAN_VALUE,
-                hasPrevious = paginationData?.get(StringConstants.FIELD_HAS_PREVIOUS) as? Boolean
-                    ?: StringConstants.DEFAULT_BOOLEAN_VALUE
+                totalResults = (data?.get(StringConstants.SERIALIZED_TOTAL_RESULTS) as? Number)?.toInt()
+                    ?: StringConstants.DEFAULT_INT_VALUE
             )
 
             val uiConfig = assetDataLoader.loadUiConfig()
@@ -89,7 +121,7 @@ class McpClient(private val context: Context) : MovieApiService {
 
             McpResponseDto(
                 success = true,
-                data = McpMovieListResponseDto(movies, pagination),
+                data = movieListResponse,
                 uiConfig = uiConfig,
                 error = null,
                 meta = assetDataLoader.loadMetaData(
@@ -279,60 +311,90 @@ class McpClient(private val context: Context) : MovieApiService {
                 params = mapOf(StringConstants.FIELD_PAGE to page.toString())
             )
 
-            val response = mcpHttpClient.sendRequest<Map<String, Any>>(request)
+            val response = mcpHttpClient.sendRequest<Any>(request)
 
             if (response.success && response.data != null) {
-                val data = response.data
+                // Backend returns an array with a single object, so we need to get the first element
+                val responseData = response.data
+                val data = if (responseData is List<*>) {
+                    responseData.firstOrNull() as? Map<String, Any>
+                } else {
+                    responseData as? Map<String, Any>
+                }
+                
                 val movies =
-                    (data[StringConstants.FIELD_MOVIES] as? List<Map<String, Any>>)?.map { movieData ->
+                    (data?.get(StringConstants.SERIALIZED_RESULTS) as? List<Map<String, Any>>)?.map { movieData ->
+                        val colorsData = movieData[StringConstants.SERIALIZED_COLORS] as? Map<String, Any>
+                        val metadataData = colorsData?.get(StringConstants.SERIALIZED_METADATA) as? Map<String, Any>
+                        
                         MovieDto(
-                            id = (movieData[StringConstants.FIELD_ID] as? Number)?.toInt()
+                            id = (movieData[StringConstants.SERIALIZED_ID] as? Number)?.toInt()
                                 ?: StringConstants.DEFAULT_INT_VALUE,
-                            title = movieData[StringConstants.FIELD_TITLE] as? String
+                            title = movieData[StringConstants.SERIALIZED_TITLE] as? String
                                 ?: StringConstants.EMPTY_STRING,
-                            description = movieData[StringConstants.FIELD_DESCRIPTION] as? String
+                            description = movieData[StringConstants.SERIALIZED_OVERVIEW] as? String
                                 ?: StringConstants.EMPTY_STRING,
-                            posterPath = movieData[StringConstants.FIELD_POSTER_PATH] as? String,
-                            backdropPath = movieData[StringConstants.FIELD_BACKDROP_PATH] as? String,
-                            rating = (movieData[StringConstants.FIELD_RATING] as? Number)?.toDouble()
+                            posterPath = movieData[StringConstants.SERIALIZED_POSTER_PATH] as? String,
+                            backdropPath = movieData[StringConstants.SERIALIZED_BACKDROP_PATH] as? String,
+                            rating = (movieData[StringConstants.SERIALIZED_VOTE_AVERAGE] as? Number)?.toDouble()
                                 ?: StringConstants.DEFAULT_DOUBLE_VALUE,
-                            voteCount = (movieData[StringConstants.FIELD_VOTE_COUNT] as? Number)?.toInt()
+                            voteCount = (movieData[StringConstants.SERIALIZED_VOTE_COUNT] as? Number)?.toInt()
                                 ?: StringConstants.DEFAULT_INT_VALUE,
-                            releaseDate = movieData[StringConstants.FIELD_RELEASE_DATE] as? String
+                            releaseDate = movieData[StringConstants.SERIALIZED_RELEASE_DATE] as? String
                                 ?: StringConstants.EMPTY_STRING,
-                            genreIds = (movieData[StringConstants.FIELD_GENRE_IDS] as? List<Number>)?.map { it.toInt() }
+                            genreIds = (movieData[StringConstants.SERIALIZED_GENRE_IDS] as? List<Number>)?.map { it.toInt() }
                                 ?: emptyList(),
-                            popularity = (movieData[StringConstants.FIELD_POPULARITY] as? Number)?.toDouble()
+                            popularity = (movieData[StringConstants.SERIALIZED_POPULARITY] as? Number)?.toDouble()
                                 ?: StringConstants.DEFAULT_DOUBLE_VALUE,
-                            adult = movieData[StringConstants.FIELD_ADULT] as? Boolean
-                                ?: StringConstants.DEFAULT_BOOLEAN_VALUE
+                            adult = movieData[StringConstants.SERIALIZED_ADULT] as? Boolean
+                                ?: StringConstants.DEFAULT_BOOLEAN_VALUE,
+                            originalLanguage = movieData[StringConstants.SERIALIZED_ORIGINAL_LANGUAGE] as? String
+                                ?: StringConstants.EMPTY_STRING,
+                            originalTitle = movieData[StringConstants.SERIALIZED_ORIGINAL_TITLE] as? String
+                                ?: StringConstants.EMPTY_STRING,
+                            video = movieData[StringConstants.SERIALIZED_VIDEO] as? Boolean
+                                ?: StringConstants.DEFAULT_BOOLEAN_VALUE,
+                            colors = MovieColorsDto(
+                                accent = colorsData?.get(StringConstants.SERIALIZED_ACCENT) as? String
+                                    ?: StringConstants.EMPTY_STRING,
+                                primary = colorsData?.get(StringConstants.SERIALIZED_PRIMARY) as? String
+                                    ?: StringConstants.EMPTY_STRING,
+                                secondary = colorsData?.get(StringConstants.SERIALIZED_SECONDARY) as? String
+                                    ?: StringConstants.EMPTY_STRING,
+                                metadata = ColorMetadataDto(
+                                    category = metadataData?.get(StringConstants.SERIALIZED_CATEGORY) as? String
+                                        ?: StringConstants.EMPTY_STRING,
+                                    modelUsed = metadataData?.get(StringConstants.SERIALIZED_MODEL_USED) as? Boolean
+                                        ?: StringConstants.DEFAULT_BOOLEAN_VALUE,
+                                    rating = (metadataData?.get(StringConstants.SERIALIZED_RATING) as? Number)?.toDouble()
+                                        ?: StringConstants.DEFAULT_DOUBLE_VALUE
+                                )
+                            )
                         )
                     } ?: emptyList()
 
-                val paginationData = data[StringConstants.FIELD_PAGINATION] as? Map<String, Any>
-                val pagination = PaginationDto(
-                    page = (paginationData?.get(StringConstants.FIELD_PAGE) as? Number)?.toInt()
-                        ?: page,
-                    totalPages = (paginationData?.get(StringConstants.FIELD_TOTAL_PAGES) as? Number)?.toInt()
-                        ?: StringConstants.DEFAULT_TOTAL_PAGES,
-                    totalResults = (paginationData?.get(StringConstants.FIELD_TOTAL_RESULTS) as? Number)?.toInt()
-                        ?: StringConstants.DEFAULT_INT_VALUE,
-                    hasNext = paginationData?.get(StringConstants.FIELD_HAS_NEXT) as? Boolean
-                        ?: StringConstants.DEFAULT_BOOLEAN_VALUE,
-                    hasPrevious = paginationData?.get(StringConstants.FIELD_HAS_PREVIOUS) as? Boolean
-                        ?: StringConstants.DEFAULT_BOOLEAN_VALUE
+                val backendPage = (data?.get(StringConstants.SERIALIZED_PAGE) as? Number)?.toInt() ?: page
+                val backendTotalPages = (data?.get(StringConstants.SERIALIZED_TOTAL_PAGES) as? Number)?.toInt()
+                    ?: StringConstants.DEFAULT_TOTAL_PAGES
+                val backendTotalResults = (data?.get(StringConstants.SERIALIZED_TOTAL_RESULTS) as? Number)?.toInt()
+                    ?: StringConstants.DEFAULT_INT_VALUE
+                
+                
+                val movieListResponse = MovieListResponseDto(
+                    page = backendPage,
+                    results = movies,
+                    totalPages = backendTotalPages,
+                    totalResults = backendTotalResults
                 )
 
-                val movieListResponse = MovieMapper.mapMcpMovieListResponseDtoToMovieListResponse(
-                    McpMovieListResponseDto(movies, pagination)
-                )
+                val domainMovieListResponse = MovieMapper.mapMovieListResponseDtoToMovieListResponse(movieListResponse)
 
                 val uiConfig = assetDataLoader.loadUiConfig()
 
                 // Debug logging for uiConfig
 
                 Result.Success(
-                    data = movieListResponse,
+                    data = domainMovieListResponse,
                     uiConfig = MovieMapper.mapUiConfigurationDtoToUiConfiguration(uiConfig)
                 )
             } else {
@@ -357,14 +419,45 @@ class McpClient(private val context: Context) : MovieApiService {
                 params = mapOf(StringConstants.PARAM_MOVIE_ID to movieId.toString())
             )
 
-            val response = mcpHttpClient.sendRequest<Map<String, Any>>(request)
+            val response = mcpHttpClient.sendRequest<Any>(request)
 
             if (response.success && response.data != null) {
-                val data = response.data
-                val movieDetailsData =
-                    data[StringConstants.FIELD_MOVIE_DETAILS] as? Map<String, Any>
+                // Backend returns an array with a single object, so we need to get the first element
+                val responseData = response.data
+                val data = if (responseData is List<*>) {
+                    responseData.firstOrNull() as? Map<String, Any>
+                } else {
+                    responseData as? Map<String, Any>
+                }
+                
+                // The backend response structure is: [{"success": true, "data": {"movieDetails": {...}, ...}, ...}]
+                // So we need to access data["data"]["movieDetails"]
+                val innerData = data?.get("data") as? Map<String, Any>
+                val movieDetailsData = innerData?.get(StringConstants.FIELD_MOVIE_DETAILS) as? Map<String, Any>
 
                 if (movieDetailsData != null) {
+                    // Parse sentiment reviews and metadata
+                    val sentimentReviewsData = innerData?.get(StringConstants.FIELD_SENTIMENT_REVIEWS) as? Map<String, Any>
+                    val sentimentMetadataData = innerData?.get(StringConstants.FIELD_SENTIMENT_METADATA) as? Map<String, Any>
+                    
+                    val sentimentReviews = sentimentReviewsData?.let { reviewsData ->
+                        SentimentReviewsDto(
+                            positive = (reviewsData[StringConstants.FIELD_POSITIVE] as? List<String>) ?: emptyList(),
+                            negative = (reviewsData[StringConstants.FIELD_NEGATIVE] as? List<String>) ?: emptyList()
+                        )
+                    }
+                    
+                    val sentimentMetadata = sentimentMetadataData?.let { metadataData ->
+                        SentimentMetadataDto(
+                            totalReviews = (metadataData[StringConstants.FIELD_TOTAL_REVIEWS] as? Number)?.toInt() ?: 0,
+                            positiveCount = (metadataData[StringConstants.FIELD_POSITIVE_COUNT] as? Number)?.toInt() ?: 0,
+                            negativeCount = (metadataData[StringConstants.FIELD_NEGATIVE_COUNT] as? Number)?.toInt() ?: 0,
+                            source = metadataData[StringConstants.FIELD_SOURCE] as? String ?: "",
+                            timestamp = metadataData[StringConstants.FIELD_TIMESTAMP] as? String ?: "",
+                            apiSuccess = (metadataData[StringConstants.FIELD_API_SUCCESS] as? Map<String, Boolean>) ?: emptyMap()
+                        )
+                    }
+                    
                     val movieDetails = MovieDetailsDto(
                         id = (movieDetailsData[StringConstants.FIELD_ID] as? Number)?.toInt()
                             ?: movieId,
@@ -406,27 +499,17 @@ class McpClient(private val context: Context) : MovieApiService {
                         revenue = (movieDetailsData[StringConstants.FIELD_REVENUE] as? Number)?.toLong()
                             ?: StringConstants.DEFAULT_LONG_VALUE,
                         status = movieDetailsData[StringConstants.FIELD_STATUS] as? String
-                            ?: StringConstants.EMPTY_STRING
+                            ?: StringConstants.EMPTY_STRING,
+                        sentimentReviews = sentimentReviews,
+                        sentimentMetadata = sentimentMetadata
                     )
 
                     val domainMovieDetails =
                         MovieMapper.mapMovieDetailsDtoToMovieDetails(movieDetails)
 
-                    // Parse sentiment reviews from response data
-                    val sentimentReviewsData =
-                        data[StringConstants.FIELD_SENTIMENT_REVIEWS] as? Map<String, Any>
-                    val sentimentReviews = sentimentReviewsData?.let { reviewsData ->
-                        val positive =
-                            (reviewsData[StringConstants.FIELD_POSITIVE] as? List<*>)?.mapNotNull { it as? String }
-                                ?: emptyList()
-                        val negative =
-                            (reviewsData[StringConstants.FIELD_NEGATIVE] as? List<*>)?.mapNotNull { it as? String }
-                                ?: emptyList()
-                        org.studioapp.cinemy.data.model.SentimentReviews(
-                            positive = positive,
-                            negative = negative
-                        )
-                    }
+                    // Map sentiment reviews and metadata to domain models
+                    val domainSentimentReviews = MovieMapper.mapSentimentReviewsDtoToSentimentReviews(sentimentReviews)
+                    val domainSentimentMetadata = MovieMapper.mapSentimentMetadataDtoToSentimentMetadata(sentimentMetadata)
 
                     val uiConfig = assetDataLoader.loadUiConfig()
                     val domainUiConfig =
@@ -439,7 +522,8 @@ class McpClient(private val context: Context) : MovieApiService {
                             success = true,
                             data = MovieDetailsData(
                                 movieDetails = domainMovieDetails,
-                                sentimentReviews = sentimentReviews
+                                sentimentReviews = domainSentimentReviews,
+                                sentimentMetadata = domainSentimentMetadata
                             ),
                             uiConfig = domainUiConfig,
                             error = null,

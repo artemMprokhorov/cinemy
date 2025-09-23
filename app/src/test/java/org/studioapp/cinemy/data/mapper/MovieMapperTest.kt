@@ -1,93 +1,108 @@
 package org.studioapp.cinemy.data.mapper
 
-import androidx.compose.ui.graphics.Color
-import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.studioapp.cinemy.data.model.ButtonConfiguration
-import org.studioapp.cinemy.data.model.ColorScheme
-import org.studioapp.cinemy.data.remote.dto.ButtonConfigurationDto
-import org.studioapp.cinemy.data.remote.dto.ColorSchemeDto
-import org.studioapp.cinemy.data.util.TestColorUtils
-
-/**
- * Test wrapper for MovieMapper that uses TestColorUtils instead of ColorUtils
- */
-object TestMovieMapper {
-    fun mapColorSchemeDtoToColorScheme(dto: ColorSchemeDto): ColorScheme {
-        return ColorScheme(
-            primary = TestColorUtils.parseColor(dto.primary),
-            secondary = TestColorUtils.parseColor(dto.secondary),
-            background = TestColorUtils.parseColor(dto.background),
-            surface = TestColorUtils.parseColor(dto.surface),
-            onPrimary = TestColorUtils.parseColor(dto.onPrimary),
-            onSecondary = TestColorUtils.parseColor(dto.onSecondary),
-            onBackground = TestColorUtils.parseColor(dto.onBackground),
-            onSurface = TestColorUtils.parseColor(dto.onSurface),
-            moviePosterColors = dto.moviePosterColors.map { TestColorUtils.parseColor(it) }
-        )
-    }
-
-    fun mapButtonConfigurationDtoToButtonConfiguration(dto: ButtonConfigurationDto): ButtonConfiguration {
-        return ButtonConfiguration(
-            primaryButtonColor = TestColorUtils.parseColor(dto.primaryButtonColor),
-            secondaryButtonColor = TestColorUtils.parseColor(dto.secondaryButtonColor),
-            buttonTextColor = TestColorUtils.parseColor(dto.buttonTextColor),
-            buttonCornerRadius = dto.buttonCornerRadius
-        )
-    }
-}
+import org.junit.Assert.*
+import org.studioapp.cinemy.data.remote.dto.ColorMetadataDto
+import org.studioapp.cinemy.data.remote.dto.MovieColorsDto
+import org.studioapp.cinemy.data.remote.dto.MovieDto
+import org.studioapp.cinemy.data.remote.dto.MovieListResponseDto
 
 class MovieMapperTest {
 
     @Test
-    fun `mapColorSchemeDtoToColorScheme should map correctly`() {
+    fun `mapMovieDtoToMovie maps all new fields correctly`() {
         // Given
-        val colorSchemeDto = ColorSchemeDto(
-            primary = "#FF0000",
-            secondary = "#00FF00",
-            background = "#0000FF",
-            surface = "#FFFF00",
-            onPrimary = "#FFFFFF",
-            onSecondary = "#000000",
-            onBackground = "#FFFFFF",
-            onSurface = "#000000",
-            moviePosterColors = listOf("#FF0000", "#00FF00")
+        val movieDto = MovieDto(
+            id = 1311031,
+            title = "Demon Slayer: Kimetsu no Yaiba Infinity Castle",
+            description = "The Demon Slayer Corps are drawn into the Infinity Castle...",
+            posterPath = "/sUsVimPdA1l162FvdBIlmKBlWHx.jpg",
+            rating = 7.769,
+            voteCount = 333,
+            releaseDate = "2025-07-18",
+            backdropPath = "/j7MKdRIwfJejNlJQG1hzjFJmtlH.jpg",
+            genreIds = listOf(16, 28, 14, 53),
+            popularity = 668.2088,
+            adult = false,
+            originalLanguage = "ja",
+            originalTitle = "劇場版「鬼滅の刃」無限城編 第一章 猗窩座再来",
+            video = false,
+            colors = MovieColorsDto(
+                accent = "#3AA1EF",
+                primary = "#1278D4",
+                secondary = "#238EE5",
+                metadata = ColorMetadataDto(
+                    category = "MEDIUM",
+                    modelUsed = true,
+                    rating = 7.769
+                )
+            )
         )
 
         // When
-        val result = TestMovieMapper.mapColorSchemeDtoToColorScheme(colorSchemeDto)
+        val movie = MovieMapper.mapMovieDtoToMovie(movieDto)
 
         // Then
-        assertEquals(Color(0xFFFF0000), result.primary)
-        assertEquals(Color(0xFF00FF00), result.secondary)
-        assertEquals(Color(0xFF0000FF), result.background)
-        assertEquals(Color(0xFFFFFF00), result.surface)
-        assertEquals(Color(0xFFFFFFFF), result.onPrimary)
-        assertEquals(Color(0xFF000000), result.onSecondary)
-        assertEquals(Color(0xFFFFFFFF), result.onBackground)
-        assertEquals(Color(0xFF000000), result.onSurface)
-        assertEquals(2, result.moviePosterColors.size)
-        assertEquals(Color(0xFFFF0000), result.moviePosterColors[0])
-        assertEquals(Color(0xFF00FF00), result.moviePosterColors[1])
+        assertEquals(1311031, movie.id)
+        assertEquals("Demon Slayer: Kimetsu no Yaiba Infinity Castle", movie.title)
+        assertEquals("ja", movie.originalLanguage)
+        assertEquals("劇場版「鬼滅の刃」無限城編 第一章 猗窩座再来", movie.originalTitle)
+        assertEquals(false, movie.video)
+        assertEquals("#3AA1EF", movie.colors.accent)
+        assertEquals("#1278D4", movie.colors.primary)
+        assertEquals("#238EE5", movie.colors.secondary)
+        assertEquals("MEDIUM", movie.colors.metadata.category)
+        assertEquals(true, movie.colors.metadata.modelUsed)
+        assertEquals(7.769, movie.colors.metadata.rating, 0.001)
     }
 
     @Test
-    fun `mapButtonConfigurationDtoToButtonConfiguration should map correctly`() {
+    fun `mapMovieListResponseDtoToMovieListResponse maps new contract structure correctly`() {
         // Given
-        val buttonConfigDto = ButtonConfigurationDto(
-            primaryButtonColor = "#FF0000",
-            secondaryButtonColor = "#00FF00",
-            buttonTextColor = "#FFFFFF",
-            buttonCornerRadius = 8
+        val movieDto = MovieDto(
+            id = 1311031,
+            title = "Test Movie",
+            description = "Test Description",
+            posterPath = "/test.jpg",
+            rating = 7.5,
+            voteCount = 100,
+            releaseDate = "2025-01-01",
+            backdropPath = "/backdrop.jpg",
+            genreIds = listOf(16, 28),
+            popularity = 100.0,
+            adult = false,
+            originalLanguage = "en",
+            originalTitle = "Test Movie",
+            video = false,
+            colors = MovieColorsDto(
+                accent = "#3AA1EF",
+                primary = "#1278D4",
+                secondary = "#238EE5",
+                metadata = ColorMetadataDto(
+                    category = "MEDIUM",
+                    modelUsed = true,
+                    rating = 7.5
+                )
+            )
+        )
+
+        val responseDto = MovieListResponseDto(
+            page = 1,
+            results = listOf(movieDto),
+            totalPages = 52604,
+            totalResults = 1052063
         )
 
         // When
-        val result = TestMovieMapper.mapButtonConfigurationDtoToButtonConfiguration(buttonConfigDto)
+        val response = MovieMapper.mapMovieListResponseDtoToMovieListResponse(responseDto)
 
         // Then
-        assertEquals(Color(0xFFFF0000), result.primaryButtonColor)
-        assertEquals(Color(0xFF00FF00), result.secondaryButtonColor)
-        assertEquals(Color(0xFFFFFFFF), result.buttonTextColor)
-        assertEquals(8, result.buttonCornerRadius)
+        assertEquals(1, response.page)
+        assertEquals(1, response.results.size)
+        assertEquals(52604, response.totalPages)
+        assertEquals(1052063, response.totalResults)
+        assertEquals("Test Movie", response.results[0].title)
+        assertEquals("en", response.results[0].originalLanguage)
+        assertEquals("MEDIUM", response.results[0].colors.metadata.category)
     }
 }

@@ -10,6 +10,34 @@
 
 ## 📅 **Version History**
 
+### **v2.9.0** - New Contract Integration & Code Cleanup
+**Date**: December 2024  
+**Status**: ✅ **COMPLETED**
+
+#### 🔄 **New API Contract Integration**
+- **Updated Movie Model**: Added new fields (`originalLanguage`, `originalTitle`, `video`, `colors`)
+- **Enhanced Movie Colors**: Added `MovieColors` with `accent`, `primary`, `secondary` and `metadata`
+- **Sentiment Reviews**: Added `SentimentReviews` and `SentimentMetadata` for movie details
+- **Simplified Response Structure**: Updated `MovieListResponse` to match new contract format
+- **Backend Integration**: Fixed parsing for array-wrapped backend responses
+
+#### 🏗️ **Architecture Improvements**
+- **Dependency Injection**: Fixed flavor-based repository selection (DummyMovieRepository vs MovieRepositoryImpl)
+- **Data Mapping**: Updated all mappers to handle new contract fields
+- **Error Handling**: Improved backend response parsing with fallback mechanisms
+- **Pagination**: Fixed pagination logic for both dummy and production versions
+
+#### 🧹 **Code Quality**
+- **Debug Logging**: Removed all `println` statements from entire project (main + test code)
+- **Clean Codebase**: Eliminated debug output for production readiness
+- **Type Safety**: Fixed compilation errors and type mismatches
+
+#### 🐛 **Bug Fixes**
+- **Dummy Version**: Fixed dependency injection to use correct repository
+- **Backend Parsing**: Fixed array response parsing in `McpHttpClient`
+- **Movie Details**: Fixed sentiment reviews and metadata parsing
+- **Pagination**: Resolved "always showing first page" issue in dummy version
+
 ### **v2.8.0** - Production TensorFlow Lite Integration
 **Date**: December 2024  
 **Status**: ✅ **COMPLETED**

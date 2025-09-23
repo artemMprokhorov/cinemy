@@ -26,14 +26,22 @@ data class MovieDto(
     @SerializedName(StringConstants.SERIALIZED_POPULARITY)
     val popularity: Double,
     @SerializedName(StringConstants.SERIALIZED_ADULT)
-    val adult: Boolean
+    val adult: Boolean,
+    @SerializedName(StringConstants.SERIALIZED_ORIGINAL_LANGUAGE)
+    val originalLanguage: String,
+    @SerializedName(StringConstants.SERIALIZED_ORIGINAL_TITLE)
+    val originalTitle: String,
+    @SerializedName(StringConstants.SERIALIZED_VIDEO)
+    val video: Boolean,
+    @SerializedName(StringConstants.SERIALIZED_COLORS)
+    val colors: MovieColorsDto
 )
 
 data class MovieListResponseDto(
     @SerializedName(StringConstants.SERIALIZED_PAGE)
     val page: Int,
     @SerializedName(StringConstants.SERIALIZED_RESULTS)
-    val movies: List<MovieDto>,
+    val results: List<MovieDto>,
     @SerializedName(StringConstants.SERIALIZED_TOTAL_PAGES)
     val totalPages: Int,
     @SerializedName(StringConstants.SERIALIZED_TOTAL_RESULTS)
@@ -68,7 +76,11 @@ data class MovieDetailsDto(
     @SerializedName(StringConstants.SERIALIZED_REVENUE)
     val revenue: Long,
     @SerializedName(StringConstants.SERIALIZED_STATUS)
-    val status: String
+    val status: String,
+    @SerializedName(StringConstants.FIELD_SENTIMENT_REVIEWS)
+    val sentimentReviews: SentimentReviewsDto? = null,
+    @SerializedName(StringConstants.FIELD_SENTIMENT_METADATA)
+    val sentimentMetadata: SentimentMetadataDto? = null
 )
 
 data class GenreDto(
@@ -236,4 +248,39 @@ data class SentimentReviewsDto(
     val positive: List<String> = emptyList(),
     @SerializedName(StringConstants.FIELD_NEGATIVE)
     val negative: List<String> = emptyList()
+)
+
+data class SentimentMetadataDto(
+    @SerializedName(StringConstants.FIELD_TOTAL_REVIEWS)
+    val totalReviews: Int = 0,
+    @SerializedName(StringConstants.FIELD_POSITIVE_COUNT)
+    val positiveCount: Int = 0,
+    @SerializedName(StringConstants.FIELD_NEGATIVE_COUNT)
+    val negativeCount: Int = 0,
+    @SerializedName(StringConstants.FIELD_SOURCE)
+    val source: String = "",
+    @SerializedName(StringConstants.FIELD_TIMESTAMP)
+    val timestamp: String = "",
+    @SerializedName(StringConstants.FIELD_API_SUCCESS)
+    val apiSuccess: Map<String, Boolean> = emptyMap()
+)
+
+data class MovieColorsDto(
+    @SerializedName(StringConstants.SERIALIZED_ACCENT)
+    val accent: String,
+    @SerializedName(StringConstants.SERIALIZED_PRIMARY)
+    val primary: String,
+    @SerializedName(StringConstants.SERIALIZED_SECONDARY)
+    val secondary: String,
+    @SerializedName(StringConstants.SERIALIZED_METADATA)
+    val metadata: ColorMetadataDto
+)
+
+data class ColorMetadataDto(
+    @SerializedName(StringConstants.SERIALIZED_CATEGORY)
+    val category: String,
+    @SerializedName(StringConstants.SERIALIZED_MODEL_USED)
+    val modelUsed: Boolean,
+    @SerializedName(StringConstants.SERIALIZED_RATING)
+    val rating: Double
 )

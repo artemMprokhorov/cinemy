@@ -257,7 +257,6 @@ class McpClientTest {
         mockkObject(ColorUtils)
         every { ColorUtils.parseColor(any()) } answers {
             val colorString = firstArg<String>()
-            println("ColorUtils.parseColor called with: $colorString")
             TestColorUtils.parseColor(colorString)
         }
 
@@ -411,8 +410,6 @@ class McpClientTest {
         val result = mcpClient.getPopularMoviesViaMcp(page)
 
         // Then
-        println("Result type: ${result::class.simpleName}")
-        println("Result: $result")
         assertTrue(result is Result.Success)
         val successResult = result as Result.Success
         assertNotNull(successResult.data)

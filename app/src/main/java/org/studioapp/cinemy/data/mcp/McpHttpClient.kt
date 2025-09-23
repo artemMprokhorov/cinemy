@@ -105,23 +105,42 @@ class McpHttpClient(private val context: Context) {
             // Parse the JSON response manually
             val responseText = successfulResponse!!
             runCatching {
-                val jsonResponse = parseJsonResponse(responseText)
-                val mcpResponse = McpResponse<T>(
-                    success = jsonResponse[StringConstants.FIELD_SUCCESS] as? Boolean ?: true,
-                    data = jsonResponse[StringConstants.FIELD_DATA] as? T,
-                    error = jsonResponse[StringConstants.FIELD_ERROR] as? String,
-                    message = jsonResponse[StringConstants.FIELD_MESSAGE] as? String
-                        ?: StringConstants.MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL
-                )
-                mcpResponse
+                // Backend returns a direct array [{...}], so we need to handle this format
+                val jsonArray = JSONArray(responseText)
+                if (jsonArray.length() > 0) {
+                    val firstObject = jsonArray.getJSONObject(0)
+                    val jsonResponse = parseJsonObject(firstObject)
+                    val mcpResponse = McpResponse<T>(
+                        success = true, // Backend response is always successful if we get here
+                        data = jsonResponse as? T,
+                        error = null,
+                        message = StringConstants.MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL
+                    )
+                    mcpResponse
+                } else {
+                    throw Exception("Empty response array")
+                }
             }.getOrElse { e ->
-                // Return a successful response with the raw data
-                McpResponse<T>(
-                    success = true,
-                    data = responseText as? T,
-                    error = null,
-                    message = StringConstants.MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE
-                )
+                // Fallback: try to parse as direct object or return raw data
+                runCatching {
+                    val jsonResponse = parseJsonResponse(responseText)
+                    // Backend returns the actual data directly, not wrapped in success/data structure
+                    val mcpResponse = McpResponse<T>(
+                        success = true, // Backend response is always successful if we get here
+                        data = jsonResponse as? T, // The entire parsed object is the data
+                        error = null,
+                        message = StringConstants.MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL
+                    )
+                    mcpResponse
+                }.getOrElse { e2 ->
+                    // Return a successful response with the raw data
+                    McpResponse<T>(
+                        success = true,
+                        data = responseText as? T,
+                        error = null,
+                        message = StringConstants.MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE
+                    )
+                }
             }
 
         }.getOrElse { e ->
@@ -190,6 +209,32 @@ class McpHttpClient(private val context: Context) {
 
     fun close() {
         httpClient.close()
+    }
+
+    private fun parseJsonObject(jsonObject: JSONObject): Map<String, Any> {
+        val result = mutableMapOf<String, Any>()
+
+        // Convert JSONObject to Map<String, Any>
+        for (key in jsonObject.keys()) {
+            val value = jsonObject.get(key)
+            result[key] = when (value) {
+                is JSONObject -> {
+                    val nestedMap = mutableMapOf<String, Any>()
+                    for (nestedKey in value.keys()) {
+                        val nestedValue = value.get(nestedKey)
+                        nestedMap[nestedKey] = when (nestedValue) {
+                            is JSONObject -> jsonObjectToMap(nestedValue)
+                            is JSONArray -> jsonArrayToList(nestedValue)
+                            else -> nestedValue
+                        }
+                    }
+                    nestedMap
+                }
+                is JSONArray -> jsonArrayToList(value)
+                else -> value
+            }
+        }
+        return result
     }
 
     private fun parseJsonResponse(jsonString: String): Map<String, Any> {

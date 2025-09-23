@@ -1,10 +1,13 @@
 package org.studioapp.cinemy.data.repository
 
+import org.studioapp.cinemy.data.mapper.MovieMapper
 import org.studioapp.cinemy.data.mcp.McpClient
 import org.studioapp.cinemy.data.model.MovieDetailsResponse
 import org.studioapp.cinemy.data.model.MovieListResponse
 import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.model.StringConstants
+import org.studioapp.cinemy.data.remote.dto.McpResponseDto
+import org.studioapp.cinemy.data.remote.dto.MovieListResponseDto
 
 class MovieRepositoryImpl(
     private val mcpClient: McpClient
@@ -14,16 +17,18 @@ class MovieRepositoryImpl(
         return runCatching {
             val response = mcpClient.getPopularMoviesViaMcp(page)
 
-
             when (response) {
                 is Result.Success -> {
+                    // getPopularMoviesViaMcp already returns the domain MovieListResponse
                     Result.Success(
                         data = response.data,
                         uiConfig = response.uiConfig
                     )
                 }
 
-                is Result.Error -> Result.Error(response.message, response.uiConfig)
+                is Result.Error -> {
+                    Result.Error(response.message, response.uiConfig)
+                }
                 is Result.Loading -> Result.Loading
             }
         }.getOrElse { exception ->

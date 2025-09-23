@@ -44,6 +44,10 @@
     <!-- Movie Card -->
     <string name="movie_poster_description">Poster for %1$s</string>
     <string name="movie_rating_format">★ %1$.1f (%2$d)</string>
+    <string name="original_language_label">%1$s</string>
+    <string name="original_title_label">Original: %1$s</string>
+    <string name="video_available">VIDEO</string>
+    <string name="color_category_label">%1$s</string>
 
     <!-- Error Messages -->
     <string name="error_unknown">Unknown error</string>

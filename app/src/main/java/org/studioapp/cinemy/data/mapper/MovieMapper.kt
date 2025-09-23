@@ -2,11 +2,13 @@ package org.studioapp.cinemy.data.mapper
 
 import androidx.compose.ui.graphics.Color
 import org.studioapp.cinemy.data.model.ButtonConfiguration
+import org.studioapp.cinemy.data.model.ColorMetadata
 import org.studioapp.cinemy.data.model.ColorScheme
 import org.studioapp.cinemy.data.model.GeminiColors
 import org.studioapp.cinemy.data.model.Genre
 import org.studioapp.cinemy.data.model.Meta
 import org.studioapp.cinemy.data.model.Movie
+import org.studioapp.cinemy.data.model.MovieColors
 import org.studioapp.cinemy.data.model.MovieDetails
 import org.studioapp.cinemy.data.model.MovieListData
 import org.studioapp.cinemy.data.model.MovieListResponse
@@ -15,22 +17,27 @@ import org.studioapp.cinemy.data.model.ProductionCompany
 import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.model.SearchInfo
 import org.studioapp.cinemy.data.model.SentimentReviews
+import org.studioapp.cinemy.data.model.SentimentMetadata
 import org.studioapp.cinemy.data.model.StringConstants
 import org.studioapp.cinemy.data.model.TextConfiguration
 import org.studioapp.cinemy.data.model.UiConfiguration
 import org.studioapp.cinemy.data.remote.dto.ButtonConfigurationDto
+import org.studioapp.cinemy.data.remote.dto.ColorMetadataDto
 import org.studioapp.cinemy.data.remote.dto.ColorSchemeDto
 import org.studioapp.cinemy.data.remote.dto.GeminiColorsDto
 import org.studioapp.cinemy.data.remote.dto.GenreDto
 import org.studioapp.cinemy.data.remote.dto.McpMovieListResponseDto
 import org.studioapp.cinemy.data.remote.dto.McpResponseDto
 import org.studioapp.cinemy.data.remote.dto.MetaDto
+import org.studioapp.cinemy.data.remote.dto.MovieColorsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDetailsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDto
+import org.studioapp.cinemy.data.remote.dto.MovieListResponseDto
 import org.studioapp.cinemy.data.remote.dto.PaginationDto
 import org.studioapp.cinemy.data.remote.dto.ProductionCompanyDto
 import org.studioapp.cinemy.data.remote.dto.SearchInfoDto
 import org.studioapp.cinemy.data.remote.dto.SentimentReviewsDto
+import org.studioapp.cinemy.data.remote.dto.SentimentMetadataDto
 import org.studioapp.cinemy.data.remote.dto.TextConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
 import org.studioapp.cinemy.data.util.ColorUtils
@@ -49,7 +56,11 @@ object MovieMapper {
             releaseDate = dto.releaseDate,
             genreIds = dto.genreIds,
             popularity = dto.popularity,
-            adult = dto.adult
+            adult = dto.adult,
+            originalLanguage = dto.originalLanguage,
+            originalTitle = dto.originalTitle,
+            video = dto.video,
+            colors = mapMovieColorsDtoToMovieColors(dto.colors)
         )
     }
 
@@ -76,6 +87,28 @@ object MovieMapper {
         )
     }
 
+    fun mapSentimentReviewsDtoToSentimentReviews(dto: SentimentReviewsDto?): SentimentReviews? {
+        return dto?.let {
+            SentimentReviews(
+                positive = it.positive,
+                negative = it.negative
+            )
+        }
+    }
+
+    fun mapSentimentMetadataDtoToSentimentMetadata(dto: SentimentMetadataDto?): SentimentMetadata? {
+        return dto?.let {
+            SentimentMetadata(
+                totalReviews = it.totalReviews,
+                positiveCount = it.positiveCount,
+                negativeCount = it.negativeCount,
+                source = it.source,
+                timestamp = it.timestamp,
+                apiSuccess = it.apiSuccess
+            )
+        }
+    }
+
     fun mapGenreDtoToGenre(dto: GenreDto): Genre {
         return Genre(
             id = dto.id,
@@ -94,57 +127,10 @@ object MovieMapper {
 
     fun mapMcpMovieListResponseDtoToMovieListResponse(dto: McpMovieListResponseDto): MovieListResponse {
         return MovieListResponse(
-            success = true,
-            data = MovieListData(
-                movies = dto.movies.map { mapMovieDtoToMovie(it) },
-                pagination = mapPaginationDtoToPagination(dto.pagination),
-                searchQuery = dto.searchQuery
-            ),
-            uiConfig = UiConfiguration(
-                colors = ColorScheme(
-                    primary = Color.Blue,
-                    secondary = Color.Gray,
-                    background = Color.Black,
-                    surface = Color.DarkGray,
-                    onPrimary = Color.White,
-                    onSecondary = Color.White,
-                    onBackground = Color.White,
-                    onSurface = Color.White,
-                    moviePosterColors = emptyList()
-                ),
-                texts = TextConfiguration(
-                    appTitle = StringConstants.MOVIES_TITLE,
-                    loadingText = StringConstants.LOADING_TEXT,
-                    errorMessage = StringConstants.ERROR_GENERIC,
-                    noMoviesFound = StringConstants.NO_MOVIES_FOUND,
-                    retryButton = StringConstants.RETRY_BUTTON,
-                    backButton = StringConstants.BACK_BUTTON,
-                    playButton = StringConstants.PLAY_BUTTON
-                ),
-                buttons = ButtonConfiguration(
-                    primaryButtonColor = Color.Blue,
-                    secondaryButtonColor = Color.Gray,
-                    buttonTextColor = Color.White,
-                    buttonCornerRadius = StringConstants.BUTTON_CORNER_RADIUS
-                )
-            ),
-            error = null,
-            meta = Meta(
-                timestamp = System.currentTimeMillis().toString(),
-                method = StringConstants.MCP_METHOD_GET_POPULAR_MOVIES,
-                searchQuery = null,
-                movieId = null,
-                resultsCount = dto.movies.size,
-                aiGenerated = true,
-                geminiColors = GeminiColors(
-                    primary = StringConstants.COLOR_PRIMARY,
-                    secondary = StringConstants.COLOR_SECONDARY,
-                    accent = StringConstants.COLOR_ACCENT
-                ),
-                avgRating = null,
-                movieRating = null,
-                version = StringConstants.VERSION_2_0_0
-            )
+            page = dto.pagination.page,
+            results = dto.movies.map { mapMovieDtoToMovie(it) },
+            totalPages = dto.pagination.totalPages,
+            totalResults = dto.pagination.totalResults
         )
     }
 
@@ -248,12 +234,29 @@ object MovieMapper {
         }
     }
 
-    fun mapSentimentReviewsDtoToSentimentReviews(dto: SentimentReviewsDto?): SentimentReviews? {
-        return dto?.let {
-            SentimentReviews(
-                positive = it.positive,
-                negative = it.negative
-            )
-        }
+    fun mapMovieColorsDtoToMovieColors(dto: MovieColorsDto): MovieColors {
+        return MovieColors(
+            accent = dto.accent,
+            primary = dto.primary,
+            secondary = dto.secondary,
+            metadata = mapColorMetadataDtoToColorMetadata(dto.metadata)
+        )
+    }
+
+    fun mapColorMetadataDtoToColorMetadata(dto: ColorMetadataDto): ColorMetadata {
+        return ColorMetadata(
+            category = dto.category,
+            modelUsed = dto.modelUsed,
+            rating = dto.rating
+        )
+    }
+
+    fun mapMovieListResponseDtoToMovieListResponse(dto: MovieListResponseDto): MovieListResponse {
+        return MovieListResponse(
+            page = dto.page,
+            results = dto.results.map { mapMovieDtoToMovie(it) },
+            totalPages = dto.totalPages,
+            totalResults = dto.totalResults
+        )
     }
 }
