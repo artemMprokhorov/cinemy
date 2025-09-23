@@ -3,10 +3,9 @@ package org.studioapp.cinemy.ml
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlin.math.abs
 import org.studioapp.cinemy.BuildConfig
+import kotlin.math.abs
 
 /**
  * Keyword-based sentiment analyzer for Cinemy
@@ -116,7 +115,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             // Use hybrid system: TensorFlow for complex texts, keyword model as fallback
             if (shouldUseTensorFlow(text) && tensorFlowModel?.isReady() == true) {
                 val tensorFlowResult = tensorFlowModel!!.analyzeSentiment(text)
-                
+
                 // Check if we should fallback to keyword model
                 if (shouldFallbackToKeyword(tensorFlowResult)) {
                     analyzeWithKeywords(text, keywordModel!!)
@@ -172,11 +171,12 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     private fun loadModelFromJson(jsonString: String, fileName: String): KeywordSentimentModel {
         return runCatching {
             val json = Json { ignoreUnknownKeys = true }
-            
+
             when (fileName) {
                 "multilingual_sentiment_production.json" -> {
                     loadProductionModel(json, jsonString)
                 }
+
                 else -> {
                     // Fallback to enhanced model format
                     loadEnhancedModel(json, jsonString)
@@ -531,10 +531,11 @@ class SentimentAnalyzer private constructor(private val context: Context) {
      */
     private fun loadHybridConfig(): HybridSystemConfig? {
         return runCatching {
-            val configJson = context.assets.open("ml_models/android_integration_config.json").use { inputStream ->
-                inputStream.bufferedReader().readText()
-            }
-            
+            val configJson = context.assets.open("ml_models/android_integration_config.json")
+                .use { inputStream ->
+                    inputStream.bufferedReader().readText()
+                }
+
             val json = Json { ignoreUnknownKeys = true }
             val tfConfig = json.decodeFromString<TensorFlowConfig>(configJson)
             tfConfig.hybridSystem
@@ -546,36 +547,36 @@ class SentimentAnalyzer private constructor(private val context: Context) {
      */
     private fun shouldUseTensorFlow(text: String): Boolean {
         val config = hybridConfig?.modelSelection ?: return false
-        
+
         // Check text complexity by word count
         val complexityThreshold = config.complexityThreshold ?: 5
         val wordCount = text.split("\\s+".toRegex()).filter { it.isNotBlank() }.size
         if (wordCount >= complexityThreshold) {
             return true
         }
-        
+
         // Check for complex sentiment indicators
         val complexIndicators = listOf(
             "however", "although", "but", "yet", "despite", "nevertheless",
             "on the other hand", "in contrast", "meanwhile", "furthermore",
             "moreover", "additionally", "consequently", "therefore", "thus"
         )
-        
+
         val textLower = text.lowercase()
         if (complexIndicators.any { textLower.contains(it) }) {
             return true
         }
-        
+
         // Check for ambiguous sentiment words
         val ambiguousWords = listOf(
             "interesting", "different", "unique", "unusual", "strange",
             "complex", "complicated", "mixed", "varied", "diverse"
         )
-        
+
         if (ambiguousWords.any { textLower.contains(it) }) {
             return true
         }
-        
+
         return false
     }
 
@@ -584,18 +585,18 @@ class SentimentAnalyzer private constructor(private val context: Context) {
      */
     private fun shouldFallbackToKeyword(tensorFlowResult: SentimentResult): Boolean {
         val config = hybridConfig?.modelSelection ?: return false
-        
+
         // Check confidence threshold
         val confidenceThreshold = config.confidenceThreshold ?: 0.7
         if (tensorFlowResult.confidence < confidenceThreshold) {
             return true
         }
-        
+
         // Check if result indicates low confidence
         if (tensorFlowResult.foundKeywords.any { it.contains("low_confidence") }) {
             return true
         }
-        
+
         return false
     }
 

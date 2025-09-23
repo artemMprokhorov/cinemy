@@ -237,13 +237,16 @@ fun ConfigurableMovieCard(
                     // Original language
                     if (movie.originalLanguage.isNotEmpty()) {
                         ConfigurableText(
-                            text = stringResource(R.string.original_language_label, movie.originalLanguage.uppercase()),
+                            text = stringResource(
+                                R.string.original_language_label,
+                                movie.originalLanguage.uppercase()
+                            ),
                             style = MaterialTheme.typography.labelSmall,
                             uiConfig = uiConfig,
                             color = textColor.copy(alpha = Float05)
                         )
                     }
-                    
+
                     // Video indicator
                     if (movie.video) {
                         Surface(
@@ -255,7 +258,10 @@ fun ConfigurableMovieCard(
                                 style = MaterialTheme.typography.labelSmall,
                                 uiConfig = uiConfig,
                                 color = Color.White,
-                                modifier = Modifier.padding(horizontal = Dimens4, vertical = Dimens2)
+                                modifier = Modifier.padding(
+                                    horizontal = Dimens4,
+                                    vertical = Dimens2
+                                )
                             )
                         }
                     }
@@ -283,12 +289,15 @@ fun ConfigurableMovieCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     ConfigurableText(
-                        text = stringResource(R.string.color_category_label, movie.colors.metadata.category),
+                        text = stringResource(
+                            R.string.color_category_label,
+                            movie.colors.metadata.category
+                        ),
                         style = MaterialTheme.typography.labelSmall,
                         uiConfig = uiConfig,
                         color = textColor.copy(alpha = Float05)
                     )
-                    
+
                     // Color preview dots
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(Dimens2)
@@ -300,7 +309,11 @@ fun ConfigurableMovieCard(
                                 .width(Dimens8)
                                 .background(
                                     try {
-                                        androidx.compose.ui.graphics.Color(android.graphics.Color.parseColor(movie.colors.primary))
+                                        androidx.compose.ui.graphics.Color(
+                                            android.graphics.Color.parseColor(
+                                                movie.colors.primary
+                                            )
+                                        )
                                     } catch (e: Exception) {
                                         primaryColor
                                     },
@@ -314,7 +327,11 @@ fun ConfigurableMovieCard(
                                 .width(Dimens8)
                                 .background(
                                     try {
-                                        androidx.compose.ui.graphics.Color(android.graphics.Color.parseColor(movie.colors.secondary))
+                                        androidx.compose.ui.graphics.Color(
+                                            android.graphics.Color.parseColor(
+                                                movie.colors.secondary
+                                            )
+                                        )
                                     } catch (e: Exception) {
                                         primaryColor.copy(alpha = Float07)
                                     },
@@ -328,7 +345,11 @@ fun ConfigurableMovieCard(
                                 .width(Dimens8)
                                 .background(
                                     try {
-                                        androidx.compose.ui.graphics.Color(android.graphics.Color.parseColor(movie.colors.accent))
+                                        androidx.compose.ui.graphics.Color(
+                                            android.graphics.Color.parseColor(
+                                                movie.colors.accent
+                                            )
+                                        )
                                     } catch (e: Exception) {
                                         primaryColor.copy(alpha = Float05)
                                     },

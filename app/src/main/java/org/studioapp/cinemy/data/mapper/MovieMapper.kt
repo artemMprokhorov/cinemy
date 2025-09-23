@@ -1,6 +1,5 @@
 package org.studioapp.cinemy.data.mapper
 
-import androidx.compose.ui.graphics.Color
 import org.studioapp.cinemy.data.model.ButtonConfiguration
 import org.studioapp.cinemy.data.model.ColorMetadata
 import org.studioapp.cinemy.data.model.ColorScheme
@@ -10,14 +9,13 @@ import org.studioapp.cinemy.data.model.Meta
 import org.studioapp.cinemy.data.model.Movie
 import org.studioapp.cinemy.data.model.MovieColors
 import org.studioapp.cinemy.data.model.MovieDetails
-import org.studioapp.cinemy.data.model.MovieListData
 import org.studioapp.cinemy.data.model.MovieListResponse
 import org.studioapp.cinemy.data.model.Pagination
 import org.studioapp.cinemy.data.model.ProductionCompany
 import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.model.SearchInfo
-import org.studioapp.cinemy.data.model.SentimentReviews
 import org.studioapp.cinemy.data.model.SentimentMetadata
+import org.studioapp.cinemy.data.model.SentimentReviews
 import org.studioapp.cinemy.data.model.StringConstants
 import org.studioapp.cinemy.data.model.TextConfiguration
 import org.studioapp.cinemy.data.model.UiConfiguration
@@ -36,8 +34,8 @@ import org.studioapp.cinemy.data.remote.dto.MovieListResponseDto
 import org.studioapp.cinemy.data.remote.dto.PaginationDto
 import org.studioapp.cinemy.data.remote.dto.ProductionCompanyDto
 import org.studioapp.cinemy.data.remote.dto.SearchInfoDto
-import org.studioapp.cinemy.data.remote.dto.SentimentReviewsDto
 import org.studioapp.cinemy.data.remote.dto.SentimentMetadataDto
+import org.studioapp.cinemy.data.remote.dto.SentimentReviewsDto
 import org.studioapp.cinemy.data.remote.dto.TextConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
 import org.studioapp.cinemy.data.util.ColorUtils

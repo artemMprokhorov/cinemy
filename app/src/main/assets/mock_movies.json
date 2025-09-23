@@ -5,7 +5,11 @@
       {
         "adult": false,
         "backdrop_path": "/hqkIcbrOHL86UncnHIsHVcVmzue.jpg",
-        "genre_ids": [28, 80, 18],
+        "genre_ids": [
+          28,
+          80,
+          18
+        ],
         "id": 1,
         "original_language": "en",
         "original_title": "The Dark Knight",
@@ -31,7 +35,11 @@
       {
         "adult": false,
         "backdrop_path": "/s3TBrRGB1iav7gFOCNx3H31MoES.jpg",
-        "genre_ids": [28, 878, 53],
+        "genre_ids": [
+          28,
+          878,
+          53
+        ],
         "id": 2,
         "original_language": "en",
         "original_title": "Inception",
@@ -57,7 +65,10 @@
       {
         "adult": false,
         "backdrop_path": "/xu9zaAevzQ5nnrsXN6JcahLnG4i.jpg",
-        "genre_ids": [18, 878],
+        "genre_ids": [
+          18,
+          878
+        ],
         "id": 3,
         "original_language": "en",
         "original_title": "Interstellar",
@@ -83,7 +94,11 @@
       {
         "adult": false,
         "backdrop_path": "/7u3pxc0K1wx35IWehIYjIBT4Oc8.jpg",
-        "genre_ids": [28, 878, 53],
+        "genre_ids": [
+          28,
+          878,
+          53
+        ],
         "id": 4,
         "original_language": "en",
         "original_title": "The Matrix",
@@ -109,7 +124,10 @@
       {
         "adult": false,
         "backdrop_path": "/4cDFJr4H91XN7IqVoD8KtRjdM3Z.jpg",
-        "genre_ids": [80, 18],
+        "genre_ids": [
+          80,
+          18
+        ],
         "id": 5,
         "original_language": "en",
         "original_title": "Pulp Fiction",

@@ -1,19 +1,23 @@
 # ML Tests for Cinemy
 
-This directory contains comprehensive tests for the Machine Learning components in Cinemy, including the hybrid sentiment analysis system with TensorFlow Lite integration.
+This directory contains comprehensive tests for the Machine Learning components in Cinemy, including
+the hybrid sentiment analysis system with TensorFlow Lite integration.
 
 ## Test Files
 
 ### Core Tests
 
 - **`SentimentAnalyzerTest.kt`** - Tests for the original keyword-based sentiment analysis model
-- **`TensorFlowIntegrationTest.kt`** - Comprehensive tests for TensorFlow Lite integration and hybrid system
-- **`HybridSystemCompatibilityTest.kt`** - Backward compatibility tests ensuring existing functionality works
+- **`TensorFlowIntegrationTest.kt`** - Comprehensive tests for TensorFlow Lite integration and
+  hybrid system
+- **`HybridSystemCompatibilityTest.kt`** - Backward compatibility tests ensuring existing
+  functionality works
 - **`TestUtils.kt`** - Utility functions and mock objects for testing
 
 ## Test Coverage
 
 ### TensorFlowIntegrationTest.kt
+
 - ✅ TensorFlow Lite model initialization
 - ✅ Hybrid system initialization
 - ✅ Model selection logic (simple vs complex text)
@@ -24,6 +28,7 @@ This directory contains comprehensive tests for the Machine Learning components 
 - ✅ Concurrent access safety
 
 ### HybridSystemCompatibilityTest.kt
+
 - ✅ Backward compatibility with existing API
 - ✅ Batch analysis compatibility
 - ✅ Model info compatibility
@@ -33,6 +38,7 @@ This directory contains comprehensive tests for the Machine Learning components 
 - ✅ Edge cases handling
 
 ### TestUtils.kt
+
 - ✅ Mock Context creation with assets
 - ✅ Test data for different complexity levels
 - ✅ Performance measurement utilities
@@ -42,11 +48,13 @@ This directory contains comprehensive tests for the Machine Learning components 
 ## Running Tests
 
 ### Run All ML Tests
+
 ```bash
 ./gradlew test --tests "org.studioapp.cinemy.ml.*"
 ```
 
 ### Run Specific Test Classes
+
 ```bash
 # TensorFlow integration tests
 ./gradlew test --tests "org.studioapp.cinemy.ml.TensorFlowIntegrationTest"
@@ -59,6 +67,7 @@ This directory contains comprehensive tests for the Machine Learning components 
 ```
 
 ### Run Individual Test Methods
+
 ```bash
 ./gradlew test --tests "org.studioapp.cinemy.ml.TensorFlowIntegrationTest.testTensorFlowModelInitialization"
 ```
@@ -68,26 +77,31 @@ This directory contains comprehensive tests for the Machine Learning components 
 ### Text Complexity Levels
 
 **Simple Texts** (use keyword model):
+
 - "This movie is amazing and fantastic!"
 - "This movie is terrible and awful."
 - "This movie is okay and decent."
 
 **Complex Texts** (use TensorFlow model):
+
 - Long reviews with complex sentence structures
 - Texts with ambiguous sentiment indicators
 - Reviews with multiple conflicting opinions
 
 **Ambiguous Texts**:
+
 - "This movie is interesting and different, but I'm not sure if I liked it or not."
 
 ## Mock Objects
 
 ### MockContext
+
 - Provides mock Android Context for testing
 - Includes mock AssetManager with predefined assets
 - Supports both successful and failing scenarios
 
 ### Test Assets
+
 - `production_sentiment_full_manual.tflite` - Production TensorFlow Lite model
 - `android_integration_config.json` - Configuration for hybrid system
 - `multilingual_sentiment_production.json` - Production keyword model data
@@ -95,6 +109,7 @@ This directory contains comprehensive tests for the Machine Learning components 
 ## Performance Testing
 
 Tests include performance measurements to ensure:
+
 - Analysis completes within reasonable time (< 1 second)
 - Batch processing is efficient
 - Memory usage is controlled
@@ -103,6 +118,7 @@ Tests include performance measurements to ensure:
 ## Error Scenarios
 
 Tests cover various error scenarios:
+
 - Asset loading failures
 - TensorFlow model initialization errors
 - Network connectivity issues (for future MCP integration)
@@ -112,6 +128,7 @@ Tests cover various error scenarios:
 ## Dependencies
 
 Tests use the following testing frameworks:
+
 - **JUnit 4** - Basic test framework
 - **MockK** - Mocking framework for Kotlin
 - **Kotlin Coroutines** - For async testing

@@ -230,6 +230,7 @@ class McpHttpClient(private val context: Context) {
                     }
                     nestedMap
                 }
+
                 is JSONArray -> jsonArrayToList(value)
                 else -> value
             }

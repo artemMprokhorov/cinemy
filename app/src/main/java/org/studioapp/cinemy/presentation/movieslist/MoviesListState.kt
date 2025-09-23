@@ -1,6 +1,5 @@
 package org.studioapp.cinemy.presentation.movieslist
 
-import org.studioapp.cinemy.data.model.Meta
 import org.studioapp.cinemy.data.model.Movie
 import org.studioapp.cinemy.data.model.Pagination
 import org.studioapp.cinemy.data.model.UiConfiguration
@@ -21,14 +20,12 @@ data class MoviesListState(
     // NEW: Connection and data source status
     val isUsingMockData: Boolean = PresentationConstants.DEFAULT_BOOLEAN_FALSE,
     val connectionStatus: ConnectionStatus = ConnectionStatus.Unknown,
-    val lastSyncTime: Long? = null,
 
     // Enhanced error handling
     val canRetry: Boolean = PresentationConstants.DEFAULT_CAN_RETRY,
     val retryCount: Int = PresentationConstants.DEFAULT_RETRY_COUNT,
 
-    val uiConfig: UiConfiguration? = null,
-    val meta: Meta? = null
+    val uiConfig: UiConfiguration? = null
 ) {
     enum class ConnectionStatus {
         Unknown,

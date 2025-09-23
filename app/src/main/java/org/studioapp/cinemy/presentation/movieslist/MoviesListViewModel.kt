@@ -75,12 +75,10 @@ class MoviesListViewModel(
                         // NEW: Connection status handling
                         isUsingMockData = PresentationConstants.DEFAULT_BOOLEAN_FALSE, // Will be determined by BuildConfig
                         connectionStatus = determineConnectionStatus(null),
-                        lastSyncTime = System.currentTimeMillis(),
                         retryCount = PresentationConstants.DEFAULT_RETRY_COUNT,
                         canRetry = PresentationConstants.DEFAULT_CAN_RETRY,
 
-                        uiConfig = result.uiConfig,
-                        meta = null // No meta in new contract
+                        uiConfig = result.uiConfig
                     )
                 }
 

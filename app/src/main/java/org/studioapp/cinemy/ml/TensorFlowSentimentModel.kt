@@ -7,11 +7,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.tensorflow.lite.Interpreter
 import java.io.FileInputStream
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
-import kotlin.math.max
 
 /**
  * TensorFlow Lite sentiment analysis model for Cinemy
@@ -30,7 +27,9 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
 
         fun getInstance(context: Context): TensorFlowSentimentModel {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: TensorFlowSentimentModel(context.applicationContext).also { INSTANCE = it }
+                INSTANCE ?: TensorFlowSentimentModel(context.applicationContext).also {
+                    INSTANCE = it
+                }
             }
         }
 
@@ -43,7 +42,7 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
         private const val MODEL_LANGUAGE = "en"
         private const val MODEL_ACCURACY = "95%+"
         private const val MODEL_SPEED = "fast"
-        
+
         // BERT model constants
         private const val VOCAB_SIZE = 30522
         private const val MAX_SEQUENCE_LENGTH = 512
@@ -119,21 +118,21 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
 
         runCatching {
             val startTime = System.currentTimeMillis()
-            
+
             // Preprocess text
             val processedText = preprocessText(text, config!!)
-            
+
             // Prepare input tensor
             val inputIds = prepareInputTensor(processedText, config!!)
-            
+
             // Run inference
             val outputBuffer = runInference(inputIds, config!!)
-            
+
             // Postprocess results
             val result = postprocessOutput(outputBuffer, config!!)
-            
+
             val processingTime = System.currentTimeMillis() - startTime
-            
+
             result.copy(processingTimeMs = processingTime)
         }.getOrElse { e ->
             SentimentResult.error("$ERROR_INFERENCE: ${e.message}")
@@ -166,7 +165,7 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
             val configJson = context.assets.open("ml_models/$CONFIG_FILE").use { inputStream ->
                 inputStream.bufferedReader().readText()
             }
-            
+
             val json = Json { ignoreUnknownKeys = true }
             json.decodeFromString<TensorFlowConfig>(configJson)
         }.getOrNull()
@@ -185,7 +184,7 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
             fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
         }.getOrNull()
     }
-    
+
     /**
      * Load BERT vocabulary from JSON file
      */
@@ -194,7 +193,7 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
             val vocabJson = context.assets.open("ml_models/$VOCAB_FILE").use { inputStream ->
                 inputStream.bufferedReader().readText()
             }
-            
+
             val json = Json { ignoreUnknownKeys = true }
             json.decodeFromString<Map<String, Int>>(vocabJson)
         }.getOrElse {
@@ -243,14 +242,14 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
 
         // Tokenize text for BERT
         val tokens = tokenizeForBERT(text)
-        
+
         // Convert tokens to IDs
         val tokenIds = tokensToIds(tokens)
-        
+
         // Create input array with padding
         val inputIds = IntArray(maxLength)
         val attentionMask = IntArray(maxLength)
-        
+
         // Copy token IDs and create attention mask
         for (i in 0 until maxLength) {
             if (i < tokenIds.size) {
@@ -261,10 +260,10 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
                 attentionMask[i] = 0
             }
         }
-        
+
         return inputIds
     }
-    
+
     /**
      * Tokenize text for BERT model
      */
@@ -272,21 +271,21 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
         // Add special tokens
         val tokens = mutableListOf<String>()
         tokens.add(CLS_TOKEN)
-        
+
         // Simple word-level tokenization (in production, use proper BERT tokenizer)
         val words = text.split("\\s+").filter { it.isNotBlank() }
         tokens.addAll(words)
-        
+
         // Truncate if too long (leave space for SEP token)
         val maxTokens = MAX_SEQUENCE_LENGTH - 2
         if (tokens.size > maxTokens) {
             tokens.subList(1, maxTokens + 1)
         }
-        
+
         tokens.add(SEP_TOKEN)
         return tokens
     }
-    
+
     /**
      * Convert tokens to vocabulary IDs
      */
@@ -302,34 +301,37 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
     private fun runInference(inputIds: IntArray, config: TensorFlowConfig): FloatArray {
         val inputConfig = config.tensorflowLite?.inputConfig
         val outputConfig = config.tensorflowLite?.outputConfig
-        
+
         // Prepare input tensor for BERT
         val inputShape = (inputConfig?.inputShape ?: listOf(1, 512)).toIntArray()
         val outputShape = (outputConfig?.outputShape ?: listOf(1, 3)).toIntArray()
-        
+
         // Create input array with batch dimension
         val inputArray = arrayOf(inputIds)
-        
+
         // Prepare output buffer
         val outputArray = Array(1) { FloatArray(outputShape[1]) }
 
         // Run inference
         interpreter?.run(inputArray, outputArray)
-        
+
         return outputArray[0]
     }
 
     /**
      * Postprocess TensorFlow Lite output
      */
-    private fun postprocessOutput(outputArray: FloatArray, config: TensorFlowConfig): SentimentResult {
+    private fun postprocessOutput(
+        outputArray: FloatArray,
+        config: TensorFlowConfig
+    ): SentimentResult {
         val outputConfig = config.tensorflowLite?.outputConfig
         val classLabels = outputConfig?.classLabels ?: listOf("negative", "neutral", "positive")
         val confidenceThreshold = outputConfig?.confidenceThreshold ?: DEFAULT_CONFIDENCE_THRESHOLD
 
         // Apply softmax to get probabilities
         val probabilities = softmax(outputArray)
-        
+
         // Find the class with highest probability
         val maxIndex = probabilities.indices.maxByOrNull { probabilities[it] } ?: 1
         val maxConfidence = probabilities[maxIndex]
@@ -346,14 +348,29 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
         return when {
             maxConfidence >= confidenceThreshold -> {
                 when (sentimentType) {
-                    SentimentType.POSITIVE -> SentimentResult.positive(maxConfidence.toDouble(), listOf("tensorflow:${classLabels[maxIndex]}"))
-                    SentimentType.NEGATIVE -> SentimentResult.negative(maxConfidence.toDouble(), listOf("tensorflow:${classLabels[maxIndex]}"))
-                    else -> SentimentResult.neutral(maxConfidence.toDouble(), listOf("tensorflow:${classLabels[maxIndex]}"))
+                    SentimentType.POSITIVE -> SentimentResult.positive(
+                        maxConfidence.toDouble(),
+                        listOf("tensorflow:${classLabels[maxIndex]}")
+                    )
+
+                    SentimentType.NEGATIVE -> SentimentResult.negative(
+                        maxConfidence.toDouble(),
+                        listOf("tensorflow:${classLabels[maxIndex]}")
+                    )
+
+                    else -> SentimentResult.neutral(
+                        maxConfidence.toDouble(),
+                        listOf("tensorflow:${classLabels[maxIndex]}")
+                    )
                 }
             }
+
             else -> {
                 // Low confidence - return neutral
-                SentimentResult.neutral(maxConfidence.toDouble(), listOf("tensorflow:low_confidence"))
+                SentimentResult.neutral(
+                    maxConfidence.toDouble(),
+                    listOf("tensorflow:low_confidence")
+                )
             }
         }
     }

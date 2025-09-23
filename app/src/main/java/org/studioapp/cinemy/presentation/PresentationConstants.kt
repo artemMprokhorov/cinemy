@@ -12,7 +12,6 @@ object PresentationConstants {
     const val DEFAULT_RETRY_COUNT = 0
     const val DEFAULT_BOOLEAN_FALSE = false
     const val DEFAULT_BOOLEAN_TRUE = true
-    const val DEFAULT_LONG_VALUE = 0L
 
     // Runtime Formatting
     const val MINUTES_PER_HOUR = 60
@@ -40,8 +39,6 @@ object PresentationConstants {
     const val PAGE_DECREMENT = 1
 
     // UI State Defaults
-    const val DEFAULT_SHOW_FULL_DESCRIPTION = false
-    const val DEFAULT_SHOW_PRODUCTION_DETAILS = false
     const val DEFAULT_HAS_MORE = true
     const val DEFAULT_CAN_RETRY = false
 }

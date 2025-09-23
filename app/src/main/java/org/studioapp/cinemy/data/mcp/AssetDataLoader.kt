@@ -78,7 +78,8 @@ class AssetDataLoader(private val context: Context) {
                     val jsonArray = JSONArray(jsonString)
                     if (jsonArray.length() > 0) {
                         val firstObject = jsonArray.getJSONObject(0)
-                        val moviesJson = firstObject.optJSONArray(StringConstants.SERIALIZED_RESULTS)
+                        val moviesJson =
+                            firstObject.optJSONArray(StringConstants.SERIALIZED_RESULTS)
                         if (moviesJson != null) {
                             return parseMoviesFromJson(moviesJson)
                         }
@@ -86,11 +87,11 @@ class AssetDataLoader(private val context: Context) {
                 } catch (e: Exception) {
                     // Fall back to old structure
                 }
-                
+
                 // Fall back to old structure
                 val jsonObject = JSONObject(jsonString)
                 val dataJson = jsonObject.optJSONObject(StringConstants.FIELD_DATA)
-                val moviesJson = dataJson?.optJSONArray(StringConstants.FIELD_MOVIES) 
+                val moviesJson = dataJson?.optJSONArray(StringConstants.FIELD_MOVIES)
                     ?: dataJson?.optJSONArray(StringConstants.SERIALIZED_RESULTS)
                 if (moviesJson != null) {
                     parseMoviesFromJson(moviesJson)
@@ -298,30 +299,45 @@ class AssetDataLoader(private val context: Context) {
                         StringConstants.SERIALIZED_OVERVIEW,
                         StringConstants.NO_DESCRIPTION_AVAILABLE
                     ),
-                    posterPath = movieJson.optString(StringConstants.FIELD_POSTER_PATH, null) 
+                    posterPath = movieJson.optString(StringConstants.FIELD_POSTER_PATH, null)
                         ?: movieJson.optString(StringConstants.SERIALIZED_POSTER_PATH, null) ?: "",
-                    backdropPath = movieJson.optString(StringConstants.FIELD_BACKDROP_PATH, null) 
-                        ?: movieJson.optString(StringConstants.SERIALIZED_BACKDROP_PATH, null) ?: "",
+                    backdropPath = movieJson.optString(StringConstants.FIELD_BACKDROP_PATH, null)
+                        ?: movieJson.optString(StringConstants.SERIALIZED_BACKDROP_PATH, null)
+                        ?: "",
                     rating = movieJson.optDouble(StringConstants.FIELD_RATING, 0.0)
-                        .takeIf { it > 0 } ?: movieJson.optDouble(StringConstants.SERIALIZED_VOTE_AVERAGE, 0.0),
+                        .takeIf { it > 0 }
+                        ?: movieJson.optDouble(StringConstants.SERIALIZED_VOTE_AVERAGE, 0.0),
                     voteCount = movieJson.optInt(StringConstants.FIELD_VOTE_COUNT, 0)
-                        .takeIf { it > 0 } ?: movieJson.optInt(StringConstants.SERIALIZED_VOTE_COUNT, 0),
-                    releaseDate = movieJson.optString(StringConstants.FIELD_RELEASE_DATE, null) 
+                        .takeIf { it > 0 }
+                        ?: movieJson.optInt(StringConstants.SERIALIZED_VOTE_COUNT, 0),
+                    releaseDate = movieJson.optString(StringConstants.FIELD_RELEASE_DATE, null)
                         ?: movieJson.optString(StringConstants.SERIALIZED_RELEASE_DATE, null) ?: "",
                     genreIds = parseGenreIds(movieJson.optJSONArray(StringConstants.FIELD_GENRE_IDS))
-                        .takeIf { it.isNotEmpty() } ?: parseGenreIds(movieJson.optJSONArray(StringConstants.SERIALIZED_GENRE_IDS)),
+                        .takeIf { it.isNotEmpty() } ?: parseGenreIds(
+                        movieJson.optJSONArray(
+                            StringConstants.SERIALIZED_GENRE_IDS
+                        )
+                    ),
                     popularity = movieJson.optDouble(StringConstants.FIELD_POPULARITY, 0.0)
-                        .takeIf { it > 0 } ?: movieJson.optDouble(StringConstants.SERIALIZED_POPULARITY, 0.0),
+                        .takeIf { it > 0 }
+                        ?: movieJson.optDouble(StringConstants.SERIALIZED_POPULARITY, 0.0),
                     adult = movieJson.optBoolean(StringConstants.FIELD_ADULT, false)
-                        .takeIf { movieJson.has(StringConstants.FIELD_ADULT) } 
+                        .takeIf { movieJson.has(StringConstants.FIELD_ADULT) }
                         ?: movieJson.optBoolean(StringConstants.SERIALIZED_ADULT, false),
-                    originalLanguage = movieJson.optString(StringConstants.FIELD_ORIGINAL_LANGUAGE, null) 
-                        ?: movieJson.optString(StringConstants.SERIALIZED_ORIGINAL_LANGUAGE, null) ?: "en",
-                    originalTitle = movieJson.optString(StringConstants.FIELD_ORIGINAL_TITLE, null) 
-                        ?: movieJson.optString(StringConstants.SERIALIZED_ORIGINAL_TITLE, null) 
-                        ?: movieJson.optString(StringConstants.FIELD_TITLE, StringConstants.UNKNOWN_MOVIE_TITLE),
+                    originalLanguage = movieJson.optString(
+                        StringConstants.FIELD_ORIGINAL_LANGUAGE,
+                        null
+                    )
+                        ?: movieJson.optString(StringConstants.SERIALIZED_ORIGINAL_LANGUAGE, null)
+                        ?: "en",
+                    originalTitle = movieJson.optString(StringConstants.FIELD_ORIGINAL_TITLE, null)
+                        ?: movieJson.optString(StringConstants.SERIALIZED_ORIGINAL_TITLE, null)
+                        ?: movieJson.optString(
+                            StringConstants.FIELD_TITLE,
+                            StringConstants.UNKNOWN_MOVIE_TITLE
+                        ),
                     video = movieJson.optBoolean(StringConstants.FIELD_VIDEO, false)
-                        .takeIf { movieJson.has(StringConstants.FIELD_VIDEO) } 
+                        .takeIf { movieJson.has(StringConstants.FIELD_VIDEO) }
                         ?: movieJson.optBoolean(StringConstants.SERIALIZED_VIDEO, false),
                     colors = parseMovieColors(movieJson)
                 )
@@ -357,7 +373,8 @@ class AssetDataLoader(private val context: Context) {
                     category = "MEDIUM",
                     modelUsed = true,
                     rating = movieJson.optDouble(StringConstants.FIELD_RATING, 0.0)
-                        .takeIf { it > 0 } ?: movieJson.optDouble(StringConstants.SERIALIZED_VOTE_AVERAGE, 0.0)
+                        .takeIf { it > 0 }
+                        ?: movieJson.optDouble(StringConstants.SERIALIZED_VOTE_AVERAGE, 0.0)
                 )
             )
         }

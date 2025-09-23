@@ -5,7 +5,6 @@ import android.content.res.AssetManager
 import io.mockk.every
 import io.mockk.mockk
 import java.io.ByteArrayInputStream
-import java.io.InputStream
 
 /**
  * Test utilities for ML testing in Cinemy
@@ -19,10 +18,10 @@ object TestUtils {
     fun createMockContext(): Context {
         val mockContext = mockk<Context>(relaxed = true)
         val mockAssetManager = createMockAssetManager()
-        
+
         every { mockContext.assets } returns mockAssetManager
         every { mockContext.applicationContext } returns mockContext
-        
+
         return mockContext
     }
 
@@ -31,11 +30,11 @@ object TestUtils {
      */
     private fun createMockAssetManager(): AssetManager {
         val mockAssetManager = mockk<AssetManager>(relaxed = true)
-        
+
         // Mock TensorFlow Lite model file (empty but valid)
         val tfliteModelContent = ByteArray(1024) // Mock 1KB model file
         val tfliteInputStream = ByteArrayInputStream(tfliteModelContent)
-        
+
         // Mock configuration file
         val configContent = """
         {
@@ -98,7 +97,7 @@ object TestUtils {
         }
         """.trimIndent()
         val configInputStream = ByteArrayInputStream(configContent.toByteArray())
-        
+
         // Mock keyword model file
         val keywordModelContent = """
         {
@@ -127,24 +126,24 @@ object TestUtils {
         }
         """.trimIndent()
         val keywordModelInputStream = ByteArrayInputStream(keywordModelContent.toByteArray())
-        
+
         // Setup mock responses
-        every { 
-            mockAssetManager.open("ml_models/production_sentiment_full_manual.tflite") 
+        every {
+            mockAssetManager.open("ml_models/production_sentiment_full_manual.tflite")
         } returns tfliteInputStream
-        
-        every { 
-            mockAssetManager.open("ml_models/android_integration_config.json") 
+
+        every {
+            mockAssetManager.open("ml_models/android_integration_config.json")
         } returns configInputStream
-        
-        every { 
-            mockAssetManager.open("ml_models/multilingual_sentiment_production.json") 
+
+        every {
+            mockAssetManager.open("ml_models/multilingual_sentiment_production.json")
         } returns keywordModelInputStream
-        
-        every { 
-            mockAssetManager.open("ml_models/multilingual_sentiment_production.json") 
+
+        every {
+            mockAssetManager.open("ml_models/multilingual_sentiment_production.json")
         } returns keywordModelInputStream
-        
+
         return mockAssetManager
     }
 
@@ -154,13 +153,13 @@ object TestUtils {
     fun createFailingMockContext(): Context {
         val mockContext = mockk<Context>(relaxed = true)
         val mockAssetManager = mockk<AssetManager>(relaxed = true)
-        
+
         every { mockContext.assets } returns mockAssetManager
         every { mockContext.applicationContext } returns mockContext
-        
+
         // Make asset loading fail
         every { mockAssetManager.open(any()) } throws Exception("Asset not found")
-        
+
         return mockContext
     }
 
@@ -173,7 +172,7 @@ object TestUtils {
         val SIMPLE_NEGATIVE = "This movie is terrible and awful."
         val SIMPLE_NEUTRAL = "This movie is okay and decent."
         val SHORT_TEXT = "Great movie!"
-        
+
         // Complex texts (should use TensorFlow model)
         val COMPLEX_POSITIVE = """
             This film is absolutely phenomenal and represents a masterful achievement in 
@@ -185,7 +184,7 @@ object TestUtils {
             stunning and serve the story rather than overwhelming it. This is truly a 
             masterpiece that will be remembered for years to come.
         """.trimIndent()
-        
+
         val COMPLEX_NEGATIVE = """
             Unfortunately, this film fails to deliver on its promising premise. Despite 
             having a talented cast and substantial budget, the execution is fundamentally 
@@ -197,7 +196,7 @@ object TestUtils {
             by the film's numerous shortcomings. This is a disappointing effort that 
             squanders its resources and fails to engage the audience.
         """.trimIndent()
-        
+
         val COMPLEX_NEUTRAL = """
             This film presents an interesting but ultimately mixed experience. The 
             cinematography is competent and the acting is generally solid, though 
@@ -208,7 +207,7 @@ object TestUtils {
             thriller, falling somewhere in between. It's the kind of movie that might 
             work for a casual viewing, but doesn't leave a lasting impression.
         """.trimIndent()
-        
+
         // Ambiguous texts (should use TensorFlow model)
         val AMBIGUOUS_TEXT = """
             This movie is interesting and different, but I'm not sure if I liked it 
@@ -216,7 +215,7 @@ object TestUtils {
             The acting was mixed - some performances were good while others were 
             disappointing. Overall, it's a varied experience that's hard to categorize.
         """.trimIndent()
-        
+
         // Texts with complex indicators
         val COMPLEX_INDICATORS = """
             The film has excellent cinematography and outstanding performances. However, 
@@ -238,7 +237,7 @@ object TestUtils {
             TestTexts.COMPLEX_NEGATIVE,
             TestTexts.AMBIGUOUS_TEXT
         )
-        
+
         const val PERFORMANCE_THRESHOLD_MS = 1000L // 1 second threshold
     }
 
@@ -249,7 +248,7 @@ object TestUtils {
         val SIMPLE_POSITIVE_SENTIMENT = SentimentType.POSITIVE
         val SIMPLE_NEGATIVE_SENTIMENT = SentimentType.NEGATIVE
         val SIMPLE_NEUTRAL_SENTIMENT = SentimentType.NEUTRAL
-        
+
         val MIN_CONFIDENCE_THRESHOLD = 0.3
         val MAX_CONFIDENCE_THRESHOLD = 0.9
     }
@@ -294,9 +293,9 @@ object TestUtils {
             "interesting", "different", "unique", "unusual", "strange",
             "complex", "complicated", "mixed", "varied", "diverse"
         )
-        
+
         val textLower = text.lowercase()
-        
+
         return text.length > complexityThreshold ||
                 complexIndicators.any { textLower.contains(it) } ||
                 ambiguousWords.any { textLower.contains(it) }

@@ -1,7 +1,6 @@
 package org.studioapp.cinemy.data.mcp
 
 import android.content.Context
-import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import org.studioapp.cinemy.data.mapper.MovieMapper
 import org.studioapp.cinemy.data.mcp.models.McpRequest
@@ -30,7 +29,6 @@ import java.io.IOException
 class McpClient(private val context: Context) : MovieApiService {
     private val assetDataLoader = AssetDataLoader(context)
 
-    private val gson = Gson()
     private val mcpHttpClient = McpHttpClient(context)
 
     override suspend fun getPopularMovies(page: Int): McpResponseDto<MovieListResponseDto> {

@@ -134,8 +134,8 @@ class MovieDetailViewModel(
         } else 0.0
 
         // Collect all found keywords
-        val allKeywords = (positiveResults.flatMap { it.foundKeywords } + 
-                          negativeResults.flatMap { it.foundKeywords }).distinct()
+        val allKeywords = (positiveResults.flatMap { it.foundKeywords } +
+                negativeResults.flatMap { it.foundKeywords }).distinct()
 
         // Determine overall sentiment based on confidence comparison
         return when {
@@ -145,12 +145,14 @@ class MovieDetailViewModel(
                     keywords = allKeywords
                 )
             }
+
             negativeConfidence > positiveConfidence && negativeConfidence > 0.5 -> {
                 org.studioapp.cinemy.ml.SentimentResult.negative(
                     confidence = negativeConfidence,
                     keywords = allKeywords
                 )
             }
+
             else -> {
                 org.studioapp.cinemy.ml.SentimentResult.neutral(
                     confidence = maxOf(positiveConfidence, negativeConfidence),

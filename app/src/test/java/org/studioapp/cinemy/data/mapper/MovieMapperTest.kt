@@ -1,7 +1,7 @@
 package org.studioapp.cinemy.data.mapper
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.junit.Assert.*
 import org.studioapp.cinemy.data.remote.dto.ColorMetadataDto
 import org.studioapp.cinemy.data.remote.dto.MovieColorsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDto
