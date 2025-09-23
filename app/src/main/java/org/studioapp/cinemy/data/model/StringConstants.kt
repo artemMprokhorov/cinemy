@@ -33,17 +33,11 @@ object StringConstants {
     const val PLAY_BUTTON = "Play"
 
 
-
-
     // Error Messages
     const val SIMULATED_NETWORK_ERROR = "Simulated network error"
     const val UNKNOWN_MOVIE_TITLE = "Unknown Movie"
     const val NO_DESCRIPTION_AVAILABLE = "No description available"
 
-    // Movie Category Prefixes
-    const val TOP_RATED_PREFIX = "Top Rated: "
-    const val NOW_PLAYING_PREFIX = "Now Playing: "
-    const val RECOMMENDED_PREFIX = "Recommended: "
 
     // Asset File Names
     const val ASSET_MOCK_MOVIES = "mock_movies.json"
@@ -54,12 +48,6 @@ object StringConstants {
     const val ERROR_LOADING_MOCK_DATA = "Failed to load mock data from assets"
 
     // Pagination Constants
-    const val PAGINATION_TOP_RATED_TOTAL_PAGES = 8
-    const val PAGINATION_TOP_RATED_TOTAL_RESULTS = 80
-    const val PAGINATION_NOW_PLAYING_TOTAL_PAGES = 5
-    const val PAGINATION_NOW_PLAYING_TOTAL_RESULTS = 50
-    const val PAGINATION_RECOMMENDATIONS_TOTAL_PAGES = 4
-    const val PAGINATION_RECOMMENDATIONS_TOTAL_RESULTS = 40
     const val PAGINATION_FIRST_PAGE = 1
 
     // Meta Data Constants
@@ -232,10 +220,6 @@ object StringConstants {
 
     // Parameter Names
     const val PARAM_MOVIE_ID = "movieId"
-
-
-
-
 
 
     // Serialized Name Constants for MovieDto

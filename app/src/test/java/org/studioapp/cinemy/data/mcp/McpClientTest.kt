@@ -1,7 +1,6 @@
 package org.studioapp.cinemy.data.mcp
 
 import android.content.Context
-import androidx.compose.ui.graphics.Color
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -19,14 +18,12 @@ import org.junit.Test
 import org.studioapp.cinemy.data.mapper.MovieMapper
 import org.studioapp.cinemy.data.mcp.models.McpResponse
 import org.studioapp.cinemy.data.model.ButtonConfiguration
+import org.studioapp.cinemy.data.model.ColorMetadata
 import org.studioapp.cinemy.data.model.ColorScheme
-import org.studioapp.cinemy.data.model.GeminiColors
 import org.studioapp.cinemy.data.model.Genre
-import org.studioapp.cinemy.data.model.Meta
 import org.studioapp.cinemy.data.model.Movie
+import org.studioapp.cinemy.data.model.MovieColors
 import org.studioapp.cinemy.data.model.MovieDetails
-import org.studioapp.cinemy.data.model.MovieListData
-import org.studioapp.cinemy.data.model.MovieListResponse
 import org.studioapp.cinemy.data.model.Pagination
 import org.studioapp.cinemy.data.model.ProductionCompany
 import org.studioapp.cinemy.data.model.Result
@@ -34,12 +31,12 @@ import org.studioapp.cinemy.data.model.SearchInfo
 import org.studioapp.cinemy.data.model.TextConfiguration
 import org.studioapp.cinemy.data.model.UiConfiguration
 import org.studioapp.cinemy.data.remote.dto.ButtonConfigurationDto
+import org.studioapp.cinemy.data.remote.dto.ColorMetadataDto
 import org.studioapp.cinemy.data.remote.dto.ColorSchemeDto
 import org.studioapp.cinemy.data.remote.dto.GeminiColorsDto
 import org.studioapp.cinemy.data.remote.dto.GenreDto
-import org.studioapp.cinemy.data.remote.dto.McpMovieListResponseDto
-import org.studioapp.cinemy.data.remote.dto.McpResponseDto
 import org.studioapp.cinemy.data.remote.dto.MetaDto
+import org.studioapp.cinemy.data.remote.dto.MovieColorsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDetailsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDto
 import org.studioapp.cinemy.data.remote.dto.PaginationDto
@@ -105,61 +102,6 @@ object TestMovieMapper {
         )
     }
 
-    fun mapMcpMovieListResponseDtoToMovieListResponse(dto: McpMovieListResponseDto): MovieListResponse {
-        return MovieListResponse(
-            success = true,
-            data = MovieListData(
-                movies = dto.movies.map { mapMovieDtoToMovie(it) },
-                pagination = mapPaginationDtoToPagination(dto.pagination)
-            ),
-            uiConfig = UiConfiguration(
-                colors = ColorScheme(
-                    primary = Color.Red,
-                    secondary = Color.Green,
-                    background = Color.Blue,
-                    surface = Color.Yellow,
-                    onPrimary = Color.White,
-                    onSecondary = Color.Black,
-                    onBackground = Color.White,
-                    onSurface = Color.Black,
-                    moviePosterColors = emptyList()
-                ),
-                texts = TextConfiguration(
-                    appTitle = "Test App",
-                    loadingText = "Loading...",
-                    errorMessage = "Error",
-                    noMoviesFound = "No movies",
-                    retryButton = "Retry",
-                    backButton = "Back",
-                    playButton = "Play"
-                ),
-                buttons = ButtonConfiguration(
-                    primaryButtonColor = Color.Red,
-                    secondaryButtonColor = Color.Green,
-                    buttonTextColor = Color.White,
-                    buttonCornerRadius = 8
-                ),
-                searchInfo = null
-            ),
-            error = null,
-            meta = Meta(
-                timestamp = System.currentTimeMillis().toString(),
-                method = "testMethod",
-                searchQuery = null,
-                movieId = null,
-                resultsCount = dto.movies.size,
-                aiGenerated = true,
-                geminiColors = GeminiColors(
-                    primary = "#FF0000",
-                    secondary = "#00FF00",
-                    accent = "#0000FF"
-                ),
-                avgRating = null,
-                movieRating = null,
-                version = "2.0.0"
-            )
-        )
-    }
 
     fun mapMovieDtoToMovie(dto: MovieDto): Movie {
         return Movie(
@@ -173,7 +115,20 @@ object TestMovieMapper {
             releaseDate = dto.releaseDate,
             genreIds = dto.genreIds,
             popularity = dto.popularity,
-            adult = dto.adult
+            adult = dto.adult,
+            originalLanguage = dto.originalLanguage,
+            originalTitle = dto.originalTitle,
+            video = dto.video,
+            colors = MovieColors(
+                accent = dto.colors.accent,
+                primary = dto.colors.primary,
+                secondary = dto.colors.secondary,
+                metadata = ColorMetadata(
+                    category = dto.colors.metadata.category,
+                    modelUsed = dto.colors.metadata.modelUsed,
+                    rating = dto.colors.metadata.rating
+                )
+            )
         )
     }
 
@@ -262,10 +217,6 @@ class McpClientTest {
 
         // Mock MovieMapper methods to use TestMovieMapper
         mockkObject(MovieMapper)
-        every { MovieMapper.mapMcpMovieListResponseDtoToMovieListResponse(any()) } answers { call ->
-            val dto = call.invocation.args[0] as McpMovieListResponseDto
-            TestMovieMapper.mapMcpMovieListResponseDtoToMovieListResponse(dto)
-        }
         every { MovieMapper.mapUiConfigurationDtoToUiConfiguration(any()) } answers { call ->
             val dto = call.invocation.args[0] as UiConfigurationDto
             TestMovieMapper.mapUiConfigurationDtoToUiConfiguration(dto)
@@ -296,8 +247,8 @@ class McpClientTest {
         assertNotNull(result.data)
         assertNotNull(result.uiConfig)
         assertNotNull(result.meta)
-        assertEquals(1, result.data?.movies?.size)
-        assertEquals("Test Movie", result.data?.movies?.get(0)?.title)
+        assertEquals(1, result.data?.results?.size)
+        assertEquals("Test Movie", result.data?.results?.get(0)?.title)
 
         coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
         verify { mockAssetDataLoader.loadUiConfig() }
@@ -339,7 +290,7 @@ class McpClientTest {
     fun `getMovieDetails should return success response when MCP call succeeds`() = runBlocking {
         // Given
         val movieId = 123
-        val mockResponse = createMockMovieDetailsMcpResponse()
+        val mockResponse = createMockMovieDetailsResponse()
         val mockUiConfig = createMockUiConfigDto()
         val mockMeta = createMockMetaDto()
 
@@ -528,100 +479,6 @@ class McpClientTest {
         coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
     }
 
-    @Test
-    fun `getTopRatedMovies should return success response`() = runBlocking {
-        // Given
-        val page = 1
-        val mockMovies = listOf(createMockMovieDto())
-
-        every { mockAssetDataLoader.loadMockMovies() } returns mockMovies
-        every { mockAssetDataLoader.loadUiConfig() } returns createMockUiConfigDto()
-        every { mockAssetDataLoader.loadMetaData(any(), any()) } returns createMockMetaDto()
-
-        // When - run multiple times to account for random network errors
-        var result: McpResponseDto<McpMovieListResponseDto>? = null
-        var attempts = 0
-        val maxAttempts = 20 // Give it 20 attempts to succeed
-        
-        while (attempts < maxAttempts && (result == null || !result.success)) {
-            result = mcpClient.getTopRatedMovies(page)
-            attempts++
-        }
-
-        // Then
-        assertNotNull("Test failed after $maxAttempts attempts", result)
-        assertTrue("Expected success but got failure: ${result?.error}", result?.success == true)
-        assertNotNull(result?.data)
-        assertNotNull(result?.uiConfig)
-        assertNotNull(result?.meta)
-        assertEquals(1, result?.data?.movies?.size)
-        assertTrue(result?.data?.movies?.get(0)?.title?.startsWith("Top Rated") == true)
-
-        verify { mockAssetDataLoader.loadMockMovies() }
-        verify { mockAssetDataLoader.loadUiConfig() }
-        verify { mockAssetDataLoader.loadMetaData(any(), any()) }
-    }
-
-    @Test
-    fun `getNowPlayingMovies should return success response`() = runBlocking {
-        // Given
-        val page = 1
-        val mockMovies = listOf(createMockMovieDto())
-
-        every { mockAssetDataLoader.loadMockMovies() } returns mockMovies
-        every { mockAssetDataLoader.loadUiConfig() } returns createMockUiConfigDto()
-        every { mockAssetDataLoader.loadMetaData(any(), any()) } returns createMockMetaDto()
-
-        // When - retry up to 3 times to handle random network simulation
-        var result: McpResponseDto<McpMovieListResponseDto>? = null
-        var attempts = 0
-        val maxAttempts = 3
-        
-        while (attempts < maxAttempts && (result == null || !result.success)) {
-            result = mcpClient.getNowPlayingMovies(page)
-            attempts++
-        }
-
-        // Then
-        assertNotNull("Result should not be null after $maxAttempts attempts", result)
-        assertTrue("Result should be successful after $maxAttempts attempts", result!!.success)
-        assertNotNull(result.data)
-        assertNotNull(result.uiConfig)
-        assertNotNull(result.meta)
-        assertEquals(1, result.data?.movies?.size)
-        assertTrue(result.data?.movies?.get(0)?.title?.startsWith("Now Playing") == true)
-
-        verify { mockAssetDataLoader.loadMockMovies() }
-        verify { mockAssetDataLoader.loadUiConfig() }
-        verify { mockAssetDataLoader.loadMetaData(any(), any()) }
-    }
-
-    @Test
-    fun `getMovieRecommendations should return success response`() = runBlocking {
-        // Given
-        val movieId = 123
-        val page = 1
-        val mockMovies = listOf(createMockMovieDto())
-
-        every { mockAssetDataLoader.loadMockMovies() } returns mockMovies
-        every { mockAssetDataLoader.loadUiConfig() } returns createMockUiConfigDto()
-        every { mockAssetDataLoader.loadMetaData(any(), any()) } returns createMockMetaDto()
-
-        // When
-        val result = mcpClient.getMovieRecommendations(movieId, page)
-
-        // Then
-        assertTrue(result.success)
-        assertNotNull(result.data)
-        assertNotNull(result.uiConfig)
-        assertNotNull(result.meta)
-        assertEquals(1, result.data?.movies?.size)
-        assertTrue(result.data?.movies?.get(0)?.title?.startsWith("Recommended") == true)
-
-        verify { mockAssetDataLoader.loadMockMovies() }
-        verify { mockAssetDataLoader.loadUiConfig() }
-        verify { mockAssetDataLoader.loadMetaData(any(), any()) }
-    }
 
     @Test
     fun `close should close MCP HTTP client`() {
@@ -648,21 +505,67 @@ class McpClientTest {
                 "releaseDate" to "2024-01-01",
                 "genreIds" to listOf(1, 2, 3),
                 "popularity" to 100.0,
-                "adult" to false
+                "adult" to false,
+                "originalLanguage" to "en",
+                "originalTitle" to "Test Movie",
+                "video" to false,
+                "colors" to mapOf(
+                    "accent" to "#FF0000",
+                    "primary" to "#00FF00",
+                    "secondary" to "#0000FF",
+                    "metadata" to mapOf(
+                        "category" to "action",
+                        "modelUsed" to true,
+                        "rating" to 8.5
+                    )
+                )
             )
         )
 
-        val paginationData = mapOf(
+        val responseData = mapOf(
             "page" to 1,
+            "results" to moviesData,
             "totalPages" to 10,
-            "totalResults" to 100,
-            "hasNext" to true,
-            "hasPrevious" to false
+            "totalResults" to 100
+        )
+
+        return McpResponse(
+            success = true,
+            data = responseData,
+            error = null
+        )
+    }
+
+    private fun createMockMovieDetailsResponse(): McpResponse<Map<String, Any>> {
+        val movieDetailsData = mapOf(
+            "id" to 123,
+            "title" to "Test Movie Details",
+            "description" to "Test Description",
+            "posterPath" to "/test.jpg",
+            "backdropPath" to "/backdrop.jpg",
+            "rating" to 8.5,
+            "voteCount" to 1000,
+            "releaseDate" to "2024-01-01",
+            "runtime" to 120,
+            "genres" to listOf(
+                mapOf("id" to 1, "name" to "Action"),
+                mapOf("id" to 2, "name" to "Drama")
+            ),
+            "productionCompanies" to listOf(
+                mapOf(
+                    "id" to 1,
+                    "logoPath" to "/logo.jpg",
+                    "name" to "Test Studio",
+                    "originCountry" to "US"
+                )
+            ),
+            "budget" to 1000000L,
+            "revenue" to 2000000L,
+            "status" to "Released"
         )
 
         val responseData = mapOf(
-            "movies" to moviesData,
-            "pagination" to paginationData
+            "movieDetails" to movieDetailsData
         )
 
         return McpResponse(
@@ -700,8 +603,26 @@ class McpClientTest {
             "status" to "Released"
         )
 
+        val sentimentReviewsData = mapOf(
+            "positive" to listOf("Great movie!", "Amazing!"),
+            "negative" to listOf("Not good", "Boring")
+        )
+
+        val sentimentMetadataData = mapOf(
+            "totalReviews" to 100,
+            "positiveCount" to 60,
+            "negativeCount" to 40,
+            "sentimentScore" to 0.6
+        )
+
+        val innerData = mapOf(
+            "movieDetails" to movieDetailsData,
+            "sentimentReviews" to sentimentReviewsData,
+            "sentimentMetadata" to sentimentMetadataData
+        )
+
         val responseData = mapOf(
-            "movieDetails" to movieDetailsData
+            "data" to innerData
         )
 
         return McpResponse(
@@ -770,7 +691,20 @@ class McpClientTest {
             releaseDate = "2024-01-01",
             genreIds = listOf(1, 2, 3),
             popularity = 100.0,
-            adult = false
+            adult = false,
+            originalLanguage = "en",
+            originalTitle = "Test Movie",
+            video = false,
+            colors = MovieColorsDto(
+                accent = "#FF0000",
+                primary = "#00FF00",
+                secondary = "#0000FF",
+                metadata = ColorMetadataDto(
+                    category = "action",
+                    modelUsed = true,
+                    rating = 8.5
+                )
+            )
         )
     }
 }

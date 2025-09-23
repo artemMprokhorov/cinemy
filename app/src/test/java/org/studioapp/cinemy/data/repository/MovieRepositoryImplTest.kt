@@ -18,9 +18,7 @@ import org.studioapp.cinemy.data.model.Movie
 import org.studioapp.cinemy.data.model.MovieDetails
 import org.studioapp.cinemy.data.model.MovieDetailsData
 import org.studioapp.cinemy.data.model.MovieDetailsResponse
-import org.studioapp.cinemy.data.model.MovieListData
 import org.studioapp.cinemy.data.model.MovieListResponse
-import org.studioapp.cinemy.data.model.Pagination
 import org.studioapp.cinemy.data.model.ProductionCompany
 import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.model.SentimentReviews
@@ -260,44 +258,37 @@ class MovieRepositoryImplTest {
 
     private fun createMockMovieListResponse(): MovieListResponse {
         return MovieListResponse(
-            success = true,
-            data = MovieListData(
-                movies = listOf(
-                    Movie(
-                        id = 1,
-                        title = "Test Movie",
-                        description = "Test Description",
-                        posterPath = "/test.jpg",
-                        backdropPath = "/backdrop.jpg",
-                        rating = 8.5,
-                        voteCount = 1000,
-                        releaseDate = "2024-01-01",
-                        genreIds = listOf(1, 2, 3),
-                        popularity = 100.0,
-                        adult = false
+            page = 1,
+            results = listOf(
+                Movie(
+                    id = 1,
+                    title = "Test Movie",
+                    description = "Test Description",
+                    posterPath = "/test.jpg",
+                    backdropPath = "/backdrop.jpg",
+                    rating = 8.5,
+                    voteCount = 1000,
+                    releaseDate = "2024-01-01",
+                    genreIds = listOf(1, 2, 3),
+                    popularity = 100.0,
+                    adult = false,
+                    originalLanguage = "en",
+                    originalTitle = "Test Movie",
+                    video = false,
+                    colors = org.studioapp.cinemy.data.model.MovieColors(
+                        accent = "#FF0000",
+                        primary = "#00FF00",
+                        secondary = "#0000FF",
+                        metadata = org.studioapp.cinemy.data.model.ColorMetadata(
+                            category = "action",
+                            modelUsed = true,
+                            rating = 8.5
+                        )
                     )
-                ),
-                pagination = Pagination(
-                    page = 1,
-                    totalPages = 10,
-                    totalResults = 100,
-                    hasNext = true,
-                    hasPrevious = false
                 )
             ),
-            uiConfig = createMockUiConfig(),
-            meta = Meta(
-                timestamp = "2024-01-01T00:00:00Z",
-                method = "getPopularMovies",
-                resultsCount = 1,
-                aiGenerated = true,
-                geminiColors = GeminiColors(
-                    primary = "#6200EE",
-                    secondary = "#03DAC6",
-                    accent = "#FF6B6B"
-                ),
-                version = "2.0.0"
-            )
+            totalPages = 10,
+            totalResults = 100
         )
     }
 

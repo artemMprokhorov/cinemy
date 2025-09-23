@@ -17,6 +17,8 @@ import org.studioapp.cinemy.data.model.MovieDetails
 import org.studioapp.cinemy.data.model.ProductionCompany
 import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.model.SentimentReviews
+import org.studioapp.cinemy.data.remote.dto.ColorMetadataDto
+import org.studioapp.cinemy.data.remote.dto.MovieColorsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDto
 
 class DummyMovieRepositoryTest {
@@ -53,7 +55,20 @@ class DummyMovieRepositoryTest {
                 releaseDate = "2024-01-01",
                 genreIds = listOf(1, 2),
                 popularity = 100.0,
-                adult = false
+                adult = false,
+                originalLanguage = "en",
+                originalTitle = "Test Movie 1",
+                video = false,
+                colors = MovieColorsDto(
+                    accent = "#FF0000",
+                    primary = "#00FF00",
+                    secondary = "#0000FF",
+                    metadata = ColorMetadataDto(
+                        category = "action",
+                        modelUsed = true,
+                        rating = 8.5
+                    )
+                )
             ),
             MovieDto(
                 id = 2,
@@ -66,7 +81,20 @@ class DummyMovieRepositoryTest {
                 releaseDate = "2024-01-02",
                 genreIds = listOf(3, 4),
                 popularity = 90.0,
-                adult = false
+                adult = false,
+                originalLanguage = "en",
+                originalTitle = "Test Movie 2",
+                video = false,
+                colors = MovieColorsDto(
+                    accent = "#FF0000",
+                    primary = "#00FF00",
+                    secondary = "#0000FF",
+                    metadata = ColorMetadataDto(
+                        category = "action",
+                        modelUsed = true,
+                        rating = 7.5
+                    )
+                )
             )
         )
 
@@ -80,13 +108,12 @@ class DummyMovieRepositoryTest {
         val successResult = result as Result.Success
         val response = successResult.data
 
-        assertTrue(response.success)
-        assertEquals(2, response.data.movies.size)
-        assertEquals("Test Movie 1", response.data.movies[0].title)
-        assertEquals("Test Movie 2", response.data.movies[1].title)
-        assertEquals(page, response.data.pagination.page)
-        assertTrue(response.data.pagination.hasNext)
-        assertFalse(response.data.pagination.hasPrevious)
+        assertEquals(2, response.results.size)
+        assertEquals("Test Movie 1", response.results[0].title)
+        assertEquals("Test Movie 2", response.results[1].title)
+        assertEquals(page, response.page)
+        assertTrue(response.page < response.totalPages)
+        assertFalse(response.page > 1)
 
         verify { mockAssetDataLoader.loadMockMovies() }
     }
@@ -94,7 +121,7 @@ class DummyMovieRepositoryTest {
     @Test
     fun `getPopularMovies should handle different page numbers`() = runBlocking {
         // Given
-        val page = 3
+        val page = 2
         val mockMovies = listOf(createMockMovieDto())
 
         every { mockAssetDataLoader.loadMockMovies() } returns mockMovies
@@ -107,9 +134,9 @@ class DummyMovieRepositoryTest {
         val successResult = result as Result.Success
         val response = successResult.data
 
-        assertEquals(page, response.data.pagination.page)
-        assertTrue(response.data.pagination.hasPrevious) // page > 1
-        assertTrue(response.data.pagination.hasNext) // page < totalPages
+        assertEquals(page, response.page)
+        assertTrue(response.page > 1) // page > 1
+        assertTrue(response.page < response.totalPages) // page < totalPages
 
         verify { mockAssetDataLoader.loadMockMovies() }
     }
@@ -127,7 +154,6 @@ class DummyMovieRepositoryTest {
         val successResult = result as Result.Success
         val response = successResult.data
 
-        assertTrue(response.success)
         assertNotNull(response.data.movieDetails)
         // sentimentReviews can be null if not found in assets
         // assertNotNull(response.data.sentimentReviews)
@@ -147,11 +173,11 @@ class DummyMovieRepositoryTest {
         // Then
         assertTrue(result is Result.Success)
         val successResult = result as Result.Success
-        val pagination = successResult.data.data.pagination
+        val response = successResult.data
 
-        assertEquals(1, pagination.page)
-        assertFalse(pagination.hasPrevious) // First page
-        assertTrue(pagination.hasNext) // Has next page
+        assertEquals(1, response.page)
+        assertFalse(response.page > 1) // First page
+        assertTrue(response.page < response.totalPages) // Has next page
 
         verify { mockAssetDataLoader.loadMockMovies() }
     }
@@ -170,11 +196,11 @@ class DummyMovieRepositoryTest {
         // Then
         assertTrue(result is Result.Success)
         val successResult = result as Result.Success
-        val pagination = successResult.data.data.pagination
+        val response = successResult.data
 
-        assertEquals(page, pagination.page)
-        assertTrue(pagination.hasPrevious) // Not first page
-        assertFalse(pagination.hasNext) // Last page
+        assertEquals(page, response.page)
+        assertTrue(response.page > 1) // Not first page
+        assertFalse(response.page < response.totalPages) // Last page
 
         verify { mockAssetDataLoader.loadMockMovies() }
     }
@@ -195,9 +221,8 @@ class DummyMovieRepositoryTest {
         val successResult = result as Result.Success
         val response = successResult.data
 
-        assertTrue(response.success)
-        assertTrue(response.data.movies.isEmpty())
-        assertEquals(0, response.data.movies.size)
+        assertTrue(response.results.isEmpty())
+        assertEquals(0, response.results.size)
 
         verify { mockAssetDataLoader.loadMockMovies() }
     }
@@ -219,8 +244,8 @@ class DummyMovieRepositoryTest {
         val successResult1 = result1 as Result.Success
         val successResult2 = result2 as Result.Success
 
-        assertTrue(successResult1.data.success)
-        assertTrue(successResult2.data.success)
+        assertNotNull(successResult1.data)
+        assertNotNull(successResult2.data)
     }
 
     @Test
@@ -239,10 +264,10 @@ class DummyMovieRepositoryTest {
         val successResult = result as Result.Success
         val response = successResult.data
 
-        assertNotNull(response.uiConfig)
-        assertNotNull(response.uiConfig.colors)
-        assertNotNull(response.uiConfig.texts)
-        assertNotNull(response.uiConfig.buttons)
+        assertNotNull(successResult.uiConfig)
+        assertNotNull(successResult.uiConfig?.colors)
+        assertNotNull(successResult.uiConfig?.texts)
+        assertNotNull(successResult.uiConfig?.buttons)
 
         verify { mockAssetDataLoader.loadMockMovies() }
     }
@@ -282,10 +307,11 @@ class DummyMovieRepositoryTest {
         val successResult = result as Result.Success
         val response = successResult.data
 
-        assertNotNull(response.meta)
-        assertNotNull(response.meta.timestamp)
-        assertNotNull(response.meta.method)
-        assertNotNull(response.meta.version)
+        // Meta is not available in the new structure
+        // assertNotNull(response.meta)
+        // assertNotNull(response.meta.timestamp)
+        // assertNotNull(response.meta.method)
+        // assertNotNull(response.meta.version)
 
         verify { mockAssetDataLoader.loadMockMovies() }
     }
@@ -303,10 +329,11 @@ class DummyMovieRepositoryTest {
         val successResult = result as Result.Success
         val response = successResult.data
 
-        assertNotNull(response.meta)
-        assertNotNull(response.meta.timestamp)
-        assertNotNull(response.meta.method)
-        assertNotNull(response.meta.version)
+        // Meta is not available in the new structure
+        // assertNotNull(response.meta)
+        // assertNotNull(response.meta.timestamp)
+        // assertNotNull(response.meta.method)
+        // assertNotNull(response.meta.version)
     }
 
     private fun createMockMovieDto(): MovieDto {
@@ -321,7 +348,20 @@ class DummyMovieRepositoryTest {
             releaseDate = "2024-01-01",
             genreIds = listOf(1, 2, 3),
             popularity = 100.0,
-            adult = false
+            adult = false,
+            originalLanguage = "en",
+            originalTitle = "Test Movie",
+            video = false,
+            colors = MovieColorsDto(
+                accent = "#FF0000",
+                primary = "#00FF00",
+                secondary = "#0000FF",
+                metadata = ColorMetadataDto(
+                    category = "action",
+                    modelUsed = true,
+                    rating = 8.5
+                )
+            )
         )
     }
 

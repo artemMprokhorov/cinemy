@@ -38,9 +38,9 @@ class DummyMovieRepository(
         // Create pagination
         val pagination = Pagination(
             page = page,
-            totalPages = StringConstants.PAGINATION_TOP_RATED_TOTAL_PAGES,
-            totalResults = StringConstants.PAGINATION_TOP_RATED_TOTAL_RESULTS,
-            hasNext = page < StringConstants.PAGINATION_TOP_RATED_TOTAL_PAGES,
+            totalPages = 3, // Default total pages for mock data
+            totalResults = 30, // Default total results for mock data
+            hasNext = page < 3,
             hasPrevious = page > StringConstants.PAGINATION_FIRST_PAGE
         )
 
@@ -61,7 +61,7 @@ class DummyMovieRepository(
             totalResults = pagination.totalResults
         )
 
-        return Result.Success(response)
+        return Result.Success(response, uiConfig)
     }
 
     override suspend fun getMovieDetails(movieId: Int): Result<MovieDetailsResponse> {

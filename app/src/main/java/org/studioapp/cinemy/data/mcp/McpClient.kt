@@ -16,17 +16,15 @@ import org.studioapp.cinemy.data.remote.api.MovieApiService
 import org.studioapp.cinemy.data.remote.dto.ColorMetadataDto
 import org.studioapp.cinemy.data.remote.dto.GeminiColorsDto
 import org.studioapp.cinemy.data.remote.dto.GenreDto
-import org.studioapp.cinemy.data.remote.dto.McpMovieListResponseDto
 import org.studioapp.cinemy.data.remote.dto.McpResponseDto
 import org.studioapp.cinemy.data.remote.dto.MetaDto
 import org.studioapp.cinemy.data.remote.dto.MovieColorsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDetailsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDto
 import org.studioapp.cinemy.data.remote.dto.MovieListResponseDto
-import org.studioapp.cinemy.data.remote.dto.PaginationDto
 import org.studioapp.cinemy.data.remote.dto.ProductionCompanyDto
-import org.studioapp.cinemy.data.remote.dto.SentimentReviewsDto
 import org.studioapp.cinemy.data.remote.dto.SentimentMetadataDto
+import org.studioapp.cinemy.data.remote.dto.SentimentReviewsDto
 import java.io.IOException
 
 class McpClient(private val context: Context) : MovieApiService {
@@ -54,12 +52,14 @@ class McpClient(private val context: Context) : MovieApiService {
             } else {
                 responseData as? Map<String, Any>
             }
-            
+
             val movies =
                 (data?.get(StringConstants.SERIALIZED_RESULTS) as? List<Map<String, Any>>)?.map { movieData ->
-                    val colorsData = movieData[StringConstants.SERIALIZED_COLORS] as? Map<String, Any>
-                    val metadataData = colorsData?.get(StringConstants.SERIALIZED_METADATA) as? Map<String, Any>
-                    
+                    val colorsData =
+                        movieData[StringConstants.SERIALIZED_COLORS] as? Map<String, Any>
+                    val metadataData =
+                        colorsData?.get(StringConstants.SERIALIZED_METADATA) as? Map<String, Any>
+
                     MovieDto(
                         id = (movieData[StringConstants.SERIALIZED_ID] as? Number)?.toInt()
                             ?: StringConstants.DEFAULT_INT_VALUE,
@@ -142,38 +142,6 @@ class McpClient(private val context: Context) : MovieApiService {
                     StringConstants.META_RESULTS_COUNT_ZERO
                 )
             )
-        }
-    }
-
-    override suspend fun getTopRatedMovies(page: Int): McpResponseDto<McpMovieListResponseDto> {
-        return simulateNetworkCall {
-            val mockMovies = assetDataLoader.loadMockMovies()
-                .map { it.copy(title = "${StringConstants.TOP_RATED_PREFIX}${it.title}") }
-            val pagination = PaginationDto(
-                page = page,
-                totalPages = StringConstants.PAGINATION_TOP_RATED_TOTAL_PAGES,
-                totalResults = StringConstants.PAGINATION_TOP_RATED_TOTAL_RESULTS,
-                hasNext = page < StringConstants.PAGINATION_TOP_RATED_TOTAL_PAGES,
-                hasPrevious = page > StringConstants.PAGINATION_FIRST_PAGE
-            )
-
-            McpMovieListResponseDto(mockMovies, pagination)
-        }
-    }
-
-    override suspend fun getNowPlayingMovies(page: Int): McpResponseDto<McpMovieListResponseDto> {
-        return simulateNetworkCall {
-            val mockMovies = assetDataLoader.loadMockMovies()
-                .map { it.copy(title = "${StringConstants.NOW_PLAYING_PREFIX}${it.title}") }
-            val pagination = PaginationDto(
-                page = page,
-                totalPages = StringConstants.PAGINATION_NOW_PLAYING_TOTAL_PAGES,
-                totalResults = StringConstants.PAGINATION_NOW_PLAYING_TOTAL_RESULTS,
-                hasNext = page < StringConstants.PAGINATION_NOW_PLAYING_TOTAL_PAGES,
-                hasPrevious = page > StringConstants.PAGINATION_FIRST_PAGE
-            )
-
-            McpMovieListResponseDto(mockMovies, pagination)
         }
     }
 
@@ -282,24 +250,6 @@ class McpClient(private val context: Context) : MovieApiService {
         }
     }
 
-    override suspend fun getMovieRecommendations(
-        movieId: Int,
-        page: Int
-    ): McpResponseDto<McpMovieListResponseDto> {
-        return simulateNetworkCall {
-            val mockMovies = assetDataLoader.loadMockMovies()
-                .map { it.copy(title = "${StringConstants.RECOMMENDED_PREFIX}${it.title}") }
-            val pagination = PaginationDto(
-                page = page,
-                totalPages = StringConstants.PAGINATION_RECOMMENDATIONS_TOTAL_PAGES,
-                totalResults = StringConstants.PAGINATION_RECOMMENDATIONS_TOTAL_RESULTS,
-                hasNext = page < StringConstants.PAGINATION_RECOMMENDATIONS_TOTAL_PAGES,
-                hasPrevious = page > StringConstants.PAGINATION_FIRST_PAGE
-            )
-
-            McpMovieListResponseDto(mockMovies, pagination)
-        }
-    }
 
     /**
      * Business method: Get popular movies using MCP HTTP client
@@ -321,12 +271,14 @@ class McpClient(private val context: Context) : MovieApiService {
                 } else {
                     responseData as? Map<String, Any>
                 }
-                
+
                 val movies =
                     (data?.get(StringConstants.SERIALIZED_RESULTS) as? List<Map<String, Any>>)?.map { movieData ->
-                        val colorsData = movieData[StringConstants.SERIALIZED_COLORS] as? Map<String, Any>
-                        val metadataData = colorsData?.get(StringConstants.SERIALIZED_METADATA) as? Map<String, Any>
-                        
+                        val colorsData =
+                            movieData[StringConstants.SERIALIZED_COLORS] as? Map<String, Any>
+                        val metadataData =
+                            colorsData?.get(StringConstants.SERIALIZED_METADATA) as? Map<String, Any>
+
                         MovieDto(
                             id = (movieData[StringConstants.SERIALIZED_ID] as? Number)?.toInt()
                                 ?: StringConstants.DEFAULT_INT_VALUE,
@@ -373,13 +325,16 @@ class McpClient(private val context: Context) : MovieApiService {
                         )
                     } ?: emptyList()
 
-                val backendPage = (data?.get(StringConstants.SERIALIZED_PAGE) as? Number)?.toInt() ?: page
-                val backendTotalPages = (data?.get(StringConstants.SERIALIZED_TOTAL_PAGES) as? Number)?.toInt()
-                    ?: StringConstants.DEFAULT_TOTAL_PAGES
-                val backendTotalResults = (data?.get(StringConstants.SERIALIZED_TOTAL_RESULTS) as? Number)?.toInt()
-                    ?: StringConstants.DEFAULT_INT_VALUE
-                
-                
+                val backendPage =
+                    (data?.get(StringConstants.SERIALIZED_PAGE) as? Number)?.toInt() ?: page
+                val backendTotalPages =
+                    (data?.get(StringConstants.SERIALIZED_TOTAL_PAGES) as? Number)?.toInt()
+                        ?: StringConstants.DEFAULT_TOTAL_PAGES
+                val backendTotalResults =
+                    (data?.get(StringConstants.SERIALIZED_TOTAL_RESULTS) as? Number)?.toInt()
+                        ?: StringConstants.DEFAULT_INT_VALUE
+
+
                 val movieListResponse = MovieListResponseDto(
                     page = backendPage,
                     results = movies,
@@ -387,7 +342,8 @@ class McpClient(private val context: Context) : MovieApiService {
                     totalResults = backendTotalResults
                 )
 
-                val domainMovieListResponse = MovieMapper.mapMovieListResponseDtoToMovieListResponse(movieListResponse)
+                val domainMovieListResponse =
+                    MovieMapper.mapMovieListResponseDtoToMovieListResponse(movieListResponse)
 
                 val uiConfig = assetDataLoader.loadUiConfig()
 
@@ -429,35 +385,45 @@ class McpClient(private val context: Context) : MovieApiService {
                 } else {
                     responseData as? Map<String, Any>
                 }
-                
+
                 // The backend response structure is: [{"success": true, "data": {"movieDetails": {...}, ...}, ...}]
                 // So we need to access data["data"]["movieDetails"]
                 val innerData = data?.get("data") as? Map<String, Any>
-                val movieDetailsData = innerData?.get(StringConstants.FIELD_MOVIE_DETAILS) as? Map<String, Any>
+                val movieDetailsData =
+                    innerData?.get(StringConstants.FIELD_MOVIE_DETAILS) as? Map<String, Any>
 
                 if (movieDetailsData != null) {
                     // Parse sentiment reviews and metadata
-                    val sentimentReviewsData = innerData?.get(StringConstants.FIELD_SENTIMENT_REVIEWS) as? Map<String, Any>
-                    val sentimentMetadataData = innerData?.get(StringConstants.FIELD_SENTIMENT_METADATA) as? Map<String, Any>
-                    
+                    val sentimentReviewsData =
+                        innerData?.get(StringConstants.FIELD_SENTIMENT_REVIEWS) as? Map<String, Any>
+                    val sentimentMetadataData =
+                        innerData?.get(StringConstants.FIELD_SENTIMENT_METADATA) as? Map<String, Any>
+
                     val sentimentReviews = sentimentReviewsData?.let { reviewsData ->
                         SentimentReviewsDto(
-                            positive = (reviewsData[StringConstants.FIELD_POSITIVE] as? List<String>) ?: emptyList(),
-                            negative = (reviewsData[StringConstants.FIELD_NEGATIVE] as? List<String>) ?: emptyList()
+                            positive = (reviewsData[StringConstants.FIELD_POSITIVE] as? List<String>)
+                                ?: emptyList(),
+                            negative = (reviewsData[StringConstants.FIELD_NEGATIVE] as? List<String>)
+                                ?: emptyList()
                         )
                     }
-                    
+
                     val sentimentMetadata = sentimentMetadataData?.let { metadataData ->
                         SentimentMetadataDto(
-                            totalReviews = (metadataData[StringConstants.FIELD_TOTAL_REVIEWS] as? Number)?.toInt() ?: 0,
-                            positiveCount = (metadataData[StringConstants.FIELD_POSITIVE_COUNT] as? Number)?.toInt() ?: 0,
-                            negativeCount = (metadataData[StringConstants.FIELD_NEGATIVE_COUNT] as? Number)?.toInt() ?: 0,
+                            totalReviews = (metadataData[StringConstants.FIELD_TOTAL_REVIEWS] as? Number)?.toInt()
+                                ?: 0,
+                            positiveCount = (metadataData[StringConstants.FIELD_POSITIVE_COUNT] as? Number)?.toInt()
+                                ?: 0,
+                            negativeCount = (metadataData[StringConstants.FIELD_NEGATIVE_COUNT] as? Number)?.toInt()
+                                ?: 0,
                             source = metadataData[StringConstants.FIELD_SOURCE] as? String ?: "",
-                            timestamp = metadataData[StringConstants.FIELD_TIMESTAMP] as? String ?: "",
-                            apiSuccess = (metadataData[StringConstants.FIELD_API_SUCCESS] as? Map<String, Boolean>) ?: emptyMap()
+                            timestamp = metadataData[StringConstants.FIELD_TIMESTAMP] as? String
+                                ?: "",
+                            apiSuccess = (metadataData[StringConstants.FIELD_API_SUCCESS] as? Map<String, Boolean>)
+                                ?: emptyMap()
                         )
                     }
-                    
+
                     val movieDetails = MovieDetailsDto(
                         id = (movieDetailsData[StringConstants.FIELD_ID] as? Number)?.toInt()
                             ?: movieId,
@@ -508,8 +474,10 @@ class McpClient(private val context: Context) : MovieApiService {
                         MovieMapper.mapMovieDetailsDtoToMovieDetails(movieDetails)
 
                     // Map sentiment reviews and metadata to domain models
-                    val domainSentimentReviews = MovieMapper.mapSentimentReviewsDtoToSentimentReviews(sentimentReviews)
-                    val domainSentimentMetadata = MovieMapper.mapSentimentMetadataDtoToSentimentMetadata(sentimentMetadata)
+                    val domainSentimentReviews =
+                        MovieMapper.mapSentimentReviewsDtoToSentimentReviews(sentimentReviews)
+                    val domainSentimentMetadata =
+                        MovieMapper.mapSentimentMetadataDtoToSentimentMetadata(sentimentMetadata)
 
                     val uiConfig = assetDataLoader.loadUiConfig()
                     val domainUiConfig =
