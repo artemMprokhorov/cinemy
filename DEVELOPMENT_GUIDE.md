@@ -241,6 +241,120 @@ Box(
 - **Not working on older devices**: Check API level requirements
 - **Inconsistent behavior**: Ensure all screens use the same pattern
 
+## 📱 Foldable Device Development
+
+### 🎯 **Device Type Detection**
+
+#### **DeviceUtils.kt Usage**
+```kotlin
+// In Composable functions
+@Composable
+fun MyScreen() {
+    val deviceType = getDeviceType()
+    val isFoldable = isFoldableDevice()
+    val supportsDual = supportsDualPane()
+    
+    when (deviceType) {
+        DeviceUtils.DeviceType.FOLDABLE -> {
+            // Foldable-specific layout
+        }
+        DeviceUtils.DeviceType.TABLET -> {
+            // Tablet layout
+        }
+        DeviceUtils.DeviceType.PHONE -> {
+            // Phone layout
+        }
+    }
+}
+```
+
+#### **Adaptive Layout Implementation**
+```kotlin
+@Composable
+fun MoviesScreen() {
+    AdaptiveLayout(
+        leftPane = { MoviesList() },
+        rightPane = { MovieDetails() }
+    )
+}
+```
+
+### 🔄 **Configuration Change Handling**
+
+#### **MainActivity Setup**
+```kotlin
+class MainActivity : ComponentActivity() {
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        
+        // Handle device state changes
+        val newDeviceType = DeviceUtils.getDeviceType(this)
+        handleDeviceTypeChange(newDeviceType)
+    }
+}
+```
+
+### 🪟 **WindowInsets Management**
+
+#### **Foldable-Specific Insets**
+```kotlin
+@Composable
+fun MyScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .adaptiveInsetsPadding() // Automatically chooses appropriate insets
+    ) {
+        // Content
+    }
+}
+```
+
+#### **Selective Insets**
+```kotlin
+// Top and bottom only
+modifier = Modifier.verticalInsetsPadding()
+
+// Left and right only  
+modifier = Modifier.horizontalInsetsPadding()
+
+// Specific sides
+modifier = Modifier.selectiveInsetsPadding(WindowInsetsSides.Horizontal)
+```
+
+### 📐 **Resource Configuration**
+
+#### **Large Screen Resources**
+```
+res/
+├── values-sw600dp/     # Smallest width 600dp+ (tablets)
+├── values-w600dp/      # Width 600dp+ (wide screens)
+└── values-land/        # Landscape orientation
+```
+
+#### **Manifest Configuration**
+```xml
+<activity
+    android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+    android:resizeableActivity="true"
+    android:supportsPictureInPicture="true">
+```
+
+### ✅ **Best Practices for Foldable Development**
+
+1. **Always use adaptive layouts** for different device types
+2. **Handle configuration changes** properly
+3. **Use appropriate window insets** for each device type
+4. **Test on real foldable devices** when possible
+5. **Provide fallbacks** for unsupported features
+
+### 🚨 **Common Foldable Issues**
+
+- **Layout not adapting**: Missing device type detection
+- **Content overlapping**: Incorrect window insets handling
+- **State loss on fold/unfold**: Missing configuration change handling
+- **Poor performance**: Not using lazy loading for large lists
+
 ## 🔧 Code Quality & Best Practices (v2.4.0)
 
 ### 📝 **String Resources & Internationalization**

@@ -443,6 +443,98 @@ class McpHttpClient {
 }
 ```
 
+## 📱 Foldable Device Support
+
+### 🎯 Device Type Detection
+
+The application includes comprehensive support for foldable devices through adaptive layout system:
+
+#### **DeviceUtils.kt - Device Detection**
+```kotlin
+enum class DeviceType {
+    PHONE, TABLET, FOLDABLE, DESKTOP
+}
+
+enum class ScreenSize {
+    SMALL, MEDIUM, LARGE, EXTRA_LARGE
+}
+
+// Automatic device type detection
+fun getDeviceType(context: Context): DeviceType
+fun isFoldableDevice(context: Context): Boolean
+fun supportsDualPane(context: Context): Boolean
+```
+
+#### **Adaptive Layout System**
+- **AdaptiveLayout.kt**: Responsive layout components with dual pane support
+- **FoldableInsets.kt**: WindowInsets handling for foldable devices
+- **Configuration Change Handling**: Automatic layout updates on device state changes
+
+### 🎨 Adaptive UI Components
+
+#### **Dual Pane Layout for Foldable Devices**
+```kotlin
+@Composable
+fun AdaptiveLayout(
+    leftPane: @Composable () -> Unit,  // Movies list
+    rightPane: @Composable () -> Unit  // Movie details
+) {
+    // Automatically switches between single/dual pane based on device type
+}
+```
+
+#### **Device-Specific Optimizations**
+- **Foldable Devices**: Flexible dual pane with 40/60 split
+- **Tablets**: Fixed left pane (320dp) + flexible right pane
+- **Phones**: Single pane with navigation
+- **Desktop**: Optimized for large screens
+
+### 🔄 Configuration Change Handling
+
+#### **MainActivity Configuration Changes**
+```kotlin
+override fun onConfigurationChanged(newConfig: Configuration) {
+    super.onConfigurationChanged(newConfig)
+    
+    // Handle device type changes (fold/unfold)
+    val newDeviceType = DeviceUtils.getDeviceType(this)
+    handleDeviceTypeChange(newDeviceType)
+    
+    // Handle orientation changes
+    val isLandscape = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE
+    handleOrientationChange(isLandscape)
+}
+```
+
+#### **WindowInsets Management**
+- **Safe Drawing Insets**: For foldable devices
+- **System Bars Insets**: For tablets and phones
+- **Display Cutout Support**: For devices with notches
+- **Selective Padding**: Top/bottom or left/right only
+
+### 📐 Resource Configuration
+
+#### **Large Screen Resources**
+- `values-sw600dp/`: Smallest width 600dp+ (tablets)
+- `values-w600dp/`: Width 600dp+ (wide screens)
+- `values-land/`: Landscape orientation
+- **Themes**: Optimized for different screen sizes
+
+#### **Manifest Configuration**
+```xml
+<activity
+    android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+    android:resizeableActivity="true"
+    android:supportsPictureInPicture="true">
+```
+
+### 🎯 Benefits
+
+- **Enhanced User Experience**: Optimized layouts for all device types
+- **Seamless Transitions**: Smooth layout changes on device state changes
+- **Future-Proof**: Ready for new foldable device form factors
+- **Performance Optimized**: Efficient layout switching and memory management
+
 ## 🧪 Testing Strategy
 
 ### 📊 Testing Pyramid

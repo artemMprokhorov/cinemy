@@ -410,6 +410,90 @@ error handling, and performance optimizations.
 - ✅ **MVI Compliance**: Full MVI pattern implementation
 - ✅ **Performance Optimized**: Efficient rendering and state management
 - ✅ **User Experience**: Intuitive and responsive interface
+- ✅ **Foldable Device Support**: Comprehensive support for foldable devices
+- ✅ **Adaptive Layouts**: Responsive design for all device types
+- ✅ **Dual Pane Layout**: Optimized for tablets and foldable devices
+- ✅ **Configuration Change Handling**: Automatic layout updates
+
+## 📱 Foldable Device Components
+
+### 🎯 **Adaptive Layout System**
+
+#### **AdaptiveLayout.kt**
+```kotlin
+@Composable
+fun AdaptiveLayout(
+    leftPane: @Composable () -> Unit,
+    rightPane: @Composable () -> Unit,
+    modifier: Modifier = Modifier
+)
+```
+
+**Features:**
+- **Automatic device detection** and layout switching
+- **Dual pane layout** for foldable devices and tablets
+- **Single pane layout** for phones
+- **Flexible sizing** for different screen sizes
+
+#### **Device-Specific Layouts**
+- **Foldable Devices**: 40/60 split with flexible sizing
+- **Tablets**: Fixed left pane (320dp) + flexible right pane
+- **Phones**: Single pane with navigation
+- **Desktop**: Optimized for large screens
+
+### 🪟 **WindowInsets Management**
+
+#### **FoldableInsets.kt**
+```kotlin
+@Composable
+fun Modifier.adaptiveInsetsPadding(): Modifier
+@Composable
+fun Modifier.safeDrawingPadding(): Modifier
+@Composable
+fun Modifier.systemBarsPadding(): Modifier
+```
+
+**Features:**
+- **Automatic insets selection** based on device type
+- **Safe drawing insets** for foldable devices
+- **System bars insets** for tablets and phones
+- **Selective padding** for specific sides
+
+### 🔧 **Device Detection**
+
+#### **DeviceUtils.kt**
+```kotlin
+@Composable
+fun getDeviceType(): DeviceUtils.DeviceType
+@Composable
+fun isFoldableDevice(): Boolean
+@Composable
+fun supportsDualPane(): Boolean
+@Composable
+fun getOptimalColumnCount(): Int
+```
+
+**Device Types:**
+- **PHONE**: Standard smartphone
+- **TABLET**: Tablet device
+- **FOLDABLE**: Foldable device (Galaxy Fold, Surface Duo)
+- **DESKTOP**: Desktop mode (Chrome OS, Samsung DeX)
+
+### 📐 **Resource Configuration**
+
+#### **Large Screen Resources**
+- `values-sw600dp/`: Smallest width 600dp+ (tablets)
+- `values-w600dp/`: Width 600dp+ (wide screens)
+- `values-land/`: Landscape orientation
+- **Themes**: Optimized for different screen sizes
+
+#### **Manifest Configuration**
+```xml
+<activity
+    android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+    android:resizeableActivity="true"
+    android:supportsPictureInPicture="true">
+```
 
 The UI layer is now ready for production use with all enhanced features fully implemented and
-tested.
+tested, including comprehensive foldable device support.
