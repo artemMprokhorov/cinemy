@@ -125,7 +125,23 @@ The backend for **Cinemy** was designed as a lightweight experimental setup to c
 - **Ngrok tunnel**: secure public endpoint for local development and testing ✅
 - **n8n Workflows**:
   - TMDB API data ingestion
-  - Gemini AI integration for dynamic color scheme generation ✅
+  - Gemini AI integration for orkestration ✅
+  - Own model for color scheme generation ✅
+    Production Model Specifications:
+
+    Model File: color_scheme_model.pth (73KB)
+    Architecture: Feed-forward neural network with 3 hidden layers (64→128→64 neurons)
+    Framework: PyTorch 2.8.0 with Flask API server
+    Input: Single float value (movie rating 0.0-10.0) with normalization to [0,1] range
+    Output: 9-dimensional RGB vector representing 3 color scheme values (primary, secondary, accent)
+    Performance: CPU-optimized inference with <100ms response time on Mac Mini 2014
+    Accuracy: 100% categorical accuracy on validation set (15/15 test cases)
+    Training: 500 epochs on 10,000 synthetic samples with MSE loss of 0.012
+    Deployment: Docker containerized Flask API
+    Memory: 200-500MB RAM consumption during inference
+    Integration: RESTful API endpoints with JSON response format for n8n workflow automation
+    Categorization: Deterministic color mapping - HIGH ratings (green), MEDIUM (blue), LOW (red)
+
 - **Data preparation**: Review data preprocessing for mobile on-device sentiment analysis was assisted using **Perplexity AI** ✅
 
 This backend acts as an orchestrator between external APIs (TMDB, Gemini), local AI pipelines, and the mobile client — while remaining minimal and flexible.
