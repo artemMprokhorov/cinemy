@@ -25,10 +25,7 @@ class MovieDetailStateTest {
         assertNull(state.movieDetails)
         assertNull(state.error)
         assertNull(state.uiConfig)
-        assertNull(state.meta)
-        assertNull(state.movieId)
-        assertFalse(state.showFullDescription)
-        assertFalse(state.showProductionDetails)
+        // meta, movieId, showFullDescription, showProductionDetails were removed during cleanup
         assertNull(state.sentimentResult)
         assertNull(state.sentimentError)
         assertNull(state.sentimentReviews)
@@ -152,9 +149,7 @@ class MovieDetailStateTest {
             error = "Test error",
             uiConfig = uiConfig,
             meta = meta,
-            movieId = 123,
-            showFullDescription = true,
-            showProductionDetails = true,
+            // movieId, showFullDescription, showProductionDetails were removed during cleanup
             sentimentResult = sentimentResult,
             sentimentError = "Sentiment error",
             sentimentReviews = sentimentReviews
@@ -166,9 +161,7 @@ class MovieDetailStateTest {
         assertEquals("Test error", state.error)
         assertEquals(uiConfig, state.uiConfig)
         assertEquals(meta, state.meta)
-        assertEquals(123, state.movieId)
-        assertTrue(state.showFullDescription)
-        assertTrue(state.showProductionDetails)
+        // movieId, showFullDescription, showProductionDetails were removed during cleanup
         assertEquals(sentimentResult, state.sentimentResult)
         assertEquals("Sentiment error", state.sentimentError)
         assertEquals(sentimentReviews, state.sentimentReviews)

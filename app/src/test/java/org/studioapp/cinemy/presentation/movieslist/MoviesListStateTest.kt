@@ -24,12 +24,11 @@ class MoviesListStateTest {
         assertTrue(state.movies.isEmpty())
         assertNull(state.error)
         assertNull(state.uiConfig)
-        assertNull(state.meta)
+        // meta and lastSyncTime were removed during cleanup
         assertEquals(PresentationConstants.DEFAULT_PAGE_NUMBER, state.currentPage)
         assertTrue(state.hasMore)
         assertFalse(state.isUsingMockData)
         assertEquals(MoviesListState.ConnectionStatus.Unknown, state.connectionStatus)
-        assertNull(state.lastSyncTime)
         assertFalse(state.canRetry)
         assertEquals(PresentationConstants.DEFAULT_RETRY_COUNT, state.retryCount)
     }
@@ -47,12 +46,11 @@ class MoviesListStateTest {
             movies = movies,
             error = "Test error",
             uiConfig = uiConfig,
-            meta = meta,
+            // meta and lastSyncTime were removed during cleanup
             currentPage = 2,
             hasMore = true,
             isUsingMockData = true,
             connectionStatus = MoviesListState.ConnectionStatus.Connected,
-            lastSyncTime = 1234567890L,
             canRetry = true,
             retryCount = 3
         )
@@ -62,12 +60,11 @@ class MoviesListStateTest {
         assertEquals(movies, state.movies)
         assertEquals("Test error", state.error)
         assertEquals(uiConfig, state.uiConfig)
-        assertEquals(meta, state.meta)
+        // meta and lastSyncTime were removed during cleanup
         assertEquals(2, state.currentPage)
         assertTrue(state.hasMore)
         assertTrue(state.isUsingMockData)
         assertEquals(MoviesListState.ConnectionStatus.Connected, state.connectionStatus)
-        assertEquals(1234567890L, state.lastSyncTime)
         assertTrue(state.canRetry)
         assertEquals(3, state.retryCount)
     }

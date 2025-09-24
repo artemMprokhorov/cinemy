@@ -8,6 +8,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.studioapp.cinemy.data.mcp.AssetDataLoader
 import org.studioapp.cinemy.data.mcp.McpClient
 import org.studioapp.cinemy.data.model.ButtonConfiguration
 import org.studioapp.cinemy.data.model.ColorScheme
@@ -33,7 +34,8 @@ class MovieRepositoryImplTest {
     @Before
     fun setUp() {
         mockMcpClient = mockk()
-        movieRepository = MovieRepositoryImpl(mockMcpClient)
+        val mockAssetDataLoader = mockk<AssetDataLoader>()
+        movieRepository = MovieRepositoryImpl(mockMcpClient, mockAssetDataLoader)
     }
 
     @Test

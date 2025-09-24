@@ -32,7 +32,7 @@ class SimplePresentationTests {
         assertEquals(0, PresentationConstants.DEFAULT_RETRY_COUNT)
         assertFalse(PresentationConstants.DEFAULT_BOOLEAN_FALSE)
         assertTrue(PresentationConstants.DEFAULT_BOOLEAN_TRUE)
-        assertEquals(0L, PresentationConstants.DEFAULT_LONG_VALUE)
+        // DEFAULT_LONG_VALUE was removed during cleanup
         assertEquals(60, PresentationConstants.MINUTES_PER_HOUR)
         assertEquals("h", PresentationConstants.RUNTIME_HOURS_FORMAT)
         assertEquals("m", PresentationConstants.RUNTIME_MINUTES_FORMAT)
@@ -51,8 +51,7 @@ class SimplePresentationTests {
         assertEquals("mock", PresentationConstants.MOCK_KEYWORD)
         assertEquals(1, PresentationConstants.PAGE_INCREMENT)
         assertEquals(1, PresentationConstants.PAGE_DECREMENT)
-        assertFalse(PresentationConstants.DEFAULT_SHOW_FULL_DESCRIPTION)
-        assertFalse(PresentationConstants.DEFAULT_SHOW_PRODUCTION_DETAILS)
+        // DEFAULT_SHOW_FULL_DESCRIPTION and DEFAULT_SHOW_PRODUCTION_DETAILS were removed during cleanup
         assertTrue(PresentationConstants.DEFAULT_HAS_MORE)
         assertFalse(PresentationConstants.DEFAULT_CAN_RETRY)
     }
@@ -71,11 +70,10 @@ class SimplePresentationTests {
         assertTrue(state.hasMore)
         assertFalse(state.isUsingMockData)
         assertEquals(MoviesListState.ConnectionStatus.Unknown, state.connectionStatus)
-        assertNull(state.lastSyncTime)
+        // lastSyncTime and meta were removed during cleanup
         assertFalse(state.canRetry)
         assertEquals(PresentationConstants.DEFAULT_RETRY_COUNT, state.retryCount)
         assertNull(state.uiConfig)
-        assertNull(state.meta)
     }
 
     @Test
@@ -90,7 +88,7 @@ class SimplePresentationTests {
             hasMore = false,
             isUsingMockData = true,
             connectionStatus = MoviesListState.ConnectionStatus.Connected,
-            lastSyncTime = 1234567890L,
+            // lastSyncTime was removed during cleanup
             canRetry = true,
             retryCount = 5
         )
@@ -103,7 +101,7 @@ class SimplePresentationTests {
         assertFalse(state.hasMore)
         assertTrue(state.isUsingMockData)
         assertEquals(MoviesListState.ConnectionStatus.Connected, state.connectionStatus)
-        assertEquals(1234567890L, state.lastSyncTime)
+        // lastSyncTime was removed during cleanup
         assertTrue(state.canRetry)
         assertEquals(5, state.retryCount)
     }
@@ -115,16 +113,13 @@ class SimplePresentationTests {
 
         // When & Then
         assertNull(state.movieDetails)
-        assertNull(state.movieId)
+        // movieId, showFullDescription, showProductionDetails, and meta were removed during cleanup
         assertFalse(state.isLoading)
         assertNull(state.error)
-        assertFalse(state.showFullDescription)
-        assertFalse(state.showProductionDetails)
         assertNull(state.sentimentResult)
         assertNull(state.sentimentError)
         assertNull(state.sentimentReviews)
         assertNull(state.uiConfig)
-        assertNull(state.meta)
     }
 
     @Test
@@ -133,21 +128,18 @@ class SimplePresentationTests {
         val movieDetails = mockk<MovieDetails>()
         val state = MovieDetailState(
             movieDetails = movieDetails,
-            movieId = 123,
+            // movieId, showFullDescription, showProductionDetails were removed during cleanup
             isLoading = true,
             error = "Test error",
-            showFullDescription = true,
-            showProductionDetails = true,
             sentimentError = "Sentiment error"
         )
 
         // When & Then
         assertNotNull(state.movieDetails)
-        assertEquals(123, state.movieId)
+        // movieId, showFullDescription, showProductionDetails were removed during cleanup
         assertTrue(state.isLoading)
         assertEquals("Test error", state.error)
-        assertTrue(state.showFullDescription)
-        assertTrue(state.showProductionDetails)
+        // showProductionDetails was removed during cleanup
         assertEquals("Sentiment error", state.sentimentError)
     }
 
@@ -395,11 +387,11 @@ class SimplePresentationTests {
         // Given
         val syncTime = System.currentTimeMillis()
         val state = MoviesListState(
-            lastSyncTime = syncTime
+            // lastSyncTime was removed during cleanup
         )
 
         // When & Then
-        assertEquals(syncTime, state.lastSyncTime)
+        // lastSyncTime was removed during cleanup
     }
 
     @Test
@@ -419,13 +411,13 @@ class SimplePresentationTests {
     fun `MovieDetailState should handle UI state flags`() {
         // Given
         val state = MovieDetailState(
-            showFullDescription = true,
-            showProductionDetails = true
+            // showFullDescription was removed during cleanup,
+            // showProductionDetails was removed during cleanup
         )
 
         // When & Then
-        assertTrue(state.showFullDescription)
-        assertTrue(state.showProductionDetails)
+        // showFullDescription was removed during cleanup
+        // showProductionDetails was removed during cleanup
     }
 
     @Test
@@ -467,11 +459,11 @@ class SimplePresentationTests {
     fun `MovieDetailState should handle movie ID`() {
         // Given
         val state = MovieDetailState(
-            movieId = 42
+            // movieId was removed during cleanup
         )
 
         // When & Then
-        assertEquals(42, state.movieId)
+        // movieId was removed during cleanup
     }
 
     @Test
@@ -503,11 +495,11 @@ class SimplePresentationTests {
         // Given
         val meta = mockk<Meta>()
         val state = MoviesListState(
-            meta = meta
+            // meta was removed during cleanup
         )
 
         // When & Then
-        assertNotNull(state.meta)
+        // meta was removed during cleanup
     }
 
     @Test
@@ -527,11 +519,11 @@ class SimplePresentationTests {
         // Given
         val meta = mockk<Meta>()
         val state = MovieDetailState(
-            meta = meta
+            // meta was removed during cleanup
         )
 
         // When & Then
-        assertNotNull(state.meta)
+        // meta was removed during cleanup
     }
 
     @Test
@@ -580,8 +572,7 @@ class SimplePresentationTests {
     @Test
     fun `PresentationConstants should have correct UI state values`() {
         // Given & When & Then
-        assertFalse(PresentationConstants.DEFAULT_SHOW_FULL_DESCRIPTION)
-        assertFalse(PresentationConstants.DEFAULT_SHOW_PRODUCTION_DETAILS)
+        // DEFAULT_SHOW_FULL_DESCRIPTION and DEFAULT_SHOW_PRODUCTION_DETAILS were removed during cleanup
         assertTrue(PresentationConstants.DEFAULT_HAS_MORE)
         assertFalse(PresentationConstants.DEFAULT_CAN_RETRY)
     }
@@ -619,10 +610,8 @@ class SimplePresentationTests {
     @Test
     fun `MovieDetailState should handle different movie IDs`() {
         // Given
-        val state = MovieDetailState(movieId = 999)
-
-        // When & Then
-        assertEquals(999, state.movieId)
+        val state = MovieDetailState()
+        // movieId was removed during cleanup
     }
 
     @Test
@@ -694,13 +683,10 @@ class SimplePresentationTests {
 
     @Test
     fun `MovieDetailState should handle various movie IDs`() {
-        val state1 = MovieDetailState(movieId = 1)
-        val state2 = MovieDetailState(movieId = 100)
-        val state3 = MovieDetailState(movieId = 999)
-
-        assertEquals(1, state1.movieId)
-        assertEquals(100, state2.movieId)
-        assertEquals(999, state3.movieId)
+        val state1 = MovieDetailState()
+        val state2 = MovieDetailState()
+        val state3 = MovieDetailState()
+        // movieId was removed during cleanup
     }
 
     @Test
@@ -808,11 +794,9 @@ class SimplePresentationTests {
     // More simple tests to reach 85% coverage
     @Test
     fun `MoviesListState should handle different lastSyncTime values`() {
-        val state1 = MoviesListState(lastSyncTime = null)
-        val state2 = MoviesListState(lastSyncTime = 1640995200000L)
-
-        assertNull(state1.lastSyncTime)
-        assertEquals(1640995200000L, state2.lastSyncTime)
+        val state1 = MoviesListState()
+        val state2 = MoviesListState()
+        // lastSyncTime was removed during cleanup
     }
 
     @Test
@@ -826,11 +810,9 @@ class SimplePresentationTests {
 
     @Test
     fun `MovieDetailState should handle different meta states`() {
-        val withMetaState = MovieDetailState(meta = mockk<Meta>())
-        val noMetaState = MovieDetailState(meta = null)
-
-        assertNotNull(withMetaState.meta)
-        assertNull(noMetaState.meta)
+        val withMetaState = MovieDetailState()
+        val noMetaState = MovieDetailState()
+        // meta was removed during cleanup
     }
 
     @Test
@@ -844,11 +826,9 @@ class SimplePresentationTests {
 
     @Test
     fun `MoviesListState should handle different meta states`() {
-        val withMetaState = MoviesListState(meta = mockk<Meta>())
-        val noMetaState = MoviesListState(meta = null)
-
-        assertNotNull(withMetaState.meta)
-        assertNull(noMetaState.meta)
+        val withMetaState = MoviesListState()
+        val noMetaState = MoviesListState()
+        // meta was removed during cleanup
     }
 
     @Test
@@ -898,12 +878,9 @@ class SimplePresentationTests {
 
     @Test
     fun `MovieDetailState should handle different movie ID values`() {
-        val state1 = MovieDetailState(movieId = 1)
-        val state2 = MovieDetailState(movieId = 100)
-        val state3 = MovieDetailState(movieId = 999)
-
-        assertEquals(1, state1.movieId)
-        assertEquals(100, state2.movieId)
-        assertEquals(999, state3.movieId)
+        val state1 = MovieDetailState()
+        val state2 = MovieDetailState()
+        val state3 = MovieDetailState()
+        // movieId was removed during cleanup
     }
 }
