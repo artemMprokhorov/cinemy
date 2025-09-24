@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Test strings for QA automation -->
+    
+    <!-- Test Tags -->
+    <string name="test_tag_nav_movies">nav_movies</string>
+    <string name="test_tag_nav_details">nav_details</string>
+    <string name="test_tag_nav_back">nav_back</string>
+    
+    <!-- Movie List Test Tags -->
+    <string name="test_tag_movie_list">movie_list</string>
+    <string name="test_tag_movie_card">movie_card</string>
+    <string name="test_tag_movie_title">movie_title</string>
+    <string name="test_tag_movie_rating">movie_rating</string>
+    <string name="test_tag_movie_poster">movie_poster</string>
+    <string name="test_tag_movie_release_date">movie_release_date</string>
+    
+    <!-- Movie Details Test Tags -->
+    <string name="test_tag_movie_details_screen">movie_details_screen</string>
+    <string name="test_tag_movie_details_title">movie_details_title</string>
+    <string name="test_tag_movie_details_description">movie_details_description</string>
+    <string name="test_tag_movie_details_rating">movie_details_rating</string>
+    <string name="test_tag_movie_details_genres">movie_details_genres</string>
+    <string name="test_tag_movie_details_runtime">movie_details_runtime</string>
+    <string name="test_tag_movie_details_budget">movie_details_budget</string>
+    <string name="test_tag_movie_details_revenue">movie_details_revenue</string>
+    
+    <!-- Button Test Tags -->
+    <string name="test_tag_button_retry">button_retry</string>
+    <string name="test_tag_button_back">button_back</string>
+    <string name="test_tag_button_play">button_play</string>
+    <string name="test_tag_button_load_more">button_load_more</string>
+    <string name="test_tag_button_previous">button_previous</string>
+    <string name="test_tag_button_next">button_next</string>
+    
+    <!-- Loading State Test Tags -->
+    <string name="test_tag_loading_indicator">loading_indicator</string>
+    <string name="test_tag_loading_text">loading_text</string>
+    <string name="test_tag_loading_movies">loading_movies</string>
+    <string name="test_tag_loading_details">loading_details</string>
+    
+    <!-- Error State Test Tags -->
+    <string name="test_tag_error_message">error_message</string>
+    <string name="test_tag_error_retry">error_retry</string>
+    <string name="test_tag_error_generic">error_generic</string>
+    <string name="test_tag_error_network">error_network</string>
+    
+    <!-- Pagination Test Tags -->
+    <string name="test_tag_pagination_info">pagination_info</string>
+    <string name="test_tag_pagination_previous">pagination_previous</string>
+    <string name="test_tag_pagination_next">pagination_next</string>
+    <string name="test_tag_pagination_loading">pagination_loading</string>
+    
+    <!-- Sentiment Analysis Test Tags -->
+    <string name="test_tag_sentiment_analysis">sentiment_analysis</string>
+    <string name="test_tag_sentiment_positive">sentiment_positive</string>
+    <string name="test_tag_sentiment_negative">sentiment_negative</string>
+    <string name="test_tag_sentiment_loading">sentiment_loading</string>
+    
+    <!-- Foldable Device Test Tags -->
+    <string name="test_tag_foldable_layout">foldable_layout</string>
+    <string name="test_tag_dual_pane_left">dual_pane_left</string>
+    <string name="test_tag_dual_pane_right">dual_pane_right</string>
+    <string name="test_tag_adaptive_layout">adaptive_layout</string>
+    
+    <!-- Accessibility Test Tags -->
+    <string name="test_tag_accessible_text">accessible_text</string>
+    <string name="test_tag_accessible_button">accessible_button</string>
+    <string name="test_tag_accessible_card">accessible_card</string>
+    <string name="test_tag_accessible_image">accessible_image</string>
+    
+    <!-- Test IDs -->
+    <string name="test_id_movie_list">movie_list_id</string>
+    <string name="test_id_movie_card">movie_card_id</string>
+    <string name="test_id_movie_title">movie_title_id</string>
+    <string name="test_id_movie_rating">movie_rating_id</string>
+    <string name="test_id_movie_poster">movie_poster_id</string>
+    
+    <!-- Movie Details Test IDs -->
+    <string name="test_id_movie_details">movie_details_id</string>
+    <string name="test_id_movie_details_title">movie_details_title_id</string>
+    <string name="test_id_movie_details_description">movie_details_description_id</string>
+    <string name="test_id_movie_details_rating">movie_details_rating_id</string>
+    
+    <!-- Button Test IDs -->
+    <string name="test_id_button_retry">button_retry_id</string>
+    <string name="test_id_button_back">button_back_id</string>
+    <string name="test_id_button_play">button_play_id</string>
+    
+    <!-- Loading Test IDs -->
+    <string name="test_id_loading_indicator">loading_indicator_id</string>
+    <string name="test_id_loading_text">loading_text_id</string>
+    
+    <!-- Error Test IDs -->
+    <string name="test_id_error_message">error_message_id</string>
+    <string name="test_id_error_retry">error_retry_id</string>
+    
+    <!-- Test Data Attributes -->
+    <string name="test_data_movie_id">data-movie-id</string>
+    <string name="test_data_movie_title">data-movie-title</string>
+    <string name="test_data_movie_rating">data-movie-rating</string>
+    <string name="test_data_movie_release_date">data-movie-release-date</string>
+    <string name="test_data_movie_runtime">data-movie-runtime</string>
+    <string name="test_data_movie_genres">data-movie-genres</string>
+    <string name="test_data_movie_budget">data-movie-budget</string>
+    <string name="test_data_movie_revenue">data-movie-revenue</string>
+    
+    <!-- UI State Test Data -->
+    <string name="test_data_loading_state">data-loading-state</string>
+    <string name="test_data_error_state">data-error-state</string>
+    <string name="test_data_success_state">data-success-state</string>
+    <string name="test_data_empty_state">data-empty-state</string>
+    
+    <!-- Pagination Test Data -->
+    <string name="test_data_current_page">data-current-page</string>
+    <string name="test_data_total_pages">data-total-pages</string>
+    <string name="test_data_has_next">data-has-next</string>
+    <string name="test_data_has_previous">data-has-previous</string>
+    
+    <!-- Device Type Test Data -->
+    <string name="test_data_device_type">data-device-type</string>
+    <string name="test_data_screen_size">data-screen-size</string>
+    <string name="test_data_orientation">data-orientation</string>
+    
+    <!-- Test Content Descriptions -->
+    <string name="test_content_description_movie_card">Movie card</string>
+    <string name="test_content_description_movie_title">Movie title</string>
+    <string name="test_content_description_movie_rating">Movie rating</string>
+    <string name="test_content_description_movie_poster">Movie poster</string>
+    <string name="test_content_description_movie_details">Movie details</string>
+    <string name="test_content_description_loading_indicator">Loading indicator</string>
+    <string name="test_content_description_error_message">Error message</string>
+    <string name="test_content_description_retry_button">Retry button</string>
+    <string name="test_content_description_back_button">Back button</string>
+    <string name="test_content_description_play_button">Play button</string>
+    <string name="test_content_description_pagination_info">Pagination information</string>
+    <string name="test_content_description_sentiment_analysis">Sentiment analysis</string>
+    <string name="test_content_description_foldable_layout">Foldable device layout</string>
+    <string name="test_content_description_dual_pane_layout">Dual pane layout</string>
+    
+    <!-- Test Roles -->
+    <string name="test_role_button">button</string>
+    <string name="test_role_card">card</string>
+    <string name="test_role_image">image</string>
+    <string name="test_role_text">text</string>
+    <string name="test_role_list">list</string>
+    <string name="test_role_progress_indicator">progress_indicator</string>
+    <string name="test_role_error_message">error_message</string>
+    <string name="test_role_navigation">navigation</string>
+    <string name="test_role_layout">layout</string>
+</resources>

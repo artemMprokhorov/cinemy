@@ -15,6 +15,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import org.studioapp.cinemy.data.model.UiConfiguration
+import org.studioapp.cinemy.ui.components.TestUtils
 import org.studioapp.cinemy.ui.theme.Dimens16
 import org.studioapp.cinemy.ui.theme.Dimens8
 import org.studioapp.cinemy.ui.theme.Float12
@@ -34,6 +35,9 @@ import org.studioapp.cinemy.ui.theme.Float38
  * @param enabled Whether the button is enabled
  * @param contentPadding Padding for the button content
  * @param contentDescription Optional accessibility description for screen readers
+ * @param testTag Optional test tag for QA automation
+ * @param testId Optional test ID for QA automation
+ * @param testData Optional test data attributes for QA automation
  */
 @Composable
 fun ConfigurableButton(
@@ -44,7 +48,10 @@ fun ConfigurableButton(
     isSecondary: Boolean = false,
     enabled: Boolean = true,
     contentPadding: PaddingValues = PaddingValues(horizontal = Dimens16, vertical = Dimens8),
-    contentDescription: String? = null
+    contentDescription: String? = null,
+    testTag: String? = null,
+    testId: String? = null,
+    testData: Map<String, String> = emptyMap()
 ) {
     // Extract color configuration from UiConfig
     val colorScheme = uiConfig?.colors
@@ -73,16 +80,27 @@ fun ConfigurableButton(
 
     Button(
         onClick = onClick,
-        modifier = if (contentDescription != null) {
-            modifier
-                .background(buttonColor)
-                .semantics {
-                    this.role = androidx.compose.ui.semantics.Role.Button
-                    this.contentDescription = contentDescription
+        modifier = modifier
+            .background(buttonColor)
+            .let { baseModifier ->
+                if (contentDescription != null) {
+                    baseModifier.semantics {
+                        this.role = androidx.compose.ui.semantics.Role.Button
+                        this.contentDescription = contentDescription
+                    }
+                } else {
+                    baseModifier
                 }
-        } else {
-            modifier.background(buttonColor)
-        },
+            }
+            .let { semanticsModifier ->
+                TestUtils.TestModifiers.testAttributes(
+                    tag = testTag,
+                    id = testId,
+                    data = testData
+                ).let { testModifier ->
+                    semanticsModifier.then(testModifier)
+                }
+            },
         enabled = enabled,
         contentPadding = contentPadding,
         colors = ButtonDefaults.buttonColors(

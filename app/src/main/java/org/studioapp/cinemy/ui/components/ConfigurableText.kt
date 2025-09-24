@@ -9,6 +9,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import org.studioapp.cinemy.data.model.UiConfiguration
+import org.studioapp.cinemy.ui.components.TestUtils
 
 /**
  * Configurable text component that supports server-driven styling
@@ -23,6 +24,9 @@ import org.studioapp.cinemy.data.model.UiConfiguration
  * @param color Override color for the text (takes precedence over UiConfig)
  * @param maxLines Maximum number of lines for the text
  * @param contentDescription Optional accessibility description for screen readers
+ * @param testTag Optional test tag for QA automation
+ * @param testId Optional test ID for QA automation
+ * @param testData Optional test data attributes for QA automation
  */
 @Composable
 fun ConfigurableText(
@@ -32,7 +36,10 @@ fun ConfigurableText(
     modifier: Modifier = Modifier,
     color: Color? = null,
     maxLines: Int = Int.MAX_VALUE,
-    contentDescription: String? = null
+    contentDescription: String? = null,
+    testTag: String? = null,
+    testId: String? = null,
+    testData: Map<String, String> = emptyMap()
 ) {
     // Determine text color with priority: explicit color > UiConfig > Material3 default
     val textColor = when {
@@ -50,13 +57,25 @@ fun ConfigurableText(
     Text(
         text = text,
         style = style,
-        modifier = if (contentDescription != null) {
-            modifier.semantics {
-                this.contentDescription = contentDescription
+        modifier = modifier
+            .let { baseModifier ->
+                if (contentDescription != null) {
+                    baseModifier.semantics {
+                        this.contentDescription = contentDescription
+                    }
+                } else {
+                    baseModifier
+                }
             }
-        } else {
-            modifier
-        },
+            .let { semanticsModifier ->
+                TestUtils.TestModifiers.testAttributes(
+                    tag = testTag,
+                    id = testId,
+                    data = testData
+                ).let { testModifier ->
+                    semanticsModifier.then(testModifier)
+                }
+            },
         color = textColor,
         maxLines = maxLines
     )

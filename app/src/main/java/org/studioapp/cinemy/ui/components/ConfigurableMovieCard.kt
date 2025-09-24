@@ -34,6 +34,7 @@ import coil.compose.AsyncImage
 import org.studioapp.cinemy.R
 import org.studioapp.cinemy.data.model.Movie
 import org.studioapp.cinemy.data.model.UiConfiguration
+import org.studioapp.cinemy.ui.components.TestUtils
 import org.studioapp.cinemy.ui.theme.Dimens12
 import org.studioapp.cinemy.ui.theme.Dimens16
 import org.studioapp.cinemy.ui.theme.Dimens2
@@ -62,6 +63,9 @@ private const val MAX_LINES_DESCRIPTION = 3
  * @param showRating Whether to display the movie rating
  * @param showReleaseDate Whether to display the release date
  * @param contentDescription Optional accessibility description for screen readers
+ * @param testTag Optional test tag for QA automation
+ * @param testId Optional test ID for QA automation
+ * @param testData Optional test data attributes for QA automation
  */
 @Composable
 fun ConfigurableMovieCard(
@@ -71,7 +75,10 @@ fun ConfigurableMovieCard(
     modifier: Modifier = Modifier,
     showRating: Boolean = true,
     showReleaseDate: Boolean = true,
-    contentDescription: String? = null
+    contentDescription: String? = null,
+    testTag: String? = null,
+    testId: String? = null,
+    testData: Map<String, String> = emptyMap()
 ) {
     // Extract color configuration from UiConfig
     val colorScheme = uiConfig?.colors
@@ -96,25 +103,33 @@ fun ConfigurableMovieCard(
     }
 
     Card(
-        modifier = if (contentDescription != null) {
-            modifier
-                .fillMaxWidth()
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = onClick
-                )
-                .background(cardColor)
-                .semantics {
-                    this.role = Role.Button
-                    this.contentDescription = contentDescription
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick
+            )
+            .background(cardColor)
+            .let { baseModifier ->
+                if (contentDescription != null) {
+                    baseModifier.semantics {
+                        this.role = Role.Button
+                        this.contentDescription = contentDescription
+                    }
+                } else {
+                    baseModifier
                 }
-        } else {
-            modifier
-                .fillMaxWidth()
-                .clickable { onClick() }
-                .background(cardColor)
-        },
+            }
+            .let { semanticsModifier ->
+                TestUtils.TestModifiers.testAttributes(
+                    tag = testTag,
+                    id = testId,
+                    data = testData
+                ).let { testModifier ->
+                    semanticsModifier.then(testModifier)
+                }
+            },
         colors = CardDefaults.cardColors(
             containerColor = cardColor
         ),

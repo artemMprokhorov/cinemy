@@ -656,3 +656,488 @@ fun AccessibleErrorMessage(
 
 The UI layer is now ready for production use with all enhanced features fully implemented and
 tested, including comprehensive foldable device support and accessibility features.
+
+## QA Testing Components
+
+### TestUtils
+
+Comprehensive testing utilities for QA automation:
+
+```kotlin
+// Test tags for different UI components
+object TestTags {
+    const val NAV_MOVIES = "nav_movies"
+    const val NAV_DETAILS = "nav_details"
+    const val MOVIE_LIST = "movie_list"
+    const val MOVIE_CARD = "movie_card"
+    const val MOVIE_TITLE = "movie_title"
+    const val MOVIE_RATING = "movie_rating"
+    const val BUTTON_RETRY = "button_retry"
+    const val BUTTON_BACK = "button_back"
+    const val LOADING_INDICATOR = "loading_indicator"
+    const val ERROR_MESSAGE = "error_message"
+    const val PAGINATION_INFO = "pagination_info"
+    const val SENTIMENT_ANALYSIS = "sentiment_analysis"
+    const val FOLDABLE_LAYOUT = "foldable_layout"
+    const val ACCESSIBLE_TEXT = "accessible_text"
+}
+
+// Test IDs for specific elements
+object TestIds {
+    const val MOVIE_LIST_ID = "movie_list_id"
+    const val MOVIE_CARD_ID = "movie_card_id"
+    const val MOVIE_TITLE_ID = "movie_title_id"
+    const val BUTTON_RETRY_ID = "button_retry_id"
+    const val LOADING_INDICATOR_ID = "loading_indicator_id"
+    const val ERROR_MESSAGE_ID = "error_message_id"
+}
+
+// Test data attributes for automation
+object TestData {
+    const val MOVIE_ID = "data-movie-id"
+    const val MOVIE_TITLE = "data-movie-title"
+    const val MOVIE_RATING = "data-movie-rating"
+    const val LOADING_STATE = "data-loading-state"
+    const val ERROR_STATE = "data-error-state"
+    const val DEVICE_TYPE = "data-device-type"
+}
+```
+
+### Test Modifiers
+
+Modifier extensions for adding test attributes:
+
+```kotlin
+// Add test tag to modifier
+fun Modifier.testTag(tag: String): Modifier {
+    return this.testTag(tag)
+}
+
+// Add test ID to modifier
+fun Modifier.testId(id: String): Modifier {
+    return this.semantics {
+        this.testTag = id
+    }
+}
+
+// Add test data attribute to modifier
+fun Modifier.testData(key: String, value: String): Modifier {
+    return this.semantics {
+        this.testTag = "$key:$value"
+    }
+}
+
+// Add multiple test attributes to modifier
+fun Modifier.testAttributes(
+    tag: String? = null,
+    id: String? = null,
+    data: Map<String, String> = emptyMap()
+): Modifier {
+    var modifier = this
+    
+    tag?.let { modifier = modifier.testTag(it) }
+    id?.let { modifier = modifier.testId(it) }
+    
+    data.forEach { (key, value) ->
+        modifier = modifier.testData(key, value)
+    }
+    
+    return modifier
+}
+```
+
+### Enhanced UI Components with Testing
+
+#### ConfigurableText with Testing
+
+```kotlin
+@Composable
+fun ConfigurableText(
+    text: String,
+    style: TextStyle = MaterialTheme.typography.bodyMedium,
+    uiConfig: UiConfiguration? = null,
+    modifier: Modifier = Modifier,
+    color: Color? = null,
+    maxLines: Int = Int.MAX_VALUE,
+    contentDescription: String? = null,
+    testTag: String? = null,
+    testId: String? = null,
+    testData: Map<String, String> = emptyMap()
+) {
+    // ... existing implementation ...
+    
+    Text(
+        text = text,
+        style = style,
+        modifier = modifier
+            .let { baseModifier ->
+                if (contentDescription != null) {
+                    baseModifier.semantics {
+                        this.contentDescription = contentDescription
+                    }
+                } else {
+                    baseModifier
+                }
+            }
+            .let { semanticsModifier ->
+                TestUtils.TestModifiers.testAttributes(
+                    tag = testTag,
+                    id = testId,
+                    data = testData
+                ).let { testModifier ->
+                    semanticsModifier.then(testModifier)
+                }
+            },
+        color = textColor,
+        maxLines = maxLines
+    )
+}
+```
+
+#### ConfigurableButton with Testing
+
+```kotlin
+@Composable
+fun ConfigurableButton(
+    text: String,
+    onClick: () -> Unit,
+    uiConfig: UiConfiguration? = null,
+    modifier: Modifier = Modifier,
+    isSecondary: Boolean = false,
+    enabled: Boolean = true,
+    contentPadding: PaddingValues = PaddingValues(horizontal = Dimens16, vertical = Dimens8),
+    contentDescription: String? = null,
+    testTag: String? = null,
+    testId: String? = null,
+    testData: Map<String, String> = emptyMap()
+) {
+    // ... existing implementation ...
+    
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            .background(buttonColor)
+            .let { baseModifier ->
+                if (contentDescription != null) {
+                    baseModifier.semantics {
+                        this.role = androidx.compose.ui.semantics.Role.Button
+                        this.contentDescription = contentDescription
+                    }
+                } else {
+                    baseModifier
+                }
+            }
+            .let { semanticsModifier ->
+                TestUtils.TestModifiers.testAttributes(
+                    tag = testTag,
+                    id = testId,
+                    data = testData
+                ).let { testModifier ->
+                    semanticsModifier.then(testModifier)
+                }
+            },
+        // ... other parameters ...
+    ) {
+        Text(text = text, style = MaterialTheme.typography.labelLarge)
+    }
+}
+```
+
+#### ConfigurableMovieCard with Testing
+
+```kotlin
+@Composable
+fun ConfigurableMovieCard(
+    movie: Movie,
+    onClick: () -> Unit,
+    uiConfig: UiConfiguration? = null,
+    modifier: Modifier = Modifier,
+    showRating: Boolean = true,
+    showReleaseDate: Boolean = true,
+    contentDescription: String? = null,
+    testTag: String? = null,
+    testId: String? = null,
+    testData: Map<String, String> = emptyMap()
+) {
+    // ... existing implementation ...
+    
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick
+            )
+            .background(cardColor)
+            .let { baseModifier ->
+                if (contentDescription != null) {
+                    baseModifier.semantics {
+                        this.role = Role.Button
+                        this.contentDescription = contentDescription
+                    }
+                } else {
+                    baseModifier
+                }
+            }
+            .let { semanticsModifier ->
+                TestUtils.TestModifiers.testAttributes(
+                    tag = testTag,
+                    id = testId,
+                    data = testData
+                ).let { testModifier ->
+                    semanticsModifier.then(testModifier)
+                }
+            },
+        // ... other parameters ...
+    ) {
+        // ... card content ...
+    }
+}
+```
+
+### Testing Framework Integration
+
+#### Espresso Testing
+
+```kotlin
+// Find elements by test tag
+onView(withTag("movie_card")).perform(click())
+onView(withTag("button_retry")).perform(click())
+
+// Find elements by test ID
+onView(withId("movie_list_id")).check(matches(isDisplayed()))
+onView(withId("button_back_id")).perform(click())
+
+// Find elements by content description
+onView(withContentDescription("Movie card")).perform(click())
+onView(withContentDescription("Retry button")).perform(click())
+```
+
+#### UI Automator
+
+```kotlin
+// Find elements by test tag
+val movieCard = device.findObject(UiSelector().description("movie_card"))
+movieCard.click()
+
+val retryButton = device.findObject(UiSelector().description("button_retry"))
+retryButton.click()
+
+// Find elements by test ID
+val movieList = device.findObject(UiSelector().resourceId("movie_list_id"))
+movieList.waitForExists(5000)
+```
+
+#### Appium Testing
+
+```python
+# Find elements by test tag
+movie_card = driver.find_element_by_accessibility_id("movie_card")
+movie_card.click()
+
+retry_button = driver.find_element_by_accessibility_id("button_retry")
+retry_button.click()
+
+# Find elements by test ID
+movie_list = driver.find_element_by_id("movie_list_id")
+assert movie_list.is_displayed()
+```
+
+#### Detox Testing
+
+```javascript
+// Find elements by test tag
+await element(by.id('movie_card')).tap();
+await element(by.id('button_retry')).tap();
+
+// Find elements by test ID
+await expect(element(by.id('movie_list_id'))).toBeVisible();
+await expect(element(by.id('button_back_id'))).toBeVisible();
+```
+
+### Test Scenarios
+
+#### Movie List Testing
+
+```kotlin
+// Test movie list loading
+onView(withTag("movie_list")).check(matches(isDisplayed()))
+onView(withTag("loading_movies")).check(matches(isDisplayed()))
+
+// Test movie card interaction
+onView(withTag("movie_card")).perform(click())
+onView(withTag("movie_details_screen")).check(matches(isDisplayed()))
+```
+
+#### Error Handling Testing
+
+```kotlin
+// Test error state
+onView(withTag("error_message")).check(matches(isDisplayed()))
+onView(withTag("button_retry")).perform(click())
+
+// Test retry functionality
+onView(withTag("loading_movies")).check(matches(isDisplayed()))
+```
+
+#### Pagination Testing
+
+```kotlin
+// Test pagination
+onView(withTag("pagination_info")).check(matches(isDisplayed()))
+onView(withTag("button_next")).perform(click())
+onView(withTag("pagination_loading")).check(matches(isDisplayed()))
+```
+
+#### Foldable Device Testing
+
+```kotlin
+// Test foldable layout
+onView(withTag("foldable_layout")).check(matches(isDisplayed()))
+onView(withTag("dual_pane_left")).check(matches(isDisplayed()))
+onView(withTag("dual_pane_right")).check(matches(isDisplayed()))
+```
+
+### Test Data Attributes
+
+#### Movie Data
+
+```kotlin
+// Test movie data attributes
+ConfigurableMovieCard(
+    movie = movie,
+    onClick = { /* navigation logic */ },
+    testTag = TestUtils.TestTags.MOVIE_CARD,
+    testId = TestUtils.TestIds.MOVIE_CARD_ID,
+    testData = mapOf(
+        TestUtils.TestData.MOVIE_ID to movie.id.toString(),
+        TestUtils.TestData.MOVIE_TITLE to movie.title,
+        TestUtils.TestData.MOVIE_RATING to movie.rating.toString()
+    )
+)
+```
+
+#### UI State
+
+```kotlin
+// Test UI state attributes
+ConfigurableButton(
+    text = "Retry",
+    onClick = { /* retry logic */ },
+    testTag = TestUtils.TestTags.BUTTON_RETRY,
+    testId = TestUtils.TestIds.BUTTON_RETRY_ID,
+    testData = mapOf(
+        TestUtils.TestData.ERROR_STATE to "network_error"
+    )
+)
+```
+
+#### Device Type
+
+```kotlin
+// Test device type attributes
+AdaptiveLayout(
+    leftPane = { /* left pane content */ },
+    rightPane = { /* right pane content */ },
+    modifier = Modifier.testData(
+        TestUtils.TestData.DEVICE_TYPE to "foldable",
+        TestUtils.TestData.SCREEN_SIZE to "large",
+        TestUtils.TestData.ORIENTATION to "landscape"
+    )
+)
+```
+
+### Testing Best Practices
+
+#### Test Tag Naming
+
+- Use descriptive, consistent naming
+- Follow the pattern: `component_type` (e.g., `movie_card`, `button_retry`)
+- Use snake_case for multi-word tags
+
+#### Test ID Management
+
+- Use unique IDs for each element
+- Follow the pattern: `component_type_id` (e.g., `movie_card_id`)
+- Avoid conflicts with existing IDs
+
+#### Test Data Attributes
+
+- Use meaningful data attributes
+- Follow the pattern: `data-attribute-name`
+- Include relevant context information
+
+#### Accessibility Testing
+
+- Test with screen readers enabled
+- Verify content descriptions are meaningful
+- Test keyboard navigation
+- Test voice commands
+
+#### Cross-Platform Testing
+
+- Test on different screen sizes
+- Test on different orientations
+- Test on foldable devices
+- Test on different Android versions
+
+### Testing Troubleshooting
+
+#### Common Issues
+
+1. **Test tags not found**
+   - Verify the component has the correct test tag
+   - Check if the component is visible
+   - Ensure the test tag is properly set
+
+2. **Test IDs not working**
+   - Verify the test ID is unique
+   - Check if the component is rendered
+   - Ensure the test ID is properly set
+
+3. **Accessibility issues**
+   - Verify content descriptions are set
+   - Check if the component is accessible
+   - Test with screen readers
+
+#### Debug Tips
+
+1. **Use test tags for debugging**
+   - Add temporary test tags for debugging
+   - Use descriptive test tags
+   - Remove debug tags before release
+
+2. **Test data attributes**
+   - Use test data attributes for debugging
+   - Include relevant context information
+   - Verify data attributes are set correctly
+
+3. **Accessibility debugging**
+   - Test with screen readers
+   - Verify content descriptions
+   - Check keyboard navigation
+
+### Testing Resources
+
+#### Documentation
+
+- **QA Testing Guide**: Comprehensive testing guide
+- **Testing Framework Integration**: Framework-specific testing guides
+- **Test Scenarios**: Common test scenarios and examples
+- **Troubleshooting Guide**: Common issues and solutions
+
+#### Tools
+
+- **Espresso**: Android UI testing framework
+- **UI Automator**: Cross-app UI testing
+- **Appium**: Cross-platform mobile testing
+- **Detox**: React Native testing framework
+
+#### Best Practices
+
+- **Test Tag Naming**: Consistent, descriptive naming
+- **Test ID Management**: Unique, meaningful IDs
+- **Test Data Attributes**: Contextual information
+- **Accessibility Testing**: Screen reader and voice command testing
+- **Cross-Platform Testing**: Different devices and orientations
