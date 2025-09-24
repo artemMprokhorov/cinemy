@@ -5,6 +5,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import org.studioapp.cinemy.data.model.UiConfiguration
 
@@ -20,6 +22,7 @@ import org.studioapp.cinemy.data.model.UiConfiguration
  * @param modifier Modifier to apply to the text
  * @param color Override color for the text (takes precedence over UiConfig)
  * @param maxLines Maximum number of lines for the text
+ * @param contentDescription Optional accessibility description for screen readers
  */
 @Composable
 fun ConfigurableText(
@@ -28,7 +31,8 @@ fun ConfigurableText(
     uiConfig: UiConfiguration? = null,
     modifier: Modifier = Modifier,
     color: Color? = null,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
+    contentDescription: String? = null
 ) {
     // Determine text color with priority: explicit color > UiConfig > Material3 default
     val textColor = when {
@@ -46,7 +50,13 @@ fun ConfigurableText(
     Text(
         text = text,
         style = style,
-        modifier = modifier,
+        modifier = if (contentDescription != null) {
+            modifier.semantics {
+                this.contentDescription = contentDescription
+            }
+        } else {
+            modifier
+        },
         color = textColor,
         maxLines = maxLines
     )

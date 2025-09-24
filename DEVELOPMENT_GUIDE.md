@@ -235,12 +235,6 @@ Box(
 3. **Verify content doesn't overlap** with system bars
 4. **Use `VersionUtils.safeEnableEdgeToEdge()`** for compatibility
 
-### 🚨 **Common Issues**
-
-- **Content overlapping status bar**: Missing `systemBarsPadding()`
-- **Not working on older devices**: Check API level requirements
-- **Inconsistent behavior**: Ensure all screens use the same pattern
-
 ## 📱 Foldable Device Development
 
 ### 🎯 **Device Type Detection**

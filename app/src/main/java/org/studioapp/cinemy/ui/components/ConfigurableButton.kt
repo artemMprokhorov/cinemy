@@ -10,6 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import org.studioapp.cinemy.data.model.UiConfiguration
 import org.studioapp.cinemy.ui.theme.Dimens16
@@ -30,6 +33,7 @@ import org.studioapp.cinemy.ui.theme.Float38
  * @param isSecondary Whether this is a secondary button (affects color scheme)
  * @param enabled Whether the button is enabled
  * @param contentPadding Padding for the button content
+ * @param contentDescription Optional accessibility description for screen readers
  */
 @Composable
 fun ConfigurableButton(
@@ -39,7 +43,8 @@ fun ConfigurableButton(
     modifier: Modifier = Modifier,
     isSecondary: Boolean = false,
     enabled: Boolean = true,
-    contentPadding: PaddingValues = PaddingValues(horizontal = Dimens16, vertical = Dimens8)
+    contentPadding: PaddingValues = PaddingValues(horizontal = Dimens16, vertical = Dimens8),
+    contentDescription: String? = null
 ) {
     // Extract color configuration from UiConfig
     val colorScheme = uiConfig?.colors
@@ -68,7 +73,16 @@ fun ConfigurableButton(
 
     Button(
         onClick = onClick,
-        modifier = modifier.background(buttonColor), // FORCE background color with absolute priority
+        modifier = if (contentDescription != null) {
+            modifier
+                .background(buttonColor)
+                .semantics {
+                    this.role = androidx.compose.ui.semantics.Role.Button
+                    this.contentDescription = contentDescription
+                }
+        } else {
+            modifier.background(buttonColor)
+        },
         enabled = enabled,
         contentPadding = contentPadding,
         colors = ButtonDefaults.buttonColors(

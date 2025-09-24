@@ -414,6 +414,9 @@ error handling, and performance optimizations.
 - ✅ **Adaptive Layouts**: Responsive design for all device types
 - ✅ **Dual Pane Layout**: Optimized for tablets and foldable devices
 - ✅ **Configuration Change Handling**: Automatic layout updates
+- ✅ **Accessibility Support**: Comprehensive accessibility features for all users
+- ✅ **Screen Reader Support**: TalkBack and VoiceOver compatibility
+- ✅ **Semantic Descriptions**: Context-aware content descriptions
 
 ## 📱 Foldable Device Components
 
@@ -495,5 +498,161 @@ fun getOptimalColumnCount(): Int
     android:supportsPictureInPicture="true">
 ```
 
+## ♿ Accessibility Components
+
+### 🎯 **Accessibility Utilities**
+
+#### **AccessibilityUtils.kt**
+```kotlin
+object AccessibilityUtils {
+    fun createMovieCardDescription(title: String, rating: Double, releaseDate: String): String
+    fun createMovieDetailsDescription(title: String, rating: Double, releaseDate: String, runtime: Int, genres: List<String>, description: String): String
+    fun createButtonDescription(action: String, target: String? = null): String
+    fun createPaginationDescription(currentPage: Int, totalPages: Int, hasNext: Boolean, hasPrevious: Boolean): String
+    fun createLoadingDescription(content: String): String
+    fun createErrorDescription(error: String, retryAction: String = "retry"): String
+    fun createSentimentDescription(positiveCount: Int, negativeCount: Int, totalCount: Int): String
+}
+```
+
+**Features:**
+- **Semantic descriptions** for all UI components
+- **Screen reader support** with descriptive content
+- **Role-based semantics** for interactive elements
+- **Context-aware descriptions** for different states
+
+### 🎨 **Accessible UI Components**
+
+#### **ConfigurableText with Accessibility**
+```kotlin
+@Composable
+fun ConfigurableText(
+    text: String,
+    contentDescription: String? = null, // Accessibility description
+    // ... other parameters
+)
+```
+
+**Features:**
+- **Optional content descriptions** for screen readers
+- **Semantic role detection** for text elements
+- **Dynamic descriptions** based on content context
+
+#### **ConfigurableButton with Accessibility**
+```kotlin
+@Composable
+fun ConfigurableButton(
+    text: String,
+    contentDescription: String? = null, // Accessibility description
+    // ... other parameters
+)
+```
+
+**Features:**
+- **Button role semantics** for screen readers
+- **Descriptive action text** for button purposes
+- **State-aware descriptions** (enabled/disabled)
+
+#### **ConfigurableMovieCard with Accessibility**
+```kotlin
+@Composable
+fun ConfigurableMovieCard(
+    movie: Movie,
+    contentDescription: String? = null, // Accessibility description
+    // ... other parameters
+)
+```
+
+**Features:**
+- **Card role semantics** for interactive cards
+- **Movie information descriptions** for screen readers
+- **Click action descriptions** for navigation
+
+### 🔧 **Accessibility Modifiers**
+
+#### **Accessible Clickable**
+```kotlin
+@Composable
+fun Modifier.accessibleClickable(
+    description: String,
+    role: Role = Role.Button,
+    onClick: () -> Unit
+): Modifier
+```
+
+#### **Accessible Card**
+```kotlin
+@Composable
+fun Modifier.accessibleCard(
+    description: String,
+    isClickable: Boolean = false,
+    onClick: (() -> Unit)? = null
+): Modifier
+```
+
+### 📱 **Accessible Components**
+
+#### **AccessibleMovieCard**
+```kotlin
+@Composable
+fun AccessibleMovieCard(
+    title: String,
+    rating: Double,
+    releaseDate: String,
+    posterPath: String?,
+    onClick: () -> Unit
+)
+```
+
+#### **AccessibleButton**
+```kotlin
+@Composable
+fun AccessibleButton(
+    text: String,
+    action: String,
+    target: String? = null,
+    onClick: () -> Unit
+)
+```
+
+#### **AccessibleLoadingIndicator**
+```kotlin
+@Composable
+fun AccessibleLoadingIndicator(
+    content: String, // What is being loaded
+    modifier: Modifier = Modifier
+)
+```
+
+#### **AccessibleErrorMessage**
+```kotlin
+@Composable
+fun AccessibleErrorMessage(
+    error: String,
+    retryAction: String = "retry",
+    onRetry: (() -> Unit)? = null
+)
+```
+
+### 🎯 **Accessibility Features**
+
+#### **Screen Reader Support**
+- **TalkBack integration** for Android
+- **VoiceOver support** for iOS
+- **Semantic roles** for all interactive elements
+- **Content descriptions** for all visual elements
+
+#### **Navigation Support**
+- **Clear navigation hints** for complex interactions
+- **State announcements** for dynamic content
+- **Focus management** for keyboard navigation
+- **Gesture support** for accessibility
+
+#### **Dynamic Descriptions**
+- **State-based descriptions** for loading, error, and success states
+- **Context-aware descriptions** for different screen types
+- **Action descriptions** for buttons and interactive elements
+- **Content descriptions** for images and visual elements
+
 The UI layer is now ready for production use with all enhanced features fully implemented and
-tested, including comprehensive foldable device support.
+tested, including comprehensive foldable device support and accessibility features.

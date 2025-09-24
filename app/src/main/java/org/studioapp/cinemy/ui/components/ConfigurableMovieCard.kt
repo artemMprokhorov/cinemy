@@ -2,6 +2,7 @@ package org.studioapp.cinemy.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,12 +19,17 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import coil.compose.AsyncImage
 import org.studioapp.cinemy.R
 import org.studioapp.cinemy.data.model.Movie
@@ -55,6 +61,7 @@ private const val MAX_LINES_DESCRIPTION = 3
  * @param modifier Modifier to apply to the card
  * @param showRating Whether to display the movie rating
  * @param showReleaseDate Whether to display the release date
+ * @param contentDescription Optional accessibility description for screen readers
  */
 @Composable
 fun ConfigurableMovieCard(
@@ -63,7 +70,8 @@ fun ConfigurableMovieCard(
     uiConfig: UiConfiguration? = null,
     modifier: Modifier = Modifier,
     showRating: Boolean = true,
-    showReleaseDate: Boolean = true
+    showReleaseDate: Boolean = true,
+    contentDescription: String? = null
 ) {
     // Extract color configuration from UiConfig
     val colorScheme = uiConfig?.colors
@@ -88,10 +96,25 @@ fun ConfigurableMovieCard(
     }
 
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .background(cardColor), // FORCE background color with absolute priority
+        modifier = if (contentDescription != null) {
+            modifier
+                .fillMaxWidth()
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onClick
+                )
+                .background(cardColor)
+                .semantics {
+                    this.role = Role.Button
+                    this.contentDescription = contentDescription
+                }
+        } else {
+            modifier
+                .fillMaxWidth()
+                .clickable { onClick() }
+                .background(cardColor)
+        },
         colors = CardDefaults.cardColors(
             containerColor = cardColor
         ),
