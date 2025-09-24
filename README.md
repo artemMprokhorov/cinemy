@@ -139,7 +139,7 @@ The backend for **Cinemy** was designed as a lightweight experimental setup to c
     - Deployment: Docker containerized Flask API
     - Memory: 200-500MB RAM consumption during inference
     - Integration: RESTful API endpoints with JSON response format for n8n workflow automation
-    - Categorization: Deterministic color mapping - HIGH ratings (green), MEDIUM (blue), LOW (red)
+    - Categorization: Deterministic color mapping (rating based)
 
 - **Data preparation**: Review data preprocessing for mobile on-device sentiment analysis was assisted using **Perplexity AI** ✅
 
