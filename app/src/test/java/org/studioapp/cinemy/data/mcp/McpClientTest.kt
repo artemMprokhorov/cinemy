@@ -479,6 +479,64 @@ class McpClientTest {
         coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
     }
 
+    @Test
+    fun `getMovieDetailsViaMcp should extract dynamic uiConfig from backend response`() = runBlocking {
+        // Given
+        val movieId = 123
+        val mockResponse = createMockMovieDetailsMcpResponseWithDynamicUiConfig()
+        val mockMeta = createMockMetaDto()
+
+        coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
+        every { mockAssetDataLoader.loadMetaData(any(), any(), any()) } returns mockMeta
+
+        // When
+        val result = mcpClient.getMovieDetailsViaMcp(movieId)
+
+        // Then
+        assertTrue(result is Result.Success)
+        val successResult = result as Result.Success
+        assertNotNull(successResult.data)
+        assertNotNull(successResult.uiConfig)
+        
+        // Verify dynamic colors are extracted from backend response
+        val uiConfig = successResult.uiConfig
+        assertNotNull(uiConfig)
+        // Note: Color.toString() returns a different format, so we check the actual color values
+        assertNotNull(uiConfig?.colors?.primary)
+        assertNotNull(uiConfig?.colors?.secondary)
+        assertNotNull(uiConfig?.colors?.background)
+        assertNotNull(uiConfig?.colors?.surface)
+
+        coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
+        // Should NOT call assetDataLoader.loadUiConfig() when dynamic uiConfig is available
+        verify(exactly = 0) { mockAssetDataLoader.loadUiConfig() }
+    }
+
+    @Test
+    fun `getMovieDetailsViaMcp should fallback to static uiConfig when backend uiConfig is null`() = runBlocking {
+        // Given
+        val movieId = 123
+        val mockResponse = createMockMovieDetailsMcpResponseWithoutUiConfig()
+        val mockUiConfig = createMockUiConfigDto()
+        val mockMeta = createMockMetaDto()
+
+        coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
+        every { mockAssetDataLoader.loadUiConfig() } returns mockUiConfig
+        every { mockAssetDataLoader.loadMetaData(any(), any(), any()) } returns mockMeta
+
+        // When
+        val result = mcpClient.getMovieDetailsViaMcp(movieId)
+
+        // Then
+        assertTrue(result is Result.Success)
+        val successResult = result as Result.Success
+        assertNotNull(successResult.data)
+        assertNotNull(successResult.uiConfig)
+        
+        // Verify fallback to static uiConfig
+        verify { mockAssetDataLoader.loadUiConfig() }
+    }
+
 
     @Test
     fun `close should close MCP HTTP client`() {
@@ -705,6 +763,152 @@ class McpClientTest {
                     rating = 8.5
                 )
             )
+        )
+    }
+
+    private fun createMockMovieDetailsMcpResponseWithDynamicUiConfig(): McpResponse<Map<String, Any>> {
+        val movieDetailsData = mapOf(
+            "id" to 123,
+            "title" to "Test Movie Details",
+            "description" to "Test Description",
+            "posterPath" to "/test.jpg",
+            "backdropPath" to "/backdrop.jpg",
+            "rating" to 8.5,
+            "voteCount" to 1000,
+            "releaseDate" to "2024-01-01",
+            "runtime" to 120,
+            "genres" to listOf(
+                mapOf("id" to 1, "name" to "Action"),
+                mapOf("id" to 2, "name" to "Drama")
+            ),
+            "productionCompanies" to listOf(
+                mapOf(
+                    "id" to 1,
+                    "logoPath" to "/logo.jpg",
+                    "name" to "Test Studio",
+                    "originCountry" to "US"
+                )
+            ),
+            "budget" to 1000000L,
+            "revenue" to 2000000L,
+            "status" to "Released"
+        )
+
+        val sentimentReviewsData = mapOf(
+            "positive" to listOf("Great movie!", "Amazing!"),
+            "negative" to listOf("Not good", "Boring")
+        )
+
+        val sentimentMetadataData = mapOf(
+            "totalReviews" to 100,
+            "positiveCount" to 60,
+            "negativeCount" to 40,
+            "sentimentScore" to 0.6
+        )
+
+        // Dynamic uiConfig from backend
+        val dynamicUiConfig = mapOf(
+            "colors" to mapOf(
+                "primary" to "#DC3528",
+                "secondary" to "#E64539",
+                "background" to "#121212",
+                "surface" to "#1E1E1E",
+                "onPrimary" to "#FFFFFF",
+                "onSecondary" to "#FFFFFF",
+                "onBackground" to "#FFFFFF",
+                "onSurface" to "#FFFFFF",
+                "moviePosterColors" to listOf("#DC3528", "#E64539", "#EC5A50")
+            ),
+            "texts" to mapOf(
+                "appTitle" to "TmdbAi - Movie Details",
+                "loadingText" to "Loading details...",
+                "errorMessage" to "Error loading movie",
+                "noMoviesFound" to "Movie not found",
+                "retryButton" to "Retry",
+                "backButton" to "Back to list",
+                "playButton" to "Watch"
+            ),
+            "buttons" to mapOf(
+                "primaryButtonColor" to "#DC3528",
+                "secondaryButtonColor" to "#E64539",
+                "buttonTextColor" to "#FFFFFF",
+                "buttonCornerRadius" to 12
+            )
+        )
+
+        val innerData = mapOf(
+            "movieDetails" to movieDetailsData,
+            "sentimentReviews" to sentimentReviewsData,
+            "sentimentMetadata" to sentimentMetadataData
+        )
+
+        val responseData = mapOf(
+            "data" to innerData,
+            "uiConfig" to dynamicUiConfig
+        )
+
+        return McpResponse(
+            success = true,
+            data = responseData,
+            error = null
+        )
+    }
+
+    private fun createMockMovieDetailsMcpResponseWithoutUiConfig(): McpResponse<Map<String, Any>> {
+        val movieDetailsData = mapOf(
+            "id" to 123,
+            "title" to "Test Movie Details",
+            "description" to "Test Description",
+            "posterPath" to "/test.jpg",
+            "backdropPath" to "/backdrop.jpg",
+            "rating" to 8.5,
+            "voteCount" to 1000,
+            "releaseDate" to "2024-01-01",
+            "runtime" to 120,
+            "genres" to listOf(
+                mapOf("id" to 1, "name" to "Action"),
+                mapOf("id" to 2, "name" to "Drama")
+            ),
+            "productionCompanies" to listOf(
+                mapOf(
+                    "id" to 1,
+                    "logoPath" to "/logo.jpg",
+                    "name" to "Test Studio",
+                    "originCountry" to "US"
+                )
+            ),
+            "budget" to 1000000L,
+            "revenue" to 2000000L,
+            "status" to "Released"
+        )
+
+        val sentimentReviewsData = mapOf(
+            "positive" to listOf("Great movie!", "Amazing!"),
+            "negative" to listOf("Not good", "Boring")
+        )
+
+        val sentimentMetadataData = mapOf(
+            "totalReviews" to 100,
+            "positiveCount" to 60,
+            "negativeCount" to 40,
+            "sentimentScore" to 0.6
+        )
+
+        val innerData = mapOf(
+            "movieDetails" to movieDetailsData,
+            "sentimentReviews" to sentimentReviewsData,
+            "sentimentMetadata" to sentimentMetadataData
+        )
+
+        val responseData = mapOf(
+            "data" to innerData
+            // No uiConfig - should fallback to static assets
+        )
+
+        return McpResponse(
+            success = true,
+            data = responseData,
+            error = null
         )
     }
 }

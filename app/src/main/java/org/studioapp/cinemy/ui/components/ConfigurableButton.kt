@@ -16,8 +16,6 @@ import org.studioapp.cinemy.ui.theme.Dimens16
 import org.studioapp.cinemy.ui.theme.Dimens8
 import org.studioapp.cinemy.ui.theme.Float12
 import org.studioapp.cinemy.ui.theme.Float38
-import org.studioapp.cinemy.ui.theme.PrimaryBlue
-import org.studioapp.cinemy.ui.theme.SecondaryGreen
 
 /**
  * Configurable button component that supports server-driven styling
@@ -49,8 +47,8 @@ fun ConfigurableButton(
     // Determine button colors with PRIORITY to uiConfig colors
     val buttonColor = when {
         uiConfig?.colors != null -> {
-            if (isSecondary) colorScheme?.secondary ?: SecondaryGreen // Force green
-            else colorScheme?.primary ?: PrimaryBlue // Force blue
+            if (isSecondary) colorScheme?.secondary ?: MaterialTheme.colorScheme.secondary
+            else colorScheme?.primary ?: MaterialTheme.colorScheme.primary
         }
 
         else -> {

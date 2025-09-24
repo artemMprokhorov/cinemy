@@ -170,16 +170,95 @@ if (movie.adult) {
 
 ## Server-Driven UI Architecture
 
-### ✅ **UiConfiguration Integration**
+### ✅ **Dynamic Color Implementation (v3.0.0)**
 
-All UI components support server-driven theming through `UiConfiguration`:
+**BREAKING CHANGE**: The app now uses **dynamic colors from backend responses** instead of static asset files.
 
-#### **Color Scheme Support:**
+#### **Backend-Driven Color System:**
 
-- ✅ **Primary Colors**: Dynamic primary color theming
+- ✅ **Real-time Color Updates**: Colors change per movie based on backend uiConfig
+- ✅ **Primary Colors**: Dynamic primary color theming (rating, buttons, accents)
 - ✅ **Surface Colors**: Configurable surface and background colors
-- ✅ **Text Colors**: Dynamic text color theming
-- ✅ **Button Colors**: Configurable button styling
+- ✅ **Text Colors**: Dynamic text color theming with proper contrast
+- ✅ **Button Colors**: Configurable button styling from backend
+- ✅ **Fallback Strategy**: Graceful fallback to Material3 defaults when uiConfig is null
+
+#### **Color Extraction Process:**
+
+```kotlin
+// Backend Response Structure
+{
+  "uiConfig": {
+    "colors": {
+      "primary": "#DC3528",      // Red for "War of the Worlds"
+      "secondary": "#E64539",    // Orange accent
+      "background": "#121212",   // Dark background
+      "surface": "#1E1E1E",     // Dark surface
+      "onPrimary": "#FFFFFF",   // White text on primary
+      "onSecondary": "#FFFFFF", // White text on secondary
+      "onBackground": "#FFFFFF", // White text on background
+      "onSurface": "#FFFFFF"    // White text on surface
+    }
+  }
+}
+```
+
+#### **Dynamic Color Application:**
+
+- ✅ **Rating Colors**: Movie rating displays in dynamic primary color
+- ✅ **Background Colors**: Screen background uses dynamic background color
+- ✅ **Surface Colors**: Card surfaces use dynamic surface color
+- ✅ **Text Colors**: All text uses appropriate onSurface/onBackground colors
+- ✅ **Button Colors**: Buttons use dynamic primary/secondary colors
+
+#### **Technical Implementation:**
+
+```kotlin
+// McpClient.kt - Backend Color Extraction
+val backendUiConfig = data?.get("uiConfig") as? Map<String, Any>
+val uiConfig = if (backendUiConfig != null) {
+    UiConfigurationDto(
+        colors = ColorSchemeDto(
+            primary = colors["primary"] as? String ?: "#DC3528",
+            secondary = colors["secondary"] as? String ?: "#E64539",
+            background = colors["background"] as? String ?: "#121212",
+            surface = colors["surface"] as? String ?: "#1E1E1E",
+            // ... other color mappings
+        )
+    )
+} else {
+    assetDataLoader.loadUiConfig() // Fallback to static assets
+}
+
+// MovieDetailScreen.kt - Dynamic Color Application
+Box(
+    modifier = Modifier
+        .fillMaxSize()
+        .background(
+            if (state.uiConfig?.colors?.background != null) {
+                state.uiConfig.colors.background
+            } else {
+                SplashBackground
+            }
+        )
+) {
+    ConfigurableText(
+        text = stringResource(R.string.rating_label, movieDetails.rating),
+        style = MaterialTheme.typography.bodyLarge,
+        uiConfig = uiConfig,
+        color = uiConfig?.colors?.primary // Dynamic primary color
+    )
+}
+```
+
+#### **Color Flow Architecture:**
+
+```
+Backend Response → McpClient → MovieMapper → ViewModel → UI Components
+     ↓                ↓           ↓           ↓            ↓
+  uiConfig        ColorScheme   UiConfig   State      Dynamic Colors
+  (JSON)          (DTO)         (Domain)   (UI)       (Applied)
+```
 
 #### **Text Configuration:**
 

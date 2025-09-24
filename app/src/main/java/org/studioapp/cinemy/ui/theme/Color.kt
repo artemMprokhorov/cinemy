@@ -22,7 +22,5 @@ val SentimentPositive = Color(0xFF4CAF50)
 val SentimentNegative = Color(0xFFF44336)
 val SentimentNeutral = Color(0xFF9E9E9E)
 
-// UI colors
-val PrimaryBlue = Color(0xFF2196F3)
-val SecondaryGreen = Color(0xFF4CAF50)
-val DarkSurface = Color(0xFF1E1E1E)
+// Note: UI colors are now dynamically provided by backend uiConfig
+// Hardcoded colors have been removed in favor of dynamic theming

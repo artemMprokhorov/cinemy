@@ -28,7 +28,6 @@ import coil.compose.AsyncImage
 import org.studioapp.cinemy.R
 import org.studioapp.cinemy.data.model.Movie
 import org.studioapp.cinemy.data.model.UiConfiguration
-import org.studioapp.cinemy.ui.theme.DarkSurface
 import org.studioapp.cinemy.ui.theme.Dimens12
 import org.studioapp.cinemy.ui.theme.Dimens16
 import org.studioapp.cinemy.ui.theme.Dimens2
@@ -39,7 +38,6 @@ import org.studioapp.cinemy.ui.theme.Float05
 import org.studioapp.cinemy.ui.theme.Float06
 import org.studioapp.cinemy.ui.theme.Float07
 import org.studioapp.cinemy.ui.theme.ImageConfig
-import org.studioapp.cinemy.ui.theme.PrimaryBlue
 
 private const val POPULARITY_THRESHOLD = 0.0
 private const val MAX_LINES_TITLE = 2
@@ -72,7 +70,7 @@ fun ConfigurableMovieCard(
 
     // Determine colors with PRIORITY to uiConfig colors
     val cardColor = if (uiConfig?.colors != null) {
-        colorScheme?.surface ?: DarkSurface // Force dark surface
+        colorScheme?.surface ?: MaterialTheme.colorScheme.surface
     } else {
         MaterialTheme.colorScheme.surface
     }
@@ -84,7 +82,7 @@ fun ConfigurableMovieCard(
     }
 
     val primaryColor = if (uiConfig?.colors != null) {
-        colorScheme?.primary ?: PrimaryBlue // Force blue primary
+        colorScheme?.primary ?: MaterialTheme.colorScheme.primary
     } else {
         MaterialTheme.colorScheme.primary
     }

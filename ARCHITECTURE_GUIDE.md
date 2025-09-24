@@ -355,19 +355,72 @@ fun processIntent(intent: MoviesListIntent) {
 
 MCP (Model Context Protocol) is a protocol for interacting with AI models.
 
-#### MCP Client
+#### MCP Client with Dynamic Color Support
 ```kotlin
 class McpClient {
-    suspend fun getPopularMoviesViaMcp(): Result<List<Movie>> {
-        return try {
-            val response = mcpHttpClient.getPopularMovies()
-            Result.success(response.movies)
-        } catch (e: Exception) {
-            Result.failure(e)
+    suspend fun getMovieDetailsViaMcp(movieId: Int): Result<MovieDetailsResponse> {
+        return runCatching {
+            val response = mcpHttpClient.sendRequest<Any>(request)
+            
+            // Extract dynamic uiConfig from backend response
+            val backendUiConfig = data?.get("uiConfig") as? Map<String, Any>
+            val uiConfig = if (backendUiConfig != null) {
+                // Parse dynamic colors from backend
+                UiConfigurationDto(
+                    colors = ColorSchemeDto(
+                        primary = colors["primary"] as? String ?: "#DC3528",
+                        secondary = colors["secondary"] as? String ?: "#E64539",
+                        background = colors["background"] as? String ?: "#121212",
+                        surface = colors["surface"] as? String ?: "#1E1E1E",
+                        // ... other color mappings
+                    )
+                )
+            } else {
+                assetDataLoader.loadUiConfig() // Fallback to static assets
+            }
+            
+            Result.Success(
+                data = MovieDetailsResponse(...),
+                uiConfig = MovieMapper.mapUiConfigurationDtoToUiConfiguration(uiConfig)
+            )
         }
     }
 }
 ```
+
+### 🎨 Dynamic Color Architecture
+
+#### **Color Flow Process:**
+
+1. **Backend Response** → Contains `uiConfig` with dynamic colors
+2. **McpClient** → Extracts `uiConfig` from response JSON
+3. **MovieMapper** → Converts DTO colors to Compose Color objects
+4. **ViewModel** → Passes `uiConfig` to UI state
+5. **UI Components** → Apply dynamic colors to elements
+
+#### **Color Extraction Logic:**
+
+```kotlin
+// Backend Response Structure
+{
+  "data": { "movieDetails": {...} },
+  "uiConfig": {
+    "colors": {
+      "primary": "#DC3528",      // Movie-specific primary color
+      "secondary": "#E64539",     // Movie-specific secondary color
+      "background": "#121212",   // Dark theme background
+      "surface": "#1E1E1E"       // Dark theme surface
+    }
+  }
+}
+```
+
+#### **Dynamic Color Application:**
+
+- **Rating Colors**: `uiConfig.colors.primary` for movie ratings
+- **Background Colors**: `uiConfig.colors.background` for screen backgrounds
+- **Surface Colors**: `uiConfig.colors.surface` for card surfaces
+- **Text Colors**: `uiConfig.colors.onSurface/onBackground` for text
 
 #### MCP HTTP Client
 ```kotlin

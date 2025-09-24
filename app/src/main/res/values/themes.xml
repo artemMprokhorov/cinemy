@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Cinemy" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Cinemy" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Set system bars to white background -->
+        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:navigationBarColor">@android:color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
 </resources>

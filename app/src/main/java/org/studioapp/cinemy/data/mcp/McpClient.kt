@@ -12,12 +12,16 @@ import org.studioapp.cinemy.data.model.MovieListResponse
 import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.model.StringConstants
 import org.studioapp.cinemy.data.remote.api.MovieApiService
+import org.studioapp.cinemy.data.remote.dto.ButtonConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.ColorMetadataDto
+import org.studioapp.cinemy.data.remote.dto.ColorSchemeDto
 import org.studioapp.cinemy.data.remote.dto.GeminiColorsDto
 import org.studioapp.cinemy.data.remote.dto.GenreDto
 import org.studioapp.cinemy.data.remote.dto.McpResponseDto
 import org.studioapp.cinemy.data.remote.dto.MetaDto
 import org.studioapp.cinemy.data.remote.dto.MovieColorsDto
+import org.studioapp.cinemy.data.remote.dto.TextConfigurationDto
+import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.MovieDetailsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDto
 import org.studioapp.cinemy.data.remote.dto.MovieListResponseDto
@@ -477,9 +481,51 @@ class McpClient(private val context: Context) : MovieApiService {
                     val domainSentimentMetadata =
                         MovieMapper.mapSentimentMetadataDtoToSentimentMetadata(sentimentMetadata)
 
-                    val uiConfig = assetDataLoader.loadUiConfig()
-                    val domainUiConfig =
-                        MovieMapper.mapUiConfigurationDtoToUiConfiguration(uiConfig)
+                    // Extract uiConfig from backend response
+                    val backendUiConfig = data?.get("uiConfig") as? Map<String, Any>
+                    val uiConfig = if (backendUiConfig != null) {
+                        // Parse uiConfig from backend response
+                        val colors = backendUiConfig["colors"] as? Map<String, Any>
+                        val texts = backendUiConfig["texts"] as? Map<String, Any>
+                        val buttons = backendUiConfig["buttons"] as? Map<String, Any>
+                        
+                        if (colors != null && texts != null && buttons != null) {
+                            UiConfigurationDto(
+                                colors = ColorSchemeDto(
+                                    primary = colors["primary"] as? String ?: "#DC3528",
+                                    secondary = colors["secondary"] as? String ?: "#E64539",
+                                    background = colors["background"] as? String ?: "#121212",
+                                    surface = colors["surface"] as? String ?: "#1E1E1E",
+                                    onPrimary = colors["onPrimary"] as? String ?: "#FFFFFF",
+                                    onSecondary = colors["onSecondary"] as? String ?: "#FFFFFF",
+                                    onBackground = colors["onBackground"] as? String ?: "#FFFFFF",
+                                    onSurface = colors["onSurface"] as? String ?: "#FFFFFF",
+                                    moviePosterColors = (colors["moviePosterColors"] as? List<*>)?.mapNotNull { it as? String } ?: emptyList()
+                                ),
+                                texts = TextConfigurationDto(
+                                    appTitle = texts["appTitle"] as? String ?: "TmdbAi - Movie Details",
+                                    loadingText = texts["loadingText"] as? String ?: "Loading details...",
+                                    errorMessage = texts["errorMessage"] as? String ?: "Error loading movie",
+                                    noMoviesFound = texts["noMoviesFound"] as? String ?: "Movie not found",
+                                    retryButton = texts["retryButton"] as? String ?: "Retry",
+                                    backButton = texts["backButton"] as? String ?: "Back to list",
+                                    playButton = texts["playButton"] as? String ?: "Watch"
+                                ),
+                                buttons = ButtonConfigurationDto(
+                                    primaryButtonColor = buttons["primaryButtonColor"] as? String ?: "#DC3528",
+                                    secondaryButtonColor = buttons["secondaryButtonColor"] as? String ?: "#E64539",
+                                    buttonTextColor = buttons["buttonTextColor"] as? String ?: "#FFFFFF",
+                                    buttonCornerRadius = (buttons["buttonCornerRadius"] as? Number)?.toInt() ?: 12
+                                )
+                            )
+                        } else {
+                            assetDataLoader.loadUiConfig()
+                        }
+                    } else {
+                        assetDataLoader.loadUiConfig()
+                    }
+                    
+                    val domainUiConfig = MovieMapper.mapUiConfigurationDtoToUiConfiguration(uiConfig)
 
                     // Debug logging for uiConfig
 

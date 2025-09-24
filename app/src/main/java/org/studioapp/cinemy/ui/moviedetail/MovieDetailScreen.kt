@@ -21,6 +21,8 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,6 +42,7 @@ import org.studioapp.cinemy.data.model.UiConfiguration
 import org.studioapp.cinemy.presentation.moviedetail.MovieDetailIntent
 import org.studioapp.cinemy.presentation.moviedetail.MovieDetailState
 import org.studioapp.cinemy.presentation.moviedetail.MovieDetailViewModel
+import org.studioapp.cinemy.ui.components.ConfigurableText
 import org.studioapp.cinemy.ui.components.PullToReloadArrow
 import org.studioapp.cinemy.ui.components.SentimentAnalysisCard
 import org.studioapp.cinemy.ui.theme.CinemyTheme
@@ -106,14 +109,15 @@ private fun MovieDetailContent(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
+                        ConfigurableText(
                             text = stringResource(R.string.loading_text),
-                            color = Color.White,
-                            style = MaterialTheme.typography.headlineMedium
+                            style = MaterialTheme.typography.headlineMedium,
+                            uiConfig = state.uiConfig,
+                            color = Color.White
                         )
                         Spacer(modifier = Modifier.height(Dimens16))
                         CircularProgressIndicator(
-                            color = Color.White
+                            color = state.uiConfig?.colors?.primary ?: Color.White
                         )
                     }
                 }
@@ -129,23 +133,26 @@ private fun MovieDetailContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Spacer(modifier = Modifier.height(Dimens100))
-                        Text(
+                        ConfigurableText(
                             text = stringResource(R.string.error_generic),
-                            color = Color.White,
-                            style = MaterialTheme.typography.headlineLarge
+                            style = MaterialTheme.typography.headlineLarge,
+                            uiConfig = state.uiConfig,
+                            color = Color.White
                         )
-                        Text(
+                        ConfigurableText(
                             text = stringResource(R.string.movie_details),
-                            color = Color.White,
-                            style = MaterialTheme.typography.headlineLarge
+                            style = MaterialTheme.typography.headlineLarge,
+                            uiConfig = state.uiConfig,
+                            color = Color.White
                         )
                         Spacer(modifier = Modifier.height(Dimens16))
                         PullToReloadArrow()
                         Spacer(modifier = Modifier.height(Dimens16))
-                        Text(
+                        ConfigurableText(
                             text = stringResource(R.string.pull_to_reload),
-                            color = Color.White,
-                            style = MaterialTheme.typography.headlineMedium
+                            style = MaterialTheme.typography.headlineMedium,
+                            uiConfig = state.uiConfig,
+                            color = Color.White
                         )
                         Spacer(modifier = Modifier.height(Dimens100))
                     }
@@ -194,60 +201,71 @@ private fun MovieDetailsContent(
         Spacer(modifier = Modifier.height(Dimens16))
 
         // Movie details
-        Column(
+        Card(
             modifier = Modifier.padding(Dimens16),
-            verticalArrangement = Arrangement.spacedBy(Dimens12)
+            colors = CardDefaults.cardColors(
+                containerColor = if (uiConfig?.colors?.surface != null) {
+                    uiConfig.colors.surface
+                } else {
+                    MaterialTheme.colorScheme.surface
+                }
+            )
         ) {
-            // Title
-            Text(
-                text = movieDetails.title,
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.White
-            )
-
-            // Rating
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.padding(Dimens16),
+                verticalArrangement = Arrangement.spacedBy(Dimens12)
             ) {
-                Text(
-                    text = stringResource(R.string.rating_label, movieDetails.rating),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = Color.White
+                // Title
+                ConfigurableText(
+                    text = movieDetails.title,
+                    style = MaterialTheme.typography.headlineMedium,
+                    uiConfig = uiConfig
                 )
-                Spacer(modifier = Modifier.width(Dimens16))
-                Text(
-                    text = stringResource(R.string.votes_label, movieDetails.voteCount),
+
+                // Rating
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ConfigurableText(
+                        text = stringResource(R.string.rating_label, movieDetails.rating),
+                        style = MaterialTheme.typography.bodyLarge,
+                        uiConfig = uiConfig,
+                        color = uiConfig?.colors?.primary
+                    )
+                    Spacer(modifier = Modifier.width(Dimens16))
+                    ConfigurableText(
+                        text = stringResource(R.string.votes_label, movieDetails.voteCount),
+                        style = MaterialTheme.typography.bodyMedium,
+                        uiConfig = uiConfig
+                    )
+                }
+
+                // Release date
+                ConfigurableText(
+                    text = stringResource(R.string.release_date_label, movieDetails.releaseDate),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White
+                    uiConfig = uiConfig
                 )
-            }
 
-            // Release date
-            Text(
-                text = stringResource(R.string.release_date_label, movieDetails.releaseDate),
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.White
-            )
-
-            // Description
-            Text(
-                text = movieDetails.description,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Justify,
-                color = Color.White
-            )
-
-            // Genres
-            if (movieDetails.genres.isNotEmpty()) {
-                Text(
-                    text = stringResource(
-                        R.string.genres_label,
-                        movieDetails.genres.joinToString(", ") { it.name }),
+                // Description
+                ConfigurableText(
+                    text = movieDetails.description,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White
+                    uiConfig = uiConfig
                 )
-            }
 
+                // Genres
+                if (movieDetails.genres.isNotEmpty()) {
+                    ConfigurableText(
+                        text = stringResource(
+                            R.string.genres_label,
+                            movieDetails.genres.joinToString(", ") { it.name }),
+                        style = MaterialTheme.typography.bodyMedium,
+                        uiConfig = uiConfig
+                    )
+                }
+
+            }
         }
 
         // ML Sentiment Analysis Card

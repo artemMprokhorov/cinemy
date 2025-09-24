@@ -31,13 +31,13 @@ fun ConfigurableText(
     maxLines: Int = Int.MAX_VALUE
 ) {
     // Determine text color with priority: explicit color > UiConfig > Material3 default
-    val textColor = color ?: when {
+    val textColor = when {
+        color != null -> color
         uiConfig?.colors != null -> {
             // Use appropriate color from UiConfig based on context
             // For cards, use onSurface; for general text, use onBackground
             uiConfig.colors.onSurface
         }
-
         else -> MaterialTheme.colorScheme.onBackground
     }
 
