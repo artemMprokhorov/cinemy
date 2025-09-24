@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Foldable device theme for large screens -->
+    <style name="Theme.Cinemy" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Optimized for foldable devices -->
+        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:navigationBarColor">@android:color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        
+        <!-- Foldable specific configurations -->
+        <item name="android:windowMinWidthMajor">600dp</item>
+        <item name="android:windowMinWidthMinor">320dp</item>
+        
+        <!-- Support for multi-window mode -->
+        <item name="android:resizeableActivity">true</item>
+        <item name="android:supportsPictureInPicture">true</item>
+    </style>
+</resources>

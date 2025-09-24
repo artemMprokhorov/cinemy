@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Landscape orientation strings -->
+    <string name="landscape_hint">Rotate device for better viewing experience</string>
+    <string name="landscape_movie_details">Movie details in landscape mode</string>
+</resources>

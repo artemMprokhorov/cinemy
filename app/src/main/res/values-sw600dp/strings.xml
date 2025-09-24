@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Foldable device specific strings -->
+    <string name="app_name">Cinemy</string>
+    
+    <!-- Navigation -->
+    <string name="nav_movies">Movies</string>
+    <string name="nav_details">Details</string>
+    
+    <!-- Layout hints for foldable devices -->
+    <string name="foldable_hint">Swipe to navigate between movies and details</string>
+    <string name="dual_pane_mode">Dual pane mode</string>
+    
+    <!-- Accessibility -->
+    <string name="content_description_foldable_layout">Foldable device layout with dual pane navigation</string>
+</resources>

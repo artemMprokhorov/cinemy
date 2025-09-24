@@ -1,6 +1,7 @@
 package org.studioapp.cinemy
 
 import android.app.Application
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
@@ -29,6 +30,7 @@ import org.studioapp.cinemy.ml.SentimentAnalyzer
 import org.studioapp.cinemy.navigation.AppNavigation
 import org.studioapp.cinemy.presentation.di.presentationModule
 import org.studioapp.cinemy.ui.theme.CinemyTheme
+import org.studioapp.cinemy.utils.DeviceUtils
 import org.studioapp.cinemy.utils.VersionUtils
 
 class CinemyApplication : Application() {
@@ -52,12 +54,18 @@ class CinemyApplication : Application() {
 }
 
 class MainActivity : ComponentActivity() {
+    
+    private var currentDeviceType: DeviceUtils.DeviceType? = null
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Safely enable edge-to-edge display only on supported Android versions
         // This prevents UI issues on older devices that don't support this feature
         VersionUtils.safeEnableEdgeToEdge(this)
+        
+        // Initialize device type detection
+        currentDeviceType = DeviceUtils.getDeviceType(this)
 
         setContent {
             CinemyTheme {
@@ -70,6 +78,118 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+    
+    /**
+     * Handle configuration changes for foldable devices
+     * This is called when the device is folded/unfolded or orientation changes
+     */
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        
+        // Update device type detection
+        val newDeviceType = DeviceUtils.getDeviceType(this)
+        
+        // Log configuration change for debugging
+        if (newDeviceType != currentDeviceType) {
+            currentDeviceType = newDeviceType
+            // Handle device type change if needed
+            handleDeviceTypeChange(newDeviceType)
+        }
+        
+        // Handle orientation changes
+        val isLandscape = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE
+        handleOrientationChange(isLandscape)
+    }
+    
+    /**
+     * Handle device type changes (e.g., foldable device state changes)
+     */
+    private fun handleDeviceTypeChange(newDeviceType: DeviceUtils.DeviceType) {
+        // Update UI layout based on new device type
+        when (newDeviceType) {
+            DeviceUtils.DeviceType.FOLDABLE -> {
+                // Optimize for foldable device
+                optimizeForFoldableDevice()
+            }
+            DeviceUtils.DeviceType.TABLET -> {
+                // Optimize for tablet
+                optimizeForTablet()
+            }
+            DeviceUtils.DeviceType.PHONE -> {
+                // Optimize for phone
+                optimizeForPhone()
+            }
+            DeviceUtils.DeviceType.DESKTOP -> {
+                // Optimize for desktop
+                optimizeForDesktop()
+            }
+        }
+    }
+    
+    /**
+     * Handle orientation changes
+     */
+    private fun handleOrientationChange(isLandscape: Boolean) {
+        if (isLandscape) {
+            // Optimize for landscape mode
+            optimizeForLandscape()
+        } else {
+            // Optimize for portrait mode
+            optimizeForPortrait()
+        }
+    }
+    
+    /**
+     * Optimize UI for foldable devices
+     */
+    private fun optimizeForFoldableDevice() {
+        // Enable multi-window mode support
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+        }
+    }
+    
+    /**
+     * Optimize UI for tablet devices
+     */
+    private fun optimizeForTablet() {
+        // Enable dual pane layout
+        // This will be handled by the UI components
+    }
+    
+    /**
+     * Optimize UI for phone devices
+     */
+    private fun optimizeForPhone() {
+        // Use single pane layout
+        // This will be handled by the UI components
+    }
+    
+    /**
+     * Optimize UI for desktop devices
+     */
+    private fun optimizeForDesktop() {
+        // Enable window resizing
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+        }
+    }
+    
+    /**
+     * Optimize UI for landscape orientation
+     */
+    private fun optimizeForLandscape() {
+        // Handle landscape-specific optimizations
+        // This will be handled by the UI components
+    }
+    
+    /**
+     * Optimize UI for portrait orientation
+     */
+    private fun optimizeForPortrait() {
+        // Handle portrait-specific optimizations
+        // This will be handled by the UI components
     }
 }
 
