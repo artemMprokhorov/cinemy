@@ -125,8 +125,7 @@ The backend for **Cinemy** was designed as a lightweight experimental setup to c
 - **Ngrok tunnel**: secure public endpoint for local development and testing ✅
 - **n8n Workflows**:
   - TMDB API data ingestion
-  - Gemini AI integration for orkestration ✅
-  - Own model for color scheme generation ✅
+  - Own AI model for orkestration and color scheme generation ✅
     Production Model Specifications:
 
     - Model File: color_scheme_model.pth (73KB)
@@ -140,11 +139,11 @@ The backend for **Cinemy** was designed as a lightweight experimental setup to c
     - Deployment: Docker containerized Flask API
     - Memory: 200-500MB RAM consumption during inference
     - Integration: RESTful API endpoints with JSON response format for n8n workflow automation
-    - Categorization: Deterministic color mapping - HIGH ratings (green), MEDIUM (blue), LOW (red)
+    - Categorization: Deterministic color mapping (rating based)
 
 - **Data preparation**: Review data preprocessing for mobile on-device sentiment analysis was assisted using **Perplexity AI** ✅
 
-This backend acts as an orchestrator between external APIs (TMDB, Gemini), local AI pipelines, and the mobile client — while remaining minimal and flexible.
+This backend acts as an orchestrator between external APIs (TMDB, Perplexity Sonar), local AI pipelines, and the mobile client — while remaining minimal and flexible.
 
 ---
 
@@ -214,7 +213,7 @@ Special thanks to:
 - **Anysphere** for advancing AI-powered developer tools
 - **n8n** team for building an open-source automation platform
 - **Ngrok** for providing seamless tunneling solutions
-- **Google** for Gemini AI and Android ecosystem
+- **Google** for Android ecosystem
 - **Perplexity AI** for assisting in data preparation and research
 
 ---
