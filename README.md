@@ -125,7 +125,7 @@ The backend for **Cinemy** was designed as a lightweight experimental setup to c
 - **Ngrok tunnel**: secure public endpoint for local development and testing ✅
 - **n8n Workflows**:
   - TMDB API data ingestion
-  - Own AI model for orkestration and color scheme generation ✅
+  - Own AI model for orchestration and color scheme generation ✅
     Production Model Specifications:
 
     - Model File: color_scheme_model.pth (73KB)
