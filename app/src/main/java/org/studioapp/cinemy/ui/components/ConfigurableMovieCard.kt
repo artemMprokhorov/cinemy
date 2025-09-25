@@ -121,15 +121,13 @@ fun ConfigurableMovieCard(
                     baseModifier
                 }
             }
-            .let { semanticsModifier ->
+            .then(
                 TestUtils.TestModifiers.testAttributes(
                     tag = testTag,
                     id = testId,
                     data = testData
-                ).let { testModifier ->
-                    semanticsModifier.then(testModifier)
-                }
-            },
+                )
+            ),
         colors = CardDefaults.cardColors(
             containerColor = cardColor
         ),

@@ -67,15 +67,13 @@ fun ConfigurableText(
                     baseModifier
                 }
             }
-            .let { semanticsModifier ->
+            .then(
                 TestUtils.TestModifiers.testAttributes(
                     tag = testTag,
                     id = testId,
                     data = testData
-                ).let { testModifier ->
-                    semanticsModifier.then(testModifier)
-                }
-            },
+                )
+            ),
         color = textColor,
         maxLines = maxLines
     )

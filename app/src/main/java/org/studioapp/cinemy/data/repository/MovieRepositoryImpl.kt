@@ -134,7 +134,7 @@ class MovieRepositoryImpl(
             meta = meta
         )
 
-        return Result.Success(response)
+        return Result.Success(response, uiConfig)
     }
 
     /**

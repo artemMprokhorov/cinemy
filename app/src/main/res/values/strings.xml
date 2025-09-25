@@ -66,4 +66,17 @@
     <string name="error_generic_unknown">An unexpected error occurred</string>
     <string name="error_generic_unexpected">Something went wrong</string>
 
+    <!-- Landscape mode strings -->
+    <string name="landscape_hint">Rotate device for better viewing experience</string>
+    <string name="landscape_movie_details">Movie details in landscape mode</string>
+
+    <!-- Navigation strings -->
+    <string name="nav_movies">Movies</string>
+    <string name="nav_details">Details</string>
+
+    <!-- Foldable device strings -->
+    <string name="foldable_hint">Swipe to navigate between movies and details</string>
+    <string name="dual_pane_mode">Dual pane mode</string>
+    <string name="content_description_foldable_layout">Foldable device layout with dual pane navigation</string>
+
 </resources>

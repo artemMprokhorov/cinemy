@@ -164,7 +164,7 @@ object TestUtils {
          */
         fun Modifier.testId(id: String): Modifier {
             return this.semantics {
-                this.testTag = id
+                semanticsTestTag = id
             }
         }
         
@@ -173,19 +173,19 @@ object TestUtils {
          */
         fun Modifier.testData(key: String, value: String): Modifier {
             return this.semantics {
-                this.testTag = "$key:$value"
+                semanticsTestTag = "$key:$value"
             }
         }
         
         /**
          * Add multiple test attributes to modifier
          */
-        fun Modifier.testAttributes(
+        fun testAttributes(
             tag: String? = null,
             id: String? = null,
             data: Map<String, String> = emptyMap()
         ): Modifier {
-            var modifier = this
+            var modifier: Modifier = Modifier
             
             tag?.let { modifier = modifier.testTag(it) }
             id?.let { modifier = modifier.testId(it) }
