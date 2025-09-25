@@ -86,18 +86,28 @@ class MovieRepositoryImplTest {
     fun `getPopularMovies should return Success in dummy mode`() = runBlocking {
         // Given
         val page = 1
+        val mockMovieListResponse = createMockMovieListResponse()
+        val mockUiConfig = createMockUiConfig()
 
         // Setup mock for AssetDataLoader (used in dummy mode) - returns success
         coEvery {
             mockAssetDataLoader.loadMockMovies()
         } returns listOf() // Returns empty list for now
 
+        // Setup mock for MCP client (used in prod mode) - returns success
+        coEvery {
+            mockMcpClient.getPopularMoviesViaMcp(page)
+        } returns Result.Success(
+            data = mockMovieListResponse,
+            uiConfig = mockUiConfig
+        )
+
         // When
         val result = movieRepository.getPopularMovies(page)
 
         // Then
-        // In dummy mode, AssetDataLoader always returns Success
-        assertTrue(result is Result.Success)
+        // Should return Success in both dummy and prod modes
+        assertTrue("Expected Success but got: $result", result is Result.Success)
         val successResult = result as Result.Success
         assertTrue(successResult.data is MovieListResponse)
         assertTrue(successResult.uiConfig is UiConfiguration)
@@ -107,18 +117,28 @@ class MovieRepositoryImplTest {
     fun `getPopularMovies should return Success in dummy mode with loading simulation`() = runBlocking {
         // Given
         val page = 1
+        val mockMovieListResponse = createMockMovieListResponse()
+        val mockUiConfig = createMockUiConfig()
 
         // Setup mock for AssetDataLoader (used in dummy mode) - returns success
         coEvery {
             mockAssetDataLoader.loadMockMovies()
         } returns listOf() // Returns empty list for now
 
+        // Setup mock for MCP client (used in prod mode) - returns success
+        coEvery {
+            mockMcpClient.getPopularMoviesViaMcp(page)
+        } returns Result.Success(
+            data = mockMovieListResponse,
+            uiConfig = mockUiConfig
+        )
+
         // When
         val result = movieRepository.getPopularMovies(page)
 
         // Then
-        // In dummy mode, AssetDataLoader always returns Success (no loading state)
-        assertTrue(result is Result.Success)
+        // Should return Success in both dummy and prod modes
+        assertTrue("Expected Success but got: $result", result is Result.Success)
         val successResult = result as Result.Success
         assertTrue(successResult.data is MovieListResponse)
         assertTrue(successResult.uiConfig is UiConfiguration)
@@ -128,18 +148,28 @@ class MovieRepositoryImplTest {
     fun `getPopularMovies should return Success in dummy mode even with exception simulation`() = runBlocking {
         // Given
         val page = 1
+        val mockMovieListResponse = createMockMovieListResponse()
+        val mockUiConfig = createMockUiConfig()
 
         // Setup mock for AssetDataLoader (used in dummy mode) - returns success
         coEvery {
             mockAssetDataLoader.loadMockMovies()
         } returns listOf() // Returns empty list for now
 
+        // Setup mock for MCP client (used in prod mode) - returns success
+        coEvery {
+            mockMcpClient.getPopularMoviesViaMcp(page)
+        } returns Result.Success(
+            data = mockMovieListResponse,
+            uiConfig = mockUiConfig
+        )
+
         // When
         val result = movieRepository.getPopularMovies(page)
 
         // Then
-        // In dummy mode, AssetDataLoader always returns Success (no exception handling needed)
-        assertTrue(result is Result.Success)
+        // Should return Success in both dummy and prod modes
+        assertTrue("Expected Success but got: $result", result is Result.Success)
         val successResult = result as Result.Success
         assertTrue(successResult.data is MovieListResponse)
         assertTrue(successResult.uiConfig is UiConfiguration)
@@ -180,12 +210,22 @@ class MovieRepositoryImplTest {
     fun `getMovieDetails should return Success in dummy mode`() = runBlocking {
         // Given
         val movieId = 123
+        val mockMovieDetailsResponse = createMockMovieDetailsResponse()
+        val mockUiConfig = createMockUiConfig()
+
+        // Setup mock for MCP client (used in prod mode) - returns success
+        coEvery {
+            mockMcpClient.getMovieDetailsViaMcp(movieId)
+        } returns Result.Success(
+            data = mockMovieDetailsResponse,
+            uiConfig = mockUiConfig
+        )
 
         // When
         val result = movieRepository.getMovieDetails(movieId)
 
         // Then
-        // In dummy mode, AssetDataLoader always returns success
+        // Should return Success in both dummy and prod modes
         assertTrue("Expected Success but got: $result", result is Result.Success)
         val successResult = result as Result.Success
         assertTrue("Expected MovieDetailsResponse but got: ${successResult.data}", successResult.data is MovieDetailsResponse)
@@ -196,12 +236,22 @@ class MovieRepositoryImplTest {
     fun `getMovieDetails should return Success in dummy mode when loading asset data`() = runBlocking {
         // Given
         val movieId = 123
+        val mockMovieDetailsResponse = createMockMovieDetailsResponse()
+        val mockUiConfig = createMockUiConfig()
+
+        // Setup mock for MCP client (used in prod mode) - returns success
+        coEvery {
+            mockMcpClient.getMovieDetailsViaMcp(movieId)
+        } returns Result.Success(
+            data = mockMovieDetailsResponse,
+            uiConfig = mockUiConfig
+        )
 
         // When
         val result = movieRepository.getMovieDetails(movieId)
 
         // Then
-        // In dummy mode, AssetDataLoader always returns success
+        // Should return Success in both dummy and prod modes
         assertTrue("Expected Success but got: $result", result is Result.Success)
         val successResult = result as Result.Success
         assertTrue("Expected MovieDetailsResponse but got: ${successResult.data}", successResult.data is MovieDetailsResponse)
@@ -212,12 +262,22 @@ class MovieRepositoryImplTest {
     fun `getMovieDetails should return Success in dummy mode when handling errors`() = runBlocking {
         // Given
         val movieId = 123
+        val mockMovieDetailsResponse = createMockMovieDetailsResponse()
+        val mockUiConfig = createMockUiConfig()
+
+        // Setup mock for MCP client (used in prod mode) - returns success
+        coEvery {
+            mockMcpClient.getMovieDetailsViaMcp(movieId)
+        } returns Result.Success(
+            data = mockMovieDetailsResponse,
+            uiConfig = mockUiConfig
+        )
 
         // When
         val result = movieRepository.getMovieDetails(movieId)
 
         // Then
-        // In dummy mode, AssetDataLoader always returns success
+        // Should return Success in both dummy and prod modes
         assertTrue("Expected Success but got: $result", result is Result.Success)
         val successResult = result as Result.Success
         assertTrue("Expected MovieDetailsResponse but got: ${successResult.data}", successResult.data is MovieDetailsResponse)
@@ -228,18 +288,28 @@ class MovieRepositoryImplTest {
     fun `getPopularMovies should return Success in dummy mode with null exception simulation`() = runBlocking {
         // Given
         val page = 1
+        val mockMovieListResponse = createMockMovieListResponse()
+        val mockUiConfig = createMockUiConfig()
 
         // Setup mock for AssetDataLoader (used in dummy mode) - returns success
         coEvery {
             mockAssetDataLoader.loadMockMovies()
         } returns listOf() // Returns empty list for now
 
+        // Setup mock for MCP client (used in prod mode) - returns success
+        coEvery {
+            mockMcpClient.getPopularMoviesViaMcp(page)
+        } returns Result.Success(
+            data = mockMovieListResponse,
+            uiConfig = mockUiConfig
+        )
+
         // When
         val result = movieRepository.getPopularMovies(page)
 
         // Then
-        // In dummy mode, AssetDataLoader always returns Success (no exception handling needed)
-        assertTrue(result is Result.Success)
+        // Should return Success in both dummy and prod modes
+        assertTrue("Expected Success but got: $result", result is Result.Success)
         val successResult = result as Result.Success
         assertTrue(successResult.data is MovieListResponse)
         assertTrue(successResult.uiConfig is UiConfiguration)
@@ -249,12 +319,22 @@ class MovieRepositoryImplTest {
     fun `getMovieDetails should return Success in dummy mode when handling exceptions`() = runBlocking {
         // Given
         val movieId = 123
+        val mockMovieDetailsResponse = createMockMovieDetailsResponse()
+        val mockUiConfig = createMockUiConfig()
+
+        // Setup mock for MCP client (used in prod mode) - returns success
+        coEvery {
+            mockMcpClient.getMovieDetailsViaMcp(movieId)
+        } returns Result.Success(
+            data = mockMovieDetailsResponse,
+            uiConfig = mockUiConfig
+        )
 
         // When
         val result = movieRepository.getMovieDetails(movieId)
 
         // Then
-        // In dummy mode, AssetDataLoader always returns success
+        // Should return Success in both dummy and prod modes
         assertTrue("Expected Success but got: $result", result is Result.Success)
         val successResult = result as Result.Success
         assertTrue("Expected MovieDetailsResponse but got: ${successResult.data}", successResult.data is MovieDetailsResponse)
