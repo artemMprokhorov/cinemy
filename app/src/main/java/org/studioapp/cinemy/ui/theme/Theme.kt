@@ -25,13 +25,16 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun CinemyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = false, // Disabled to use our custom background
     content: @Composable () -> Unit
 ) {
-    // CRITICAL FIX: Use default MaterialTheme WITHOUT custom colorScheme
-    // This allows ConfigurableComponents to use uiConfig colors without override
+    val colorScheme = if (darkTheme) {
+        DarkColorScheme
+    } else {
+        LightColorScheme
+    }
+
     MaterialTheme(
+        colorScheme = colorScheme,
         typography = Typography,
         content = content
     )
