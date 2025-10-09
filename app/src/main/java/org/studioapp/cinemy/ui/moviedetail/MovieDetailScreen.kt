@@ -52,7 +52,6 @@ import org.studioapp.cinemy.ui.theme.Dimens8
 import org.studioapp.cinemy.ui.theme.ImageConfig
 import org.studioapp.cinemy.ui.theme.SplashBackground
 
-private const val MIN_RUNTIME = 0
 
 @Composable
 fun MovieDetailScreen(
@@ -160,9 +159,7 @@ private fun MovieDetailContent(
                 MovieDetailsContent(
                     movieDetails = state.movieDetails,
                     uiConfig = state.uiConfig,
-                    onBackClick = onBackClick,
-                    state = state,
-                    onIntent = onIntent
+                    state = state
                 )
             }
         }
@@ -175,9 +172,7 @@ private fun MovieDetailContent(
 private fun MovieDetailsContent(
     movieDetails: MovieDetails,
     uiConfig: UiConfiguration?,
-    onBackClick: () -> Unit,
-    state: MovieDetailState,
-    onIntent: (MovieDetailIntent) -> Unit
+    state: MovieDetailState
 ) {
     Column(
         modifier = Modifier
@@ -298,9 +293,7 @@ private fun MovieDetailScreenPreview() {
                 status = "Released"
             ),
             uiConfig = null,
-            onBackClick = {},
-            state = MovieDetailState(),
-            onIntent = {}
+            state = MovieDetailState()
         )
     }
 }
