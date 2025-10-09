@@ -89,51 +89,27 @@ class MainActivity : ComponentActivity() {
         // Log configuration change for debugging
         if (newDeviceType != currentDeviceType) {
             currentDeviceType = newDeviceType
-            // Handle device type change if needed
-            handleDeviceTypeChange(newDeviceType)
-        }
-
-        // Handle orientation changes
-        val isLandscape = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE
-        handleOrientationChange(isLandscape)
-    }
-
-    /**
-     * Handle device type changes (e.g., foldable device state changes)
-     */
-    private fun handleDeviceTypeChange(newDeviceType: DeviceUtils.DeviceType) {
-        // Update UI layout based on new device type
+        // Handle device type change if needed
         when (newDeviceType) {
             DeviceUtils.DeviceType.FOLDABLE -> {
                 // Optimize for foldable device
                 optimizeForFoldableDevice()
             }
-
-            DeviceUtils.DeviceType.TABLET -> {
-                // Tablet optimization handled by UI components
-            }
-
-            DeviceUtils.DeviceType.PHONE -> {
-                // Phone optimization handled by UI components
-            }
-
             DeviceUtils.DeviceType.DESKTOP -> {
                 // Optimize for desktop
                 optimizeForDesktop()
             }
+            else -> {
+                // Tablet/Phone optimization handled by UI components
+            }
         }
+        }
+
+        // Handle orientation changes
+        val isLandscape = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE
+        // Orientation optimization handled by UI components
     }
 
-    /**
-     * Handle orientation changes
-     */
-    private fun handleOrientationChange(isLandscape: Boolean) {
-        if (isLandscape) {
-            // Landscape optimization handled by UI components
-        } else {
-            // Portrait optimization handled by UI components
-        }
-    }
 
     /**
      * Optimize UI for foldable devices
