@@ -17,7 +17,9 @@ sealed class Screen(val route: String) {
             movieId.toString()
         )
     }
-    data class DualPaneWithMovie(val movieId: Int) : Screen(NavigationConstants.ROUTE_DUAL_PANE_WITH_MOVIE) {
+
+    data class DualPaneWithMovie(val movieId: Int) :
+        Screen(NavigationConstants.ROUTE_DUAL_PANE_WITH_MOVIE) {
         fun createRoute() = NavigationConstants.ROUTE_DUAL_PANE_WITH_MOVIE.replace(
             "{${NavigationConstants.PARAM_MOVIE_ID}}",
             movieId.toString()

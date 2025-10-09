@@ -1,7 +1,6 @@
 package org.studioapp.cinemy.utils
 
 import android.content.Context
-import android.content.res.Configuration
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.compose.runtime.Composable
@@ -99,6 +98,7 @@ object DeviceUtils {
                 // Foldable devices only support dual pane when unfolded (wide screen)
                 screenWidthDp >= 840 // Large screen when unfolded
             }
+
             DeviceType.TABLET, DeviceType.DESKTOP -> true
             DeviceType.PHONE -> {
                 // Phones only support dual pane on very large screens
@@ -139,7 +139,6 @@ fun supportsDualPane(): Boolean {
     val context = LocalContext.current
     return DeviceUtils.supportsDualPane(context)
 }
-
 
 
 /**

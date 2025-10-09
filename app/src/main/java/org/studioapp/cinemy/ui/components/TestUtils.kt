@@ -11,8 +11,6 @@ import androidx.compose.ui.semantics.testTag as semanticsTestTag
 object TestUtils {
 
 
-
-
     /**
      * Modifier extensions for adding test attributes
      */

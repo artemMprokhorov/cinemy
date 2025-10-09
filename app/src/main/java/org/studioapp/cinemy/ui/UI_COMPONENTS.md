@@ -455,8 +455,10 @@ fun AdaptiveLayout(
 ```kotlin
 @Composable
 fun Modifier.adaptiveInsetsPadding(): Modifier
+
 @Composable
 fun Modifier.safeDrawingPadding(): Modifier
+
 @Composable
 fun Modifier.systemBarsPadding(): Modifier
 ```
@@ -475,10 +477,13 @@ fun Modifier.systemBarsPadding(): Modifier
 ```kotlin
 @Composable
 fun getDeviceType(): DeviceUtils.DeviceType
+
 @Composable
 fun isFoldableDevice(): Boolean
+
 @Composable
 fun supportsDualPane(): Boolean
+
 @Composable
 fun getOptimalColumnCount(): Int
 ```
@@ -517,9 +522,21 @@ fun getOptimalColumnCount(): Int
 ```kotlin
 object AccessibilityUtils {
     fun createMovieCardDescription(title: String, rating: Double, releaseDate: String): String
-    fun createMovieDetailsDescription(title: String, rating: Double, releaseDate: String, runtime: Int, genres: List<String>, description: String): String
+    fun createMovieDetailsDescription(
+        title: String,
+        rating: Double,
+        releaseDate: String,
+        runtime: Int,
+        genres: List<String>,
+        description: String
+    ): String
     fun createButtonDescription(action: String, target: String? = null): String
-    fun createPaginationDescription(currentPage: Int, totalPages: Int, hasNext: Boolean, hasPrevious: Boolean): String
+    fun createPaginationDescription(
+        currentPage: Int,
+        totalPages: Int,
+        hasNext: Boolean,
+        hasPrevious: Boolean
+    ): String
     fun createLoadingDescription(content: String): String
     fun createErrorDescription(error: String, retryAction: String = "retry"): String
     fun createSentimentDescription(positiveCount: Int, negativeCount: Int, totalCount: Int): String
@@ -761,14 +778,14 @@ fun Modifier.testAttributes(
     data: Map<String, String> = emptyMap()
 ): Modifier {
     var modifier = this
-    
+
     tag?.let { modifier = modifier.testTag(it) }
     id?.let { modifier = modifier.testId(it) }
-    
+
     data.forEach { (key, value) ->
         modifier = modifier.testData(key, value)
     }
-    
+
     return modifier
 }
 ```
@@ -792,7 +809,7 @@ fun ConfigurableText(
     testData: Map<String, String> = emptyMap()
 ) {
     // ... existing implementation ...
-    
+
     Text(
         text = text,
         style = style,
@@ -839,7 +856,7 @@ fun ConfigurableButton(
     testData: Map<String, String> = emptyMap()
 ) {
     // ... existing implementation ...
-    
+
     Button(
         onClick = onClick,
         modifier = modifier
@@ -887,7 +904,7 @@ fun ConfigurableMovieCard(
     testData: Map<String, String> = emptyMap()
 ) {
     // ... existing implementation ...
-    
+
     Card(
         modifier = modifier
             .fillMaxWidth()

@@ -51,13 +51,10 @@ object StringConstants {
     const val PAGINATION_FIRST_PAGE = 1
 
     // Meta Data Constants
-    const val META_METHOD_UNKNOWN = "unknown"
     const val META_RESULTS_COUNT_ZERO = 0
 
     // Network Simulation Constants
     const val NETWORK_DELAY_BASE_MS = 500L
-    const val NETWORK_DELAY_RANDOM_MAX_MS = 1000L
-    const val NETWORK_ERROR_PROBABILITY = 0.05
 
     // Fake Interceptor Delay Constants
     const val FAKE_INTERCEPTOR_DELAY_BASE_MS = 300L
@@ -72,7 +69,6 @@ object StringConstants {
     const val MCP_MESSAGE_ALL_ENDPOINTS_FAILED = "All endpoints failed"
     const val MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL = "Real request successful"
     const val MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE = "Real request successful (raw response)"
-    const val MCP_MESSAGE_USING_MOCK_BACKEND_UNAVAILABLE = "Using mock data (backend unavailable)"
     const val MCP_MESSAGE_MOCK_DATA_LOADED_SUCCESSFULLY = "Mock data loaded successfully"
 
     // JSON Structure Constants
@@ -119,7 +115,6 @@ object StringConstants {
 
     // Version and Status Constants
     const val VERSION_2_0_0 = "2.0.0"
-    const val METHOD_UNKNOWN = "unknown"
 
     // JSON Field Names
     const val FIELD_TITLE = "title"

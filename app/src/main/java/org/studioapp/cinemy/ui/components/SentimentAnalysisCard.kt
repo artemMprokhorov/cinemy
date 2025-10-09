@@ -27,7 +27,6 @@ import org.studioapp.cinemy.ui.theme.Dimens8
 import org.studioapp.cinemy.ui.theme.Float01
 import org.studioapp.cinemy.ui.theme.Float07
 import org.studioapp.cinemy.ui.theme.SentimentNegative
-import org.studioapp.cinemy.ui.theme.SentimentNeutral
 import org.studioapp.cinemy.ui.theme.SentimentPositive
 
 @Composable

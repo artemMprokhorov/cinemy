@@ -89,20 +89,22 @@ class MainActivity : ComponentActivity() {
         // Log configuration change for debugging
         if (newDeviceType != currentDeviceType) {
             currentDeviceType = newDeviceType
-        // Handle device type change if needed
-        when (newDeviceType) {
-            DeviceUtils.DeviceType.FOLDABLE -> {
-                // Optimize for foldable device
-                optimizeForFoldableDevice()
+            // Handle device type change if needed
+            when (newDeviceType) {
+                DeviceUtils.DeviceType.FOLDABLE -> {
+                    // Optimize for foldable device
+                    optimizeForFoldableDevice()
+                }
+
+                DeviceUtils.DeviceType.DESKTOP -> {
+                    // Optimize for desktop
+                    optimizeForDesktop()
+                }
+
+                else -> {
+                    // Tablet/Phone optimization handled by UI components
+                }
             }
-            DeviceUtils.DeviceType.DESKTOP -> {
-                // Optimize for desktop
-                optimizeForDesktop()
-            }
-            else -> {
-                // Tablet/Phone optimization handled by UI components
-            }
-        }
         }
 
         // Handle orientation changes

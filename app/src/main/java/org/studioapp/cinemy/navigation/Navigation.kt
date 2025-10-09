@@ -13,7 +13,6 @@ import org.studioapp.cinemy.ui.dualpane.DualPaneScreen
 import org.studioapp.cinemy.ui.moviedetail.MovieDetailScreen
 import org.studioapp.cinemy.ui.movieslist.MoviesListScreen
 import org.studioapp.cinemy.ui.splash.MovieAppSplashScreen
-import org.studioapp.cinemy.utils.DeviceUtils
 import org.studioapp.cinemy.utils.supportsDualPane
 
 @Composable
