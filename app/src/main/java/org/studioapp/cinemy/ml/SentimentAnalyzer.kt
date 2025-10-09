@@ -74,7 +74,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             // Load hybrid configuration
             hybridConfig = loadHybridConfig()
 
-            // Initialize models based on build type and flavor
+            // Initialize models based on flavor (Production and Dummy use TensorFlow, others use JSON)
             when {
                 // Production and Dummy flavors: Use TensorFlow model with JSON fallback
                 BuildConfig.FLAVOR_NAME == "Production" || BuildConfig.FLAVOR_NAME == "Dummy" -> {
@@ -86,16 +86,8 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                         initializeKeywordModel()
                     }
                 }
-                // Debug builds: Use keyword model for faster initialization
-                BuildConfig.BUILD_TYPE == "DEBUG" -> {
-                    initializeKeywordModel()
-                    
-                    // Still try to initialize TensorFlow for testing, but don't require it
-                    tensorFlowModel = TensorFlowSentimentModel.getInstance(context)
-                    tensorFlowModel?.initialize()
-                }
                 else -> {
-                    // Default: Use keyword model
+                    // All other cases: Use keyword model (JSON fallback)
                     initializeKeywordModel()
                 }
             }
@@ -138,7 +130,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         }
 
         runCatching {
-            // Model selection based on flavor and build type
+            // Model selection based on flavor (Production and Dummy use TensorFlow, others use JSON)
             when {
                 // Production and Dummy flavors: Prioritize TensorFlow model with JSON fallback
                 BuildConfig.FLAVOR_NAME == "Production" || BuildConfig.FLAVOR_NAME == "Dummy" -> {
@@ -158,16 +150,8 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                         SentimentResult.error("No sentiment model available")
                     }
                 }
-                // Debug builds: Use keyword model for faster processing
-                BuildConfig.BUILD_TYPE == "DEBUG" -> {
-                    if (keywordModel != null) {
-                        analyzeWithKeywords(text, keywordModel!!)
-                    } else {
-                        SentimentResult.error("Keyword model not available")
-                    }
-                }
                 else -> {
-                    // Default: Use keyword model
+                    // All other cases: Use keyword model (JSON fallback)
                     if (keywordModel != null) {
                         analyzeWithKeywords(text, keywordModel!!)
                     } else {
@@ -232,14 +216,12 @@ class SentimentAnalyzer private constructor(private val context: Context) {
      * 
      * This method clearly shows which model is prioritized for each flavor:
      * - Production/Dummy flavors: TensorFlow model (production_sentiment_full_manual.tflite)
-     * - Debug builds: Keyword model (multilingual_sentiment_production.json)
+     * - All other cases: Keyword model (multilingual_sentiment_production.json)
      */
     private fun getPrimaryModelType(): String {
         return when {
             BuildConfig.FLAVOR_NAME == "Production" || BuildConfig.FLAVOR_NAME == "Dummy" -> 
                 "TensorFlow (production_sentiment_full_manual.tflite)"
-            BuildConfig.BUILD_TYPE == "DEBUG" -> 
-                "Keyword (multilingual_sentiment_production.json)"
             else -> "Keyword (multilingual_sentiment_production.json)"
         }
     }
