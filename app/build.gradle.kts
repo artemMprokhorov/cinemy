@@ -210,5 +210,6 @@ dependencies {
     // Debug dependencies
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.12")
+    // LeakCanary disabled for better performance
+    // debugImplementation("com.squareup.leakcanary:leakcanary-android:2.12")
 }
