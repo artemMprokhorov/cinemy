@@ -138,32 +138,19 @@ class MainActivity : ComponentActivity() {
         
         when (deviceType) {
             DeviceUtils.DeviceType.FOLDABLE -> {
-                // For foldable devices, orientation change might indicate fold/unfold
-                if (isLandscape) {
-                    // Device is likely unfolded or rotated to landscape
-                    optimizeForFoldableDevice()
-                } else {
-                    // Device is likely folded or rotated to portrait
-                    // Keep foldable optimizations but adjust for portrait
-                }
-            }
-            
-            DeviceUtils.DeviceType.TABLET -> {
-                // For tablets, landscape provides more space for dual pane
-                if (isLandscape) {
-                    // Enable dual pane layout optimizations
-                    // UI components will automatically adjust
-                }
-            }
-            
-            DeviceUtils.DeviceType.PHONE -> {
-                // For phones, orientation change affects layout density
-                // UI components handle this automatically
+                // For foldable devices, always optimize regardless of orientation
+                // The device might be folded/unfolded or just rotated
+                optimizeForFoldableDevice()
             }
             
             DeviceUtils.DeviceType.DESKTOP -> {
                 // Desktop orientation changes are rare but handled
                 optimizeForDesktop()
+            }
+            
+            else -> {
+                // For tablets and phones, UI components handle orientation changes automatically
+                // No additional optimization needed
             }
         }
     }
@@ -183,9 +170,6 @@ class MainActivity : ComponentActivity() {
     private fun optimizeForFoldableDevice() {
         // Enable multi-window mode support for foldable devices
         setupOrientationSupport()
-        
-        // Additional foldable-specific optimizations can be added here
-        // For example: adjust window insets, enable multi-window, etc.
     }
 
     /**
@@ -194,9 +178,6 @@ class MainActivity : ComponentActivity() {
     private fun optimizeForDesktop() {
         // Enable window resizing for desktop devices
         setupOrientationSupport()
-        
-        // Additional desktop-specific optimizations can be added here
-        // For example: keyboard shortcuts, window management, etc.
     }
 
 }
