@@ -15,6 +15,11 @@ import org.studioapp.cinemy.ui.movieslist.MoviesListScreen
 import org.studioapp.cinemy.ui.splash.MovieAppSplashScreen
 import org.studioapp.cinemy.utils.supportsDualPane
 
+/**
+ * Main navigation composable for the Cinemy app
+ * Handles navigation between splash, movies list, movie detail, and dual pane screens
+ * @param navController NavHostController for navigation management
+ */
 @Composable
 fun AppNavigation(navController: NavHostController) {
     NavHost(
