@@ -18,6 +18,10 @@ import org.studioapp.cinemy.utils.supportsDualPane
 /**
  * Adaptive layout component that adjusts based on device type
  * Supports foldable devices with dual pane layout
+ * @param leftPane Content for the left pane
+ * @param rightPane Content for the right pane
+ * @param modifier Modifier for the composable
+ * @param showRightPane Whether to show the right pane
  */
 @Composable
 fun AdaptiveLayout(

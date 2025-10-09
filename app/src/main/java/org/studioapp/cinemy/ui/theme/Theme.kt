@@ -22,6 +22,12 @@ private val LightColorScheme = lightColorScheme(
     surface = SplashBackground
 )
 
+/**
+ * Main theme composable for Cinemy app
+ * Applies Material3 theming with custom color schemes
+ * @param darkTheme Whether to use dark theme
+ * @param content Content to be themed
+ */
 @Composable
 fun CinemyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

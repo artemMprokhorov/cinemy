@@ -64,6 +64,11 @@ import org.studioapp.cinemy.ui.theme.SplashBackground
 private const val SWIPE_THRESHOLD = 50
 private const val SNACKBAR_DEBOUNCE_MS = 2000
 
+/**
+ * Main screen for displaying movies list with pull-to-refresh functionality
+ * @param viewModel ViewModel for movies list state management
+ * @param onMovieClick Callback when a movie is clicked
+ */
 @Composable
 fun MoviesListScreen(
     viewModel: MoviesListViewModel,
@@ -80,6 +85,13 @@ fun MoviesListScreen(
     )
 }
 
+/**
+ * Content composable for movies list with pull-to-refresh functionality
+ * @param state Current state of the movies list
+ * @param onIntent Callback for processing user intents
+ * @param onMovieClick Callback when a movie is clicked
+ * @param snackbarHostState State for snackbar display
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MoviesListContent(

@@ -29,6 +29,12 @@ import org.studioapp.cinemy.ui.theme.Float07
 import org.studioapp.cinemy.ui.theme.SentimentNegative
 import org.studioapp.cinemy.ui.theme.SentimentPositive
 
+/**
+ * Card component for displaying sentiment analysis results
+ * @param sentimentReviews Sentiment reviews data to display
+ * @param error Error message to show if analysis failed
+ * @param modifier Modifier for the composable
+ */
 @Composable
 fun SentimentAnalysisCard(
     sentimentReviews: SentimentReviews? = null,

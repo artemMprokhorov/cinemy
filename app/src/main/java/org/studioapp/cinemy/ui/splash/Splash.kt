@@ -31,6 +31,11 @@ import org.studioapp.cinemy.ui.theme.Typography32
 
 private const val SPLASH_DISPLAY_DURATION_MS = 3000L
 
+/**
+ * Splash screen for the Cinemy app
+ * Displays app branding and initializes the application
+ * @param onSplashComplete Callback when splash animation completes
+ */
 @Composable
 fun MovieAppSplashScreen(
     onSplashComplete: () -> Unit = {}

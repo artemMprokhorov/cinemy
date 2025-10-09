@@ -53,6 +53,12 @@ import org.studioapp.cinemy.ui.theme.ImageConfig
 import org.studioapp.cinemy.ui.theme.SplashBackground
 
 
+/**
+ * Main screen for displaying movie details with sentiment analysis
+ * @param movieId Unique identifier of the movie to display
+ * @param viewModel ViewModel for movie detail state management
+ * @param onBackClick Callback when back button is pressed
+ */
 @Composable
 fun MovieDetailScreen(
     movieId: Int,
