@@ -16,6 +16,7 @@ data/
 ├── mapper/            # Mappers between DTOs and domain models
 ├── model/             # Domain models
 ├── repository/        # Repository interfaces and implementations
+├── util/              # Utility classes for data processing
 └── di/                # Dependency injection modules
 ```
 
@@ -89,152 +90,244 @@ when (result) {
 
 #### API Service (`api/MovieApiService.kt`)
 
-- Defines the interface for movie-related API calls
-- All methods return `McpResponseDto<T>` which includes both data and UI configuration
-- Supports popular movies, top rated, now playing, search, details, and recommendations
+- **Interface Definition**: Defines the contract for movie-related API calls
+- **Methods**: 
+  - `getPopularMovies(page: Int)` - Fetches popular movies with pagination
+  - `getMovieDetails(movieId: Int)` - Fetches detailed movie information
+- **Return Type**: All methods return `McpResponseDto<T>` with data and UI configuration
+- **MCP Integration**: Designed for MCP backend communication
 
 #### DTOs (`dto/MovieDto.kt`)
 
-- **Movie Data DTOs**: `MovieDto`, `MovieDetailsDto`, `GenreDto`, `ProductionCompanyDto`
-- **UI Configuration DTOs**: `UiConfigurationDto`, `ColorSchemeDto`, `TextConfigurationDto`,
-  `ButtonConfigurationDto`
-- **MCP Response DTOs**: `McpResponseDto<T>`, `McpMovieListResponseDto`, `PaginationDto`
+- **Movie Data DTOs**: 
+  - `MovieDto` - Basic movie information with colors and metadata
+  - `MovieDetailsDto` - Complete movie details with genres, companies, sentiment data
+  - `GenreDto`, `ProductionCompanyDto` - Supporting data structures
+- **UI Configuration DTOs**: 
+  - `UiConfigurationDto` - Complete UI configuration from backend
+  - `ColorSchemeDto` - Color palette configuration
+  - `TextConfigurationDto` - Text content configuration
+  - `ButtonConfigurationDto` - Button styling configuration
+  - `SearchInfoDto` - Search-specific UI configuration
+- **MCP Response DTOs**: 
+  - `McpResponseDto<T>` - Generic MCP response wrapper
+  - `MovieListResponseDto` - Paginated movie list response
+  - `SentimentReviewsDto`, `SentimentMetadataDto` - Sentiment analysis data
+- **Color System DTOs**:
+  - `MovieColorsDto` - Movie-specific color palette
+  - `ColorMetadataDto` - Color analysis metadata
+  - `GeminiColorsDto` - AI-generated color suggestions
 
-### 2. MCP Client (`mcp/McpClient.kt`)
+### 2. MCP Client (`mcp/`)
 
-- Implements `MovieApiService` interface
-- Simulates network calls with JSON payloads
-- Provides mock data for development and testing
-- Includes realistic network delays and error simulation
-- Returns both movie data and UI configuration from backend
+#### McpClient (`McpClient.kt`)
 
-### 3. Domain Models (`model/Movie.kt`)
+- **Interface Implementation**: Implements `MovieApiService` interface
+- **MCP Integration**: Uses `McpHttpClient` for backend communication
+- **Asset Loading**: Uses `AssetDataLoader` for UI configuration and metadata
+- **Methods**:
+  - `getPopularMovies(page: Int)` - Fetches popular movies via MCP
+  - `getMovieDetails(movieId: Int)` - Fetches movie details via MCP
+  - `getPopularMoviesViaMcp(page: Int)` - Direct MCP call returning domain models
+  - `getMovieDetailsViaMcp(movieId: Int)` - Direct MCP call returning domain models
+- **Response Processing**: Converts MCP responses to DTOs and domain models
+- **Error Handling**: Comprehensive error handling with fallback configurations
 
-- Clean domain models used by the UI layer
-- Includes `Movie`, `MovieDetails`, `Genre`, `ProductionCompany`
-- `Result<T>` sealed class for handling success/error states
-- `UiConfiguration` models for dynamic UI theming
+#### Supporting MCP Components
 
-#### **Updated Domain Models (v2.0.0)**
+- **AssetDataLoader** (`AssetDataLoader.kt`) - Loads UI configuration and metadata from assets
+- **McpHttpClient** (`McpHttpClient.kt`) - HTTP client for MCP communication
+- **FakeInterceptor** (`FakeInterceptor.kt`) - Network interceptor for testing
+- **MCP Models** (`models/`):
+  - `McpRequest.kt` - MCP request structure
+  - `McpResponse.kt` - MCP response structure
 
-##### Core Models
+### 3. Domain Models (`model/`)
 
-- **Movie**: Enhanced with backdrop, vote count, popularity, adult flag
-- **MovieDetails**: Complete movie details with runtime, genres, companies
-- **Genre**: Movie genre information
-- **ProductionCompany**: Production company details with origin country
+#### Core Models (`Movie.kt`)
 
-##### Response Models
+- **Movie**: Complete movie information with colors and metadata
+  - Basic info: id, title, description, posterPath, backdropPath
+  - Ratings: rating, voteCount, popularity
+  - Metadata: adult, originalLanguage, originalTitle, video
+  - Colors: MovieColors with accent, primary, secondary, metadata
+- **MovieDetails**: Extended movie information
+  - Runtime, genres, production companies
+  - Budget, revenue, status
+  - Sentiment analysis data (reviews, metadata)
+- **Supporting Models**: Genre, ProductionCompany, MovieColors, ColorMetadata
 
-- **MovieListResponse**: Paginated movie lists with search metadata
-- **MovieDetailsResponse**: Detailed movie information wrapper
-- **Meta**: API response metadata with AI generation info
-- **SearchInfo**: Search-specific UI configuration
+#### Response Models
 
-##### Enhanced Features
+- **MovieListResponse**: Paginated movie lists
+  - page, results, totalPages, totalResults
+- **MovieDetailsResponse**: Complete movie details wrapper
+  - success, data, uiConfig, error, meta
+- **MovieDetailsData**: Movie details with sentiment data
+  - movieDetails, sentimentReviews, sentimentMetadata
+- **Pagination**: Pagination information
+  - page, totalPages, totalResults, hasNext, hasPrevious
 
-- **Complete Pagination**: Full TMDB pagination support
-- **Search Metadata**: Query info and result statistics
-- **Production Data**: Budget, revenue, production companies
-- **AI Metadata**: Backend AI generation tracking
+#### UI Configuration Models
+
+- **UiConfiguration**: Complete UI configuration
+  - colors, texts, buttons, searchInfo
+- **ColorScheme**: Color palette with Compose Color objects
+  - primary, secondary, background, surface, onPrimary, etc.
+- **TextConfiguration**: Text content configuration
+  - appTitle, loadingText, errorMessage, button texts
+- **ButtonConfiguration**: Button styling
+  - colors, textColor, cornerRadius
+- **SearchInfo**: Search-specific configuration
+  - query, resultCount, avgRating, ratingType, colorBased
+
+#### Metadata Models
+
+- **Meta**: API response metadata
+  - timestamp, method, searchQuery, movieId, resultsCount
+  - aiGenerated, geminiColors, ratings, version
+- **GeminiColors**: AI-generated color suggestions
+  - primary, secondary, accent
+- **SentimentReviews**: Sentiment analysis results
+  - positive, negative review lists
+  - hasPositiveReviews, hasNegativeReviews, hasAnyReviews computed properties
+- **SentimentMetadata**: Sentiment analysis metadata
+  - totalReviews, positiveCount, negativeCount, source, timestamp, apiSuccess
+
+#### Additional Models
+
+- **StringConstants**: Centralized string constants for data layer
+  - Error messages, MCP method names, UI text constants
+  - Serialization field names, default values, color constants
+  - Network configuration, pagination constants
+
+#### Result Handling
+
+- **Result<T>**: Sealed class for type-safe state management
+  - `Success<T>` - Contains data and optional UI config
+  - `Error` - Contains error message and optional UI config
+  - `Loading` - Loading state indicator
 
 ### 4. Mappers (`mapper/MovieMapper.kt`)
 
-- Converts between DTOs and domain models
-- Handles color string to Compose Color conversion
-- Provides type-safe mapping functions
+- **Purpose**: Converts between DTOs and domain models
+- **Color Conversion**: Handles string to Compose Color conversion using ColorUtils
+- **Type Safety**: Provides type-safe mapping functions
+- **Key Mappings**:
+  - `mapMovieDtoToMovie()` - MovieDto → Movie
+  - `mapMovieDetailsDtoToMovieDetails()` - MovieDetailsDto → MovieDetails
+  - `mapMovieListResponseDtoToMovieListResponse()` - MovieListResponseDto → MovieListResponse
+  - `mapUiConfigurationDtoToUiConfiguration()` - UiConfigurationDto → UiConfiguration
+  - `mapSentimentReviewsDtoToSentimentReviews()` - SentimentReviewsDto → SentimentReviews
+  - `mapSentimentMetadataDtoToSentimentMetadata()` - SentimentMetadataDto → SentimentMetadata
+  - Supporting mappings for Genre, ProductionCompany, ColorScheme, etc.
 
 ### 5. Repository Layer (`repository/`)
 
 #### Interface (`MovieRepository.kt`)
 
-- Defines repository contract with suspend functions
-- Returns `Result<T>` sealed class for error handling
-- **Enhanced Methods**: `getPopularMovies`, `searchMovies`, `getMovieDetails`
-- **API Contract Alignment**: Methods match new API contracts exactly
+- **Contract Definition**: Defines repository interface with suspend functions
+- **Return Types**: All methods return `Result<T>` sealed class for error handling
+- **Methods**:
+  - `getPopularMovies(page: Int)` - Fetches popular movies with pagination
+  - `getMovieDetails(movieId: Int)` - Fetches detailed movie information
+- **Type Safety**: Uses sealed Result class for compile-time safety
 
 #### Implementation (`MovieRepositoryImpl.kt`)
 
-- Implements repository interface
-- Uses MCP client for data fetching
-- Handles error mapping and UI configuration extraction
-- Provides clean API for the presentation layer
+- **Dual Mode Support**: Routes between mock data and MCP client based on BuildConfig.USE_MOCK_DATA
+- **MCP Integration**: Uses McpClient for backend communication
+- **Mock Data Support**: Provides mock data for development and testing
+- **Error Handling**: Comprehensive error handling with fallback configurations
+- **UI Configuration**: Handles UI configuration extraction and mapping
 
-#### **Repository Layer Updates (v2.0.0)**
+#### Key Features
 
-##### Enhanced Repository Interface
+- **Build Variant Support**: 
+  - Mock mode: Uses AssetDataLoader for local data
+  - Production mode: Uses MCP client for backend data
+- **Error Recovery**: Graceful error handling with user-friendly messages
+- **UI Configuration**: Dynamic theming support from backend
+- **Pagination**: Full pagination support for movie lists
+- **Sentiment Analysis**: Support for sentiment reviews and metadata
 
-- **getPopularMovies**: Returns `MovieListResponse` with full pagination
-- **searchMovies**: Returns `MovieListResponse` with search metadata
-- **getMovieDetails**: Returns `MovieDetailsResponse` with complete details
+### 6. Utility Classes (`util/`)
 
-##### MCP Integration Enhancements
+#### AssetUtils (`AssetUtils.kt`)
 
-- **Method Mapping**: Direct mapping to API contract methods
-- **Parameter Handling**: Proper query and pagination parameters
-- **Response Processing**: Complete response wrapper handling
-- **Error Handling**: Enhanced error messages and UI config preservation
+- **Asset Loading**: Utility functions for loading JSON data from assets
+- **File Operations**: Helper methods for asset file management
+- **Error Handling**: Safe asset loading with fallback mechanisms
 
-##### Mock Data Alignment
+#### ColorUtils (`ColorUtils.kt`)
 
-- **Contract Compliance**: Mock responses match API contracts exactly
-- **Development Testing**: Full feature testing without backend
-- **UI Configuration**: Dynamic theming data in all responses
+- **Color Conversion**: Converts string colors to Compose Color objects
+- **Color Parsing**: Handles hex color string parsing
+- **Default Colors**: Provides fallback colors for invalid color strings
+- **Color Validation**: Ensures color strings are valid before conversion
 
-### 6. Dependency Injection (`di/DataModule.kt`)
+### 7. Dependency Injection (`di/DataModule.kt`)
 
-- Koin module for data layer dependencies
-- Provides singleton instances for MCP client and repositories
-- Includes ViewModel factory for MVI pattern
+- **Koin Module**: Dependency injection configuration for data layer
+- **Singleton Management**: Provides singleton instances for MCP client and repositories
+- **AssetDataLoader**: Dependency injection for asset data loading
+- **Repository Binding**: Binds repository interface to implementation
+- **MCP Client**: Provides MCP client instance for backend communication
 
 ## Key Features
 
 ### ✅ Clean Architecture Compliance
 
-- Clear separation of concerns
-- Dependency inversion principle
-- Repository pattern implementation
+- **Separation of Concerns**: Clear boundaries between layers
+- **Dependency Inversion**: Repository pattern with interface contracts
+- **Single Responsibility**: Each component has a focused purpose
+- **Testability**: Easy to mock and test individual components
 
 ### ✅ MVI Pattern Support
 
-- Intent-based user interactions
-- StateFlow for reactive state management
-- Unidirectional data flow
+- **Model Component**: Data layer serves as the Model in MVI
+- **Unidirectional Flow**: Data flows from repository to presentation layer
+- **State Management**: Result<T> sealed class for type-safe state handling
+- **Intent Processing**: Repository methods process intents from ViewModels
 
 ### ✅ MCP Backend Integration
 
-- No TMDB API key in the app
-- All data comes through MCP backend
-- UI configuration included in responses
-- Simulated network calls for development
+- **No External APIs**: No TMDB API key required in the app
+- **MCP Protocol**: All data comes through MCP backend
+- **UI Configuration**: Dynamic theming data included in responses
+- **Mock Data Support**: Local asset data for development and testing
+- **Network Simulation**: Realistic network delays and error simulation
 
 ### ✅ Error Handling
 
-- Graceful error recovery
-- Type-safe error handling with sealed classes
-- User-friendly error messages
-- Loading state management
+- **Graceful Recovery**: Comprehensive error handling with fallbacks
+- **Type Safety**: Sealed Result<T> class for compile-time safety
+- **User-Friendly Messages**: Clear error messages for users
+- **Loading States**: Proper loading state management
+- **Network Errors**: Specific handling for network-related issues
 
 ### ✅ Type Safety
 
-- Sealed classes for Result handling
-- Compile-time safety for all operations
-- Null safety with proper defaults
-- Domain model validation
+- **Sealed Classes**: Result<T> for type-safe state management
+- **Compile-Time Safety**: All operations are type-safe
+- **Null Safety**: Proper null handling with defaults
+- **Domain Validation**: Domain models ensure data integrity
 
 ### ✅ Dynamic UI Configuration
 
-- Backend-driven theming
-- Configurable colors and texts
-- Dynamic button styling
-- Movie poster color palettes
+- **Backend-Driven Theming**: UI configuration from backend
+- **Color Palettes**: Dynamic color schemes for movies
+- **Text Configuration**: Configurable text content
+- **Button Styling**: Dynamic button appearance
+- **Search Configuration**: Search-specific UI settings
 
 ### ✅ Repository Pattern
 
-- Clean interface definitions
-- Implementation separation
-- Dependency injection support
-- Testable architecture
+- **Interface Contracts**: Clean repository interface definitions
+- **Implementation Separation**: Clear separation of interface and implementation
+- **Dependency Injection**: Koin-based dependency injection
+- **Testable Architecture**: Easy to mock and test
+- **Build Variant Support**: Different implementations for different build types
 
 ## MVI Integration Examples
 
@@ -293,17 +386,25 @@ sealed class Result<out T> {
 
 ## Dependencies
 
-- **Koin**: Dependency injection
-- **Coroutines**: Asynchronous programming
-- **Gson**: JSON parsing
-- **Jetpack Compose**: UI framework integration
+- **Koin**: Dependency injection framework
+- **Coroutines**: Asynchronous programming with suspend functions
+- **Gson**: JSON parsing and serialization
+- **Jetpack Compose**: UI framework integration with Color objects
+- **Ktor**: HTTP client for MCP communication
+- **Android Context**: Asset loading and resource access
 
 ## Build Status
 
-✅ **BUILD SUCCESSFUL** - All data layer components compile correctly and are fully integrated with
-the presentation layer.
+✅ **BUILD SUCCESSFUL** - All data layer components compile correctly and are fully integrated with the presentation layer.
 
 ✅ **MVI MODEL VERIFIED** - Complete compliance with MVI architecture Model component.
 
-The data layer is now ready for production use with complete Clean Architecture implementation, MVI
-pattern support, and seamless presentation layer integration.
+✅ **MCP INTEGRATION** - Full MCP backend integration with fallback to mock data.
+
+✅ **TYPE SAFETY** - All operations are type-safe with sealed Result<T> classes.
+
+✅ **ERROR HANDLING** - Comprehensive error handling with user-friendly messages.
+
+✅ **UI CONFIGURATION** - Dynamic theming support from backend.
+
+The data layer is now ready for production use with complete Clean Architecture implementation, MVI pattern support, MCP backend integration, and seamless presentation layer integration.
