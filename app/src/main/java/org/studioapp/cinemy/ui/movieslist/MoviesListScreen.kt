@@ -42,6 +42,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.launch
 import org.studioapp.cinemy.R
@@ -133,16 +136,20 @@ private fun MoviesListContent(
                                 text = stringResource(R.string.loading_text),
                                 color = Color.White,
                                 style = MaterialTheme.typography.headlineMedium,
-                                modifier = Modifier.semantics {
-                                    contentDescription = "Loading movies, please wait"
-                                }
+                                modifier = Modifier
+                                    .semantics {
+                                        contentDescription = "Loading movies, please wait"
+                                    }
+                                    .testTag("loading_text")
                             )
                             Spacer(modifier = Modifier.height(Dimens16))
                             CircularProgressIndicator(
                                 color = Color.White,
-                                modifier = Modifier.semantics {
-                                    contentDescription = "Loading movies, please wait"
-                                }
+                                modifier = Modifier
+                                    .semantics {
+                                        contentDescription = "Loading movies, please wait"
+                                    }
+                                    .testTag("loading_indicator")
                             )
                         }
                     }
@@ -166,17 +173,21 @@ private fun MoviesListContent(
                                 text = stringResource(R.string.error_generic),
                                 color = Color.White,
                                 style = MaterialTheme.typography.headlineLarge,
-                                modifier = Modifier.semantics {
-                                    contentDescription = "Error: Failed to load movies"
-                                }
+                                modifier = Modifier
+                                    .semantics {
+                                        contentDescription = "Error: Failed to load movies"
+                                    }
+                                    .testTag("error_title")
                             )
                             Text(
                                 text = stringResource(R.string.movie_details),
                                 color = Color.White,
                                 style = MaterialTheme.typography.headlineLarge,
-                                modifier = Modifier.semantics {
-                                    contentDescription = "Movies list screen"
-                                }
+                                modifier = Modifier
+                                    .semantics {
+                                        contentDescription = "Movies list screen"
+                                    }
+                                    .testTag("error_subtitle")
                             )
                             Spacer(modifier = Modifier.height(Dimens16))
                             PullToReloadArrow()
@@ -185,9 +196,11 @@ private fun MoviesListContent(
                                 text = stringResource(R.string.pull_to_reload),
                                 color = Color.White,
                                 style = MaterialTheme.typography.headlineMedium,
-                                modifier = Modifier.semantics {
-                                    contentDescription = "Pull down to retry loading movies"
-                                }
+                                modifier = Modifier
+                                    .semantics {
+                                        contentDescription = "Pull down to retry loading movies"
+                                    }
+                                    .testTag("retry_instruction")
                             )
                             Spacer(modifier = Modifier.height(Dimens100))
                         }

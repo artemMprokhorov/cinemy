@@ -75,6 +75,29 @@ The UI layer has comprehensive accessibility support with excellent screen reade
 - **✅ Test Data**: Test data attributes for automation
 - **✅ Accessibility Testing**: Screen reader and voice command testing
 
+### **📱 QA Testing Tags Implementation**
+- **✅ Loading States**: `testTag("loading_text")`, `testTag("loading_indicator")`
+- **✅ Error States**: `testTag("error_title")`, `testTag("error_subtitle")`, `testTag("retry_instruction")`
+- **✅ Interactive Components**: ConfigurableMovieCard, SentimentAnalysisCard with test attributes
+- **✅ Framework Support**: Espresso, UI Automator, Appium, Detox compatibility
+
+### **🔧 QA Testing Examples**
+```kotlin
+// Loading state with QA tags
+Text(
+    modifier = Modifier
+        .semantics { contentDescription = "Loading movies, please wait" }
+        .testTag("loading_text")  // ✅ QA automation support
+)
+
+// Error state with QA tags
+Text(
+    modifier = Modifier
+        .semantics { contentDescription = "Error: Failed to load movies" }
+        .testTag("error_title")  // ✅ QA automation support
+)
+```
+
 ### **📱 Device-Specific Accessibility**
 
 #### **Foldable Device Support**

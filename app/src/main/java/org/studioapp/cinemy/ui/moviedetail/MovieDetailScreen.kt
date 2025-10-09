@@ -32,6 +32,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import org.studioapp.cinemy.R
@@ -115,14 +118,17 @@ private fun MovieDetailContent(
                             style = MaterialTheme.typography.headlineMedium,
                             uiConfig = state.uiConfig,
                             color = Color.White,
-                            contentDescription = "Loading movie details, please wait"
+                            contentDescription = "Loading movie details, please wait",
+                            testTag = "loading_text"
                         )
                         Spacer(modifier = Modifier.height(Dimens16))
                         CircularProgressIndicator(
                             color = state.uiConfig?.colors?.primary ?: Color.White,
-                            modifier = Modifier.semantics {
-                                contentDescription = "Loading movie details, please wait"
-                            }
+                            modifier = Modifier
+                                .semantics {
+                                    contentDescription = "Loading movie details, please wait"
+                                }
+                                .testTag("loading_indicator")
                         )
                     }
                 }
@@ -146,14 +152,16 @@ private fun MovieDetailContent(
                         style = MaterialTheme.typography.headlineLarge,
                         uiConfig = state.uiConfig,
                         color = Color.White,
-                        contentDescription = "Error: Failed to load movie details"
+                        contentDescription = "Error: Failed to load movie details",
+                        testTag = "error_title"
                     )
                     ConfigurableText(
                         text = stringResource(R.string.movie_details),
                         style = MaterialTheme.typography.headlineLarge,
                         uiConfig = state.uiConfig,
                         color = Color.White,
-                        contentDescription = "Movie details screen"
+                        contentDescription = "Movie details screen",
+                        testTag = "error_subtitle"
                     )
                     Spacer(modifier = Modifier.height(Dimens16))
                     PullToReloadArrow()
@@ -163,7 +171,8 @@ private fun MovieDetailContent(
                         style = MaterialTheme.typography.headlineMedium,
                         uiConfig = state.uiConfig,
                         color = Color.White,
-                        contentDescription = "Pull down to retry loading movie details"
+                        contentDescription = "Pull down to retry loading movie details",
+                        testTag = "retry_instruction"
                     )
                     Spacer(modifier = Modifier.height(Dimens100))
                 }
