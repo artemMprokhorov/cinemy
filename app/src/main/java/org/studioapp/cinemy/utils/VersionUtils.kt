@@ -6,11 +6,13 @@ import androidx.activity.enableEdgeToEdge
 
 /**
  * Utility class for handling Android version-specific features
+ * Provides safe access to version-dependent APIs
  */
 object VersionUtils {
 
     /**
      * Android version constants for better readability
+     * Centralizes version-specific constants for maintainability
      */
     object Versions {
         const val ANDROID_5 = Build.VERSION_CODES.LOLLIPOP // API 21 - Minimum for edge-to-edge

@@ -35,6 +35,8 @@ object DeviceUtils {
 
     /**
      * Determines if the device is a foldable device
+     * @param context Android context for accessing system services
+     * @return Boolean indicating if the device is foldable
      */
     fun isFoldableDevice(context: Context): Boolean {
         val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -52,7 +54,9 @@ object DeviceUtils {
     }
 
     /**
-     * Gets the device type based on screen size
+     * Gets the device type based on screen characteristics
+     * @param context Android context for accessing system services
+     * @return DeviceType enum indicating the device type
      */
     fun getDeviceType(context: Context): DeviceType {
         val configuration = context.resources.configuration
@@ -68,7 +72,9 @@ object DeviceUtils {
     }
 
     /**
-     * Gets the screen size category
+     * Gets the screen size category based on screen dimensions
+     * @param context Android context for accessing system services
+     * @return ScreenSize enum indicating the screen size category
      */
     fun getScreenSize(context: Context): ScreenSize {
         val configuration = context.resources.configuration
@@ -85,7 +91,8 @@ object DeviceUtils {
 
     /**
      * Determines if the device supports dual pane layout
-     * For foldable devices, checks if they're unfolded (large screen)
+     * @param context Android context for accessing system services
+     * @return Boolean indicating if dual pane is supported
      */
     fun supportsDualPane(context: Context): Boolean {
         val deviceType = getDeviceType(context)
@@ -109,7 +116,9 @@ object DeviceUtils {
 
 
     /**
-     * Gets optimal spacing for different device types
+     * Gets optimal spacing based on device type and screen size
+     * @param context Android context for accessing system services
+     * @return Dp value for optimal spacing
      */
     fun getOptimalSpacing(context: Context): Dp {
         val deviceType = getDeviceType(context)
@@ -122,7 +131,8 @@ object DeviceUtils {
 }
 
 /**
- * Composable function to get device type in Compose
+ * Composable function to get device type
+ * @return DeviceType enum indicating the device type
  */
 @Composable
 fun getDeviceType(): DeviceUtils.DeviceType {
@@ -133,6 +143,7 @@ fun getDeviceType(): DeviceUtils.DeviceType {
 
 /**
  * Composable function to check if device supports dual pane
+ * @return Boolean indicating if dual pane is supported
  */
 @Composable
 fun supportsDualPane(): Boolean {
@@ -143,6 +154,7 @@ fun supportsDualPane(): Boolean {
 
 /**
  * Composable function to get optimal spacing
+ * @return Dp value for optimal spacing
  */
 @Composable
 fun getOptimalSpacing(): Dp {
