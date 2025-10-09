@@ -1,16 +1,8 @@
 package org.studioapp.cinemy.ui.components
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -18,11 +10,8 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
-import org.studioapp.cinemy.R
 import org.studioapp.cinemy.ui.theme.Dimens140
-import org.studioapp.cinemy.ui.theme.Float0
 import org.studioapp.cinemy.ui.theme.Float008
 import org.studioapp.cinemy.ui.theme.Float01
 import org.studioapp.cinemy.ui.theme.Float02
@@ -36,37 +25,7 @@ import org.studioapp.cinemy.ui.theme.Float09
 import org.studioapp.cinemy.ui.theme.Float10
 import org.studioapp.cinemy.ui.theme.Float2
 
-private const val TWEEN_DURATION_MS = 100
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun PullToReloadIndicator(
-    state: PullRefreshState,
-    modifier: Modifier = Modifier,
-    color: Color = Color.Red,
-    size: Dp = Dimens140 // Triple-sized (48dp * 3)
-) {
-    val animatedProgress by animateFloatAsState(
-        targetValue = state.progress.coerceIn(Float0, Float10),
-        animationSpec = tween(TWEEN_DURATION_MS),
-        label = stringResource(R.string.pull_progress_animation)
-    )
-
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Canvas(
-            modifier = Modifier.size(size)
-        ) {
-            drawPullToReloadArrow(
-                progress = animatedProgress,
-                color = color,
-                size = size.toPx()
-            )
-        }
-    }
-}
+// PullToReloadIndicator removed - was unused in codebase
 
 @Composable
 fun PullToReloadArrow(
