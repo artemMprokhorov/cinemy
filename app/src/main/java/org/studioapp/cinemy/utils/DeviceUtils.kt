@@ -140,14 +140,6 @@ fun supportsDualPane(): Boolean {
     return DeviceUtils.supportsDualPane(context)
 }
 
-/**
- * Composable function to check if device is foldable
- */
-@Composable
-fun isFoldableDevice(): Boolean {
-    val context = LocalContext.current
-    return DeviceUtils.isFoldableDevice(context)
-}
 
 
 /**
