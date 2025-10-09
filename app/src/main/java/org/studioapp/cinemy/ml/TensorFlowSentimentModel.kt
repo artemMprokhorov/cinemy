@@ -25,6 +25,11 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
         @Volatile
         private var INSTANCE: TensorFlowSentimentModel? = null
 
+        /**
+         * Gets singleton instance of TensorFlowSentimentModel
+         * @param context Android context
+         * @return TensorFlowSentimentModel instance
+         */
         fun getInstance(context: Context): TensorFlowSentimentModel {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: TensorFlowSentimentModel(context.applicationContext).also {
@@ -65,7 +70,8 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
     }
 
     /**
-     * Initialize TensorFlow Lite model
+     * Initializes TensorFlow Lite model and loads configuration
+     * @return Boolean indicating if initialization was successful
      */
     suspend fun initialize(): Boolean = withContext(Dispatchers.IO) {
         runCatching {
@@ -105,7 +111,9 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
     }
 
     /**
-     * Analyze sentiment using TensorFlow Lite model
+     * Analyzes sentiment using TensorFlow Lite model
+     * @param text Input text to analyze
+     * @return SentimentResult with sentiment classification and confidence
      */
     suspend fun analyzeSentiment(text: String): SentimentResult = withContext(Dispatchers.Default) {
         if (!isInitialized || interpreter == null || config == null) {
@@ -140,7 +148,8 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
     }
 
     /**
-     * Get model information
+     * Gets information about the TensorFlow model
+     * @return ModelInfo object or null if not available
      */
     fun getModelInfo(): ModelInfo? = config?.let { tfConfig ->
         ModelInfo(
@@ -153,7 +162,8 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
     }
 
     /**
-     * Check if model is ready for use
+     * Checks if TensorFlow model is ready for inference
+     * @return Boolean indicating model readiness
      */
     fun isReady(): Boolean = isInitialized && interpreter != null
 

@@ -22,6 +22,11 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         @Volatile
         private var INSTANCE: SentimentAnalyzer? = null
 
+        /**
+         * Gets singleton instance of SentimentAnalyzer
+         * @param context Android context
+         * @return SentimentAnalyzer instance
+         */
         fun getInstance(context: Context): SentimentAnalyzer {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: SentimentAnalyzer(context.applicationContext).also { INSTANCE = it }
@@ -65,7 +70,8 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
     /**
-     * Initialize analyzer (call at app startup)
+     * Initializes sentiment analyzer with appropriate model based on build configuration
+     * @return Boolean indicating if initialization was successful
      */
     suspend fun initialize(): Boolean = withContext(Dispatchers.IO) {
         runCatching {
@@ -101,7 +107,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
     /**
-     * Initialize keyword model as fallback
+     * Initializes keyword-based sentiment model from assets
      */
     private suspend fun initializeKeywordModel() {
         val modelFileName = getModelFileName()
@@ -119,7 +125,9 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
     /**
-     * Analyze text sentiment using hybrid system
+     * Analyzes sentiment of input text using hybrid approach
+     * @param text Input text to analyze
+     * @return SentimentResult with sentiment classification and confidence
      */
     suspend fun analyzeSentiment(text: String): SentimentResult = withContext(Dispatchers.Default) {
         if (!isInitialized) {
@@ -167,7 +175,9 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
     /**
-     * Batch analysis of multiple texts
+     * Analyzes sentiment for multiple texts in batch
+     * @param texts List of texts to analyze
+     * @return List of SentimentResult objects
      */
     suspend fun analyzeBatch(texts: List<String>): List<SentimentResult> =
         withContext(Dispatchers.Default) {
@@ -175,17 +185,20 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         }
 
     /**
-     * Get model information
+     * Gets information about the keyword model
+     * @return ModelInfo object or null if not available
      */
     fun getModelInfo(): ModelInfo? = keywordModel?.modelInfo
 
     /**
-     * Get TensorFlow model information
+     * Gets information about the TensorFlow model
+     * @return ModelInfo object or null if not available
      */
     fun getTensorFlowModelInfo(): ModelInfo? = tensorFlowModel?.getModelInfo()
 
     /**
-     * Check if TensorFlow model is available
+     * Checks if TensorFlow model is available and ready
+     * @return Boolean indicating TensorFlow model availability
      */
     fun isTensorFlowAvailable(): Boolean = tensorFlowModel?.isReady() ?: false
 
