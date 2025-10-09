@@ -17,12 +17,12 @@ import org.studioapp.cinemy.data.util.AssetUtils
 
 /**
  * Loads UI configuration and meta data from asset files
- * instead of using hardcoded mock generation methods.
  */
 class AssetDataLoader(private val context: Context) {
 
     /**
      * Loads UI configuration from asset files
+     * @return UiConfigurationDto with theme configuration
      */
     fun loadUiConfig(): UiConfigurationDto {
         return runCatching {
@@ -48,6 +48,10 @@ class AssetDataLoader(private val context: Context) {
 
     /**
      * Loads meta data from asset files
+     * @param method API method name
+     * @param resultsCount Number of results returned
+     * @param movieId Movie ID (optional)
+     * @return MetaDto with metadata information
      */
     fun loadMetaData(method: String, resultsCount: Int = 0, movieId: Int? = null): MetaDto {
         return runCatching {
@@ -71,6 +75,7 @@ class AssetDataLoader(private val context: Context) {
 
     /**
      * Loads mock movies from asset files
+     * @return List of MovieDto objects from assets
      */
     fun loadMockMovies(): List<MovieDto> {
         return runCatching {
@@ -112,7 +117,9 @@ class AssetDataLoader(private val context: Context) {
 
 
     /**
-     * Parses UI configuration from JSON
+     * Parses UI configuration from JSON object
+     * @param uiConfigJson JSON object containing UI configuration
+     * @return UiConfigurationDto with parsed configuration
      */
     private fun parseUiConfigFromJson(uiConfigJson: JSONObject): UiConfigurationDto {
         val colorsJson = uiConfigJson.optJSONObject(StringConstants.FIELD_COLORS)
@@ -224,7 +231,12 @@ class AssetDataLoader(private val context: Context) {
     }
 
     /**
-     * Parses meta data from JSON
+     * Parses meta data from JSON object
+     * @param metaJson JSON object containing metadata
+     * @param method API method name
+     * @param resultsCount Number of results returned
+     * @param movieId Movie ID (optional)
+     * @return MetaDto with parsed metadata
      */
     private fun parseMetaFromJson(
         metaJson: JSONObject,
@@ -274,6 +286,8 @@ class AssetDataLoader(private val context: Context) {
 
     /**
      * Parses movies from JSON array
+     * @param moviesJson JSON array containing movie data
+     * @return List of MovieDto objects
      */
     private fun parseMoviesFromJson(moviesJson: JSONArray): List<MovieDto> {
         val movies = mutableListOf<MovieDto>()
@@ -342,6 +356,8 @@ class AssetDataLoader(private val context: Context) {
 
     /**
      * Parses movie colors from JSON object
+     * @param movieJson JSON object containing movie data
+     * @return MovieColorsDto with parsed color information
      */
     private fun parseMovieColors(movieJson: JSONObject): MovieColorsDto {
         val colorsJson = movieJson.optJSONObject("colors")
@@ -376,6 +392,8 @@ class AssetDataLoader(private val context: Context) {
 
     /**
      * Parses movie poster colors from JSON array
+     * @param colorsJson JSON array containing color data
+     * @return List of color strings
      */
     private fun parseMoviePosterColors(colorsJson: JSONArray?): List<String> {
         if (colorsJson == null) return emptyList()
@@ -395,6 +413,8 @@ class AssetDataLoader(private val context: Context) {
 
     /**
      * Parses genre IDs from JSON array
+     * @param genreIdsJson JSON array containing genre IDs
+     * @return List of genre ID integers
      */
     private fun parseGenreIds(genreIdsJson: JSONArray?): List<Int> {
         if (genreIdsJson == null) return emptyList()

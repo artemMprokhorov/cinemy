@@ -21,12 +21,16 @@ class MovieRepositoryImpl(
     private val assetDataLoader: AssetDataLoader
 ) : MovieRepository {
 
+    /**
+     * Fetches popular movies with pagination support
+     * Routes to mock data or MCP client based on BuildConfig.USE_MOCK_DATA
+     * @param page Page number for pagination
+     * @return Result containing MovieListResponse with movies, pagination, and UI config
+     */
     override suspend fun getPopularMovies(page: Int): Result<MovieListResponse> {
         return if (BuildConfig.USE_MOCK_DATA) {
-            // Dummy mode: use mock data
             loadMockPopularMovies(page)
         } else {
-            // Prod mode: use MCP client
             runCatching {
                 val response = mcpClient.getPopularMoviesViaMcp(page)
 
@@ -50,13 +54,16 @@ class MovieRepositoryImpl(
         }
     }
 
-
+    /**
+     * Fetches detailed movie information by ID
+     * Routes to mock data or MCP client based on BuildConfig.USE_MOCK_DATA
+     * @param movieId Unique identifier of the movie
+     * @return Result containing MovieDetailsResponse with complete movie details and UI config
+     */
     override suspend fun getMovieDetails(movieId: Int): Result<MovieDetailsResponse> {
         return if (BuildConfig.USE_MOCK_DATA) {
-            // Dummy mode: use mock data
             loadMockMovieDetails(movieId)
         } else {
-            // Prod mode: use MCP client
             runCatching {
                 val response = mcpClient.getMovieDetailsViaMcp(movieId)
 
@@ -77,25 +84,25 @@ class MovieRepositoryImpl(
         }
     }
 
-    // Mock data methods for dummy mode
+    /**
+     * Loads mock popular movies with pagination for dummy mode
+     * @param page Page number for pagination
+     * @return Result containing MovieListResponse with mock movies and UI config
+     */
     private suspend fun loadMockPopularMovies(page: Int): Result<MovieListResponse> {
-        // Simulate network delay
         delay(StringConstants.NETWORK_DELAY_BASE_MS)
 
-        // Load mock movies from assets
         val movieDtos = assetDataLoader.loadMockMovies()
         val movies = movieDtos.map { MovieMapper.mapMovieDtoToMovie(it) }
 
-        // Create pagination
         val pagination = Pagination(
             page = page,
-            totalPages = 3, // Default total pages for mock data
-            totalResults = 30, // Default total results for mock data
+            totalPages = 3,
+            totalResults = 30,
             hasNext = page < 3,
             hasPrevious = page > StringConstants.PAGINATION_FIRST_PAGE
         )
 
-        // Create UI config and meta (using defaults for now)
         val uiConfig = createDefaultUiConfig()
 
         val response = MovieListResponse(
@@ -108,21 +115,22 @@ class MovieRepositoryImpl(
         return Result.Success(response, uiConfig)
     }
 
+    /**
+     * Loads mock movie details for dummy mode
+     * @param movieId Movie ID (ignored in mock mode)
+     * @return Result containing MovieDetailsResponse with mock movie details and UI config
+     */
     private suspend fun loadMockMovieDetails(movieId: Int): Result<MovieDetailsResponse> {
-        // Simulate network delay
         delay(StringConstants.NETWORK_DELAY_BASE_MS)
 
-        // Load mock movie details from assets
         val movieDetails = loadMockMovieDetailsFromAssets()
         val sentimentReviews: org.studioapp.cinemy.data.model.SentimentReviews? = null
 
-        // Create data wrapper
         val movieDetailsData = MovieDetailsData(
             movieDetails = movieDetails,
             sentimentReviews = sentimentReviews
         )
 
-        // Create UI config and meta (using defaults for now)
         val uiConfig = createDefaultUiConfig()
         val meta = createDefaultMeta()
 
@@ -138,14 +146,15 @@ class MovieRepositoryImpl(
 
     /**
      * Loads mock movie details from assets
+     * @return Default MovieDetails object
      */
     private fun loadMockMovieDetailsFromAssets(): MovieDetails {
         return createDefaultMovieDetails()
     }
 
-
     /**
-     * Creates default movie details
+     * Creates default movie details for mock data
+     * @return MovieDetails object with default values
      */
     private fun createDefaultMovieDetails(): MovieDetails {
         return MovieDetails(
@@ -177,7 +186,8 @@ class MovieRepositoryImpl(
     }
 
     /**
-     * Creates default UI configuration
+     * Creates default UI configuration for mock data
+     * @return UiConfiguration object with default theme values
      */
     private fun createDefaultUiConfig(): UiConfiguration {
         return UiConfiguration(
@@ -211,7 +221,8 @@ class MovieRepositoryImpl(
     }
 
     /**
-     * Creates default meta information
+     * Creates default meta information for mock data
+     * @return Meta object with default metadata values
      */
     private fun createDefaultMeta(): Meta {
         return Meta(

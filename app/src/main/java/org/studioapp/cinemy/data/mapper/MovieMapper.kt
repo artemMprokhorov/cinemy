@@ -32,6 +32,11 @@ import org.studioapp.cinemy.data.util.ColorUtils
 
 object MovieMapper {
 
+    /**
+     * Maps MovieDto to domain Movie model
+     * @param dto MovieDto from API
+     * @return Movie domain model
+     */
     fun mapMovieDtoToMovie(dto: MovieDto): Movie {
         return Movie(
             id = dto.id,
@@ -52,6 +57,11 @@ object MovieMapper {
         )
     }
 
+    /**
+     * Maps MovieDetailsDto to domain MovieDetails model
+     * @param dto MovieDetailsDto from API
+     * @return MovieDetails domain model
+     */
     fun mapMovieDetailsDtoToMovieDetails(dto: MovieDetailsDto): MovieDetails {
         return MovieDetails(
             id = dto.id,
@@ -75,6 +85,11 @@ object MovieMapper {
         )
     }
 
+    /**
+     * Maps SentimentReviewsDto to domain SentimentReviews model
+     * @param dto SentimentReviewsDto from API (nullable)
+     * @return SentimentReviews domain model or null
+     */
     fun mapSentimentReviewsDtoToSentimentReviews(dto: SentimentReviewsDto?): SentimentReviews? {
         return dto?.let {
             SentimentReviews(
@@ -84,6 +99,11 @@ object MovieMapper {
         }
     }
 
+    /**
+     * Maps SentimentMetadataDto to domain SentimentMetadata model
+     * @param dto SentimentMetadataDto from API (nullable)
+     * @return SentimentMetadata domain model or null
+     */
     fun mapSentimentMetadataDtoToSentimentMetadata(dto: SentimentMetadataDto?): SentimentMetadata? {
         return dto?.let {
             SentimentMetadata(
@@ -97,6 +117,11 @@ object MovieMapper {
         }
     }
 
+    /**
+     * Maps GenreDto to domain Genre model
+     * @param dto GenreDto from API
+     * @return Genre domain model
+     */
     fun mapGenreDtoToGenre(dto: GenreDto): Genre {
         return Genre(
             id = dto.id,
@@ -104,6 +129,11 @@ object MovieMapper {
         )
     }
 
+    /**
+     * Maps ProductionCompanyDto to domain ProductionCompany model
+     * @param dto ProductionCompanyDto from API
+     * @return ProductionCompany domain model
+     */
     fun mapProductionCompanyDtoToProductionCompany(dto: ProductionCompanyDto): ProductionCompany {
         return ProductionCompany(
             id = dto.id,
@@ -114,6 +144,11 @@ object MovieMapper {
     }
 
 
+    /**
+     * Maps UiConfigurationDto to domain UiConfiguration model
+     * @param dto UiConfigurationDto from API
+     * @return UiConfiguration domain model
+     */
     fun mapUiConfigurationDtoToUiConfiguration(dto: UiConfigurationDto): UiConfiguration {
         return UiConfiguration(
             colors = mapColorSchemeDtoToColorScheme(dto.colors),
@@ -123,6 +158,11 @@ object MovieMapper {
         )
     }
 
+    /**
+     * Maps ColorSchemeDto to domain ColorScheme model
+     * @param dto ColorSchemeDto from API
+     * @return ColorScheme domain model
+     */
     fun mapColorSchemeDtoToColorScheme(dto: ColorSchemeDto): ColorScheme {
         return ColorScheme(
             primary = ColorUtils.parseColor(dto.primary),
@@ -137,6 +177,11 @@ object MovieMapper {
         )
     }
 
+    /**
+     * Maps TextConfigurationDto to domain TextConfiguration model
+     * @param dto TextConfigurationDto from API
+     * @return TextConfiguration domain model
+     */
     fun mapTextConfigurationDtoToTextConfiguration(dto: TextConfigurationDto): TextConfiguration {
         return TextConfiguration(
             appTitle = dto.appTitle,
@@ -149,6 +194,11 @@ object MovieMapper {
         )
     }
 
+    /**
+     * Maps ButtonConfigurationDto to domain ButtonConfiguration model
+     * @param dto ButtonConfigurationDto from API
+     * @return ButtonConfiguration domain model
+     */
     fun mapButtonConfigurationDtoToButtonConfiguration(dto: ButtonConfigurationDto): ButtonConfiguration {
         return ButtonConfiguration(
             primaryButtonColor = ColorUtils.parseColor(dto.primaryButtonColor),
@@ -158,6 +208,11 @@ object MovieMapper {
         )
     }
 
+    /**
+     * Maps SearchInfoDto to domain SearchInfo model
+     * @param dto SearchInfoDto from API
+     * @return SearchInfo domain model
+     */
     fun mapSearchInfoDtoToSearchInfo(dto: SearchInfoDto): SearchInfo {
         return SearchInfo(
             query = dto.query,
@@ -169,6 +224,11 @@ object MovieMapper {
     }
 
 
+    /**
+     * Maps MovieColorsDto to domain MovieColors model
+     * @param dto MovieColorsDto from API
+     * @return MovieColors domain model
+     */
     fun mapMovieColorsDtoToMovieColors(dto: MovieColorsDto): MovieColors {
         return MovieColors(
             accent = dto.accent,
@@ -178,6 +238,11 @@ object MovieMapper {
         )
     }
 
+    /**
+     * Maps ColorMetadataDto to domain ColorMetadata model
+     * @param dto ColorMetadataDto from API
+     * @return ColorMetadata domain model
+     */
     fun mapColorMetadataDtoToColorMetadata(dto: ColorMetadataDto): ColorMetadata {
         return ColorMetadata(
             category = dto.category,
@@ -186,6 +251,11 @@ object MovieMapper {
         )
     }
 
+    /**
+     * Maps MovieListResponseDto to domain MovieListResponse model
+     * @param dto MovieListResponseDto from API
+     * @return MovieListResponse domain model
+     */
     fun mapMovieListResponseDtoToMovieListResponse(dto: MovieListResponseDto): MovieListResponse {
         return MovieListResponse(
             page = dto.page,

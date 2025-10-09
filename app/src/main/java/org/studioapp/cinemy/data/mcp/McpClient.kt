@@ -28,9 +28,13 @@ import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
 
 class McpClient(private val context: Context) : MovieApiService {
     private val assetDataLoader = AssetDataLoader(context)
-
     private val mcpHttpClient = McpHttpClient(context)
 
+    /**
+     * Fetches popular movies from MCP backend
+     * @param page Page number for pagination
+     * @return McpResponseDto containing MovieListResponseDto with movies and UI config
+     */
     override suspend fun getPopularMovies(page: Int): McpResponseDto<MovieListResponseDto> {
         val request = McpRequest(
             method = StringConstants.MCP_METHOD_GET_POPULAR_MOVIES,
@@ -144,6 +148,11 @@ class McpClient(private val context: Context) : MovieApiService {
     }
 
 
+    /**
+     * Fetches movie details from MCP backend
+     * @param movieId Unique identifier of the movie
+     * @return McpResponseDto containing MovieDetailsDto with complete movie details and UI config
+     */
     override suspend fun getMovieDetails(movieId: Int): McpResponseDto<MovieDetailsDto> {
         val request = McpRequest(
             method = StringConstants.MCP_METHOD_GET_MOVIE_DETAILS,
@@ -250,7 +259,9 @@ class McpClient(private val context: Context) : MovieApiService {
 
 
     /**
-     * Business method: Get popular movies using MCP HTTP client
+     * Fetches popular movies using MCP HTTP client and returns domain models
+     * @param page Page number for pagination
+     * @return Result containing MovieListResponse with domain models and UI config
      */
     suspend fun getPopularMoviesViaMcp(page: Int): Result<MovieListResponse> {
         return runCatching {
@@ -364,7 +375,9 @@ class McpClient(private val context: Context) : MovieApiService {
     }
 
     /**
-     * Business method: Get movie details using MCP HTTP client
+     * Fetches movie details using MCP HTTP client and returns domain models
+     * @param movieId Unique identifier of the movie
+     * @return Result containing MovieDetailsResponse with domain models and UI config
      */
     suspend fun getMovieDetailsViaMcp(movieId: Int): Result<MovieDetailsResponse> {
         return runCatching {
@@ -581,7 +594,7 @@ class McpClient(private val context: Context) : MovieApiService {
 
 
     /**
-     * Clean up resources
+     * Closes MCP HTTP client and cleans up resources
      */
     fun close() {
         mcpHttpClient.close()

@@ -32,6 +32,11 @@ class McpHttpClient(private val context: Context) {
         }
     }
 
+    /**
+     * Sends MCP request to backend or returns mock data
+     * @param request MCP request object
+     * @return McpResponse with data or error
+     */
     suspend fun <T> sendRequest(request: McpRequest): McpResponse<T> {
         return if (BuildConfig.USE_MOCK_DATA) {
             fakeInterceptor.intercept<T>(request)
@@ -40,6 +45,11 @@ class McpHttpClient(private val context: Context) {
         }
     }
 
+    /**
+     * Sends real HTTP request to MCP backend
+     * @param request MCP request object
+     * @return McpResponse with parsed data or error
+     */
     private suspend fun <T> sendRealRequest(request: McpRequest): McpResponse<T> {
         return runCatching {
             if (BuildConfig.MCP_SERVER_URL.isBlank()) {
@@ -154,7 +164,11 @@ class McpHttpClient(private val context: Context) {
     }
 
 
-    // Helper method to convert JSONObject to Map
+    /**
+     * Converts JSONObject to Map<String, Any>
+     * @param jsonObject JSON object to convert
+     * @return Map representation of JSON object
+     */
     private fun jsonObjectToMap(jsonObject: JSONObject): Map<String, Any> {
         val map = mutableMapOf<String, Any>()
         val keys = jsonObject.keys()
@@ -170,7 +184,11 @@ class McpHttpClient(private val context: Context) {
         return map
     }
 
-    // Helper method to convert JSONArray to List
+    /**
+     * Converts JSONArray to List<Any>
+     * @param jsonArray JSON array to convert
+     * @return List representation of JSON array
+     */
     private fun jsonArrayToList(jsonArray: JSONArray): List<Any> {
         val list = mutableListOf<Any>()
         for (i in 0 until jsonArray.length()) {
@@ -187,10 +205,18 @@ class McpHttpClient(private val context: Context) {
     }
 
 
+    /**
+     * Closes HTTP client and cleans up resources
+     */
     fun close() {
         httpClient.close()
     }
 
+    /**
+     * Parses JSONObject to Map<String, Any>
+     * @param jsonObject JSON object to parse
+     * @return Map representation of JSON object
+     */
     private fun parseJsonObject(jsonObject: JSONObject): Map<String, Any> {
         val result = mutableMapOf<String, Any>()
 
@@ -218,6 +244,11 @@ class McpHttpClient(private val context: Context) {
         return result
     }
 
+    /**
+     * Parses JSON string to Map<String, Any>
+     * @param jsonString JSON string to parse
+     * @return Map representation of JSON string
+     */
     private fun parseJsonResponse(jsonString: String): Map<String, Any> {
         val jsonObject = JSONObject(jsonString)
         val result = mutableMapOf<String, Any>()
@@ -249,6 +280,11 @@ class McpHttpClient(private val context: Context) {
         return result
     }
 
+    /**
+     * Recursively parses JSON values to native types
+     * @param value JSON value to parse
+     * @return Parsed native value
+     */
     private fun parseValue(value: Any): Any {
         return when (value) {
             is JSONObject -> {
