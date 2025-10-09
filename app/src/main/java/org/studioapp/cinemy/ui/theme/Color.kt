@@ -20,7 +20,6 @@ val TextSecondary = Color(0xFF9E9E9E)
 // Sentiment analysis colors
 val SentimentPositive = Color(0xFF4CAF50)
 val SentimentNegative = Color(0xFFF44336)
-val SentimentNeutral = Color(0xFF9E9E9E)
 
 // Note: UI colors are now dynamically provided by backend uiConfig
 // Hardcoded colors have been removed in favor of dynamic theming
