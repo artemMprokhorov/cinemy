@@ -67,6 +67,7 @@ class MoviesListViewModel(
 
                     _state.value = _state.value.copy(
                         isLoading = PresentationConstants.DEFAULT_BOOLEAN_FALSE,
+                        error = null, // Clear any previous error
                         movies = response.results,
                         pagination = pagination,
                         currentPage = page,

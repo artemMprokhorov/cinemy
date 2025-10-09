@@ -122,38 +122,37 @@ private fun MovieDetailContent(
             }
 
             state.error != null -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .pullRefresh(pullRefreshState),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Column(
-                        modifier = Modifier.verticalScroll(rememberScrollState()),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Spacer(modifier = Modifier.height(Dimens100))
-                        ConfigurableText(
-                            text = stringResource(R.string.error_generic),
-                            style = MaterialTheme.typography.headlineLarge,
-                            uiConfig = state.uiConfig,
-                            color = Color.White
-                        )
-                        ConfigurableText(
-                            text = stringResource(R.string.movie_details),
-                            style = MaterialTheme.typography.headlineLarge,
-                            uiConfig = state.uiConfig,
-                            color = Color.White
-                        )
-                        Spacer(modifier = Modifier.height(Dimens16))
-                        PullToReloadArrow()
-                        Spacer(modifier = Modifier.height(Dimens16))
-                        ConfigurableText(
-                            text = stringResource(R.string.pull_to_reload),
-                            style = MaterialTheme.typography.headlineMedium,
-                            uiConfig = state.uiConfig,
-                            color = Color.White
-                        )
-                        Spacer(modifier = Modifier.height(Dimens100))
-                    }
+                    Spacer(modifier = Modifier.height(Dimens100))
+                    ConfigurableText(
+                        text = stringResource(R.string.error_generic),
+                        style = MaterialTheme.typography.headlineLarge,
+                        uiConfig = state.uiConfig,
+                        color = Color.White
+                    )
+                    ConfigurableText(
+                        text = stringResource(R.string.movie_details),
+                        style = MaterialTheme.typography.headlineLarge,
+                        uiConfig = state.uiConfig,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(Dimens16))
+                    PullToReloadArrow()
+                    Spacer(modifier = Modifier.height(Dimens16))
+                    ConfigurableText(
+                        text = stringResource(R.string.pull_to_reload),
+                        style = MaterialTheme.typography.headlineMedium,
+                        uiConfig = state.uiConfig,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(Dimens100))
                 }
             }
 

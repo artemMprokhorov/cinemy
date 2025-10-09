@@ -175,7 +175,8 @@ private fun MoviesListContent(
                         pagination = state.pagination,
                         onNextPage = { onIntent(MoviesListIntent.NextPage) },
                         onPreviousPage = { onIntent(MoviesListIntent.PreviousPage) },
-                        snackbarHostState = snackbarHostState
+                        snackbarHostState = snackbarHostState,
+                        pullRefreshState = pullRefreshState
                     )
                 }
             }
@@ -200,6 +201,7 @@ private fun MoviesListContent(
 }
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MoviesGrid(
     movies: List<Movie>,
@@ -208,7 +210,8 @@ private fun MoviesGrid(
     pagination: org.studioapp.cinemy.data.model.Pagination?,
     onNextPage: () -> Unit,
     onPreviousPage: () -> Unit,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    pullRefreshState: androidx.compose.material.pullrefresh.PullRefreshState
 ) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
