@@ -74,23 +74,31 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             // Load hybrid configuration
             hybridConfig = loadHybridConfig()
 
-            // Initialize keyword model (always available as fallback)
-            val modelFileName = getModelFileName()
-            val modelJson = runCatching {
-                context.assets.open("ml_models/$modelFileName").use { inputStream ->
-                    inputStream.bufferedReader().readText()
+            // Initialize models based on build type and flavor
+            when {
+                // Production and Dummy flavors: Use TensorFlow model with JSON fallback
+                BuildConfig.FLAVOR_NAME == "Production" || BuildConfig.FLAVOR_NAME == "Dummy" -> {
+                    tensorFlowModel = TensorFlowSentimentModel.getInstance(context)
+                    val tensorFlowInitialized = tensorFlowModel?.initialize() ?: false
+                    
+                    if (!tensorFlowInitialized) {
+                        // Fallback to keyword model if TensorFlow fails
+                        initializeKeywordModel()
+                    }
                 }
-            }.getOrNull()
-
-            keywordModel = if (modelJson != null) {
-                loadModelFromJson(modelJson, modelFileName)
-            } else {
-                createSimpleModel()
+                // Debug builds: Use keyword model for faster initialization
+                BuildConfig.BUILD_TYPE == "DEBUG" -> {
+                    initializeKeywordModel()
+                    
+                    // Still try to initialize TensorFlow for testing, but don't require it
+                    tensorFlowModel = TensorFlowSentimentModel.getInstance(context)
+                    tensorFlowModel?.initialize()
+                }
+                else -> {
+                    // Default: Use keyword model
+                    initializeKeywordModel()
+                }
             }
-
-            // Initialize TensorFlow model (optional)
-            tensorFlowModel = TensorFlowSentimentModel.getInstance(context)
-            val tensorFlowInitialized = tensorFlowModel?.initialize() ?: false
 
             isInitialized = true
             true
@@ -100,10 +108,28 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
     /**
+     * Initialize keyword model as fallback
+     */
+    private suspend fun initializeKeywordModel() {
+        val modelFileName = getModelFileName()
+        val modelJson = runCatching {
+            context.assets.open("ml_models/$modelFileName").use { inputStream ->
+                inputStream.bufferedReader().readText()
+            }
+        }.getOrNull()
+
+        keywordModel = if (modelJson != null) {
+            loadModelFromJson(modelJson, modelFileName)
+        } else {
+            createSimpleModel()
+        }
+    }
+
+    /**
      * Analyze text sentiment using hybrid system
      */
     suspend fun analyzeSentiment(text: String): SentimentResult = withContext(Dispatchers.Default) {
-        if (!isInitialized || keywordModel == null) {
+        if (!isInitialized) {
             return@withContext SentimentResult.error(ERROR_ANALYZER_NOT_INITIALIZED)
         }
 
@@ -112,19 +138,42 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         }
 
         runCatching {
-            // Use hybrid system: TensorFlow for complex texts, keyword model as fallback
-            if (shouldUseTensorFlow(text) && tensorFlowModel?.isReady() == true) {
-                val tensorFlowResult = tensorFlowModel!!.analyzeSentiment(text)
-
-                // Check if we should fallback to keyword model
-                if (shouldFallbackToKeyword(tensorFlowResult)) {
-                    analyzeWithKeywords(text, keywordModel!!)
-                } else {
-                    tensorFlowResult
+            // Model selection based on flavor and build type
+            when {
+                // Production and Dummy flavors: Prioritize TensorFlow model with JSON fallback
+                BuildConfig.FLAVOR_NAME == "Production" || BuildConfig.FLAVOR_NAME == "Dummy" -> {
+                    if (tensorFlowModel?.isReady() == true) {
+                        val tensorFlowResult = tensorFlowModel!!.analyzeSentiment(text)
+                        
+                        // Fallback to keyword model if TensorFlow result is unreliable
+                        if (shouldFallbackToKeyword(tensorFlowResult) && keywordModel != null) {
+                            analyzeWithKeywords(text, keywordModel!!)
+                        } else {
+                            tensorFlowResult
+                        }
+                    } else if (keywordModel != null) {
+                        // Fallback to keyword model if TensorFlow is not available
+                        analyzeWithKeywords(text, keywordModel!!)
+                    } else {
+                        SentimentResult.error("No sentiment model available")
+                    }
                 }
-            } else {
-                // Use keyword model
-                analyzeWithKeywords(text, keywordModel!!)
+                // Debug builds: Use keyword model for faster processing
+                BuildConfig.BUILD_TYPE == "DEBUG" -> {
+                    if (keywordModel != null) {
+                        analyzeWithKeywords(text, keywordModel!!)
+                    } else {
+                        SentimentResult.error("Keyword model not available")
+                    }
+                }
+                else -> {
+                    // Default: Use keyword model
+                    if (keywordModel != null) {
+                        analyzeWithKeywords(text, keywordModel!!)
+                    } else {
+                        SentimentResult.error("Keyword model not available")
+                    }
+                }
             }
         }.getOrElse { e ->
             SentimentResult.error("$ERROR_ANALYSIS_ERROR${e.message}")
@@ -155,13 +204,43 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     fun isTensorFlowAvailable(): Boolean = tensorFlowModel?.isReady() ?: false
 
     /**
-     * Get model file name based on build variant
+     * Get model file name for keyword-based sentiment analysis
+     * 
+     * Since we only have one JSON model file, this method returns the same value.
+     * The real differentiation happens in the model selection logic where:
+     * - Release builds: TensorFlow model (production_sentiment_full_manual.tflite) with JSON fallback
+     * - Debug builds: JSON model (multilingual_sentiment_production.json) directly
      */
     private fun getModelFileName(): String {
-        return when (BuildConfig.BUILD_TYPE) {
-            "debug" -> "multilingual_sentiment_production.json"
-            "release" -> "multilingual_sentiment_production.json"
-            else -> "multilingual_sentiment_production.json"
+        // All build types use the same JSON model file as fallback
+        // The differentiation is in which model gets prioritized during analysis
+        return "multilingual_sentiment_production.json"
+    }
+
+    /**
+     * Get TensorFlow model file name for production builds
+     * 
+     * This is used by the TensorFlowSentimentModel for production builds.
+     * Debug builds may also use this for testing purposes.
+     */
+    private fun getTensorFlowModelFileName(): String {
+        return "production_sentiment_full_manual.tflite"
+    }
+
+    /**
+     * Get the primary model type for the current build configuration
+     * 
+     * This method clearly shows which model is prioritized for each flavor:
+     * - Production/Dummy flavors: TensorFlow model (production_sentiment_full_manual.tflite)
+     * - Debug builds: Keyword model (multilingual_sentiment_production.json)
+     */
+    private fun getPrimaryModelType(): String {
+        return when {
+            BuildConfig.FLAVOR_NAME == "Production" || BuildConfig.FLAVOR_NAME == "Dummy" -> 
+                "TensorFlow (production_sentiment_full_manual.tflite)"
+            BuildConfig.BUILD_TYPE == "DEBUG" -> 
+                "Keyword (multilingual_sentiment_production.json)"
+            else -> "Keyword (multilingual_sentiment_production.json)"
         }
     }
 
