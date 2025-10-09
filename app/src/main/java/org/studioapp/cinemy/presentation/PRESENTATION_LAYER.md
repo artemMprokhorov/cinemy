@@ -17,8 +17,9 @@ presentation/
 │   ├── MovieDetailState.kt   # State data class
 │   ├── MovieDetailIntent.kt  # Intent sealed class
 │   └── MovieDetailViewModel.kt # ViewModel with MVI pattern
-└── di/                       # Dependency injection modules
-    └── PresentationModule.kt # Koin module for ViewModels
+├── di/                       # Dependency injection modules
+│   └── PresentationModule.kt # Koin module for ViewModels
+└── PresentationConstants.kt  # Centralized constants
 ```
 
 ## MVI Architecture Pattern Implementation
@@ -122,76 +123,110 @@ val state by viewModel.state.collectAsState()
 #### MoviesListState.kt
 
 - **MoviesListState**: Data class containing all UI state information
-    - `movies`: List of movies to display
     - `isLoading`: Loading state indicator
+    - `movies`: List of movies to display
     - `error`: Error message if any
-    - `uiConfig`: Dynamic UI configuration from backend
+    - `pagination`: Pagination information object
     - `currentPage`: Current pagination page
-    - `totalPages`: Total number of pages
-    - `hasNextPage`/`hasPreviousPage`: Pagination controls
-    - `searchQuery`: Current search query
-    - `isSearchMode`: Search mode toggle
+    - `hasMore`: Whether more movies are available
+    - `isUsingMockData`: Whether using mock data or real backend
+    - `connectionStatus`: Connection status (Unknown, Connected, Disconnected, MockOnly)
+    - `canRetry`: Whether retry is available
+    - `retryCount`: Number of retry attempts
+    - `uiConfig`: Dynamic UI configuration from backend
+- **ConnectionStatus**: Enum for connection states
+- **statusMessage**: Computed property for connection status messages
 
 #### MoviesListIntent.kt
 
 - **MoviesListIntent**: Sealed class defining all user interactions
     - `LoadPopularMovies`: Load popular movies
-    - `LoadTopRatedMovies`: Load top-rated movies
-    - `LoadNowPlayingMovies`: Load now-playing movies
-    - `SearchMovies(query)`: Search movies with query
-    - `LoadNextPage`: Load next page of results
-    - `LoadPreviousPage`: Load previous page of results
-    - `MovieClicked(movieId)`: Handle movie selection
-    - `ClearSearch`: Clear search query
-    - `ToggleSearchMode`: Toggle search mode
-    - `Retry`: Retry failed operation
-    - `Refresh`: Refresh current data
-    - `BackPressed`: Handle back button press
+    - `LoadMoreMovies`: Load more movies (pagination)
+    - `RetryLastOperation`: Retry the last failed operation
+    - `RetryConnection`: Retry connection to backend
+    - `RefreshData`: Refresh current data
+    - `CheckConnectionStatus`: Check connection status
+    - `DismissError`: Dismiss error message
+    - `NextPage`: Navigate to next page
+    - `PreviousPage`: Navigate to previous page
 
 #### MoviesListViewModel.kt
 
-- **MoviesListViewModel**: Implements MVI pattern
-- **Intent Processing**: Handles all user interactions through intents
-- **State Management**: Exposes StateFlow for reactive UI updates
+- **MoviesListViewModel**: Implements MVI pattern for movies list
+- **Constructor**: Takes MovieRepository as dependency
+- **State Management**: Uses MutableStateFlow and StateFlow for reactive updates
+- **Intent Processing**: `processIntent()` method handles all user interactions
 - **Repository Integration**: Uses MovieRepository for data fetching
-- **Pagination Support**: Handles next/previous page loading
-- **Search Functionality**: Supports movie search with query
-- **Error Handling**: Graceful error recovery with retry functionality
+- **Connection Handling**: Manages connection status and mock data detection
+- **Pagination Support**: Handles next/previous page navigation
+- **Error Handling**: Comprehensive error recovery with retry functionality
+- **Auto-initialization**: Loads popular movies on ViewModel creation
 
 ### 2. Movie Details Screen (`moviedetail/`)
 
 #### MovieDetailState.kt
 
 - **MovieDetailState**: Data class containing movie details state
-    - `movieDetails`: Complete movie information
     - `isLoading`: Loading state indicator
+    - `movieDetails`: Complete movie information
     - `error`: Error message if any
     - `uiConfig`: Dynamic UI configuration from backend
+    - `meta`: API response metadata
+    - `sentimentResult`: ML sentiment analysis result
+    - `sentimentError`: Sentiment analysis error message
+    - `sentimentReviews`: Sentiment reviews from backend
+- **Computed Properties**:
+    - `formattedRuntime`: Formatted runtime display (hours and minutes)
+    - `formattedBudget`: Formatted budget display with currency symbol
 
 #### MovieDetailIntent.kt
 
 - **MovieDetailIntent**: Sealed class defining all user interactions
-    - `LoadMovieDetails(movieId)`: Load specific movie details
-    - `LoadRecommendations`: Load movie recommendations
-    - `Retry`: Retry failed operation
-    - `Refresh`: Refresh current data
-    - `BackPressed`: Handle back button press
+    - `LoadMovieDetails(movieId)`: Load specific movie details by ID
+    - `Retry`: Retry failed operation using stored movie ID
+    - `Refresh`: Refresh current movie details
+    - `ClearSentimentResult`: Clear ML sentiment analysis result
 
 #### MovieDetailViewModel.kt
 
-- **MovieDetailViewModel**: Implements MVI pattern for details
-- **Intent Processing**: Handles movie details loading and retry
-- **State Management**: Exposes StateFlow for reactive UI updates
+- **MovieDetailViewModel**: Implements MVI pattern for movie details
+- **Constructor**: Takes MovieRepository and SentimentAnalyzer as dependencies
+- **State Management**: Uses MutableStateFlow and StateFlow for reactive updates
+- **Intent Processing**: `processIntent()` method handles all user interactions
 - **Repository Integration**: Uses MovieRepository for data fetching
-- **Error Handling**: Graceful error recovery with retry functionality
+- **ML Integration**: Uses SentimentAnalyzer for sentiment analysis
+- **Movie ID Tracking**: Stores current movie ID for retry operations
+- **Error Handling**: Comprehensive error recovery with retry functionality
 
 ### 3. Dependency Injection (`di/`)
 
 #### PresentationModule.kt
 
 - **Koin Module**: Provides ViewModels for dependency injection
-- **ViewModel Factories**: Creates ViewModels with repository dependencies
-- **Integration**: Works with data layer modules
+- **ViewModel Factories**: Creates ViewModels with proper dependencies
+  - `MoviesListViewModel`: Takes MovieRepository
+  - `MovieDetailViewModel`: Takes MovieRepository and SentimentAnalyzer
+- **Integration**: Works with data layer modules for dependency resolution
+
+### 4. Constants (`PresentationConstants.kt`)
+
+#### PresentationConstants.kt
+
+- **Default Values**: Centralized default values for presentation layer
+  - `DEFAULT_MOVIE_ID`, `DEFAULT_PAGE_NUMBER`, `DEFAULT_RETRY_COUNT`
+  - `DEFAULT_BOOLEAN_FALSE`, `DEFAULT_BOOLEAN_TRUE`
+- **Runtime Formatting**: Constants for runtime display
+  - `MINUTES_PER_HOUR`, `RUNTIME_HOURS_FORMAT`, `RUNTIME_MINUTES_FORMAT`
+- **Budget Formatting**: Constants for budget display
+  - `BUDGET_DIVISOR`, `BUDGET_CURRENCY_SYMBOL`, `BUDGET_SUFFIX`, `BUDGET_THRESHOLD`
+- **Connection Status**: Messages for connection states
+  - `MESSAGE_USING_DEMO_DATA`, `MESSAGE_BACKEND_UNAVAILABLE`, `MESSAGE_CONNECTED_TO_LIVE_DATA`
+- **Connection Detection**: Keywords for status detection
+  - `BACKEND_UNAVAILABLE_KEYWORD`, `MOCK_KEYWORD`
+- **Pagination**: Constants for page navigation
+  - `PAGE_INCREMENT`, `PAGE_DECREMENT`
+- **UI State**: Default values for UI state
+  - `DEFAULT_HAS_MORE`, `DEFAULT_CAN_RETRY`
 
 ## MVI Pattern Implementation
 
@@ -377,47 +412,72 @@ fun MoviesListScreen(
 
 ## Dependencies
 
-- **Koin**: Dependency injection
-- **Coroutines**: Asynchronous programming
-- **StateFlow**: Reactive state management
-- **Jetpack Compose**: UI framework
-- **Navigation Compose**: Navigation
+- **Koin**: Dependency injection framework
+- **Coroutines**: Asynchronous programming with suspend functions
+- **StateFlow**: Reactive state management with automatic UI updates
+- **Jetpack Compose**: Modern declarative UI framework
+- **Navigation Compose**: Type-safe navigation
+- **ML Integration**: SentimentAnalyzer for AI-powered sentiment analysis
+- **Data Layer**: MovieRepository for data operations
 
-## Code Cleanup and Optimization
+## Key Features
 
-### ✅ **Recent Cleanup (Latest Update)**
+### ✅ **Enhanced Connection Management**
 
-The presentation layer has been thoroughly cleaned and optimized:
+- **Connection Status Tracking**: Real-time connection status monitoring
+- **Mock Data Detection**: Automatic detection of mock vs real data usage
+- **Status Messages**: User-friendly connection status messages
+- **Retry Mechanisms**: Comprehensive retry functionality for failed operations
 
-#### **Removed Unused Code:**
+### ✅ **Advanced State Management**
 
-- **MovieDetailState.kt**: Removed unused fields `movieId`, `showFullDescription`,
-  `showProductionDetails`
-- **PresentationConstants.kt**: Removed unused constants `DEFAULT_LONG_VALUE`,
-  `DEFAULT_SHOW_FULL_DESCRIPTION`, `DEFAULT_SHOW_PRODUCTION_DETAILS`
+- **Comprehensive State**: All UI state in single data classes
+- **Computed Properties**: Runtime and budget formatting
+- **Connection Status**: Enum-based connection state management
+- **Error Recovery**: Graceful error handling with retry capabilities
 
-#### **Optimization Results:**
+### ✅ **ML Integration**
 
-- **Reduced code complexity** - Removed dead code and unused fields
-- **Improved maintainability** - Cleaner, more focused codebase
-- **Better performance** - Fewer unused objects in memory
-- **Enhanced readability** - Simplified state management
+- **Sentiment Analysis**: Integration with SentimentAnalyzer
+- **Sentiment Results**: Display of ML analysis results
+- **Sentiment Reviews**: Backend-provided sentiment reviews
+- **Error Handling**: ML-specific error handling
 
-#### **Verification:**
+### ✅ **Pagination Support**
 
-- ✅ **All remaining constants are actively used**
-- ✅ **All remaining fields are actively used**
-- ✅ **All methods are actively used**
-- ✅ **Compilation successful after cleanup**
+- **Page Navigation**: Next/previous page functionality
+- **Load More**: Incremental loading of additional content
+- **Page Tracking**: Current page and total pages tracking
+- **Navigation Controls**: Intuitive pagination controls
+
+### ✅ **Dynamic UI Configuration**
+
+- **Backend-Driven Theming**: UI configuration from backend responses
+- **Color Schemes**: Dynamic color palette support
+- **Text Configuration**: Configurable text content
+- **Button Styling**: Dynamic button appearance
+
+### ✅ **Error Handling**
+
+- **Graceful Recovery**: Comprehensive error recovery mechanisms
+- **Retry Functionality**: Multiple retry strategies
+- **User-Friendly Messages**: Clear error messages for users
+- **Connection Handling**: Network and backend error handling
 
 ## Build Status
 
-✅ **BUILD SUCCESSFUL** - All presentation layer components compile correctly and are fully
-integrated with the data layer.
+✅ **BUILD SUCCESSFUL** - All presentation layer components compile correctly and are fully integrated with the data layer.
 
 ✅ **MVI PATTERN VERIFIED** - Complete compliance with MVI architecture principles.
 
-✅ **CODE CLEANUP COMPLETED** - Unused code removed, performance optimized.
+✅ **CONNECTION MANAGEMENT** - Advanced connection status tracking and mock data detection.
 
-The presentation layer is now ready for production use with complete MVI pattern implementation,
-dynamic UI configuration, seamless data layer integration, and optimized codebase.
+✅ **ML INTEGRATION** - Full integration with SentimentAnalyzer for AI-powered features.
+
+✅ **PAGINATION SUPPORT** - Comprehensive pagination with navigation controls.
+
+✅ **ERROR HANDLING** - Robust error recovery with multiple retry strategies.
+
+✅ **DYNAMIC UI** - Backend-driven theming and configuration support.
+
+The presentation layer is now ready for production use with complete MVI pattern implementation, advanced connection management, ML integration, comprehensive pagination support, and seamless data layer integration.
