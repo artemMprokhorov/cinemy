@@ -125,7 +125,7 @@ The backend for **Cinemy** was designed as a lightweight experimental setup to c
 - **Ngrok tunnel**: secure public endpoint for local development and testing ✅
 - **n8n Workflows**:
   - TMDB API data ingestion
-  - Own AI model for orkestration and color scheme generation ✅
+  - Own AI model for orchestration and color scheme generation ✅
     Production Model Specifications:
 
     - Model File: color_scheme_model.pth (73KB)
@@ -188,7 +188,7 @@ This backend acts as an orchestrator between external APIs (TMDB, Perplexity Son
 - **Scalable architecture** - Easy to extend and maintain
 
 ### 🎯 Innovation Showcase
-- **First-in-class MCP integration** in Android development
+- **MCP integration** in Android development
 - **Real-time AI theming** based on content analysis
 - **Mobile-optimized ML model** with exceptional performance
 - **Server-driven UI** with fallback mechanisms
@@ -217,7 +217,5 @@ Special thanks to:
 - **Perplexity AI** for assisting in data preparation and research
 
 ---
-
-**⭐ Star this repository if you find it valuable!**
 
 **Built with ❤️ using Modern Android Development and AI Technologies**
