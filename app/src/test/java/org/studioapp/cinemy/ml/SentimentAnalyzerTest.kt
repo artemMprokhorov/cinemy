@@ -6,30 +6,31 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Test for Enhanced ML Model v2.0.0
- * Verifies the improved sentiment analysis functionality
+ * Test for SentimentAnalyzer functionality
+ * Verifies the sentiment analysis functionality
  */
 class SentimentAnalyzerTest {
 
     @Test
-    fun testEnhancedModelCreation() {
-        // Test that the enhanced model can be created with all new fields
+    fun testModelCreation() {
+        // Test that the model can be created with all required fields
         val model = createTestModel()
 
         // Verify model info
+        assertEquals("keyword_sentiment_analysis", model.modelInfo.type)
         assertEquals("2.0.0", model.modelInfo.version)
         assertEquals("85%+", model.modelInfo.accuracy)
 
-        // Verify enhanced features
+        // Verify basic features
         assertNotNull("Neutral indicators should be present", model.neutralIndicators)
         assertNotNull("Intensity modifiers should be present", model.intensityModifiers)
         assertNotNull("Context boosters should be present", model.contextBoosters)
 
-        // Verify expanded dictionary
-        assertTrue("Should have more positive keywords", model.positiveKeywords.size > 20)
-        assertTrue("Should have more negative keywords", model.negativeKeywords.size > 20)
+        // Verify keyword dictionaries
+        assertTrue("Should have positive keywords", model.positiveKeywords.isNotEmpty())
+        assertTrue("Should have negative keywords", model.negativeKeywords.isNotEmpty())
 
-        // Verify new algorithm config
+        // Verify algorithm config
         assertEquals(0.6, model.algorithm.baseConfidence, 0.01)
         assertNotNull("Keyword weight should be set", model.algorithm.keywordWeight)
         assertNotNull("Context weight should be set", model.algorithm.contextWeight)

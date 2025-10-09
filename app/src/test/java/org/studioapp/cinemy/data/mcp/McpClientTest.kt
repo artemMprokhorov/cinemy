@@ -232,12 +232,8 @@ class McpClientTest {
         // Given
         val page = 1
         val mockResponse = createMockMcpResponse()
-        val mockUiConfig = createMockUiConfigDto()
-        val mockMeta = createMockMetaDto()
 
-        coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
-        every { mockAssetDataLoader.loadUiConfig() } returns mockUiConfig
-        every { mockAssetDataLoader.loadMetaData(any(), any()) } returns mockMeta
+        coEvery { mockMcpHttpClient.sendRequest<Any>(any()) } returns mockResponse
 
         // When
         val result = mcpClient.getPopularMovies(page)
@@ -245,31 +241,23 @@ class McpClientTest {
         // Then
         assertTrue(result.success)
         assertNotNull(result.data)
-        assertNotNull(result.uiConfig)
-        assertNotNull(result.meta)
         assertEquals(1, result.data?.results?.size)
         assertEquals("Test Movie", result.data?.results?.get(0)?.title)
 
-        coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
-        verify { mockAssetDataLoader.loadUiConfig() }
-        verify { mockAssetDataLoader.loadMetaData(any(), any()) }
+        coVerify { mockMcpHttpClient.sendRequest<Any>(any()) }
     }
 
     @Test
     fun `getPopularMovies should return error response when MCP call fails`() = runBlocking {
         // Given
         val page = 1
-        val mockResponse = McpResponse<Map<String, Any>>(
+        val mockResponse = McpResponse<Any>(
             success = false,
             data = null,
             error = "Network error"
         )
-        val mockUiConfig = createMockUiConfigDto()
-        val mockMeta = createMockMetaDto()
 
-        coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
-        every { mockAssetDataLoader.loadUiConfig() } returns mockUiConfig
-        every { mockAssetDataLoader.loadMetaData(any(), any()) } returns mockMeta
+        coEvery { mockMcpHttpClient.sendRequest<Any>(any()) } returns mockResponse
 
         // When
         val result = mcpClient.getPopularMovies(page)
@@ -278,12 +266,8 @@ class McpClientTest {
         assertFalse(result.success)
         assertNull(result.data)
         assertEquals("Network error", result.error)
-        assertNotNull(result.uiConfig)
-        assertNotNull(result.meta)
 
-        coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
-        verify { mockAssetDataLoader.loadUiConfig() }
-        verify { mockAssetDataLoader.loadMetaData(any(), any()) }
+        coVerify { mockMcpHttpClient.sendRequest<Any>(any()) }
     }
 
     @Test
@@ -291,12 +275,8 @@ class McpClientTest {
         // Given
         val movieId = 123
         val mockResponse = createMockMovieDetailsResponse()
-        val mockUiConfig = createMockUiConfigDto()
-        val mockMeta = createMockMetaDto()
 
-        coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
-        every { mockAssetDataLoader.loadUiConfig() } returns mockUiConfig
-        every { mockAssetDataLoader.loadMetaData(any(), any(), any()) } returns mockMeta
+        coEvery { mockMcpHttpClient.sendRequest<Any>(any()) } returns mockResponse
 
         // When
         val result = mcpClient.getMovieDetails(movieId)
@@ -304,31 +284,23 @@ class McpClientTest {
         // Then
         assertTrue(result.success)
         assertNotNull(result.data)
-        assertNotNull(result.uiConfig)
-        assertNotNull(result.meta)
         assertEquals(movieId, result.data?.id)
         assertEquals("Test Movie Details", result.data?.title)
 
-        coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
-        verify { mockAssetDataLoader.loadUiConfig() }
-        verify { mockAssetDataLoader.loadMetaData(any(), any(), any()) }
+        coVerify { mockMcpHttpClient.sendRequest<Any>(any()) }
     }
 
     @Test
     fun `getMovieDetails should return error response when MCP call fails`() = runBlocking {
         // Given
         val movieId = 123
-        val mockResponse = McpResponse<Map<String, Any>>(
+        val mockResponse = McpResponse<Any>(
             success = false,
             data = null,
             error = "Movie not found"
         )
-        val mockUiConfig = createMockUiConfigDto()
-        val mockMeta = createMockMetaDto()
 
-        coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
-        every { mockAssetDataLoader.loadUiConfig() } returns mockUiConfig
-        every { mockAssetDataLoader.loadMetaData(any(), any(), any()) } returns mockMeta
+        coEvery { mockMcpHttpClient.sendRequest<Any>(any()) } returns mockResponse
 
         // When
         val result = mcpClient.getMovieDetails(movieId)
@@ -337,12 +309,8 @@ class McpClientTest {
         assertFalse(result.success)
         assertNull(result.data)
         assertEquals("Movie not found", result.error)
-        assertNotNull(result.uiConfig)
-        assertNotNull(result.meta)
 
-        coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
-        verify { mockAssetDataLoader.loadUiConfig() }
-        verify { mockAssetDataLoader.loadMetaData(any(), any(), any()) }
+        coVerify { mockMcpHttpClient.sendRequest<Any>(any()) }
     }
 
     @Test
@@ -350,12 +318,8 @@ class McpClientTest {
         // Given
         val page = 1
         val mockResponse = createMockMcpResponse()
-        val mockUiConfig = createMockUiConfigDto()
-        val mockMeta = createMockMetaDto()
 
-        coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
-        every { mockAssetDataLoader.loadUiConfig() } returns mockUiConfig
-        every { mockAssetDataLoader.loadMetaData(any(), any()) } returns mockMeta
+        coEvery { mockMcpHttpClient.sendRequest<Any>(any()) } returns mockResponse
 
         // When
         val result = mcpClient.getPopularMoviesViaMcp(page)
@@ -366,21 +330,20 @@ class McpClientTest {
         assertNotNull(successResult.data)
         assertNotNull(successResult.uiConfig)
 
-        coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
-        verify { mockAssetDataLoader.loadUiConfig() }
+        coVerify { mockMcpHttpClient.sendRequest<Any>(any()) }
     }
 
     @Test
     fun `getPopularMoviesViaMcp should return Error when MCP call fails`() = runBlocking {
         // Given
         val page = 1
-        val mockResponse = McpResponse<Map<String, Any>>(
+        val mockResponse = McpResponse<Any>(
             success = false,
             data = null,
             error = "Network error"
         )
 
-        coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
+        coEvery { mockMcpHttpClient.sendRequest<Any>(any()) } returns mockResponse
 
         // When
         val result = mcpClient.getPopularMoviesViaMcp(page)
@@ -390,7 +353,7 @@ class McpClientTest {
         val errorResult = result as Result.Error
         assertTrue(errorResult.message.contains("Network error"))
 
-        coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
+        coVerify { mockMcpHttpClient.sendRequest<Any>(any()) }
     }
 
     @Test
@@ -398,12 +361,8 @@ class McpClientTest {
         // Given
         val movieId = 123
         val mockResponse = createMockMovieDetailsMcpResponse()
-        val mockUiConfig = createMockUiConfigDto()
-        val mockMeta = createMockMetaDto()
 
-        coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
-        every { mockAssetDataLoader.loadUiConfig() } returns mockUiConfig
-        every { mockAssetDataLoader.loadMetaData(any(), any(), any()) } returns mockMeta
+        coEvery { mockMcpHttpClient.sendRequest<Any>(any()) } returns mockResponse
 
         // When
         val result = mcpClient.getMovieDetailsViaMcp(movieId)
@@ -414,21 +373,20 @@ class McpClientTest {
         assertNotNull(successResult.data)
         assertNotNull(successResult.uiConfig)
 
-        coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
-        verify { mockAssetDataLoader.loadUiConfig() }
+        coVerify { mockMcpHttpClient.sendRequest<Any>(any()) }
     }
 
     @Test
     fun `getMovieDetailsViaMcp should return Error when MCP call fails`() = runBlocking {
         // Given
         val movieId = 123
-        val mockResponse = McpResponse<Map<String, Any>>(
+        val mockResponse = McpResponse<Any>(
             success = false,
             data = null,
             error = "Movie not found"
         )
 
-        coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
+        coEvery { mockMcpHttpClient.sendRequest<Any>(any()) } returns mockResponse
 
         // When
         val result = mcpClient.getMovieDetailsViaMcp(movieId)
@@ -438,7 +396,7 @@ class McpClientTest {
         val errorResult = result as Result.Error
         assertTrue(errorResult.message.contains("Movie not found"))
 
-        coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
+        coVerify { mockMcpHttpClient.sendRequest<Any>(any()) }
     }
 
     @Test
@@ -447,7 +405,7 @@ class McpClientTest {
         val page = 1
         val exception = RuntimeException("Network failure")
 
-        coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } throws exception
+        coEvery { mockMcpHttpClient.sendRequest<Any>(any()) } throws exception
 
         // When
         val result = mcpClient.getPopularMoviesViaMcp(page)
@@ -457,7 +415,7 @@ class McpClientTest {
         val errorResult = result as Result.Error
         assertTrue(errorResult.message.contains("Network failure"))
 
-        coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
+        coVerify { mockMcpHttpClient.sendRequest<Any>(any()) }
     }
 
     @Test
@@ -466,7 +424,7 @@ class McpClientTest {
         val movieId = 123
         val exception = RuntimeException("Service unavailable")
 
-        coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } throws exception
+        coEvery { mockMcpHttpClient.sendRequest<Any>(any()) } throws exception
 
         // When
         val result = mcpClient.getMovieDetailsViaMcp(movieId)
@@ -476,7 +434,7 @@ class McpClientTest {
         val errorResult = result as Result.Error
         assertTrue(errorResult.message.contains("Service unavailable"))
 
-        coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
+        coVerify { mockMcpHttpClient.sendRequest<Any>(any()) }
     }
 
     @Test
@@ -484,10 +442,8 @@ class McpClientTest {
         // Given
         val movieId = 123
         val mockResponse = createMockMovieDetailsMcpResponseWithDynamicUiConfig()
-        val mockMeta = createMockMetaDto()
 
-        coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
-        every { mockAssetDataLoader.loadMetaData(any(), any(), any()) } returns mockMeta
+        coEvery { mockMcpHttpClient.sendRequest<Any>(any()) } returns mockResponse
 
         // When
         val result = mcpClient.getMovieDetailsViaMcp(movieId)
@@ -507,9 +463,7 @@ class McpClientTest {
         assertNotNull(uiConfig?.colors?.background)
         assertNotNull(uiConfig?.colors?.surface)
 
-        coVerify { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) }
-        // Should NOT call assetDataLoader.loadUiConfig() when dynamic uiConfig is available
-        verify(exactly = 0) { mockAssetDataLoader.loadUiConfig() }
+        coVerify { mockMcpHttpClient.sendRequest<Any>(any()) }
     }
 
     @Test
@@ -517,12 +471,8 @@ class McpClientTest {
         // Given
         val movieId = 123
         val mockResponse = createMockMovieDetailsMcpResponseWithoutUiConfig()
-        val mockUiConfig = createMockUiConfigDto()
-        val mockMeta = createMockMetaDto()
 
-        coEvery { mockMcpHttpClient.sendRequest<Map<String, Any>>(any()) } returns mockResponse
-        every { mockAssetDataLoader.loadUiConfig() } returns mockUiConfig
-        every { mockAssetDataLoader.loadMetaData(any(), any(), any()) } returns mockMeta
+        coEvery { mockMcpHttpClient.sendRequest<Any>(any()) } returns mockResponse
 
         // When
         val result = mcpClient.getMovieDetailsViaMcp(movieId)
@@ -532,9 +482,8 @@ class McpClientTest {
         val successResult = result as Result.Success
         assertNotNull(successResult.data)
         assertNotNull(successResult.uiConfig)
-        
-        // Verify fallback to static uiConfig
-        verify { mockAssetDataLoader.loadUiConfig() }
+
+        coVerify { mockMcpHttpClient.sendRequest<Any>(any()) }
     }
 
 
@@ -550,7 +499,7 @@ class McpClientTest {
         verify { mockMcpHttpClient.close() }
     }
 
-    private fun createMockMcpResponse(): McpResponse<Map<String, Any>> {
+    private fun createMockMcpResponse(): McpResponse<Any> {
         val moviesData = listOf(
             mapOf(
                 "id" to 1,
@@ -594,7 +543,7 @@ class McpClientTest {
         )
     }
 
-    private fun createMockMovieDetailsResponse(): McpResponse<Map<String, Any>> {
+    private fun createMockMovieDetailsResponse(): McpResponse<Any> {
         val movieDetailsData = mapOf(
             "id" to 123,
             "title" to "Test Movie Details",
@@ -633,7 +582,7 @@ class McpClientTest {
         )
     }
 
-    private fun createMockMovieDetailsMcpResponse(): McpResponse<Map<String, Any>> {
+    private fun createMockMovieDetailsMcpResponse(): McpResponse<Any> {
         val movieDetailsData = mapOf(
             "id" to 123,
             "title" to "Test Movie Details",
@@ -766,7 +715,7 @@ class McpClientTest {
         )
     }
 
-    private fun createMockMovieDetailsMcpResponseWithDynamicUiConfig(): McpResponse<Map<String, Any>> {
+    private fun createMockMovieDetailsMcpResponseWithDynamicUiConfig(): McpResponse<Any> {
         val movieDetailsData = mapOf(
             "id" to 123,
             "title" to "Test Movie Details",
@@ -854,7 +803,7 @@ class McpClientTest {
         )
     }
 
-    private fun createMockMovieDetailsMcpResponseWithoutUiConfig(): McpResponse<Map<String, Any>> {
+    private fun createMockMovieDetailsMcpResponseWithoutUiConfig(): McpResponse<Any> {
         val movieDetailsData = mapOf(
             "id" to 123,
             "title" to "Test Movie Details",
