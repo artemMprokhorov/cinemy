@@ -133,18 +133,55 @@ class MainActivity : ComponentActivity() {
      * @param isLandscape Whether the device is in landscape orientation
      */
     private fun handleOrientationChange(isLandscape: Boolean) {
-        // Orientation-specific optimizations can be added here
-        // For now, the UI components handle orientation changes automatically
+        // Update device type detection for orientation changes
+        val deviceType = DeviceUtils.getDeviceType(this)
+        
+        when (deviceType) {
+            DeviceUtils.DeviceType.FOLDABLE -> {
+                // For foldable devices, orientation change might indicate fold/unfold
+                if (isLandscape) {
+                    // Device is likely unfolded or rotated to landscape
+                    optimizeForFoldableDevice()
+                } else {
+                    // Device is likely folded or rotated to portrait
+                    // Keep foldable optimizations but adjust for portrait
+                }
+            }
+            
+            DeviceUtils.DeviceType.TABLET -> {
+                // For tablets, landscape provides more space for dual pane
+                if (isLandscape) {
+                    // Enable dual pane layout optimizations
+                    // UI components will automatically adjust
+                }
+            }
+            
+            DeviceUtils.DeviceType.PHONE -> {
+                // For phones, orientation change affects layout density
+                // UI components handle this automatically
+            }
+            
+            DeviceUtils.DeviceType.DESKTOP -> {
+                // Desktop orientation changes are rare but handled
+                optimizeForDesktop()
+            }
+        }
     }
 
     /**
      * Optimize UI for foldable devices
      */
     private fun optimizeForFoldableDevice() {
-        // Enable multi-window mode support
+        // Enable multi-window mode support for foldable devices
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
         }
+        
+        // Enable edge-to-edge display for foldable devices
+        VersionUtils.safeEnableEdgeToEdge(this)
+        
+        // Additional foldable-specific optimizations can be added here
+        // For example: adjust window insets, enable multi-window, etc.
     }
 
 
@@ -152,10 +189,16 @@ class MainActivity : ComponentActivity() {
      * Optimize UI for desktop devices
      */
     private fun optimizeForDesktop() {
-        // Enable window resizing
+        // Enable window resizing for desktop devices
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
         }
+        
+        // Enable edge-to-edge display for desktop
+        VersionUtils.safeEnableEdgeToEdge(this)
+        
+        // Additional desktop-specific optimizations can be added here
+        // For example: keyboard shortcuts, window management, etc.
     }
 
 }
