@@ -110,13 +110,11 @@ class MainActivity : ComponentActivity() {
             }
 
             DeviceUtils.DeviceType.TABLET -> {
-                // Optimize for tablet
-                optimizeForTablet()
+                // Tablet optimization handled by UI components
             }
 
             DeviceUtils.DeviceType.PHONE -> {
-                // Optimize for phone
-                optimizeForPhone()
+                // Phone optimization handled by UI components
             }
 
             DeviceUtils.DeviceType.DESKTOP -> {
@@ -131,11 +129,9 @@ class MainActivity : ComponentActivity() {
      */
     private fun handleOrientationChange(isLandscape: Boolean) {
         if (isLandscape) {
-            // Optimize for landscape mode
-            optimizeForLandscape()
+            // Landscape optimization handled by UI components
         } else {
-            // Optimize for portrait mode
-            optimizeForPortrait()
+            // Portrait optimization handled by UI components
         }
     }
 
@@ -149,21 +145,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /**
-     * Optimize UI for tablet devices
-     */
-    private fun optimizeForTablet() {
-        // Enable dual pane layout
-        // This will be handled by the UI components
-    }
-
-    /**
-     * Optimize UI for phone devices
-     */
-    private fun optimizeForPhone() {
-        // Use single pane layout
-        // This will be handled by the UI components
-    }
 
     /**
      * Optimize UI for desktop devices
@@ -175,21 +156,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /**
-     * Optimize UI for landscape orientation
-     */
-    private fun optimizeForLandscape() {
-        // Handle landscape-specific optimizations
-        // This will be handled by the UI components
-    }
-
-    /**
-     * Optimize UI for portrait orientation
-     */
-    private fun optimizeForPortrait() {
-        // Handle portrait-specific optimizations
-        // This will be handled by the UI components
-    }
 }
 
 @Preview(showBackground = true)
