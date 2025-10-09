@@ -25,7 +25,8 @@ import org.studioapp.cinemy.utils.supportsDualPane
 fun AdaptiveLayout(
     leftPane: @Composable () -> Unit,
     rightPane: @Composable () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showRightPane: Boolean = false
 ) {
     val deviceType = getDeviceType()
     val supportsDual = supportsDualPane()
@@ -52,7 +53,8 @@ fun AdaptiveLayout(
         SinglePaneLayout(
             leftPane = leftPane,
             rightPane = rightPane,
-            modifier = modifier
+            modifier = modifier,
+            showRightPane = showRightPane
         )
     }
 }
@@ -144,104 +146,26 @@ private fun StandardDualPaneLayout(
 }
 
 /**
- * Single pane layout for phones
- * Shows only one pane at a time
+ * Single pane layout for phones and folded foldable devices
+ * Shows the appropriate pane based on navigation state
  */
 @Composable
 private fun SinglePaneLayout(
     leftPane: @Composable () -> Unit,
     rightPane: @Composable () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showRightPane: Boolean = false
 ) {
-    // For single pane, we show the right pane (movie details) by default
-    // The left pane (movies list) is handled by navigation
+    // For single pane, show the appropriate pane based on showRightPane parameter
     Box(
         modifier = modifier.fillMaxSize()
     ) {
-        rightPane()
-    }
-}
-
-/**
- * Adaptive grid layout for movie cards
- * Adjusts column count based on device type
- */
-@Composable
-fun AdaptiveGridLayout(
-    content: @Composable () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val deviceType = getDeviceType()
-    val spacing = getOptimalSpacing()
-
-    when (deviceType) {
-        DeviceUtils.DeviceType.FOLDABLE -> {
-            // Foldable devices get optimized spacing
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(spacing)
-            ) {
-                content()
-            }
-        }
-
-        DeviceUtils.DeviceType.TABLET, DeviceUtils.DeviceType.DESKTOP -> {
-            // Tablets and desktop get standard spacing
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(horizontal = spacing, vertical = spacing / 2)
-            ) {
-                content()
-            }
-        }
-
-        DeviceUtils.DeviceType.PHONE -> {
-            // Phones get minimal spacing
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                content()
-            }
+        if (showRightPane) {
+            rightPane()
+        } else {
+            leftPane()
         }
     }
 }
 
-/**
- * Adaptive spacing modifier
- * Provides appropriate spacing based on device type
- */
-@Composable
-fun Modifier.adaptivePadding(): Modifier {
-    val spacing = getOptimalSpacing()
-    return this.padding(spacing)
-}
-
-/**
- * Adaptive content width modifier
- * Adjusts content width based on device type
- */
-@Composable
-fun Modifier.adaptiveContentWidth(): Modifier {
-    val deviceType = getDeviceType()
-
-    return when (deviceType) {
-        DeviceUtils.DeviceType.FOLDABLE -> {
-            // Foldable devices use full width
-            this.fillMaxWidth()
-        }
-
-        DeviceUtils.DeviceType.TABLET, DeviceUtils.DeviceType.DESKTOP -> {
-            // Tablets and desktop use constrained width
-            this.width(600.dp)
-        }
-
-        DeviceUtils.DeviceType.PHONE -> {
-            // Phones use full width
-            this.fillMaxWidth()
-        }
-    }
-}
+// Unused methods removed: AdaptiveGridLayout, adaptivePadding, adaptiveContentWidth

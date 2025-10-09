@@ -78,6 +78,7 @@ fun DualPaneScreen(
                 }
             }
         },
-        modifier = modifier
+        modifier = modifier,
+        showRightPane = selectedMovieId != null
     )
 }
