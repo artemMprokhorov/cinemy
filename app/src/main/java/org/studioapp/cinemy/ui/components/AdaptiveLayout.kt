@@ -165,5 +165,3 @@ private fun SinglePaneLayout(
         }
     }
 }
-
-// Unused methods removed: AdaptiveGridLayout, adaptivePadding, adaptiveContentWidth

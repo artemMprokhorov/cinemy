@@ -71,7 +71,6 @@ fun MovieDetailScreen(
 
     MovieDetailContent(
         state = state,
-        onBackClick = onBackClick,
         onIntent = viewModel::processIntent
     )
 }
@@ -80,7 +79,6 @@ fun MovieDetailScreen(
 @Composable
 private fun MovieDetailContent(
     state: MovieDetailState,
-    onBackClick: () -> Unit,
     onIntent: (MovieDetailIntent) -> Unit
 ) {
     val pullRefreshState = rememberPullRefreshState(
