@@ -49,10 +49,19 @@ class CinemyApplication : Application() {
     }
 }
 
+/**
+ * Main activity for Cinemy app
+ * Handles device configuration changes and foldable device support
+ * Manages dependency injection and app initialization
+ */
 class MainActivity : ComponentActivity() {
 
     private var currentDeviceType: DeviceUtils.DeviceType? = null
 
+    /**
+     * Initialize the main activity and set up the app
+     * @param savedInstanceState Saved instance state
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -109,9 +118,24 @@ class MainActivity : ComponentActivity() {
 
         // Handle orientation changes
         val isLandscape = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE
-        // Orientation optimization handled by UI components
+        if (isLandscape) {
+            // Optimize for landscape orientation
+            handleOrientationChange(true)
+        } else {
+            // Optimize for portrait orientation
+            handleOrientationChange(false)
+        }
     }
 
+
+    /**
+     * Handle orientation changes
+     * @param isLandscape Whether the device is in landscape orientation
+     */
+    private fun handleOrientationChange(isLandscape: Boolean) {
+        // Orientation-specific optimizations can be added here
+        // For now, the UI components handle orientation changes automatically
+    }
 
     /**
      * Optimize UI for foldable devices
