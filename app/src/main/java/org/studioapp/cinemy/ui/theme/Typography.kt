@@ -8,5 +8,4 @@ val Typography24 = 24.sp
 val Typography32 = 32.sp
 
 // Letter spacing values
-val LetterSpacing0 = 0.sp
 val LetterSpacing05 = 0.5.sp
