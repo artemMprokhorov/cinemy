@@ -153,11 +153,6 @@ sealed class Result<out T> {
 }
 
 // Response models for MCP client with UiConfig
-data class MoviesResponse(
-    val movies: List<Movie>,
-    val pagination: Pagination,
-    val uiConfig: UiConfiguration? = null
-)
 
 data class MovieDetailsResponse(
     val success: Boolean,

@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.displayCutout
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -22,7 +20,7 @@ import org.studioapp.cinemy.utils.isFoldableDevice
  * Provides proper insets handling for different device types
  */
 object FoldableInsets {
-    
+
     /**
      * Get appropriate window insets for the current device type
      */
@@ -30,25 +28,27 @@ object FoldableInsets {
     fun getWindowInsets(): WindowInsets {
         val deviceType = getDeviceType()
         val isFoldable = isFoldableDevice()
-        
+
         return when {
             isFoldable -> {
                 // For foldable devices, use safe drawing insets
                 // This ensures content doesn't overlap with system UI
                 WindowInsets.safeDrawing
             }
-            deviceType == DeviceUtils.DeviceType.TABLET || 
-            deviceType == DeviceUtils.DeviceType.DESKTOP -> {
+
+            deviceType == DeviceUtils.DeviceType.TABLET ||
+                    deviceType == DeviceUtils.DeviceType.DESKTOP -> {
                 // For tablets and desktop, use system bars
                 WindowInsets.systemBars
             }
+
             else -> {
                 // For phones, use system bars
                 WindowInsets.systemBars
             }
         }
     }
-    
+
     /**
      * Get display cutout insets for devices with notches
      */
@@ -56,7 +56,7 @@ object FoldableInsets {
     fun getDisplayCutoutInsets(): WindowInsets {
         return WindowInsets.displayCutout
     }
-    
+
     /**
      * Get system bars insets
      */
@@ -142,17 +142,19 @@ fun getSystemBarsPadding(): androidx.compose.foundation.layout.PaddingValues {
 fun Modifier.adaptiveInsetsPadding(): Modifier {
     val deviceType = getDeviceType()
     val isFoldable = isFoldableDevice()
-    
+
     return when {
         isFoldable -> {
             // For foldable devices, use safe drawing insets
             this.safeDrawingPadding()
         }
-        deviceType == DeviceUtils.DeviceType.TABLET || 
-        deviceType == DeviceUtils.DeviceType.DESKTOP -> {
+
+        deviceType == DeviceUtils.DeviceType.TABLET ||
+                deviceType == DeviceUtils.DeviceType.DESKTOP -> {
             // For tablets and desktop, use system bars
             this.systemBarsPadding()
         }
+
         else -> {
             // For phones, use system bars
             this.systemBarsPadding()

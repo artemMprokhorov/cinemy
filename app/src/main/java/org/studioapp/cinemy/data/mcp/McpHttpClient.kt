@@ -18,7 +18,6 @@ import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.mcp.models.McpRequest
 import org.studioapp.cinemy.data.mcp.models.McpResponse
 import org.studioapp.cinemy.data.model.StringConstants
-import java.io.InputStream
 
 class McpHttpClient(private val context: Context) {
     private val fakeInterceptor = FakeInterceptor(context)
@@ -163,16 +162,6 @@ class McpHttpClient(private val context: Context) {
         }
     }
 
-
-    // Helper method to load JSON from assets
-    private fun loadJsonFromAssets(fileName: String): String? {
-        return runCatching {
-            val inputStream: InputStream = context.assets.open(fileName)
-            inputStream.bufferedReader().use { it.readText() }
-        }.getOrElse { e ->
-            null
-        }
-    }
 
     // Helper method to convert JSONObject to Map
     private fun jsonObjectToMap(jsonObject: JSONObject): Map<String, Any> {

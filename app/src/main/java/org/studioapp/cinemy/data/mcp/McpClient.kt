@@ -1,7 +1,6 @@
 package org.studioapp.cinemy.data.mcp
 
 import android.content.Context
-import kotlinx.coroutines.delay
 import org.studioapp.cinemy.data.mapper.MovieMapper
 import org.studioapp.cinemy.data.mcp.models.McpRequest
 import org.studioapp.cinemy.data.model.GeminiColors
@@ -15,20 +14,17 @@ import org.studioapp.cinemy.data.remote.api.MovieApiService
 import org.studioapp.cinemy.data.remote.dto.ButtonConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.ColorMetadataDto
 import org.studioapp.cinemy.data.remote.dto.ColorSchemeDto
-import org.studioapp.cinemy.data.remote.dto.GeminiColorsDto
 import org.studioapp.cinemy.data.remote.dto.GenreDto
 import org.studioapp.cinemy.data.remote.dto.McpResponseDto
-import org.studioapp.cinemy.data.remote.dto.MetaDto
 import org.studioapp.cinemy.data.remote.dto.MovieColorsDto
-import org.studioapp.cinemy.data.remote.dto.TextConfigurationDto
-import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.MovieDetailsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDto
 import org.studioapp.cinemy.data.remote.dto.MovieListResponseDto
 import org.studioapp.cinemy.data.remote.dto.ProductionCompanyDto
 import org.studioapp.cinemy.data.remote.dto.SentimentMetadataDto
 import org.studioapp.cinemy.data.remote.dto.SentimentReviewsDto
-import java.io.IOException
+import org.studioapp.cinemy.data.remote.dto.TextConfigurationDto
+import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
 
 class McpClient(private val context: Context) : MovieApiService {
     private val assetDataLoader = AssetDataLoader(context)
@@ -488,7 +484,7 @@ class McpClient(private val context: Context) : MovieApiService {
                         val colors = backendUiConfig["colors"] as? Map<String, Any>
                         val texts = backendUiConfig["texts"] as? Map<String, Any>
                         val buttons = backendUiConfig["buttons"] as? Map<String, Any>
-                        
+
                         if (colors != null && texts != null && buttons != null) {
                             UiConfigurationDto(
                                 colors = ColorSchemeDto(
@@ -500,22 +496,31 @@ class McpClient(private val context: Context) : MovieApiService {
                                     onSecondary = colors["onSecondary"] as? String ?: "#FFFFFF",
                                     onBackground = colors["onBackground"] as? String ?: "#FFFFFF",
                                     onSurface = colors["onSurface"] as? String ?: "#FFFFFF",
-                                    moviePosterColors = (colors["moviePosterColors"] as? List<*>)?.mapNotNull { it as? String } ?: emptyList()
+                                    moviePosterColors = (colors["moviePosterColors"] as? List<*>)?.mapNotNull { it as? String }
+                                        ?: emptyList()
                                 ),
                                 texts = TextConfigurationDto(
-                                    appTitle = texts["appTitle"] as? String ?: "TmdbAi - Movie Details",
-                                    loadingText = texts["loadingText"] as? String ?: "Loading details...",
-                                    errorMessage = texts["errorMessage"] as? String ?: "Error loading movie",
-                                    noMoviesFound = texts["noMoviesFound"] as? String ?: "Movie not found",
+                                    appTitle = texts["appTitle"] as? String
+                                        ?: "TmdbAi - Movie Details",
+                                    loadingText = texts["loadingText"] as? String
+                                        ?: "Loading details...",
+                                    errorMessage = texts["errorMessage"] as? String
+                                        ?: "Error loading movie",
+                                    noMoviesFound = texts["noMoviesFound"] as? String
+                                        ?: "Movie not found",
                                     retryButton = texts["retryButton"] as? String ?: "Retry",
                                     backButton = texts["backButton"] as? String ?: "Back to list",
                                     playButton = texts["playButton"] as? String ?: "Watch"
                                 ),
                                 buttons = ButtonConfigurationDto(
-                                    primaryButtonColor = buttons["primaryButtonColor"] as? String ?: "#DC3528",
-                                    secondaryButtonColor = buttons["secondaryButtonColor"] as? String ?: "#E64539",
-                                    buttonTextColor = buttons["buttonTextColor"] as? String ?: "#FFFFFF",
-                                    buttonCornerRadius = (buttons["buttonCornerRadius"] as? Number)?.toInt() ?: 12
+                                    primaryButtonColor = buttons["primaryButtonColor"] as? String
+                                        ?: "#DC3528",
+                                    secondaryButtonColor = buttons["secondaryButtonColor"] as? String
+                                        ?: "#E64539",
+                                    buttonTextColor = buttons["buttonTextColor"] as? String
+                                        ?: "#FFFFFF",
+                                    buttonCornerRadius = (buttons["buttonCornerRadius"] as? Number)?.toInt()
+                                        ?: 12
                                 )
                             )
                         } else {
@@ -524,8 +529,9 @@ class McpClient(private val context: Context) : MovieApiService {
                     } else {
                         assetDataLoader.loadUiConfig()
                     }
-                    
-                    val domainUiConfig = MovieMapper.mapUiConfigurationDtoToUiConfiguration(uiConfig)
+
+                    val domainUiConfig =
+                        MovieMapper.mapUiConfigurationDtoToUiConfiguration(uiConfig)
 
                     // Debug logging for uiConfig
 
@@ -581,54 +587,5 @@ class McpClient(private val context: Context) : MovieApiService {
         mcpHttpClient.close()
     }
 
-    private suspend fun <T> simulateNetworkCall(block: () -> T): McpResponseDto<T> {
-        return runCatching {
-            // Simulate network delay
-            delay(StringConstants.NETWORK_DELAY_BASE_MS + (Math.random() * StringConstants.NETWORK_DELAY_RANDOM_MAX_MS).toLong())
-
-            // Simulate occasional network errors (5% chance)
-            if (Math.random() < StringConstants.NETWORK_ERROR_PROBABILITY) {
-                throw IOException(StringConstants.SIMULATED_NETWORK_ERROR)
-            }
-
-            val data = block()
-            val uiConfig = assetDataLoader.loadUiConfig()
-            val meta = assetDataLoader.loadMetaData(
-                StringConstants.META_METHOD_UNKNOWN,
-                StringConstants.META_RESULTS_COUNT_ZERO
-            )
-
-            McpResponseDto(
-                success = true,
-                data = data,
-                uiConfig = uiConfig,
-                error = null,
-                meta = meta
-            )
-        }.getOrElse { exception ->
-            McpResponseDto(
-                success = false,
-                data = null,
-                uiConfig = assetDataLoader.loadUiConfig(),
-                error = exception.message ?: StringConstants.ERROR_UNKNOWN,
-                meta = MetaDto(
-                    timestamp = System.currentTimeMillis().toString(),
-                    method = StringConstants.METHOD_UNKNOWN,
-                    searchQuery = null,
-                    movieId = null,
-                    resultsCount = null,
-                    aiGenerated = false,
-                    geminiColors = GeminiColorsDto(
-                        primary = StringConstants.COLOR_ERROR,
-                        secondary = StringConstants.COLOR_ERROR,
-                        accent = StringConstants.COLOR_ERROR
-                    ),
-                    avgRating = null,
-                    movieRating = null,
-                    version = StringConstants.VERSION_2_0_0
-                )
-            )
-        }
-    }
 
 }

@@ -2,7 +2,6 @@ package org.studioapp.cinemy.data.repository
 
 import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.delay
-import org.json.JSONObject
 import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.mapper.MovieMapper
 import org.studioapp.cinemy.data.mcp.AssetDataLoader
@@ -115,7 +114,7 @@ class MovieRepositoryImpl(
 
         // Load mock movie details from assets
         val movieDetails = loadMockMovieDetailsFromAssets()
-        val sentimentReviews = loadSentimentReviewsFromAssets()
+        val sentimentReviews: org.studioapp.cinemy.data.model.SentimentReviews? = null
 
         // Create data wrapper
         val movieDetailsData = MovieDetailsData(
@@ -141,158 +140,9 @@ class MovieRepositoryImpl(
      * Loads mock movie details from assets
      */
     private fun loadMockMovieDetailsFromAssets(): MovieDetails {
-        return runCatching {
-            val jsonString = loadJsonFromAssets(StringConstants.ASSET_MOCK_MOVIE_DETAILS)
-            if (jsonString != null) {
-                val jsonObject = JSONObject(jsonString)
-                val dataJson = jsonObject.optJSONObject(StringConstants.FIELD_DATA)
-                val movieDetailsJson = dataJson?.optJSONObject("movieDetails")
-                if (movieDetailsJson != null) {
-                    parseMovieDetailsFromJson(movieDetailsJson)
-                } else {
-                    createDefaultMovieDetails()
-                }
-            } else {
-                createDefaultMovieDetails()
-            }
-        }.getOrElse {
-            createDefaultMovieDetails()
-        }
+        return createDefaultMovieDetails()
     }
 
-    /**
-     * Loads sentiment reviews from assets
-     */
-    private fun loadSentimentReviewsFromAssets(): org.studioapp.cinemy.data.model.SentimentReviews? {
-        return runCatching {
-            val jsonString = loadJsonFromAssets(StringConstants.ASSET_MOCK_MOVIE_DETAILS)
-            if (jsonString != null) {
-                val jsonObject = JSONObject(jsonString)
-                val dataJson = jsonObject.optJSONObject(StringConstants.FIELD_DATA)
-                val sentimentReviewsJson =
-                    dataJson?.optJSONObject(StringConstants.FIELD_SENTIMENT_REVIEWS)
-                if (sentimentReviewsJson != null) {
-                    parseSentimentReviewsFromJson(sentimentReviewsJson)
-                } else {
-                    null
-                }
-            } else {
-                null
-            }
-        }.getOrElse { null }
-    }
-
-    /**
-     * Loads JSON content from assets
-     */
-    private fun loadJsonFromAssets(fileName: String): String? {
-        return runCatching {
-            // Use AssetDataLoader's public method to load mock movies
-            if (fileName == StringConstants.ASSET_MOCK_MOVIES) {
-                // For movies, we can use the existing method
-                val movies = assetDataLoader.loadMockMovies()
-                // Convert to JSON string (simplified approach)
-                return@runCatching "{\"movies\": []}" // Placeholder
-            } else {
-                // For other files, we need to implement a different approach
-                return@runCatching null
-            }
-        }.getOrNull()
-    }
-
-    /**
-     * Parses movie details from JSON
-     */
-    private fun parseMovieDetailsFromJson(json: JSONObject): MovieDetails {
-        return MovieDetails(
-            id = json.optInt("id", 1),
-            title = json.optString("title", "Unknown Movie"),
-            description = json.optString("description", "No description available"),
-            posterPath = json.optString("posterPath"),
-            backdropPath = json.optString("backdropPath"),
-            rating = json.optDouble("rating", 0.0),
-            voteCount = json.optInt("voteCount", 0),
-            releaseDate = json.optString("releaseDate", ""),
-            runtime = json.optInt("runtime", 0),
-            genres = parseGenresFromJson(json.optJSONArray("genres")),
-            productionCompanies = parseProductionCompaniesFromJson(json.optJSONArray("productionCompanies")),
-            budget = json.optLong("budget", 0),
-            revenue = json.optLong("revenue", 0),
-            status = json.optString("status", "Unknown")
-        )
-    }
-
-    /**
-     * Parses genres from JSON array
-     */
-    private fun parseGenresFromJson(genresArray: org.json.JSONArray?): List<org.studioapp.cinemy.data.model.Genre> {
-        if (genresArray == null) return emptyList()
-
-        val genres = mutableListOf<org.studioapp.cinemy.data.model.Genre>()
-        for (i in 0 until genresArray.length()) {
-            val genreJson = genresArray.optJSONObject(i)
-            if (genreJson != null) {
-                genres.add(
-                    org.studioapp.cinemy.data.model.Genre(
-                        id = genreJson.optInt("id", 0),
-                        name = genreJson.optString("name", "Unknown")
-                    )
-                )
-            }
-        }
-        return genres
-    }
-
-    /**
-     * Parses production companies from JSON array
-     */
-    private fun parseProductionCompaniesFromJson(companiesArray: org.json.JSONArray?): List<org.studioapp.cinemy.data.model.ProductionCompany> {
-        if (companiesArray == null) return emptyList()
-
-        val companies = mutableListOf<org.studioapp.cinemy.data.model.ProductionCompany>()
-        for (i in 0 until companiesArray.length()) {
-            val companyJson = companiesArray.optJSONObject(i)
-            if (companyJson != null) {
-                companies.add(
-                    org.studioapp.cinemy.data.model.ProductionCompany(
-                        id = companyJson.optInt("id", 0),
-                        logoPath = companyJson.optString("logoPath"),
-                        name = companyJson.optString("name", "Unknown"),
-                        originCountry = companyJson.optString("originCountry", "")
-                    )
-                )
-            }
-        }
-        return companies
-    }
-
-    /**
-     * Parses sentiment reviews from JSON
-     */
-    private fun parseSentimentReviewsFromJson(json: JSONObject): org.studioapp.cinemy.data.model.SentimentReviews {
-        val positiveArray = json.optJSONArray("positive")
-        val negativeArray = json.optJSONArray("negative")
-
-        val positive = mutableListOf<String>()
-        val negative = mutableListOf<String>()
-
-        if (positiveArray != null) {
-            for (i in 0 until positiveArray.length()) {
-                positive.add(positiveArray.optString(i, ""))
-            }
-        }
-
-        if (negativeArray != null) {
-            for (i in 0 until negativeArray.length()) {
-                negative.add(negativeArray.optString(i, ""))
-            }
-        }
-
-        return org.studioapp.cinemy.data.model.SentimentReviews(
-            positive = positive,
-            negative = negative
-        )
-    }
 
     /**
      * Creates default movie details

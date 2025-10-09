@@ -13,6 +13,7 @@ import org.studioapp.cinemy.data.remote.dto.MovieColorsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDto
 import org.studioapp.cinemy.data.remote.dto.TextConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
+import org.studioapp.cinemy.data.util.AssetUtils
 
 /**
  * Loads UI configuration and meta data from asset files
@@ -25,7 +26,8 @@ class AssetDataLoader(private val context: Context) {
      */
     fun loadUiConfig(): UiConfigurationDto {
         return runCatching {
-            val jsonString = loadJsonFromAssets(StringConstants.ASSET_MOCK_MOVIES)
+            val jsonString =
+                AssetUtils.loadJsonFromAssets(context, StringConstants.ASSET_MOCK_MOVIES)
             if (jsonString != null) {
                 val jsonObject = JSONObject(jsonString)
                 val uiConfigJson = jsonObject.optJSONObject(StringConstants.FIELD_UI_CONFIG)
@@ -49,7 +51,8 @@ class AssetDataLoader(private val context: Context) {
      */
     fun loadMetaData(method: String, resultsCount: Int = 0, movieId: Int? = null): MetaDto {
         return runCatching {
-            val jsonString = loadJsonFromAssets(StringConstants.ASSET_MOCK_MOVIES)
+            val jsonString =
+                AssetUtils.loadJsonFromAssets(context, StringConstants.ASSET_MOCK_MOVIES)
             if (jsonString != null) {
                 val jsonObject = JSONObject(jsonString)
                 val metaJson = jsonObject.optJSONObject(StringConstants.FIELD_META)
@@ -71,7 +74,8 @@ class AssetDataLoader(private val context: Context) {
      */
     fun loadMockMovies(): List<MovieDto> {
         return runCatching {
-            val jsonString = loadJsonFromAssets(StringConstants.ASSET_MOCK_MOVIES)
+            val jsonString =
+                AssetUtils.loadJsonFromAssets(context, StringConstants.ASSET_MOCK_MOVIES)
             if (jsonString != null) {
                 // Try to parse as array first (new contract structure)
                 try {
@@ -106,16 +110,6 @@ class AssetDataLoader(private val context: Context) {
         }
     }
 
-    /**
-     * Loads JSON content from assets
-     */
-    private fun loadJsonFromAssets(fileName: String): String? {
-        return runCatching {
-            context.assets.open(fileName).bufferedReader().use { it.readText() }
-        }.getOrElse { e ->
-            null
-        }
-    }
 
     /**
      * Parses UI configuration from JSON

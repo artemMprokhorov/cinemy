@@ -16,7 +16,4 @@ data class SentimentReviews(
 
     val hasAnyReviews: Boolean
         get() = hasPositiveReviews || hasNegativeReviews
-
-    val totalReviewsCount: Int
-        get() = positive.size + negative.size
 }

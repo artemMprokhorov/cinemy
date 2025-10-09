@@ -6,6 +6,7 @@ import org.json.JSONObject
 import org.studioapp.cinemy.data.mcp.models.McpRequest
 import org.studioapp.cinemy.data.mcp.models.McpResponse
 import org.studioapp.cinemy.data.model.StringConstants
+import org.studioapp.cinemy.data.util.AssetUtils
 
 /**
  * Fake interceptor for dummy configuration that provides mock responses
@@ -52,7 +53,7 @@ class FakeInterceptor(private val context: Context) {
         page: Int
     ): McpResponse<Any> {
         return runCatching {
-            val jsonString = loadJsonFromAssets(fileName)
+            val jsonString = AssetUtils.loadJsonFromAssets(context, fileName)
             if (jsonString != null) {
                 val jsonResponse = parseJsonResponse(jsonString)
 
@@ -61,13 +62,12 @@ class FakeInterceptor(private val context: Context) {
                     (jsonResponse[StringConstants.FIELD_DATA] as? Map<String, Any>)?.get(
                         StringConstants.FIELD_MOVIES
                     ) as? List<Map<String, Any>> ?: emptyList()
-                val moviesPerPage = StringConstants.FAKE_INTERCEPTOR_MOVIES_PER_PAGE
+                val moviesPerPage = 15 // Default movies per page
                 val startIndex = (page - 1) * moviesPerPage
                 val endIndex = minOf(startIndex + moviesPerPage, allMovies.size)
                 val pageMovies = allMovies.subList(startIndex, endIndex)
 
-                val totalPages =
-                    StringConstants.FAKE_INTERCEPTOR_TOTAL_PAGES // We have 3 pages of mock data
+                val totalPages = 3 // We have 3 pages of mock data
                 val hasNext = page < totalPages
                 val hasPrevious = page > StringConstants.DEFAULT_PAGE_NUMBER
 
@@ -102,7 +102,7 @@ class FakeInterceptor(private val context: Context) {
      */
     private fun loadMockDataFromAssets(fileName: String): McpResponse<Any> {
         return runCatching {
-            val jsonString = loadJsonFromAssets(fileName)
+            val jsonString = AssetUtils.loadJsonFromAssets(context, fileName)
             if (jsonString != null) {
                 val jsonResponse = parseJsonResponse(jsonString)
                 McpResponse<Any>(
@@ -120,16 +120,6 @@ class FakeInterceptor(private val context: Context) {
         }
     }
 
-    /**
-     * Loads JSON content from assets
-     */
-    private fun loadJsonFromAssets(fileName: String): String? {
-        return runCatching {
-            context.assets.open(fileName).bufferedReader().use { it.readText() }
-        }.getOrElse { e ->
-            null
-        }
-    }
 
     /**
      * Parses JSON string to Map

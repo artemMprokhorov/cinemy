@@ -80,12 +80,13 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 BuildConfig.FLAVOR_NAME == "Production" || BuildConfig.FLAVOR_NAME == "Dummy" -> {
                     tensorFlowModel = TensorFlowSentimentModel.getInstance(context)
                     val tensorFlowInitialized = tensorFlowModel?.initialize() ?: false
-                    
+
                     if (!tensorFlowInitialized) {
                         // Fallback to keyword model if TensorFlow fails
                         initializeKeywordModel()
                     }
                 }
+
                 else -> {
                     // All other cases: Use keyword model (JSON fallback)
                     initializeKeywordModel()
@@ -136,7 +137,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 BuildConfig.FLAVOR_NAME == "Production" || BuildConfig.FLAVOR_NAME == "Dummy" -> {
                     if (tensorFlowModel?.isReady() == true) {
                         val tensorFlowResult = tensorFlowModel!!.analyzeSentiment(text)
-                        
+
                         // Fallback to keyword model if TensorFlow result is unreliable
                         if (shouldFallbackToKeyword(tensorFlowResult) && keywordModel != null) {
                             analyzeWithKeywords(text, keywordModel!!)
@@ -150,6 +151,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                         SentimentResult.error("No sentiment model available")
                     }
                 }
+
                 else -> {
                     // All other cases: Use keyword model (JSON fallback)
                     if (keywordModel != null) {
@@ -189,7 +191,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
     /**
      * Get model file name for keyword-based sentiment analysis
-     * 
+     *
      * Since we only have one JSON model file, this method returns the same value.
      * The real differentiation happens in the model selection logic where:
      * - Release builds: TensorFlow model (production_sentiment_full_manual.tflite) with JSON fallback
@@ -203,7 +205,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
     /**
      * Get TensorFlow model file name for production builds
-     * 
+     *
      * This is used by the TensorFlowSentimentModel for production builds.
      * Debug builds may also use this for testing purposes.
      */
@@ -211,20 +213,6 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         return "production_sentiment_full_manual.tflite"
     }
 
-    /**
-     * Get the primary model type for the current build configuration
-     * 
-     * This method clearly shows which model is prioritized for each flavor:
-     * - Production/Dummy flavors: TensorFlow model (production_sentiment_full_manual.tflite)
-     * - All other cases: Keyword model (multilingual_sentiment_production.json)
-     */
-    private fun getPrimaryModelType(): String {
-        return when {
-            BuildConfig.FLAVOR_NAME == "Production" || BuildConfig.FLAVOR_NAME == "Dummy" -> 
-                "TensorFlow (production_sentiment_full_manual.tflite)"
-            else -> "Keyword (multilingual_sentiment_production.json)"
-        }
-    }
 
     /**
      * Load model from JSON string
@@ -248,13 +236,6 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         }
     }
 
-    /**
-     * Load compact model format
-     */
-    private fun loadCompactModel(json: Json, jsonString: String): KeywordSentimentModel {
-        // For now, use simple model instead of parsing compact JSON
-        return createSimpleModel()
-    }
 
     /**
      * Load production model format
@@ -603,43 +584,6 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         }.getOrNull()
     }
 
-    /**
-     * Determine if TensorFlow model should be used for this text
-     */
-    private fun shouldUseTensorFlow(text: String): Boolean {
-        val config = hybridConfig?.modelSelection ?: return false
-
-        // Check text complexity by word count
-        val complexityThreshold = config.complexityThreshold ?: 5
-        val wordCount = text.split("\\s+".toRegex()).filter { it.isNotBlank() }.size
-        if (wordCount >= complexityThreshold) {
-            return true
-        }
-
-        // Check for complex sentiment indicators
-        val complexIndicators = listOf(
-            "however", "although", "but", "yet", "despite", "nevertheless",
-            "on the other hand", "in contrast", "meanwhile", "furthermore",
-            "moreover", "additionally", "consequently", "therefore", "thus"
-        )
-
-        val textLower = text.lowercase()
-        if (complexIndicators.any { textLower.contains(it) }) {
-            return true
-        }
-
-        // Check for ambiguous sentiment words
-        val ambiguousWords = listOf(
-            "interesting", "different", "unique", "unusual", "strange",
-            "complex", "complicated", "mixed", "varied", "diverse"
-        )
-
-        if (ambiguousWords.any { textLower.contains(it) }) {
-            return true
-        }
-
-        return false
-    }
 
     /**
      * Determine if we should fallback to keyword model

@@ -34,7 +34,6 @@ import coil.compose.AsyncImage
 import org.studioapp.cinemy.R
 import org.studioapp.cinemy.data.model.Movie
 import org.studioapp.cinemy.data.model.UiConfiguration
-import org.studioapp.cinemy.ui.components.TestUtils
 import org.studioapp.cinemy.ui.theme.Dimens12
 import org.studioapp.cinemy.ui.theme.Dimens16
 import org.studioapp.cinemy.ui.theme.Dimens2

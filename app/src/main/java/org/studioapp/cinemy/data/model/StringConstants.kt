@@ -63,9 +63,6 @@ object StringConstants {
     const val FAKE_INTERCEPTOR_DELAY_BASE_MS = 300L
     const val FAKE_INTERCEPTOR_DELAY_RANDOM_MAX_MS = 500L
 
-    // Fake Interceptor Pagination Constants
-    const val FAKE_INTERCEPTOR_MOVIES_PER_PAGE = 15
-    const val FAKE_INTERCEPTOR_TOTAL_PAGES = 3
 
     // HTTP Timeout Constants
     const val HTTP_REQUEST_TIMEOUT_MS = 30000L

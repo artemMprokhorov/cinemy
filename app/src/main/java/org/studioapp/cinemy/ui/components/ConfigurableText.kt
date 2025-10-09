@@ -9,7 +9,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import org.studioapp.cinemy.data.model.UiConfiguration
-import org.studioapp.cinemy.ui.components.TestUtils
 
 /**
  * Configurable text component that supports server-driven styling
@@ -49,6 +48,7 @@ fun ConfigurableText(
             // For cards, use onSurface; for general text, use onBackground
             uiConfig.colors.onSurface
         }
+
         else -> MaterialTheme.colorScheme.onBackground
     }
 

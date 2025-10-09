@@ -299,11 +299,9 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
      * Run TensorFlow Lite inference with BERT input
      */
     private fun runInference(inputIds: IntArray, config: TensorFlowConfig): FloatArray {
-        val inputConfig = config.tensorflowLite?.inputConfig
         val outputConfig = config.tensorflowLite?.outputConfig
 
         // Prepare input tensor for BERT
-        val inputShape = (inputConfig?.inputShape ?: listOf(1, 512)).toIntArray()
         val outputShape = (outputConfig?.outputShape ?: listOf(1, 3)).toIntArray()
 
         // Create input array with batch dimension

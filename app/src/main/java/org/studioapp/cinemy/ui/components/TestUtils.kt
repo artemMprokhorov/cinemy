@@ -1,8 +1,6 @@
 package org.studioapp.cinemy.ui.components
 
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag as semanticsTestTag
 
@@ -20,7 +18,7 @@ object TestUtils {
         const val NAV_MOVIES = "nav_movies"
         const val NAV_DETAILS = "nav_details"
         const val NAV_BACK = "nav_back"
-        
+
         // Movie List
         const val MOVIE_LIST = "movie_list"
         const val MOVIE_CARD = "movie_card"
@@ -28,7 +26,7 @@ object TestUtils {
         const val MOVIE_RATING = "movie_rating"
         const val MOVIE_POSTER = "movie_poster"
         const val MOVIE_RELEASE_DATE = "movie_release_date"
-        
+
         // Movie Details
         const val MOVIE_DETAILS_SCREEN = "movie_details_screen"
         const val MOVIE_DETAILS_TITLE = "movie_details_title"
@@ -38,7 +36,7 @@ object TestUtils {
         const val MOVIE_DETAILS_RUNTIME = "movie_details_runtime"
         const val MOVIE_DETAILS_BUDGET = "movie_details_budget"
         const val MOVIE_DETAILS_REVENUE = "movie_details_revenue"
-        
+
         // Buttons
         const val BUTTON_RETRY = "button_retry"
         const val BUTTON_BACK = "button_back"
@@ -46,37 +44,37 @@ object TestUtils {
         const val BUTTON_LOAD_MORE = "button_load_more"
         const val BUTTON_PREVIOUS = "button_previous"
         const val BUTTON_NEXT = "button_next"
-        
+
         // Loading States
         const val LOADING_INDICATOR = "loading_indicator"
         const val LOADING_TEXT = "loading_text"
         const val LOADING_MOVIES = "loading_movies"
         const val LOADING_DETAILS = "loading_details"
-        
+
         // Error States
         const val ERROR_MESSAGE = "error_message"
         const val ERROR_RETRY = "error_retry"
         const val ERROR_GENERIC = "error_generic"
         const val ERROR_NETWORK = "error_network"
-        
+
         // Pagination
         const val PAGINATION_INFO = "pagination_info"
         const val PAGINATION_PREVIOUS = "pagination_previous"
         const val PAGINATION_NEXT = "pagination_next"
         const val PAGINATION_LOADING = "pagination_loading"
-        
+
         // Sentiment Analysis
         const val SENTIMENT_ANALYSIS = "sentiment_analysis"
         const val SENTIMENT_POSITIVE = "sentiment_positive"
         const val SENTIMENT_NEGATIVE = "sentiment_negative"
         const val SENTIMENT_LOADING = "sentiment_loading"
-        
+
         // Foldable Device Support
         const val FOLDABLE_LAYOUT = "foldable_layout"
         const val DUAL_PANE_LEFT = "dual_pane_left"
         const val DUAL_PANE_RIGHT = "dual_pane_right"
         const val ADAPTIVE_LAYOUT = "adaptive_layout"
-        
+
         // Accessibility
         const val ACCESSIBLE_TEXT = "accessible_text"
         const val ACCESSIBLE_BUTTON = "accessible_button"
@@ -94,22 +92,22 @@ object TestUtils {
         const val MOVIE_TITLE_ID = "movie_title_id"
         const val MOVIE_RATING_ID = "movie_rating_id"
         const val MOVIE_POSTER_ID = "movie_poster_id"
-        
+
         // Movie Details
         const val MOVIE_DETAILS_ID = "movie_details_id"
         const val MOVIE_DETAILS_TITLE_ID = "movie_details_title_id"
         const val MOVIE_DETAILS_DESCRIPTION_ID = "movie_details_description_id"
         const val MOVIE_DETAILS_RATING_ID = "movie_details_rating_id"
-        
+
         // Buttons
         const val BUTTON_RETRY_ID = "button_retry_id"
         const val BUTTON_BACK_ID = "button_back_id"
         const val BUTTON_PLAY_ID = "button_play_id"
-        
+
         // Loading
         const val LOADING_INDICATOR_ID = "loading_indicator_id"
         const val LOADING_TEXT_ID = "loading_text_id"
-        
+
         // Error
         const val ERROR_MESSAGE_ID = "error_message_id"
         const val ERROR_RETRY_ID = "error_retry_id"
@@ -128,19 +126,19 @@ object TestUtils {
         const val MOVIE_GENRES = "data-movie-genres"
         const val MOVIE_BUDGET = "data-movie-budget"
         const val MOVIE_REVENUE = "data-movie-revenue"
-        
+
         // UI state
         const val LOADING_STATE = "data-loading-state"
         const val ERROR_STATE = "data-error-state"
         const val SUCCESS_STATE = "data-success-state"
         const val EMPTY_STATE = "data-empty-state"
-        
+
         // Pagination
         const val CURRENT_PAGE = "data-current-page"
         const val TOTAL_PAGES = "data-total-pages"
         const val HAS_NEXT = "data-has-next"
         const val HAS_PREVIOUS = "data-has-previous"
-        
+
         // Device type
         const val DEVICE_TYPE = "data-device-type"
         const val SCREEN_SIZE = "data-screen-size"
@@ -151,14 +149,14 @@ object TestUtils {
      * Modifier extensions for adding test attributes
      */
     object TestModifiers {
-        
+
         /**
          * Add test tag to modifier
          */
         fun Modifier.testTag(tag: String): Modifier {
             return this.testTag(tag)
         }
-        
+
         /**
          * Add test ID to modifier
          */
@@ -167,7 +165,7 @@ object TestUtils {
                 semanticsTestTag = id
             }
         }
-        
+
         /**
          * Add test data attribute to modifier
          */
@@ -176,7 +174,7 @@ object TestUtils {
                 semanticsTestTag = "$key:$value"
             }
         }
-        
+
         /**
          * Add multiple test attributes to modifier
          */
@@ -186,14 +184,14 @@ object TestUtils {
             data: Map<String, String> = emptyMap()
         ): Modifier {
             var modifier: Modifier = Modifier
-            
+
             tag?.let { modifier = modifier.testTag(it) }
             id?.let { modifier = modifier.testId(it) }
-            
+
             data.forEach { (key, value) ->
                 modifier = modifier.testData(key, value)
             }
-            
+
             return modifier
         }
     }

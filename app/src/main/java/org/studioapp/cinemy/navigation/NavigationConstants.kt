@@ -9,6 +9,8 @@ object NavigationConstants {
     // Route Constants
     const val ROUTE_SPLASH = "splash"
     const val ROUTE_MOVIES_LIST = "movies_list"
+    const val ROUTE_DUAL_PANE = "dual_pane"
+    const val ROUTE_DUAL_PANE_WITH_MOVIE = "dual_pane/{movieId}"
     const val ROUTE_MOVIE_DETAIL = "movie_detail/{movieId}"
 
     // Route Parameter Constants

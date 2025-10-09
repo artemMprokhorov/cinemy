@@ -172,7 +172,8 @@ if (movie.adult) {
 
 ### ✅ **Dynamic Color Implementation (v3.0.0)**
 
-**BREAKING CHANGE**: The app now uses **dynamic colors from backend responses** instead of static asset files.
+**BREAKING CHANGE**: The app now uses **dynamic colors from backend responses** instead of static
+asset files.
 
 #### **Backend-Driven Color System:**
 
@@ -423,6 +424,7 @@ error handling, and performance optimizations.
 ### 🎯 **Adaptive Layout System**
 
 #### **AdaptiveLayout.kt**
+
 ```kotlin
 @Composable
 fun AdaptiveLayout(
@@ -433,12 +435,14 @@ fun AdaptiveLayout(
 ```
 
 **Features:**
+
 - **Automatic device detection** and layout switching
 - **Dual pane layout** for foldable devices and tablets
 - **Single pane layout** for phones
 - **Flexible sizing** for different screen sizes
 
 #### **Device-Specific Layouts**
+
 - **Foldable Devices**: 40/60 split with flexible sizing
 - **Tablets**: Fixed left pane (320dp) + flexible right pane
 - **Phones**: Single pane with navigation
@@ -447,6 +451,7 @@ fun AdaptiveLayout(
 ### 🪟 **WindowInsets Management**
 
 #### **FoldableInsets.kt**
+
 ```kotlin
 @Composable
 fun Modifier.adaptiveInsetsPadding(): Modifier
@@ -457,6 +462,7 @@ fun Modifier.systemBarsPadding(): Modifier
 ```
 
 **Features:**
+
 - **Automatic insets selection** based on device type
 - **Safe drawing insets** for foldable devices
 - **System bars insets** for tablets and phones
@@ -465,6 +471,7 @@ fun Modifier.systemBarsPadding(): Modifier
 ### 🔧 **Device Detection**
 
 #### **DeviceUtils.kt**
+
 ```kotlin
 @Composable
 fun getDeviceType(): DeviceUtils.DeviceType
@@ -477,6 +484,7 @@ fun getOptimalColumnCount(): Int
 ```
 
 **Device Types:**
+
 - **PHONE**: Standard smartphone
 - **TABLET**: Tablet device
 - **FOLDABLE**: Foldable device (Galaxy Fold, Surface Duo)
@@ -485,12 +493,14 @@ fun getOptimalColumnCount(): Int
 ### 📐 **Resource Configuration**
 
 #### **Large Screen Resources**
+
 - `values-sw600dp/`: Smallest width 600dp+ (tablets)
 - `values-w600dp/`: Width 600dp+ (wide screens)
 - `values-land/`: Landscape orientation
 - **Themes**: Optimized for different screen sizes
 
 #### **Manifest Configuration**
+
 ```xml
 <activity
     android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
@@ -503,6 +513,7 @@ fun getOptimalColumnCount(): Int
 ### 🎯 **Accessibility Utilities**
 
 #### **AccessibilityUtils.kt**
+
 ```kotlin
 object AccessibilityUtils {
     fun createMovieCardDescription(title: String, rating: Double, releaseDate: String): String
@@ -516,6 +527,7 @@ object AccessibilityUtils {
 ```
 
 **Features:**
+
 - **Semantic descriptions** for all UI components
 - **Screen reader support** with descriptive content
 - **Role-based semantics** for interactive elements
@@ -524,6 +536,7 @@ object AccessibilityUtils {
 ### 🎨 **Accessible UI Components**
 
 #### **ConfigurableText with Accessibility**
+
 ```kotlin
 @Composable
 fun ConfigurableText(
@@ -534,11 +547,13 @@ fun ConfigurableText(
 ```
 
 **Features:**
+
 - **Optional content descriptions** for screen readers
 - **Semantic role detection** for text elements
 - **Dynamic descriptions** based on content context
 
 #### **ConfigurableButton with Accessibility**
+
 ```kotlin
 @Composable
 fun ConfigurableButton(
@@ -549,11 +564,13 @@ fun ConfigurableButton(
 ```
 
 **Features:**
+
 - **Button role semantics** for screen readers
 - **Descriptive action text** for button purposes
 - **State-aware descriptions** (enabled/disabled)
 
 #### **ConfigurableMovieCard with Accessibility**
+
 ```kotlin
 @Composable
 fun ConfigurableMovieCard(
@@ -564,6 +581,7 @@ fun ConfigurableMovieCard(
 ```
 
 **Features:**
+
 - **Card role semantics** for interactive cards
 - **Movie information descriptions** for screen readers
 - **Click action descriptions** for navigation
@@ -571,6 +589,7 @@ fun ConfigurableMovieCard(
 ### 🔧 **Accessibility Modifiers**
 
 #### **Accessible Clickable**
+
 ```kotlin
 @Composable
 fun Modifier.accessibleClickable(
@@ -581,6 +600,7 @@ fun Modifier.accessibleClickable(
 ```
 
 #### **Accessible Card**
+
 ```kotlin
 @Composable
 fun Modifier.accessibleCard(
@@ -593,6 +613,7 @@ fun Modifier.accessibleCard(
 ### 📱 **Accessible Components**
 
 #### **AccessibleMovieCard**
+
 ```kotlin
 @Composable
 fun AccessibleMovieCard(
@@ -605,6 +626,7 @@ fun AccessibleMovieCard(
 ```
 
 #### **AccessibleButton**
+
 ```kotlin
 @Composable
 fun AccessibleButton(
@@ -616,6 +638,7 @@ fun AccessibleButton(
 ```
 
 #### **AccessibleLoadingIndicator**
+
 ```kotlin
 @Composable
 fun AccessibleLoadingIndicator(
@@ -625,6 +648,7 @@ fun AccessibleLoadingIndicator(
 ```
 
 #### **AccessibleErrorMessage**
+
 ```kotlin
 @Composable
 fun AccessibleErrorMessage(
@@ -637,18 +661,21 @@ fun AccessibleErrorMessage(
 ### 🎯 **Accessibility Features**
 
 #### **Screen Reader Support**
+
 - **TalkBack integration** for Android
 - **VoiceOver support** for iOS
 - **Semantic roles** for all interactive elements
 - **Content descriptions** for all visual elements
 
 #### **Navigation Support**
+
 - **Clear navigation hints** for complex interactions
 - **State announcements** for dynamic content
 - **Focus management** for keyboard navigation
 - **Gesture support** for accessibility
 
 #### **Dynamic Descriptions**
+
 - **State-based descriptions** for loading, error, and success states
 - **Context-aware descriptions** for different screen types
 - **Action descriptions** for buttons and interactive elements
@@ -1087,36 +1114,36 @@ AdaptiveLayout(
 #### Common Issues
 
 1. **Test tags not found**
-   - Verify the component has the correct test tag
-   - Check if the component is visible
-   - Ensure the test tag is properly set
+    - Verify the component has the correct test tag
+    - Check if the component is visible
+    - Ensure the test tag is properly set
 
 2. **Test IDs not working**
-   - Verify the test ID is unique
-   - Check if the component is rendered
-   - Ensure the test ID is properly set
+    - Verify the test ID is unique
+    - Check if the component is rendered
+    - Ensure the test ID is properly set
 
 3. **Accessibility issues**
-   - Verify content descriptions are set
-   - Check if the component is accessible
-   - Test with screen readers
+    - Verify content descriptions are set
+    - Check if the component is accessible
+    - Test with screen readers
 
 #### Debug Tips
 
 1. **Use test tags for debugging**
-   - Add temporary test tags for debugging
-   - Use descriptive test tags
-   - Remove debug tags before release
+    - Add temporary test tags for debugging
+    - Use descriptive test tags
+    - Remove debug tags before release
 
 2. **Test data attributes**
-   - Use test data attributes for debugging
-   - Include relevant context information
-   - Verify data attributes are set correctly
+    - Use test data attributes for debugging
+    - Include relevant context information
+    - Verify data attributes are set correctly
 
 3. **Accessibility debugging**
-   - Test with screen readers
-   - Verify content descriptions
-   - Check keyboard navigation
+    - Test with screen readers
+    - Verify content descriptions
+    - Check keyboard navigation
 
 ### Testing Resources
 

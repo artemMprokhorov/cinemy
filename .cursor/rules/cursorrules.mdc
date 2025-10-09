@@ -1,0 +1,51 @@
+---
+alwaysApply: true
+---
+## 📱 Project: Cinemy
+
+### Tech Stack
+- Kotlin 1.9.22
+- Compose BOM 2025.01.00
+- AGP 8.8.0
+- Koin 3.5.3
+- Navigation 2.9.3
+
+### Build Variants
+- **dummy**: Mock data
+- **prod**: Real backend
+
+### DI (Koin)
+```kotlin
+val appModule = module {
+    viewModel { FeatureViewModel(get()) }
+    single { FeatureRepository(get()) }
+}
+```
+
+### Navigation
+- Sealed class routes
+- Type-safe navigation
+- Use `createRoute()` methods
+
+### Dependencies
+- Version catalog: `libs.versions.toml`
+- Check compatibility first
+- Test after updates
+
+## 🔄 Cursor AI
+
+### Workflow
+- Don't auto-build
+- Build only on request
+- Split tasks < 125k tokens
+- Confirm each step
+- Update docs on changes
+
+### Never Update Files
+- README.md
+
+### Update Files
+- CHANGELOG.md
+- ARCHITECTURE_GUIDE.md
+- DEVELOPMENT_GUIDE.md
+- DEPENDENCIES_INFO.md

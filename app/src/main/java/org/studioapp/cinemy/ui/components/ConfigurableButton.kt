@@ -15,7 +15,6 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import org.studioapp.cinemy.data.model.UiConfiguration
-import org.studioapp.cinemy.ui.components.TestUtils
 import org.studioapp.cinemy.ui.theme.Dimens16
 import org.studioapp.cinemy.ui.theme.Dimens8
 import org.studioapp.cinemy.ui.theme.Float12

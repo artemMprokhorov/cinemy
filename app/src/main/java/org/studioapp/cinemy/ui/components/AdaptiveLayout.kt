@@ -2,7 +2,6 @@ package org.studioapp.cinemy.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +11,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.studioapp.cinemy.utils.DeviceUtils
 import org.studioapp.cinemy.utils.getDeviceType
@@ -34,7 +32,7 @@ fun AdaptiveLayout(
     val spacing = getOptimalSpacing()
 
     if (supportsDual && deviceType == DeviceUtils.DeviceType.FOLDABLE) {
-        // Dual pane layout for foldable devices
+        // Dual pane layout for unfolded foldable devices
         FoldableDualPaneLayout(
             leftPane = leftPane,
             rightPane = rightPane,
@@ -50,7 +48,7 @@ fun AdaptiveLayout(
             spacing = spacing
         )
     } else {
-        // Single pane layout for phones
+        // Single pane layout for phones and folded foldable devices
         SinglePaneLayout(
             leftPane = leftPane,
             rightPane = rightPane,
@@ -187,6 +185,7 @@ fun AdaptiveGridLayout(
                 content()
             }
         }
+
         DeviceUtils.DeviceType.TABLET, DeviceUtils.DeviceType.DESKTOP -> {
             // Tablets and desktop get standard spacing
             Box(
@@ -197,6 +196,7 @@ fun AdaptiveGridLayout(
                 content()
             }
         }
+
         DeviceUtils.DeviceType.PHONE -> {
             // Phones get minimal spacing
             Box(
@@ -227,16 +227,18 @@ fun Modifier.adaptivePadding(): Modifier {
 @Composable
 fun Modifier.adaptiveContentWidth(): Modifier {
     val deviceType = getDeviceType()
-    
+
     return when (deviceType) {
         DeviceUtils.DeviceType.FOLDABLE -> {
             // Foldable devices use full width
             this.fillMaxWidth()
         }
+
         DeviceUtils.DeviceType.TABLET, DeviceUtils.DeviceType.DESKTOP -> {
             // Tablets and desktop use constrained width
             this.width(600.dp)
         }
+
         DeviceUtils.DeviceType.PHONE -> {
             // Phones use full width
             this.fillMaxWidth()

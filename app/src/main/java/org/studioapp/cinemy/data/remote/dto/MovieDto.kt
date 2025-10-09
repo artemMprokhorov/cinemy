@@ -221,27 +221,6 @@ data class McpResponseDto<T>(
     val meta: MetaDto
 )
 
-data class McpMovieListResponseDto(
-    @SerializedName(StringConstants.SERIALIZED_MOVIES)
-    val movies: List<MovieDto>,
-    @SerializedName(StringConstants.SERIALIZED_PAGINATION)
-    val pagination: PaginationDto,
-    @SerializedName(StringConstants.SERIALIZED_SEARCH_QUERY)
-    val searchQuery: String = ""
-)
-
-data class PaginationDto(
-    @SerializedName(StringConstants.SERIALIZED_PAGE)
-    val page: Int,
-    @SerializedName(StringConstants.SERIALIZED_TOTAL_PAGES)
-    val totalPages: Int,
-    @SerializedName(StringConstants.SERIALIZED_TOTAL_RESULTS)
-    val totalResults: Int,
-    @SerializedName(StringConstants.SERIALIZED_HAS_NEXT)
-    val hasNext: Boolean,
-    @SerializedName(StringConstants.SERIALIZED_HAS_PREVIOUS)
-    val hasPrevious: Boolean
-)
 
 data class SentimentReviewsDto(
     @SerializedName(StringConstants.FIELD_POSITIVE)

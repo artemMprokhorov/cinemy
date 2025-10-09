@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -42,14 +41,14 @@ object DeviceUtils {
         val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
-        
+
         // Check for foldable characteristics
         val screenWidth = displayMetrics.widthPixels / displayMetrics.density
         val screenHeight = displayMetrics.heightPixels / displayMetrics.density
-        
+
         // Foldable devices typically have aspect ratios that change significantly
         val aspectRatio = maxOf(screenWidth, screenHeight) / minOf(screenWidth, screenHeight)
-        
+
         return aspectRatio > 2.0f || screenWidth > 600f || screenHeight > 600f
     }
 
@@ -60,7 +59,7 @@ object DeviceUtils {
         val configuration = context.resources.configuration
         val screenWidthDp = configuration.screenWidthDp
         val screenHeightDp = configuration.screenHeightDp
-        
+
         return when {
             isFoldableDevice(context) -> DeviceType.FOLDABLE
             screenWidthDp >= 1200 -> DeviceType.DESKTOP
@@ -75,7 +74,7 @@ object DeviceUtils {
     fun getScreenSize(context: Context): ScreenSize {
         val configuration = context.resources.configuration
         val screenWidthDp = configuration.screenWidthDp
-        
+
         return when {
             screenWidthDp >= 1200 -> ScreenSize.EXTRA_LARGE
             screenWidthDp >= 840 -> ScreenSize.LARGE
@@ -93,16 +92,25 @@ object DeviceUtils {
 
     /**
      * Determines if the device supports dual pane layout
+     * For foldable devices, checks if they're unfolded (large screen)
      */
     fun supportsDualPane(context: Context): Boolean {
         val deviceType = getDeviceType(context)
         val screenSize = getScreenSize(context)
-        
-        return deviceType == DeviceType.FOLDABLE || 
-               deviceType == DeviceType.TABLET || 
-               deviceType == DeviceType.DESKTOP ||
-               screenSize == ScreenSize.LARGE ||
-               screenSize == ScreenSize.EXTRA_LARGE
+        val configuration = context.resources.configuration
+        val screenWidthDp = configuration.screenWidthDp
+
+        return when (deviceType) {
+            DeviceType.FOLDABLE -> {
+                // Foldable devices only support dual pane when unfolded (wide screen)
+                screenWidthDp >= 840 // Large screen when unfolded
+            }
+            DeviceType.TABLET, DeviceType.DESKTOP -> true
+            DeviceType.PHONE -> {
+                // Phones only support dual pane on very large screens
+                screenSize == ScreenSize.EXTRA_LARGE
+            }
+        }
     }
 
     /**
@@ -111,7 +119,7 @@ object DeviceUtils {
     fun getOptimalColumnCount(context: Context): Int {
         val deviceType = getDeviceType(context)
         val screenSize = getScreenSize(context)
-        
+
         return when {
             deviceType == DeviceType.FOLDABLE && screenSize == ScreenSize.EXTRA_LARGE -> 3
             deviceType == DeviceType.TABLET || deviceType == DeviceType.DESKTOP -> 2
@@ -125,7 +133,7 @@ object DeviceUtils {
      */
     fun getOptimalSpacing(context: Context): Dp {
         val deviceType = getDeviceType(context)
-        
+
         return when (deviceType) {
             DeviceType.FOLDABLE, DeviceType.TABLET, DeviceType.DESKTOP -> 24.dp
             DeviceType.PHONE -> 16.dp

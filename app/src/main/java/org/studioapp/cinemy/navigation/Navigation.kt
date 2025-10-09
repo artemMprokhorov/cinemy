@@ -9,9 +9,12 @@ import androidx.navigation.navArgument
 import org.koin.androidx.compose.koinViewModel
 import org.studioapp.cinemy.presentation.moviedetail.MovieDetailViewModel
 import org.studioapp.cinemy.presentation.movieslist.MoviesListViewModel
+import org.studioapp.cinemy.ui.dualpane.DualPaneScreen
 import org.studioapp.cinemy.ui.moviedetail.MovieDetailScreen
 import org.studioapp.cinemy.ui.movieslist.MoviesListScreen
 import org.studioapp.cinemy.ui.splash.MovieAppSplashScreen
+import org.studioapp.cinemy.utils.DeviceUtils
+import org.studioapp.cinemy.utils.supportsDualPane
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
@@ -20,9 +23,16 @@ fun AppNavigation(navController: NavHostController) {
         startDestination = Screen.Splash.route
     ) {
         composable(Screen.Splash.route) {
+            val supportsDual = supportsDualPane()
             MovieAppSplashScreen(
                 onSplashComplete = {
-                    navController.navigate(Screen.MoviesList.route) {
+                    // Navigate to dual pane if device supports it, otherwise single pane
+                    val destination = if (supportsDual) {
+                        Screen.DualPane.route
+                    } else {
+                        Screen.MoviesList.route
+                    }
+                    navController.navigate(destination) {
                         popUpTo(Screen.Splash.route) { inclusive = true }
                     }
                 }
@@ -35,6 +45,33 @@ fun AppNavigation(navController: NavHostController) {
                 viewModel = moviesListViewModel,
                 onMovieClick = { movie ->
                     navController.navigate(Screen.MovieDetail(movie.id).createRoute())
+                }
+            )
+        }
+
+        composable(Screen.DualPane.route) {
+            DualPaneScreen(
+                selectedMovieId = null,
+                onMovieSelected = { movie ->
+                    navController.navigate(Screen.DualPaneWithMovie(movie.id).createRoute())
+                }
+            )
+        }
+
+        composable(
+            route = Screen.DualPaneWithMovie(NavigationConstants.DEFAULT_MOVIE_ID_FOR_ROUTE).route,
+            arguments = listOf(
+                navArgument(NavigationConstants.NAV_ARG_MOVIE_ID) {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+            val movieId = backStackEntry.arguments?.getInt(NavigationConstants.NAV_ARG_MOVIE_ID)
+                ?: NavigationConstants.DEFAULT_MOVIE_ID
+            DualPaneScreen(
+                selectedMovieId = movieId,
+                onMovieSelected = { movie ->
+                    navController.navigate(Screen.DualPaneWithMovie(movie.id).createRoute())
                 }
             )
         }
