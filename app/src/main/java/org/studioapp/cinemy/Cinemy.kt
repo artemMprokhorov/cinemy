@@ -133,8 +133,8 @@ class MainActivity : ComponentActivity() {
      * @param isLandscape Whether the device is in landscape orientation
      */
     private fun handleOrientationChange(isLandscape: Boolean) {
-        // Update device type detection for orientation changes
-        val deviceType = DeviceUtils.getDeviceType(this)
+        // Use cached device type to avoid redundant calls
+        val deviceType = currentDeviceType ?: DeviceUtils.getDeviceType(this)
         
         when (deviceType) {
             DeviceUtils.DeviceType.FOLDABLE -> {
@@ -169,33 +169,31 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
+     * Set up orientation support for devices that support multi-window
+     */
+    private fun setupOrientationSupport() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+        }
+    }
+
+    /**
      * Optimize UI for foldable devices
      */
     private fun optimizeForFoldableDevice() {
         // Enable multi-window mode support for foldable devices
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-        }
-        
-        // Enable edge-to-edge display for foldable devices
-        VersionUtils.safeEnableEdgeToEdge(this)
+        setupOrientationSupport()
         
         // Additional foldable-specific optimizations can be added here
         // For example: adjust window insets, enable multi-window, etc.
     }
-
 
     /**
      * Optimize UI for desktop devices
      */
     private fun optimizeForDesktop() {
         // Enable window resizing for desktop devices
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-        }
-        
-        // Enable edge-to-edge display for desktop
-        VersionUtils.safeEnableEdgeToEdge(this)
+        setupOrientationSupport()
         
         // Additional desktop-specific optimizations can be added here
         // For example: keyboard shortcuts, window management, etc.
