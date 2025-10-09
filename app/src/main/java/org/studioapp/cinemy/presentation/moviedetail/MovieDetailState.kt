@@ -10,6 +10,7 @@ import org.studioapp.cinemy.presentation.PresentationConstants
 /**
  * State class for the Movie Detail screen
  * Holds all UI state data for the movie detail functionality
+ * Follows MVI pattern for state management
  */
 data class MovieDetailState(
     val isLoading: Boolean = PresentationConstants.DEFAULT_BOOLEAN_FALSE,

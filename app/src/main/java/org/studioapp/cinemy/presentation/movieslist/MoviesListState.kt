@@ -8,6 +8,7 @@ import org.studioapp.cinemy.presentation.PresentationConstants
 /**
  * State class for the Movies List screen
  * Holds all UI state data for the movies list functionality
+ * Follows MVI pattern for state management
  */
 data class MoviesListState(
     val isLoading: Boolean = PresentationConstants.DEFAULT_BOOLEAN_FALSE,

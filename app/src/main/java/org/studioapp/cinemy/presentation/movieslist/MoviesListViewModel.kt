@@ -11,6 +11,11 @@ import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.repository.MovieRepository
 import org.studioapp.cinemy.presentation.PresentationConstants
 
+/**
+ * ViewModel for Movies List screen following MVI pattern
+ * Manages state and handles user intents for movies list functionality
+ * @param movieRepository Repository for movie data operations
+ */
 class MoviesListViewModel(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
@@ -23,6 +28,10 @@ class MoviesListViewModel(
         processIntent(MoviesListIntent.LoadPopularMovies)
     }
 
+    /**
+     * Processes user intents and updates state accordingly
+     * @param intent User intent to process
+     */
     fun processIntent(intent: MoviesListIntent) {
         when (intent) {
             is MoviesListIntent.LoadPopularMovies -> loadPopularMovies()

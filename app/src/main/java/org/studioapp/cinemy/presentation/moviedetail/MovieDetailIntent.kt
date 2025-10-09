@@ -3,6 +3,7 @@ package org.studioapp.cinemy.presentation.moviedetail
 /**
  * Intent class for the Movie Detail screen
  * Defines all possible user interactions for the movie detail functionality
+ * Follows MVI pattern for unidirectional data flow
  */
 sealed class MovieDetailIntent {
     data class LoadMovieDetails(val movieId: Int) : MovieDetailIntent()

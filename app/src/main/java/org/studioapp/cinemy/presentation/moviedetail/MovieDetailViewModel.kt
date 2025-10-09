@@ -11,6 +11,12 @@ import org.studioapp.cinemy.data.repository.MovieRepository
 import org.studioapp.cinemy.ml.SentimentAnalyzer
 import org.studioapp.cinemy.presentation.PresentationConstants
 
+/**
+ * ViewModel for Movie Detail screen following MVI pattern
+ * Manages state and handles user intents for movie detail functionality
+ * @param movieRepository Repository for movie data operations
+ * @param sentimentAnalyzer ML analyzer for sentiment analysis
+ */
 class MovieDetailViewModel(
     private val movieRepository: MovieRepository,
     private val sentimentAnalyzer: SentimentAnalyzer
@@ -21,6 +27,10 @@ class MovieDetailViewModel(
 
     private var currentMovieId: Int = PresentationConstants.DEFAULT_MOVIE_ID
 
+    /**
+     * Processes user intents and updates state accordingly
+     * @param intent User intent to process
+     */
     fun processIntent(intent: MovieDetailIntent) {
         when (intent) {
             is MovieDetailIntent.LoadMovieDetails -> {
