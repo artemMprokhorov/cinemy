@@ -2,12 +2,9 @@ package org.studioapp.cinemy.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,7 +13,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -24,8 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import org.studioapp.cinemy.R
 import org.studioapp.cinemy.data.model.SentimentReviews
-import org.studioapp.cinemy.ml.SentimentResult
-import org.studioapp.cinemy.ml.SentimentType
 import org.studioapp.cinemy.ui.theme.Dimens12
 import org.studioapp.cinemy.ui.theme.Dimens16
 import org.studioapp.cinemy.ui.theme.Dimens200
@@ -35,13 +29,10 @@ import org.studioapp.cinemy.ui.theme.Float07
 import org.studioapp.cinemy.ui.theme.SentimentNegative
 import org.studioapp.cinemy.ui.theme.SentimentNeutral
 import org.studioapp.cinemy.ui.theme.SentimentPositive
-import org.studioapp.cinemy.ui.theme.Typography24
 
 @Composable
 fun SentimentAnalysisCard(
-    sentimentResult: SentimentResult?,
     sentimentReviews: SentimentReviews? = null,
-    isLoading: Boolean = false,
     error: String? = null,
     modifier: Modifier = Modifier
 ) {
@@ -91,7 +82,7 @@ fun SentimentAnalysisCard(
                 }
             } ?: run {
                 // Show message if no reviews
-                if (!isLoading && error == null) {
+                if (error == null) {
                     Text(
                         text = stringResource(R.string.sentiment_reviews_loading),
                         style = MaterialTheme.typography.bodyMedium,
@@ -99,11 +90,6 @@ fun SentimentAnalysisCard(
                     )
                 }
             }
-
-            // DO NOT show technical SentimentResult information
-            // sentimentResult?.let { result ->
-            //     SentimentResultCard(result = result)
-            // }
         }
     }
 }
@@ -186,82 +172,11 @@ private fun ReviewItem(
     }
 }
 
-@Composable
-private fun SentimentResultCard(
-    result: SentimentResult,
-    modifier: Modifier = Modifier
-) {
-    val (backgroundColor, textColor, icon) = when (result.sentiment) {
-        SentimentType.POSITIVE -> Triple(
-            SentimentPositive.copy(alpha = Float01),
-            SentimentPositive,
-            stringResource(R.string.sentiment_positive_emoji)
-        )
-
-        SentimentType.NEGATIVE -> Triple(
-            SentimentNegative.copy(alpha = Float01),
-            SentimentNegative,
-            stringResource(R.string.sentiment_negative_emoji)
-        )
-
-        else -> Triple(
-            SentimentNeutral.copy(alpha = Float01),
-            SentimentNeutral,
-            stringResource(R.string.sentiment_neutral_emoji)
-        )
-    }
-
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = backgroundColor),
-        shape = RoundedCornerShape(Dimens8)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Dimens12),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = icon,
-                    fontSize = Typography24
-                )
-                Spacer(Modifier.width(Dimens12))
-                Column {
-                    Text(
-                        text = result.getDescription(),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = textColor,
-                        fontWeight = FontWeight.Medium
-                    )
-                    if (result.foundKeywords.isNotEmpty()) {
-                        Text(
-                            text = stringResource(
-                                R.string.sentiment_keywords_label,
-                                result.foundKeywords.take(3).joinToString(", ")
-                            ),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = textColor.copy(alpha = Float07)
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Preview
 @Composable
 private fun SentimentAnalysisCardPreview() {
     MaterialTheme {
-        SentimentAnalysisCard(
-            sentimentResult = null,
-            isLoading = false
-        )
+        SentimentAnalysisCard()
     }
 }

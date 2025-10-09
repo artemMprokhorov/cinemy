@@ -267,9 +267,7 @@ private fun MovieDetailsContent(
 
         // ML Sentiment Analysis Card
         SentimentAnalysisCard(
-            sentimentResult = state.sentimentResult,
             sentimentReviews = state.sentimentReviews,
-            isLoading = false,
             error = state.sentimentError,
             modifier = Modifier.padding(horizontal = Dimens16)
         )
