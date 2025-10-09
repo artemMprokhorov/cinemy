@@ -1,9 +1,16 @@
-# DEVELOPMENT_GUIDE.md
+# Development Guide
 
 **Cinemy - Development Guide**  
-**Created**: 2025-09-19  
-**Last Updated**: 2025-09-19  
-**Version**: 2.8.0
+**Last Updated**: 2025-01-27  
+**Version**: 3.0.0
+
+> **📚 Layer Documentation**: For detailed implementation of each layer, see:
+> - [🗄️ Data Layer](./DATA_LAYER.md) - Data layer architecture and implementation
+> - [🤖 ML Layer](./ML_LAYER.md) - Machine learning and sentiment analysis
+> - [🧭 Navigation Layer](./NAVIGATION_LAYER.md) - Navigation and routing system
+> - [🎨 Presentation Layer](./PRESENTATION_LAYER.md) - ViewModels and state management
+> - [🖼️ UI Components Layer](./UI_COMPONENTS_LAYER.md) - UI components and theming
+> - [🔧 Utils Layer](./UTILS_LAYER.md) - Utility classes and helper functions
 
 ## 🆕 Latest Updates (v2.8.0)
 

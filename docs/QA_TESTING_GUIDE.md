@@ -1,5 +1,17 @@
 # QA Testing Guide
 
+**Cinemy - QA Testing Guide**  
+**Last Updated**: 2025-01-27  
+**Version**: 3.0.0
+
+> **📚 Layer Documentation**: For detailed testing of each layer, see:
+> - [🗄️ Data Layer](./DATA_LAYER.md) - Data layer testing and MCP integration tests
+> - [🤖 ML Layer](./ML_LAYER.md) - Machine learning testing and sentiment analysis tests
+> - [🧭 Navigation Layer](./NAVIGATION_LAYER.md) - Navigation testing
+> - [🎨 Presentation Layer](./PRESENTATION_LAYER.md) - ViewModel testing
+> - [🖼️ UI Components Layer](./UI_COMPONENTS_LAYER.md) - UI component testing
+> - [🔧 Utils Layer](./UTILS_LAYER.md) - Utility testing
+
 ## Overview
 
 This guide provides comprehensive information for QA testing automation of the Cinemy app. The app includes extensive test tags, test IDs, and automation-friendly attributes to support various testing frameworks and tools.

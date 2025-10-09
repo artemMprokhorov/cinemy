@@ -1,4 +1,13 @@
-# 📱 Foldable Device Support
+# Foldable Device Support
+
+**Cinemy - Foldable Device Support**  
+**Last Updated**: 2025-01-27  
+**Version**: 3.0.0
+
+> **📚 Layer Documentation**: For detailed implementation of foldable support, see:
+> - [🔧 Utils Layer](./UTILS_LAYER.md) - Device detection and foldable support
+> - [🖼️ UI Components Layer](./UI_COMPONENTS_LAYER.md) - Adaptive layouts and dual pane
+> - [🧭 Navigation Layer](./NAVIGATION_LAYER.md) - Navigation for foldable devices
 
 ## 🎯 Overview
 

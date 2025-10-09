@@ -1,8 +1,16 @@
-# ARCHITECTURE_GUIDE.md
+# Architecture Guide
 
 **Cinemy - Architecture Guide**  
-**Created**: 2025-09-19  
-**Version**: 1.0.0-dev
+**Last Updated**: 2025-01-27  
+**Version**: 3.0.0
+
+> **📚 Layer-Specific Documentation**: For detailed implementation of each layer, see:
+> - [🗄️ Data Layer](./DATA_LAYER.md) - Data layer architecture and implementation
+> - [🤖 ML Layer](./ML_LAYER.md) - Machine learning and sentiment analysis
+> - [🧭 Navigation Layer](./NAVIGATION_LAYER.md) - Navigation and routing system
+> - [🎨 Presentation Layer](./PRESENTATION_LAYER.md) - ViewModels and state management
+> - [🖼️ UI Components Layer](./UI_COMPONENTS_LAYER.md) - UI components and theming
+> - [🔧 Utils Layer](./UTILS_LAYER.md) - Utility classes and helper functions
 
 ## 🏗️ Architecture Overview
 

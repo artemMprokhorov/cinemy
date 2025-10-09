@@ -1,4 +1,13 @@
-# ♿ Accessibility Guide
+# Accessibility Guide
+
+**Cinemy - Accessibility Guide**  
+**Last Updated**: 2025-01-27  
+**Version**: 3.0.0
+
+> **📚 Layer Documentation**: For detailed accessibility implementation, see:
+> - [🖼️ UI Components Layer](./UI_COMPONENTS_LAYER.md) - Accessible UI components
+> - [🎨 Presentation Layer](./PRESENTATION_LAYER.md) - Accessible state management
+> - [🧭 Navigation Layer](./NAVIGATION_LAYER.md) - Accessible navigation
 
 ## 🎯 Overview
 

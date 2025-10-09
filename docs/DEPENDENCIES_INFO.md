@@ -1,8 +1,16 @@
-# DEPENDENCIES_INFO.md
+# Dependencies Information
 
 **Cinemy - Dependencies Information**  
-**Creation Date**: 2025-09-19  
-**Version**: 1.0.0-dev
+**Last Updated**: 2025-01-27  
+**Version**: 3.0.0
+
+> **📚 Layer Documentation**: For detailed implementation of each layer, see:
+> - [🗄️ Data Layer](./DATA_LAYER.md) - Data layer dependencies and MCP integration
+> - [🤖 ML Layer](./ML_LAYER.md) - Machine learning dependencies and TensorFlow Lite
+> - [🧭 Navigation Layer](./NAVIGATION_LAYER.md) - Navigation dependencies
+> - [🎨 Presentation Layer](./PRESENTATION_LAYER.md) - ViewModel dependencies
+> - [🖼️ UI Components Layer](./UI_COMPONENTS_LAYER.md) - UI component dependencies
+> - [🔧 Utils Layer](./UTILS_LAYER.md) - Utility dependencies
 
 ## 📦 Dependencies Overview
 
