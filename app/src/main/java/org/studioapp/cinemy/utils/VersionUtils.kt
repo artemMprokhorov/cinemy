@@ -13,11 +13,6 @@ object VersionUtils {
      * Android version constants for better readability
      */
     object Versions {
-        const val ANDROID_14 = Build.VERSION_CODES.UPSIDE_DOWN_CAKE // API 34
-        const val ANDROID_13 = Build.VERSION_CODES.TIRAMISU // API 33
-        const val ANDROID_12 = Build.VERSION_CODES.S_V2 // API 32
-        const val ANDROID_11 = Build.VERSION_CODES.R // API 30
-        const val ANDROID_10 = Build.VERSION_CODES.Q // API 29
         const val ANDROID_5 = Build.VERSION_CODES.LOLLIPOP // API 21 - Minimum for edge-to-edge
     }
 
