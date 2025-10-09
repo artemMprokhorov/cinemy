@@ -83,12 +83,6 @@ object DeviceUtils {
         }
     }
 
-    /**
-     * Determines if the device is in landscape mode
-     */
-    fun isLandscape(context: Context): Boolean {
-        return context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    }
 
     /**
      * Determines if the device supports dual pane layout
@@ -113,20 +107,6 @@ object DeviceUtils {
         }
     }
 
-    /**
-     * Gets optimal column count for grid layouts
-     */
-    fun getOptimalColumnCount(context: Context): Int {
-        val deviceType = getDeviceType(context)
-        val screenSize = getScreenSize(context)
-
-        return when {
-            deviceType == DeviceType.FOLDABLE && screenSize == ScreenSize.EXTRA_LARGE -> 3
-            deviceType == DeviceType.TABLET || deviceType == DeviceType.DESKTOP -> 2
-            screenSize == ScreenSize.LARGE -> 2
-            else -> 1
-        }
-    }
 
     /**
      * Gets optimal spacing for different device types
@@ -150,14 +130,6 @@ fun getDeviceType(): DeviceUtils.DeviceType {
     return DeviceUtils.getDeviceType(context)
 }
 
-/**
- * Composable function to get screen size in Compose
- */
-@Composable
-fun getScreenSize(): DeviceUtils.ScreenSize {
-    val context = LocalContext.current
-    return DeviceUtils.getScreenSize(context)
-}
 
 /**
  * Composable function to check if device supports dual pane
@@ -177,14 +149,6 @@ fun isFoldableDevice(): Boolean {
     return DeviceUtils.isFoldableDevice(context)
 }
 
-/**
- * Composable function to get optimal column count
- */
-@Composable
-fun getOptimalColumnCount(): Int {
-    val context = LocalContext.current
-    return DeviceUtils.getOptimalColumnCount(context)
-}
 
 /**
  * Composable function to get optimal spacing
