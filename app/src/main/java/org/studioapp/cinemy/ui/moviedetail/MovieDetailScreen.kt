@@ -114,11 +114,15 @@ private fun MovieDetailContent(
                             text = stringResource(R.string.loading_text),
                             style = MaterialTheme.typography.headlineMedium,
                             uiConfig = state.uiConfig,
-                            color = Color.White
+                            color = Color.White,
+                            contentDescription = "Loading movie details, please wait"
                         )
                         Spacer(modifier = Modifier.height(Dimens16))
                         CircularProgressIndicator(
-                            color = state.uiConfig?.colors?.primary ?: Color.White
+                            color = state.uiConfig?.colors?.primary ?: Color.White,
+                            modifier = Modifier.semantics {
+                                contentDescription = "Loading movie details, please wait"
+                            }
                         )
                     }
                 }
@@ -129,7 +133,10 @@ private fun MovieDetailContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
-                        .pullRefresh(pullRefreshState),
+                        .pullRefresh(pullRefreshState)
+                        .semantics {
+                            contentDescription = "Error loading movie details, pull down to retry"
+                        },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -138,13 +145,15 @@ private fun MovieDetailContent(
                         text = stringResource(R.string.error_generic),
                         style = MaterialTheme.typography.headlineLarge,
                         uiConfig = state.uiConfig,
-                        color = Color.White
+                        color = Color.White,
+                        contentDescription = "Error: Failed to load movie details"
                     )
                     ConfigurableText(
                         text = stringResource(R.string.movie_details),
                         style = MaterialTheme.typography.headlineLarge,
                         uiConfig = state.uiConfig,
-                        color = Color.White
+                        color = Color.White,
+                        contentDescription = "Movie details screen"
                     )
                     Spacer(modifier = Modifier.height(Dimens16))
                     PullToReloadArrow()
@@ -153,7 +162,8 @@ private fun MovieDetailContent(
                         text = stringResource(R.string.pull_to_reload),
                         style = MaterialTheme.typography.headlineMedium,
                         uiConfig = state.uiConfig,
-                        color = Color.White
+                        color = Color.White,
+                        contentDescription = "Pull down to retry loading movie details"
                     )
                     Spacer(modifier = Modifier.height(Dimens100))
                 }

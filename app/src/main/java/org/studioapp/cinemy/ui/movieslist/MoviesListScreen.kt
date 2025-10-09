@@ -132,11 +132,17 @@ private fun MoviesListContent(
                             Text(
                                 text = stringResource(R.string.loading_text),
                                 color = Color.White,
-                                style = MaterialTheme.typography.headlineMedium
+                                style = MaterialTheme.typography.headlineMedium,
+                                modifier = Modifier.semantics {
+                                    contentDescription = "Loading movies, please wait"
+                                }
                             )
                             Spacer(modifier = Modifier.height(Dimens16))
                             CircularProgressIndicator(
-                                color = Color.White
+                                color = Color.White,
+                                modifier = Modifier.semantics {
+                                    contentDescription = "Loading movies, please wait"
+                                }
                             )
                         }
                     }
@@ -148,19 +154,29 @@ private fun MoviesListContent(
                         contentAlignment = Alignment.Center
                     ) {
                         Column(
-                            modifier = Modifier.verticalScroll(rememberScrollState()),
+                            modifier = Modifier
+                                .verticalScroll(rememberScrollState())
+                                .semantics {
+                                    contentDescription = "Error loading movies, pull down to retry"
+                                },
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Spacer(modifier = Modifier.height(Dimens100))
                             Text(
                                 text = stringResource(R.string.error_generic),
                                 color = Color.White,
-                                style = MaterialTheme.typography.headlineLarge
+                                style = MaterialTheme.typography.headlineLarge,
+                                modifier = Modifier.semantics {
+                                    contentDescription = "Error: Failed to load movies"
+                                }
                             )
                             Text(
                                 text = stringResource(R.string.movie_details),
                                 color = Color.White,
-                                style = MaterialTheme.typography.headlineLarge
+                                style = MaterialTheme.typography.headlineLarge,
+                                modifier = Modifier.semantics {
+                                    contentDescription = "Movies list screen"
+                                }
                             )
                             Spacer(modifier = Modifier.height(Dimens16))
                             PullToReloadArrow()
@@ -168,7 +184,10 @@ private fun MoviesListContent(
                             Text(
                                 text = stringResource(R.string.pull_to_reload),
                                 color = Color.White,
-                                style = MaterialTheme.typography.headlineMedium
+                                style = MaterialTheme.typography.headlineMedium,
+                                modifier = Modifier.semantics {
+                                    contentDescription = "Pull down to retry loading movies"
+                                }
                             )
                             Spacer(modifier = Modifier.height(Dimens100))
                         }
