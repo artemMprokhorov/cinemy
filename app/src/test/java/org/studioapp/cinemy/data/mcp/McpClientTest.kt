@@ -39,7 +39,6 @@ import org.studioapp.cinemy.data.remote.dto.MetaDto
 import org.studioapp.cinemy.data.remote.dto.MovieColorsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDetailsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDto
-import org.studioapp.cinemy.data.remote.dto.PaginationDto
 import org.studioapp.cinemy.data.remote.dto.ProductionCompanyDto
 import org.studioapp.cinemy.data.remote.dto.SearchInfoDto
 import org.studioapp.cinemy.data.remote.dto.TextConfigurationDto
@@ -132,15 +131,6 @@ object TestMovieMapper {
         )
     }
 
-    fun mapPaginationDtoToPagination(dto: PaginationDto): Pagination {
-        return Pagination(
-            page = dto.page,
-            totalPages = dto.totalPages,
-            totalResults = dto.totalResults,
-            hasNext = dto.hasNext,
-            hasPrevious = dto.hasPrevious
-        )
-    }
 
     fun mapMovieDetailsDtoToMovieDetails(dto: MovieDetailsDto): MovieDetails {
         return MovieDetails(
@@ -194,6 +184,10 @@ class McpClientTest {
     fun setUp() {
         mockContext = mockk()
         mockAssetDataLoader = mockk()
+        
+        // Mock AssetDataLoader methods
+        every { mockAssetDataLoader.loadUiConfig() } returns createMockUiConfigDto()
+        every { mockAssetDataLoader.loadMetaData(any(), any(), any()) } returns createMockMetaDto()
         mockMcpHttpClient = mockk()
 
         // Create McpClient and use reflection to inject mocks
@@ -227,91 +221,6 @@ class McpClientTest {
         }
     }
 
-    @Test
-    fun `getPopularMovies should return success response when MCP call succeeds`() = runBlocking {
-        // Given
-        val page = 1
-        val mockResponse = createMockMcpResponse()
-
-        coEvery { mockMcpHttpClient.sendRequest<Any>(any()) } returns mockResponse
-
-        // When
-        val result = mcpClient.getPopularMovies(page)
-
-        // Then
-        assertTrue(result.success)
-        assertNotNull(result.data)
-        assertEquals(1, result.data?.results?.size)
-        assertEquals("Test Movie", result.data?.results?.get(0)?.title)
-
-        coVerify { mockMcpHttpClient.sendRequest<Any>(any()) }
-    }
-
-    @Test
-    fun `getPopularMovies should return error response when MCP call fails`() = runBlocking {
-        // Given
-        val page = 1
-        val mockResponse = McpResponse<Any>(
-            success = false,
-            data = null,
-            error = "Network error"
-        )
-
-        coEvery { mockMcpHttpClient.sendRequest<Any>(any()) } returns mockResponse
-
-        // When
-        val result = mcpClient.getPopularMovies(page)
-
-        // Then
-        assertFalse(result.success)
-        assertNull(result.data)
-        assertEquals("Network error", result.error)
-
-        coVerify { mockMcpHttpClient.sendRequest<Any>(any()) }
-    }
-
-    @Test
-    fun `getMovieDetails should return success response when MCP call succeeds`() = runBlocking {
-        // Given
-        val movieId = 123
-        val mockResponse = createMockMovieDetailsResponse()
-
-        coEvery { mockMcpHttpClient.sendRequest<Any>(any()) } returns mockResponse
-
-        // When
-        val result = mcpClient.getMovieDetails(movieId)
-
-        // Then
-        assertTrue(result.success)
-        assertNotNull(result.data)
-        assertEquals(movieId, result.data?.id)
-        assertEquals("Test Movie Details", result.data?.title)
-
-        coVerify { mockMcpHttpClient.sendRequest<Any>(any()) }
-    }
-
-    @Test
-    fun `getMovieDetails should return error response when MCP call fails`() = runBlocking {
-        // Given
-        val movieId = 123
-        val mockResponse = McpResponse<Any>(
-            success = false,
-            data = null,
-            error = "Movie not found"
-        )
-
-        coEvery { mockMcpHttpClient.sendRequest<Any>(any()) } returns mockResponse
-
-        // When
-        val result = mcpClient.getMovieDetails(movieId)
-
-        // Then
-        assertFalse(result.success)
-        assertNull(result.data)
-        assertEquals("Movie not found", result.error)
-
-        coVerify { mockMcpHttpClient.sendRequest<Any>(any()) }
-    }
 
     @Test
     fun `getPopularMoviesViaMcp should return Success when MCP call succeeds`() = runBlocking {

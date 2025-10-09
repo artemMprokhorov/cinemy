@@ -47,29 +47,6 @@ class TensorFlowIntegrationTest {
         }
     }
 
-    @Test
-    @Ignore("Requires real Android environment for TensorFlow Lite model loading")
-    fun `test TensorFlow model initialization`() = runBlocking {
-        // Given
-        val mockContext = TestUtils.createMockContext()
-        val model = TensorFlowSentimentModel.getInstance(mockContext)
-
-        // When
-        val isInitialized = model.initialize()
-
-        // Then
-        assertTrue("TensorFlow model should initialize successfully", isInitialized)
-        assertTrue("Model should be ready after initialization", model.isReady())
-
-        val modelInfo = model.getModelInfo()
-        assertNotNull("Model info should not be null", modelInfo)
-        assertEquals(
-            "Model type should be tensorflow_lite_sentiment",
-            "tensorflow_lite_sentiment",
-            modelInfo?.type
-        )
-        assertEquals("Model version should be 1.0.0", "1.0.0", modelInfo?.version)
-    }
 
     @Test
     fun `test TensorFlow model initialization failure`() = runBlocking {
@@ -85,26 +62,6 @@ class TensorFlowIntegrationTest {
         assertFalse("Model should not be ready after failed initialization", model.isReady())
     }
 
-    @Test
-    @Ignore("Requires real Android environment for TensorFlow Lite model loading")
-    fun `test hybrid system initialization`() = runBlocking {
-        // Given
-        val mockContext = TestUtils.createMockContext()
-        val analyzer = SentimentAnalyzer.getInstance(mockContext)
-
-        // When
-        val isInitialized = analyzer.initialize()
-
-        // Then
-        assertTrue("Hybrid system should initialize successfully", isInitialized)
-        assertTrue("TensorFlow should be available", analyzer.isTensorFlowAvailable())
-
-        val keywordModelInfo = analyzer.getModelInfo()
-        val tensorFlowModelInfo = analyzer.getTensorFlowModelInfo()
-
-        assertNotNull("Keyword model info should not be null", keywordModelInfo)
-        assertNotNull("TensorFlow model info should not be null", tensorFlowModelInfo)
-    }
 
     @Test
     fun `test simple text uses keyword model`() = runBlocking {
@@ -429,36 +386,4 @@ class TensorFlowIntegrationTest {
         )
     }
 
-    @Test
-    @Ignore("Requires real Android environment for TensorFlow Lite model loading")
-    fun `test model info consistency`() = runBlocking {
-        // Given
-        val mockContext = TestUtils.createMockContext()
-        val analyzer = SentimentAnalyzer.getInstance(mockContext)
-        analyzer.initialize()
-
-        // When
-        val keywordModelInfo = analyzer.getModelInfo()
-        val tensorFlowModelInfo = analyzer.getTensorFlowModelInfo()
-
-        // Then
-        assertNotNull("Keyword model info should not be null", keywordModelInfo)
-        assertNotNull("TensorFlow model info should not be null", tensorFlowModelInfo)
-
-        assertEquals(
-            "Keyword model should be keyword type",
-            "keyword_sentiment_analysis",
-            keywordModelInfo?.type
-        )
-        assertEquals(
-            "TensorFlow model should be tensorflow type",
-            "tensorflow_lite_sentiment",
-            tensorFlowModelInfo?.type
-        )
-
-        assertTrue(
-            "Both models should have reasonable accuracy",
-            keywordModelInfo?.accuracy?.isNotEmpty() == true && tensorFlowModelInfo?.accuracy?.isNotEmpty() == true
-        )
-    }
 }

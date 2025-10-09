@@ -29,6 +29,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -44,7 +45,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.launch
 import org.studioapp.cinemy.R
@@ -79,6 +80,18 @@ fun MoviesListScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    // Handle back navigation - navigate to previous page if available, otherwise allow default back behavior
+    val pagination = state.pagination
+    val hasPreviousPage = pagination != null && pagination.hasPrevious && !state.isLoading
+    
+    BackHandler(enabled = hasPreviousPage) {
+        if (hasPreviousPage) {
+            // Navigate to previous page
+            viewModel.processIntent(MoviesListIntent.PreviousPage)
+        }
+        // If hasPreviousPage is false, BackHandler is disabled and system will handle back press
+    }
 
     MoviesListContent(
         state = state,

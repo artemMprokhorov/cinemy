@@ -79,25 +79,6 @@ class HybridSystemCompatibilityTest {
         assertTrue("Should have accuracy info", modelInfo?.accuracy?.isNotEmpty() == true)
     }
 
-    @Test
-    @Ignore("Requires real Android environment for TensorFlow Lite model loading")
-    fun `test new TensorFlow model info methods`() = runBlocking {
-        // Given
-        sentimentAnalyzer.initialize()
-
-        // When
-        val tensorFlowModelInfo = sentimentAnalyzer.getTensorFlowModelInfo()
-        val isTensorFlowAvailable = sentimentAnalyzer.isTensorFlowAvailable()
-
-        // Then
-        assertNotNull("TensorFlow model info should not be null", tensorFlowModelInfo)
-        assertEquals(
-            "Should be tensorflow lite sentiment",
-            "tensorflow_lite_sentiment",
-            tensorFlowModelInfo?.type
-        )
-        assertTrue("TensorFlow should be available", isTensorFlowAvailable)
-    }
 
     @Test
     fun `test error handling compatibility`() = runBlocking {
