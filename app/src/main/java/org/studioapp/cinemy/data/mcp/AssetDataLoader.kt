@@ -426,7 +426,10 @@ class AssetDataLoader(private val context: Context) {
         return genreIds
     }
 
-    // Default creation methods
+    /**
+     * Creates default UI configuration when asset loading fails
+     * @return UiConfigurationDto with default values
+     */
     private fun createDefaultUiConfig(): UiConfigurationDto {
         return UiConfigurationDto(
             colors = createDefaultColorScheme(),
@@ -435,6 +438,10 @@ class AssetDataLoader(private val context: Context) {
         )
     }
 
+    /**
+     * Creates default color scheme when asset loading fails
+     * @return ColorSchemeDto with default color values
+     */
     private fun createDefaultColorScheme(): ColorSchemeDto {
         return ColorSchemeDto(
             primary = StringConstants.COLOR_PRIMARY,
@@ -449,6 +456,10 @@ class AssetDataLoader(private val context: Context) {
         )
     }
 
+    /**
+     * Creates default text configuration when asset loading fails
+     * @return TextConfigurationDto with default text values
+     */
     private fun createDefaultTextConfiguration(): TextConfigurationDto {
         return TextConfigurationDto(
             appTitle = StringConstants.MOVIES_TITLE,
@@ -461,6 +472,10 @@ class AssetDataLoader(private val context: Context) {
         )
     }
 
+    /**
+     * Creates default button configuration when asset loading fails
+     * @return ButtonConfigurationDto with default button values
+     */
     private fun createDefaultButtonConfiguration(): ButtonConfigurationDto {
         return ButtonConfigurationDto(
             primaryButtonColor = StringConstants.COLOR_PRIMARY,
@@ -470,6 +485,13 @@ class AssetDataLoader(private val context: Context) {
         )
     }
 
+    /**
+     * Creates default metadata when asset loading fails
+     * @param method API method name
+     * @param resultsCount Number of results returned
+     * @param movieId Movie ID (optional)
+     * @return MetaDto with default metadata values
+     */
     private fun createDefaultMeta(method: String, resultsCount: Int, movieId: Int?): MetaDto {
         return MetaDto(
             timestamp = System.currentTimeMillis().toString(),
@@ -485,6 +507,10 @@ class AssetDataLoader(private val context: Context) {
         )
     }
 
+    /**
+     * Creates default Gemini colors when asset loading fails
+     * @return GeminiColorsDto with default color values
+     */
     private fun createDefaultGeminiColors(): GeminiColorsDto {
         return GeminiColorsDto(
             primary = StringConstants.COLOR_PRIMARY,
