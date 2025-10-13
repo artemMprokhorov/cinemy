@@ -164,8 +164,8 @@ class AdaptiveMLRuntime private constructor(private val context: Context) {
     /**
      * Analyzes sentiment for multiple texts in batch
      * 
-     * Processes multiple texts efficiently using the selected runtime.
-     * This is useful for analyzing multiple reviews or comments at once.
+     * Note: This is not a true batch operation - it processes texts sequentially.
+     * For better performance with large batches, consider implementing parallel processing.
      * 
      * @param texts List of texts to analyze for sentiment
      * @return List of SentimentResult objects corresponding to input texts
