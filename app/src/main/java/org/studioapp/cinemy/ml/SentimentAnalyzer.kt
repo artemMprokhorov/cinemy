@@ -12,7 +12,6 @@ import org.studioapp.cinemy.ml.model.ContextBoosters
 import org.studioapp.cinemy.ml.model.EnhancedModelData
 import org.studioapp.cinemy.ml.model.ProductionModelData
 import org.studioapp.cinemy.ml.AdaptiveMLRuntime
-import org.studioapp.cinemy.ml.HardwareDetection
 import kotlin.math.abs
 import java.lang.ref.WeakReference
 

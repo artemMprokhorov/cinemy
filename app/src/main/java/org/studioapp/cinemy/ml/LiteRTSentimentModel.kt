@@ -4,7 +4,6 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.studioapp.cinemy.ml.model.SentimentResult
-import org.studioapp.cinemy.ml.model.SentimentType
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 
