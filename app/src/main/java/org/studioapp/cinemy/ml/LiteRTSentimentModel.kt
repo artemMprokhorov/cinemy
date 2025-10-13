@@ -128,19 +128,6 @@ class LiteRTSentimentModel private constructor(private val context: Context) {
         }
     }
 
-    /**
-     * Analyzes sentiment for multiple texts in batch
-     * 
-     * Processes multiple texts efficiently using LiteRT batch processing.
-     * This provides better performance for analyzing multiple reviews or comments.
-     * 
-     * @param texts List of texts to analyze for sentiment
-     * @return List of SentimentResult objects corresponding to input texts
-     */
-    suspend fun analyzeBatch(texts: List<String>): List<SentimentResult> =
-        withContext(Dispatchers.Default) {
-            texts.map { text -> analyzeSentiment(text) }
-        }
 
     /**
      * Checks if LiteRT model is ready for analysis
@@ -149,65 +136,7 @@ class LiteRTSentimentModel private constructor(private val context: Context) {
      */
     fun isReady(): Boolean = isReady
 
-    /**
-     * Gets LiteRT model information
-     * 
-     * Returns information about the LiteRT model including:
-     * - Model type and version
-     * - Hardware acceleration status
-     * - Performance characteristics
-     * 
-     * @return Formatted string with model information
-     */
-    fun getModelInfo(): String {
-        return buildString {
-            appendLine("=== LiteRT Model Information ===")
-            appendLine("Model Type: LiteRT Sentiment Analysis")
-            appendLine("Runtime: Google Play Services ML Kit")
-            appendLine("Hardware Acceleration: Automatic")
-            appendLine("Status: ${if (isReady) "Ready" else "Not Ready"}")
-            appendLine("Cache Size: ${cache.size}")
-            appendLine()
-            appendLine("=== Performance Characteristics ===")
-            appendLine("Expected Inference Time: ~50ms (GPU) / ~80ms (NPU)")
-            appendLine("Accuracy: 95%+")
-            appendLine("Memory Usage: Optimized")
-            appendLine("Battery Impact: Low")
-        }
-    }
 
-    /**
-     * Gets hardware acceleration information
-     * 
-     * Returns information about the hardware acceleration being used
-     * by the LiteRT runtime.
-     * 
-     * @return Formatted string with hardware information
-     */
-    fun getHardwareInfo(): String {
-        return buildString {
-            appendLine("=== LiteRT Hardware Acceleration ===")
-            appendLine("GPU Acceleration: ${if (isGpuAccelerated()) "Enabled" else "Disabled"}")
-            appendLine("NPU Acceleration: ${if (isNpuAccelerated()) "Enabled" else "Disabled"}")
-            appendLine("NNAPI Acceleration: ${if (isNnapiAccelerated()) "Enabled" else "Disabled"}")
-            appendLine("CPU Optimization: Enabled")
-            appendLine()
-            appendLine("=== Performance Metrics ===")
-            appendLine("Average Inference Time: ${getAverageInferenceTime()}ms")
-            appendLine("Cache Hit Rate: ${getCacheHitRate()}%")
-            appendLine("Memory Usage: ${getMemoryUsage()}MB")
-        }
-    }
-
-    /**
-     * Clears the result cache
-     * 
-     * Clears all cached sentiment analysis results to free memory.
-     * This should be called periodically to prevent memory leaks.
-     */
-    fun clearCache() {
-        cache.clear()
-    }
 
     /**
      * Cleans up LiteRT resources
@@ -321,63 +250,4 @@ class LiteRTSentimentModel private constructor(private val context: Context) {
         }
     }
 
-    /**
-     * Checks if GPU acceleration is enabled
-     * 
-     * @return true if GPU acceleration is enabled, false otherwise
-     */
-    private fun isGpuAccelerated(): Boolean {
-        // TODO: Implement actual GPU acceleration detection
-        return true // Simulate GPU acceleration
-    }
-
-    /**
-     * Checks if NPU acceleration is enabled
-     * 
-     * @return true if NPU acceleration is enabled, false otherwise
-     */
-    private fun isNpuAccelerated(): Boolean {
-        // TODO: Implement actual NPU acceleration detection
-        return false // Simulate no NPU acceleration
-    }
-
-    /**
-     * Checks if NNAPI acceleration is enabled
-     * 
-     * @return true if NNAPI acceleration is enabled, false otherwise
-     */
-    private fun isNnapiAccelerated(): Boolean {
-        // TODO: Implement actual NNAPI acceleration detection
-        return true // Simulate NNAPI acceleration
-    }
-
-    /**
-     * Gets average inference time
-     * 
-     * @return Average inference time in milliseconds
-     */
-    private fun getAverageInferenceTime(): Long {
-        // TODO: Implement actual performance tracking
-        return 50L // Simulate 50ms average inference time
-    }
-
-    /**
-     * Gets cache hit rate
-     * 
-     * @return Cache hit rate percentage
-     */
-    private fun getCacheHitRate(): Double {
-        // TODO: Implement actual cache hit rate calculation
-        return 75.0 // Simulate 75% cache hit rate
-    }
-
-    /**
-     * Gets memory usage
-     * 
-     * @return Memory usage in MB
-     */
-    private fun getMemoryUsage(): Double {
-        // TODO: Implement actual memory usage tracking
-        return 25.0 // Simulate 25MB memory usage
-    }
 }
