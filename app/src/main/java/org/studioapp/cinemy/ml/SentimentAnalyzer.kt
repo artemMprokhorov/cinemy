@@ -5,11 +5,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import org.studioapp.cinemy.BuildConfig
+import org.studioapp.cinemy.ml.model.SentimentResult
+import org.studioapp.cinemy.ml.model.SentimentType
+import org.studioapp.cinemy.ml.model.KeywordSentimentModel
+import org.studioapp.cinemy.ml.model.ModelInfo
+import org.studioapp.cinemy.ml.model.AlgorithmConfig
+import org.studioapp.cinemy.ml.model.ContextBoosters
+import org.studioapp.cinemy.ml.model.EnhancedModelData
+import org.studioapp.cinemy.ml.model.ProductionModelData
+import org.studioapp.cinemy.ml.model.TensorFlowConfig
+import org.studioapp.cinemy.ml.model.HybridSystemConfig
 import kotlin.math.abs
+import java.lang.ref.WeakReference
 
 /**
- * Keyword-based sentiment analyzer for Cinemy
- * Fast and efficient implementation for mobile devices
+ * Hybrid sentiment analyzer for Cinemy
+ * Uses TensorFlow Lite as primary model with keyword-based fallback
+ * Provides ML-based sentiment analysis with automatic model selection
  */
 class SentimentAnalyzer private constructor(private val context: Context) {
 
@@ -20,57 +32,52 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
     companion object {
         @Volatile
-        private var INSTANCE: SentimentAnalyzer? = null
+        private var INSTANCE: WeakReference<SentimentAnalyzer>? = null
 
         /**
          * Gets singleton instance of SentimentAnalyzer
+         * Uses WeakReference to prevent memory leaks
          * @param context Android context
          * @return SentimentAnalyzer instance
          */
         fun getInstance(context: Context): SentimentAnalyzer {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: SentimentAnalyzer(context.applicationContext).also { INSTANCE = it }
+            val current = INSTANCE?.get()
+            if (current != null) {
+                return current
+            }
+            
+            return synchronized(this) {
+                val existing = INSTANCE?.get()
+                if (existing != null) {
+                    existing
+                } else {
+                    val newInstance = SentimentAnalyzer(context.applicationContext)
+                    INSTANCE = WeakReference(newInstance)
+                    newInstance
+                }
             }
         }
 
-        // Model constants
-        private const val MODEL_TYPE = "keyword_sentiment_analysis"
-        private const val MODEL_VERSION = "2.0.0"
-        private const val MODEL_LANGUAGE = "en"
-        private const val MODEL_ACCURACY = "85%+"
-        private const val MODEL_SPEED = "very_fast"
+        /**
+         * Note: TensorFlow Lite model file is managed by TensorFlowSentimentModel class.
+         * It uses "production_sentiment_full_manual.tflite" as defined in TensorFlowSentimentModel.MODEL_FILE
+         * 
+         * TensorFlow model is PRIMARY for all build variants.
+         * Keyword model serves as FALLBACK when TensorFlow has low confidence or is unavailable.
+         */
+
+        // Keyword model file for fallback
+        private const val KEYWORD_MODEL_FILE = "multilingual_sentiment_production.json"
+
 
         // Error messages
         private const val ERROR_ANALYZER_NOT_INITIALIZED = "Analyzer not initialized"
         private const val ERROR_ANALYSIS_ERROR = "Analysis error: "
-
-        // Performance thresholds
-        private const val BASE_CONFIDENCE = 0.6
-        private const val KEYWORD_WEIGHT = 1.0
-        private const val CONTEXT_WEIGHT = 0.3
-        private const val MODIFIER_WEIGHT = 0.4
-        private const val NEUTRAL_THRESHOLD = 0.5
-        private const val MIN_CONFIDENCE = 0.3
-        private const val MAX_CONFIDENCE = 0.9
-
-        // Intensity modifiers
-        private const val INTENSITY_ABSOLUTELY = 1.5
-        private const val INTENSITY_COMPLETELY = 1.4
-        private const val INTENSITY_TOTALLY = 1.3
-        private const val INTENSITY_EXTREMELY = 1.3
-        private const val INTENSITY_INCREDIBLY = 1.3
-        private const val INTENSITY_VERY = 1.2
-        private const val INTENSITY_REALLY = 1.1
-        private const val INTENSITY_PRETTY = 0.8
-        private const val INTENSITY_SOMEWHAT = 0.7
-        private const val INTENSITY_SLIGHTLY = 0.6
-        private const val INTENSITY_NOT = -1.0
-        private const val INTENSITY_NEVER = -1.0
-        private const val INTENSITY_BARELY = -0.5
     }
 
     /**
-     * Initializes sentiment analyzer with appropriate model based on build configuration
+     * Initializes hybrid sentiment analyzer
+     * Loads TensorFlow Lite model as primary and keyword model as fallback
      * @return Boolean indicating if initialization was successful
      */
     suspend fun initialize(): Boolean = withContext(Dispatchers.IO) {
@@ -80,24 +87,12 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             // Load hybrid configuration
             hybridConfig = loadHybridConfig()
 
-            // Initialize models based on flavor (Production and Dummy use TensorFlow, others use JSON)
-            when {
-                // Production and Dummy flavors: Use TensorFlow model with JSON fallback
-                BuildConfig.FLAVOR_NAME == "Production" || BuildConfig.FLAVOR_NAME == "Dummy" -> {
-                    tensorFlowModel = TensorFlowSentimentModel.getInstance(context)
-                    val tensorFlowInitialized = tensorFlowModel?.initialize() ?: false
+            // Initialize TensorFlow Lite model as primary
+            tensorFlowModel = TensorFlowSentimentModel.getInstance(context)
+            tensorFlowModel?.initialize()
 
-                    if (!tensorFlowInitialized) {
-                        // Fallback to keyword model if TensorFlow fails
-                        initializeKeywordModel()
-                    }
-                }
-
-                else -> {
-                    // All other cases: Use keyword model (JSON fallback)
-                    initializeKeywordModel()
-                }
-            }
+            // Initialize keyword model as fallback
+            initializeKeywordModel()
 
             isInitialized = true
             true
@@ -107,25 +102,27 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
     /**
-     * Initializes keyword-based sentiment model from assets
+     * Initializes multilingual production model from assets
+     * Falls back to simple model only if production model fails to load
      */
     private suspend fun initializeKeywordModel() {
-        val modelFileName = getModelFileName()
         val modelJson = runCatching {
-            context.assets.open("ml_models/$modelFileName").use { inputStream ->
+            context.assets.open("ml_models/$KEYWORD_MODEL_FILE").use { inputStream ->
                 inputStream.bufferedReader().readText()
             }
         }.getOrNull()
 
         keywordModel = if (modelJson != null) {
-            loadModelFromJson(modelJson, modelFileName)
+            loadModelFromJson(modelJson, KEYWORD_MODEL_FILE)
         } else {
-            createSimpleModel()
+            // Only use simple model if production model file is not found
+            SimpleKeywordModelFactory().createSimpleModel()
         }
     }
 
     /**
-     * Analyzes sentiment of input text using hybrid approach
+     * Analyzes sentiment using hybrid approach
+     * Prioritizes TensorFlow Lite model, falls back to keyword model if needed
      * @param text Input text to analyze
      * @return SentimentResult with sentiment classification and confidence
      */
@@ -139,35 +136,21 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         }
 
         runCatching {
-            // Model selection based on flavor (Production and Dummy use TensorFlow, others use JSON)
-            when {
-                // Production and Dummy flavors: Prioritize TensorFlow model with JSON fallback
-                BuildConfig.FLAVOR_NAME == "Production" || BuildConfig.FLAVOR_NAME == "Dummy" -> {
-                    if (tensorFlowModel?.isReady() == true) {
-                        val tensorFlowResult = tensorFlowModel!!.analyzeSentiment(text)
+            // Use TensorFlow Lite model if available and ready
+            if (tensorFlowModel?.isReady() == true) {
+                val tensorFlowResult = tensorFlowModel!!.analyzeSentiment(text)
 
-                        // Fallback to keyword model if TensorFlow result is unreliable
-                        if (shouldFallbackToKeyword(tensorFlowResult) && keywordModel != null) {
-                            analyzeWithKeywords(text, keywordModel!!)
-                        } else {
-                            tensorFlowResult
-                        }
-                    } else if (keywordModel != null) {
-                        // Fallback to keyword model if TensorFlow is not available
-                        analyzeWithKeywords(text, keywordModel!!)
-                    } else {
-                        SentimentResult.error("No sentiment model available")
-                    }
+                // Check if fallback to keyword model is needed
+                if (shouldFallbackToKeyword(tensorFlowResult) && keywordModel != null) {
+                    analyzeWithKeywords(text, keywordModel!!)
+                } else {
+                    tensorFlowResult
                 }
-
-                else -> {
-                    // All other cases: Use keyword model (JSON fallback)
-                    if (keywordModel != null) {
-                        analyzeWithKeywords(text, keywordModel!!)
-                    } else {
-                        SentimentResult.error("Keyword model not available")
-                    }
-                }
+            } else if (keywordModel != null) {
+                // Use keyword model if TensorFlow is not available
+                analyzeWithKeywords(text, keywordModel!!)
+            } else {
+                SentimentResult.error("No sentiment model available")
             }
         }.getOrElse { e ->
             SentimentResult.error("$ERROR_ANALYSIS_ERROR${e.message}")
@@ -185,46 +168,11 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         }
 
     /**
-     * Gets information about the keyword model
-     * @return ModelInfo object or null if not available
-     */
-    fun getModelInfo(): ModelInfo? = keywordModel?.modelInfo
-
-    /**
-     * Gets information about the TensorFlow model
-     * @return ModelInfo object or null if not available
-     */
-    fun getTensorFlowModelInfo(): ModelInfo? = tensorFlowModel?.getModelInfo()
-
-    /**
-     * Checks if TensorFlow model is available and ready
+     * Checks if TensorFlow model is available and ready for inference
      * @return Boolean indicating TensorFlow model availability
      */
     fun isTensorFlowAvailable(): Boolean = tensorFlowModel?.isReady() ?: false
 
-    /**
-     * Get model file name for keyword-based sentiment analysis
-     *
-     * Since we only have one JSON model file, this method returns the same value.
-     * The real differentiation happens in the model selection logic where:
-     * - Release builds: TensorFlow model (production_sentiment_full_manual.tflite) with JSON fallback
-     * - Debug builds: JSON model (multilingual_sentiment_production.json) directly
-     */
-    private fun getModelFileName(): String {
-        // All build types use the same JSON model file as fallback
-        // The differentiation is in which model gets prioritized during analysis
-        return "multilingual_sentiment_production.json"
-    }
-
-    /**
-     * Get TensorFlow model file name for production builds
-     *
-     * This is used by the TensorFlowSentimentModel for production builds.
-     * Debug builds may also use this for testing purposes.
-     */
-    private fun getTensorFlowModelFileName(): String {
-        return "production_sentiment_full_manual.tflite"
-    }
 
 
     /**
@@ -235,7 +183,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             val json = Json { ignoreUnknownKeys = true }
 
             when (fileName) {
-                "multilingual_sentiment_production.json" -> {
+                KEYWORD_MODEL_FILE -> {
                     loadProductionModel(json, jsonString)
                 }
 
@@ -245,17 +193,22 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 }
             }
         }.getOrElse { e ->
-            createSimpleModel()
+            SimpleKeywordModelFactory().createSimpleModel()
         }
     }
 
 
     /**
-     * Load production model format
+     * Load production model format from multilingual_sentiment_production.json
      */
     private fun loadProductionModel(json: Json, jsonString: String): KeywordSentimentModel {
-        // For now, use simple model instead of parsing production JSON
-        return createSimpleModel()
+        return runCatching {
+            val modelData = json.decodeFromString<ProductionModelData>(jsonString)
+            createProductionModel(modelData)
+        }.getOrElse { e ->
+            // If production model fails to load, create simple model as last resort
+            SimpleKeywordModelFactory().createSimpleModel()
+        }
     }
 
     /**
@@ -300,52 +253,47 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
     /**
-     * Create simple model for testing
+     * Create production model from multilingual_sentiment_production.json
      */
-    private fun createSimpleModel(): KeywordSentimentModel {
+    private fun createProductionModel(modelData: ProductionModelData): KeywordSentimentModel {
         val modelInfo = ModelInfo(
-            type = MODEL_TYPE,
-            version = MODEL_VERSION,
-            language = MODEL_LANGUAGE,
-            accuracy = MODEL_ACCURACY,
-            speed = MODEL_SPEED
+            type = modelData.model_info.type,
+            version = modelData.model_info.version,
+            language = modelData.model_info.languages.joinToString(", "),
+            accuracy = "${(modelData.model_info.accuracy * 100).toInt()}%",
+            speed = "very_fast"
         )
 
-        val positiveKeywords = listOf(
-            "amazing", "fantastic", "great", "excellent", "wonderful", "brilliant",
-            "outstanding", "superb", "magnificent", "perfect", "incredible", "awesome",
-            "beautiful", "lovely", "good", "nice", "best", "favorite", "love", "enjoy",
-            "phenomenal", "spectacular", "remarkable", "exceptional", "marvelous",
-            "stunning", "impressive", "captivating", "engaging", "compelling"
+        // Use production model weights for advanced analysis
+        val algorithm = AlgorithmConfig(
+            baseConfidence = 0.8, // Higher confidence for production model
+            keywordWeight = 1.0,
+            contextWeight = 0.4,
+            modifierWeight = 0.5,
+            neutralThreshold = 0.5,
+            minConfidence = 0.4,
+            maxConfidence = 0.95
         )
 
-        val negativeKeywords = listOf(
-            "terrible", "awful", "horrible", "bad", "worst", "hate", "disgusting",
-            "boring", "stupid", "dumb", "annoying", "frustrating", "disappointing",
-            "waste", "rubbish", "garbage", "trash", "sucks", "pathetic", "lame",
-            "atrocious", "dreadful", "appalling", "mediocre", "unwatchable",
-            "cringe", "cheesy", "predictable", "cliché", "overrated"
-        )
-
-        val neutralIndicators = listOf(
-            "okay", "decent", "average", "fine", "acceptable", "reasonable",
-            "standard", "typical", "normal", "ordinary", "mediocre", "so-so"
-        )
+        // Create multilingual keywords based on production model
+        val positiveKeywords = createMultilingualKeywords("positive")
+        val negativeKeywords = createMultilingualKeywords("negative")
+        val neutralIndicators = createMultilingualKeywords("neutral")
 
         val intensityModifiers = mapOf(
-            "absolutely" to INTENSITY_ABSOLUTELY,
-            "completely" to INTENSITY_COMPLETELY,
-            "totally" to INTENSITY_TOTALLY,
-            "extremely" to INTENSITY_EXTREMELY,
-            "incredibly" to INTENSITY_INCREDIBLY,
-            "very" to INTENSITY_VERY,
-            "really" to INTENSITY_REALLY,
-            "pretty" to INTENSITY_PRETTY,
-            "somewhat" to INTENSITY_SOMEWHAT,
-            "slightly" to INTENSITY_SLIGHTLY,
-            "not" to INTENSITY_NOT,
-            "never" to INTENSITY_NEVER,
-            "barely" to INTENSITY_BARELY
+            "absolutely" to 1.5,
+            "completely" to 1.4,
+            "totally" to 1.3,
+            "extremely" to 1.3,
+            "incredibly" to 1.3,
+            "very" to 1.2,
+            "really" to 1.1,
+            "pretty" to 0.8,
+            "somewhat" to 0.7,
+            "slightly" to 0.6,
+            "not" to -1.0,
+            "never" to -1.0,
+            "barely" to -0.5
         )
 
         val contextBoosters = ContextBoosters(
@@ -359,18 +307,8 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             ),
             negativeContext = listOf(
                 "flop", "disaster", "failure", "ruined", "destroyed", "butchered",
-                "mangled", "butchered", "torture", "nightmare"
+                "mangled", "torture", "nightmare"
             )
-        )
-
-        val algorithm = AlgorithmConfig(
-            baseConfidence = BASE_CONFIDENCE,
-            keywordWeight = KEYWORD_WEIGHT,
-            contextWeight = CONTEXT_WEIGHT,
-            modifierWeight = MODIFIER_WEIGHT,
-            neutralThreshold = NEUTRAL_THRESHOLD,
-            minConfidence = MIN_CONFIDENCE,
-            maxConfidence = MAX_CONFIDENCE
         )
 
         return KeywordSentimentModel(
@@ -383,6 +321,59 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             algorithm = algorithm
         )
     }
+
+    /**
+     * Create multilingual keywords for production model
+     */
+    private fun createMultilingualKeywords(type: String): List<String> {
+        return when (type) {
+            "positive" -> listOf(
+                // English
+                "amazing", "fantastic", "great", "excellent", "wonderful", "brilliant",
+                "outstanding", "superb", "magnificent", "perfect", "incredible", "awesome",
+                "beautiful", "lovely", "good", "nice", "best", "favorite", "love", "enjoy",
+                "phenomenal", "spectacular", "remarkable", "exceptional", "marvelous",
+                "stunning", "impressive", "captivating", "engaging", "compelling",
+                // Spanish
+                "increíble", "fantástico", "excelente", "maravilloso", "brillante",
+                "sobresaliente", "magnífico", "perfecto", "asombroso", "impresionante",
+                "hermoso", "encantador", "bueno", "mejor", "favorito", "amar", "disfrutar",
+                // Russian
+                "потрясающий", "фантастический", "отличный", "замечательный", "блестящий",
+                "выдающийся", "великолепный", "идеальный", "невероятный", "впечатляющий",
+                "красивый", "прекрасный", "хороший", "лучший", "любимый", "любить", "наслаждаться"
+            )
+            "negative" -> listOf(
+                // English
+                "terrible", "awful", "horrible", "bad", "worst", "hate", "disgusting",
+                "boring", "stupid", "dumb", "annoying", "frustrating", "disappointing",
+                "waste", "rubbish", "garbage", "trash", "sucks", "pathetic", "lame",
+                "atrocious", "dreadful", "appalling", "mediocre", "unwatchable",
+                "cringe", "cheesy", "predictable", "cliché", "overrated",
+                // Spanish
+                "terrible", "horrible", "malo", "peor", "odiar", "asqueroso",
+                "aburrido", "estúpido", "molesto", "frustrante", "decepcionante",
+                "basura", "patético", "atroz", "espantoso", "mediocre",
+                // Russian
+                "ужасный", "отвратительный", "плохой", "худший", "ненавидеть", "мерзкий",
+                "скучный", "глупый", "раздражающий", "разочаровывающий",
+                "мусор", "жалкий", "отвратительный", "ужасный", "посредственный"
+            )
+            "neutral" -> listOf(
+                // English
+                "okay", "decent", "average", "fine", "acceptable", "reasonable",
+                "standard", "typical", "normal", "ordinary", "mediocre", "so-so",
+                // Spanish
+                "bien", "decente", "promedio", "aceptable", "razonable",
+                "estándar", "típico", "normal", "ordinario", "mediocre",
+                // Russian
+                "нормально", "приличный", "средний", "приемлемый", "разумный",
+                "стандартный", "типичный", "обычный", "посредственный"
+            )
+            else -> emptyList()
+        }
+    }
+
 
     /**
      * Main keyword analysis algorithm with fallback
@@ -506,7 +497,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
             positiveScore > negativeScore && positiveScore > neutralScore -> {
                 val confidence = minOf(
-                    algorithm.maxConfidence,
+                    algorithm.maxConfidence ?: 0.9,
                     algorithm.baseConfidence + (positiveScore - maxOf(
                         negativeScore,
                         neutralScore
@@ -517,7 +508,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
             negativeScore > positiveScore && negativeScore > neutralScore -> {
                 val confidence = minOf(
-                    algorithm.maxConfidence,
+                    algorithm.maxConfidence ?: 0.9,
                     algorithm.baseConfidence + (negativeScore - maxOf(
                         positiveScore,
                         neutralScore
@@ -563,7 +554,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         return when {
             positiveScore > negativeScore -> {
                 val confidence = minOf(
-                    algorithm.maxConfidence,
+                    algorithm.maxConfidence ?: 0.9,
                     algorithm.baseConfidence + (positiveScore - negativeScore) * 0.1
                 )
                 SentimentResult.positive(confidence, foundWords)
@@ -571,7 +562,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
             negativeScore > positiveScore -> {
                 val confidence = minOf(
-                    algorithm.maxConfidence,
+                    algorithm.maxConfidence ?: 0.9,
                     algorithm.baseConfidence + (negativeScore - positiveScore) * 0.1
                 )
                 SentimentResult.negative(confidence, foundWords)
@@ -599,18 +590,21 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
 
     /**
-     * Determine if we should fallback to keyword model
+     * Determines if TensorFlow result should fallback to keyword model
+     * Checks confidence threshold and low confidence indicators
+     * @param tensorFlowResult Result from TensorFlow model
+     * @return Boolean indicating if fallback is needed
      */
     private fun shouldFallbackToKeyword(tensorFlowResult: SentimentResult): Boolean {
         val config = hybridConfig?.modelSelection ?: return false
 
-        // Check confidence threshold
+        // Check if confidence is below threshold (default: 0.7)
         val confidenceThreshold = config.confidenceThreshold ?: 0.7
         if (tensorFlowResult.confidence < confidenceThreshold) {
             return true
         }
 
-        // Check if result indicates low confidence
+        // Check if TensorFlow indicates low confidence in keywords
         if (tensorFlowResult.foundKeywords.any { it.contains("low_confidence") }) {
             return true
         }
@@ -619,126 +613,16 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
     /**
-     * Clean up resources
+     * Clean up resources and clear singleton reference
      */
     fun cleanup() {
         tensorFlowModel?.cleanup()
         isInitialized = false
+        // Clear the singleton reference to prevent memory leaks
+        synchronized(this) {
+            INSTANCE?.clear()
+            INSTANCE = null
+        }
     }
 }
 
-/**
- * Sentiment analysis result
- */
-data class SentimentResult(
-    val sentiment: SentimentType,
-    val confidence: Double,
-    val isSuccess: Boolean = true,
-    val errorMessage: String? = null,
-    val foundKeywords: List<String> = emptyList(),
-    val processingTimeMs: Long = 0L
-) {
-    companion object {
-        fun positive(confidence: Double, keywords: List<String> = emptyList()) =
-            SentimentResult(SentimentType.POSITIVE, confidence, foundKeywords = keywords)
-
-        fun negative(confidence: Double, keywords: List<String> = emptyList()) =
-            SentimentResult(SentimentType.NEGATIVE, confidence, foundKeywords = keywords)
-
-        fun neutral(confidence: Double = 0.5, keywords: List<String> = emptyList()) =
-            SentimentResult(SentimentType.NEUTRAL, confidence, foundKeywords = keywords)
-
-        fun error(message: String) =
-            SentimentResult(SentimentType.NEUTRAL, 0.0, false, message)
-    }
-
-    /**
-     * Returns human-readable description
-     */
-    fun getDescription(): String = when {
-        !isSuccess -> "Error: $errorMessage"
-        sentiment == SentimentType.POSITIVE -> "Positive (${(confidence * 100).toInt()}%)"
-        sentiment == SentimentType.NEGATIVE -> "Negative (${(confidence * 100).toInt()}%)"
-        else -> "Neutral"
-    }
-}
-
-/**
- * Sentiment types
- */
-enum class SentimentType {
-    POSITIVE, NEGATIVE, NEUTRAL
-}
-
-/**
- * Data model for keyword-based analysis
- */
-data class KeywordSentimentModel(
-    val modelInfo: ModelInfo,
-    val positiveKeywords: List<String>,
-    val negativeKeywords: List<String>,
-    val neutralIndicators: List<String>? = null,
-    val intensityModifiers: Map<String, Double>? = null,
-    val contextBoosters: ContextBoosters? = null,
-    val algorithm: AlgorithmConfig
-)
-
-data class ModelInfo(
-    val type: String,
-    val version: String,
-    val language: String,
-    val accuracy: String,
-    val speed: String
-)
-
-data class AlgorithmConfig(
-    val baseConfidence: Double,
-    val keywordWeight: Double? = 1.0,
-    val contextWeight: Double? = 0.3,
-    val modifierWeight: Double? = 0.4,
-    val neutralThreshold: Double,
-    val minConfidence: Double,
-    val maxConfidence: Double
-)
-
-data class ContextBoosters(
-    val movieTerms: List<String>? = null,
-    val positiveContext: List<String>? = null,
-    val negativeContext: List<String>? = null
-)
-
-/**
- * Data classes for enhanced model JSON structure
- */
-data class EnhancedModelData(
-    val model_info: EnhancedModelInfo,
-    val positive_keywords: List<String>,
-    val negative_keywords: List<String>,
-    val neutral_indicators: List<String>,
-    val intensity_modifiers: Map<String, Double>,
-    val context_patterns: ContextPatterns? = null,
-    val algorithm: EnhancedAlgorithmConfig
-)
-
-data class EnhancedModelInfo(
-    val type: String,
-    val version: String,
-    val language: String,
-    val accuracy: String,
-    val speed: String,
-    val improvements: String? = null
-)
-
-data class ContextPatterns(
-    val strong_positive: List<String>? = null,
-    val strong_negative: List<String>? = null
-)
-
-data class EnhancedAlgorithmConfig(
-    val base_confidence: Double,
-    val keyword_threshold: Int,
-    val neutral_threshold: Double,
-    val min_confidence: Double,
-    val max_confidence: Double,
-    val context_bonus: Double
-)

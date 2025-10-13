@@ -102,6 +102,35 @@ MVI is an architectural pattern that ensures **unidirectional data flow** and **
 - Data source abstraction
 - Caching and synchronization
 
+### 🤖 ML Layer (Machine Learning)
+
+**Purpose**: AI-powered sentiment analysis and machine learning capabilities
+
+**Architecture**:
+- Hybrid sentiment analysis system
+- TensorFlow Lite integration
+- Modular data class organization
+- Memory leak prevention
+
+**Components**:
+- `SentimentAnalyzer` - Main hybrid sentiment analyzer
+- `TensorFlowSentimentModel` - TensorFlow Lite model implementation
+- `SimpleKeywordModelFactory` - Simple keyword model factory
+- `model/` - Data classes and model definitions
+
+**Key Features**:
+- **Hybrid System**: TensorFlow Lite primary with keyword fallback
+- **Memory Management**: WeakReference pattern for singleton
+- **Modular Design**: Separate files for each data class
+- **Performance**: Optimized for mobile devices
+
+**Data Classes**:
+- `SentimentResult` - Analysis results with confidence
+- `ModelInfo` - Model information and metadata
+- `KeywordSentimentModel` - Keyword-based analysis
+- `TensorFlowConfig` - TensorFlow configuration
+- `ProductionModelData` - Production model data
+
 ## 📁 Folder Structure
 
 ```
@@ -128,6 +157,19 @@ app/src/main/java/org/studioapp/cinemy/
 │   ├── mapper/                  # Data mappers
 │   ├── remote/                  # Remote data sources
 │   └── repository/              # Repositories
+├── ml/                          # ML Layer
+│   ├── model/                   # Data classes and models
+│   │   ├── SentimentResult.kt   # Sentiment analysis result
+│   │   ├── ModelInfo.kt         # Model information
+│   │   ├── KeywordSentimentModel.kt # Keyword-based model
+│   │   ├── AlgorithmConfig.kt   # Algorithm configuration
+│   │   ├── ContextBoosters.kt   # Context boosters
+│   │   ├── EnhancedModelData.kt # Enhanced model data
+│   │   ├── ProductionModelData.kt # Production model data
+│   │   └── TensorFlowConfig.kt  # TensorFlow configuration
+│   ├── SentimentAnalyzer.kt     # Main hybrid analyzer
+│   ├── TensorFlowSentimentModel.kt # TensorFlow Lite model
+│   └── SimpleKeywordModelFactory.kt # Simple model factory
 └── utils/                       # Utilities
 ```
 

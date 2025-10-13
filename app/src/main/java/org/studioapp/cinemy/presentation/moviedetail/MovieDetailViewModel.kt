@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.repository.MovieRepository
 import org.studioapp.cinemy.ml.SentimentAnalyzer
+import org.studioapp.cinemy.ml.model.SentimentResult
 import org.studioapp.cinemy.presentation.PresentationConstants
 
 /**
@@ -131,9 +132,9 @@ class MovieDetailViewModel(
     }
 
     private fun calculateOverallSentiment(
-        positiveResults: List<org.studioapp.cinemy.ml.SentimentResult>,
-        negativeResults: List<org.studioapp.cinemy.ml.SentimentResult>
-    ): org.studioapp.cinemy.ml.SentimentResult {
+        positiveResults: List<SentimentResult>,
+        negativeResults: List<SentimentResult>
+    ): SentimentResult {
         // Calculate average confidence for positive and negative results
         val positiveConfidence = if (positiveResults.isNotEmpty()) {
             positiveResults.filter { it.isSuccess }.map { it.confidence }.average()
@@ -150,21 +151,21 @@ class MovieDetailViewModel(
         // Determine overall sentiment based on confidence comparison
         return when {
             positiveConfidence > negativeConfidence && positiveConfidence > 0.5 -> {
-                org.studioapp.cinemy.ml.SentimentResult.positive(
+                SentimentResult.positive(
                     confidence = positiveConfidence,
                     keywords = allKeywords
                 )
             }
 
             negativeConfidence > positiveConfidence && negativeConfidence > 0.5 -> {
-                org.studioapp.cinemy.ml.SentimentResult.negative(
+                SentimentResult.negative(
                     confidence = negativeConfidence,
                     keywords = allKeywords
                 )
             }
 
             else -> {
-                org.studioapp.cinemy.ml.SentimentResult.neutral(
+                SentimentResult.neutral(
                     confidence = maxOf(positiveConfidence, negativeConfidence),
                     keywords = allKeywords
                 )

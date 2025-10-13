@@ -3,8 +3,11 @@ package org.studioapp.cinemy.ml
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import org.studioapp.cinemy.ml.model.SentimentResult
+import org.studioapp.cinemy.ml.model.SentimentType
+import org.studioapp.cinemy.ml.model.TensorFlowConfig
+import org.studioapp.cinemy.ml.model.ModelInfo
 import org.tensorflow.lite.Interpreter
 import java.io.FileInputStream
 import java.nio.MappedByteBuffer
@@ -12,7 +15,8 @@ import java.nio.channels.FileChannel
 
 /**
  * TensorFlow Lite sentiment analysis model for Cinemy
- * Provides ML-based sentiment analysis with fallback to keyword model
+ * BERT-based sentiment analysis using TensorFlow Lite
+ * Primary model in hybrid sentiment analysis system
  */
 class TensorFlowSentimentModel private constructor(private val context: Context) {
 
@@ -49,7 +53,6 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
         private const val MODEL_SPEED = "fast"
 
         // BERT model constants
-        private const val VOCAB_SIZE = 30522
         private const val MAX_SEQUENCE_LENGTH = 512
         private const val UNK_TOKEN = "[UNK]"
         private const val CLS_TOKEN = "[CLS]"
@@ -59,18 +62,16 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
 
         // Error messages
         private const val ERROR_MODEL_NOT_INITIALIZED = "TensorFlow model not initialized"
-        private const val ERROR_MODEL_LOADING = "Failed to load TensorFlow model"
         private const val ERROR_INFERENCE = "TensorFlow inference error"
-        private const val ERROR_CONFIG_LOADING = "Failed to load TensorFlow config"
 
         // Default thresholds
         private const val DEFAULT_CONFIDENCE_THRESHOLD = 0.6
-        private const val DEFAULT_MAX_LENGTH = 512
         private const val DEFAULT_NUM_THREADS = 4
     }
 
     /**
-     * Initializes TensorFlow Lite model and loads configuration
+     * Initializes TensorFlow Lite model with BERT configuration
+     * Loads model file, vocabulary, and configuration from assets
      * @return Boolean indicating if initialization was successful
      */
     suspend fun initialize(): Boolean = withContext(Dispatchers.IO) {
@@ -99,7 +100,7 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
             val options = Interpreter.Options().apply {
                 numThreads = config?.tensorflowLite?.performance?.numThreads ?: DEFAULT_NUM_THREADS
                 setUseNNAPI(config?.tensorflowLite?.performance?.useNnapi ?: true)
-                setUseXNNPACK(config?.tensorflowLite?.performance?.enableXnnpack ?: true)
+                setUseXNNPACK(config?.tensorflowLite?.performance?.useXnnpack ?: true)
             }
 
             interpreter = Interpreter(modelBuffer, options)
@@ -111,7 +112,8 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
     }
 
     /**
-     * Analyzes sentiment using TensorFlow Lite model
+     * Analyzes sentiment using BERT-based TensorFlow Lite model
+     * Preprocesses text, runs inference, and postprocesses results
      * @param text Input text to analyze
      * @return SentimentResult with sentiment classification and confidence
      */
@@ -148,8 +150,8 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
     }
 
     /**
-     * Gets information about the TensorFlow model
-     * @return ModelInfo object or null if not available
+     * Gets information about the TensorFlow Lite model
+     * @return ModelInfo object with model details or null if not available
      */
     fun getModelInfo(): ModelInfo? = config?.let { tfConfig ->
         ModelInfo(
@@ -162,8 +164,8 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
     }
 
     /**
-     * Checks if TensorFlow model is ready for inference
-     * @return Boolean indicating model readiness
+     * Checks if TensorFlow Lite model is ready for inference
+     * @return Boolean indicating model readiness (initialized and interpreter available)
      */
     fun isReady(): Boolean = isInitialized && interpreter != null
 
@@ -403,84 +405,3 @@ class TensorFlowSentimentModel private constructor(private val context: Context)
     }
 }
 
-/**
- * TensorFlow Lite configuration data classes
- */
-@Serializable
-data class TensorFlowConfig(
-    val tensorflowLite: TensorFlowLiteConfig? = null,
-    val hybridSystem: HybridSystemConfig? = null
-)
-
-@Serializable
-data class TensorFlowLiteConfig(
-    val modelFile: String? = null,
-    val modelType: String? = null,
-    val version: String? = null,
-    val inputConfig: InputConfig? = null,
-    val outputConfig: OutputConfig? = null,
-    val performance: PerformanceConfig? = null,
-    val fallback: FallbackConfig? = null
-)
-
-@Serializable
-data class InputConfig(
-    val inputTensorName: String? = null,
-    val inputShape: List<Int> = emptyList(),
-    val inputType: String? = null,
-    val preprocessing: PreprocessingConfig? = null
-)
-
-@Serializable
-data class PreprocessingConfig(
-    val maxLength: Int? = null,
-    val padding: String? = null,
-    val truncation: Boolean? = null,
-    val lowercase: Boolean? = null,
-    val removePunctuation: Boolean? = null
-)
-
-@Serializable
-data class OutputConfig(
-    val outputTensorName: String? = null,
-    val outputShape: List<Int> = emptyList(),
-    val outputType: String? = null,
-    val classLabels: List<String>? = null,
-    val confidenceThreshold: Double? = null
-)
-
-@Serializable
-data class PerformanceConfig(
-    val useGpu: Boolean? = null,
-    val useNnapi: Boolean? = null,
-    val numThreads: Int? = null,
-    val enableXnnpack: Boolean? = null
-)
-
-@Serializable
-data class FallbackConfig(
-    val useKeywordModel: Boolean? = null,
-    val fallbackThreshold: Double? = null
-)
-
-@Serializable
-data class HybridSystemConfig(
-    val modelSelection: ModelSelectionConfig? = null,
-    val integration: IntegrationConfig? = null
-)
-
-@Serializable
-data class ModelSelectionConfig(
-    val useTensorflowFor: List<String>? = null,
-    val useKeywordFor: List<String>? = null,
-    val complexityThreshold: Int? = null,
-    val confidenceThreshold: Double? = null
-)
-
-@Serializable
-data class IntegrationConfig(
-    val seamlessFallback: Boolean? = null,
-    val performanceMonitoring: Boolean? = null,
-    val cacheResults: Boolean? = null,
-    val cacheDurationMinutes: Int? = null
-)

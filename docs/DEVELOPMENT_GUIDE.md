@@ -14,31 +14,75 @@
 
 ## 🆕 Latest Updates (v2.8.0)
 
-### 🤖 Production TensorFlow Lite Integration
+### 🤖 Unified TensorFlow Lite Integration
 - **TensorFlow Lite 2.14.0**: Latest TensorFlow Lite with support library 0.4.4
 - **BERT Production Model**: `production_sentiment_full_manual.tflite` (3.8MB)
-- **Hybrid ML System**: TensorFlow Lite + keyword model fallback
-- **Complexity Threshold**: 5+ words trigger TensorFlow Lite model
-- **Implementation**: `SentimentAnalyzer.kt` with hybrid model selection
+- **Unified ML System**: TensorFlow Lite primary with keyword model fallback for ALL build variants
+- **Intelligent Fallback**: Automatic fallback to keyword model when TensorFlow confidence is low
+- **Implementation**: `SentimentAnalyzer.kt` with unified model selection for all builds
 - **Asset Management**: Models stored in `app/src/main/assets/ml_models/`
 
 ### 🔧 Technical Implementation
 ```kotlin
-private fun getModelFileName(): String {
-    return when (BuildConfig.BUILD_TYPE) {
-        "debug" -> "multilingual_sentiment_production.json"
-        "release" -> "multilingual_sentiment_production.json"
-        else -> "multilingual_sentiment_production.json"
-    }
-}
+// Unified model initialization for all build variants
+tensorFlowModel = TensorFlowSentimentModel.getInstance(context)
+val tensorFlowInitialized = tensorFlowModel?.initialize() ?: false
+
+// Always initialize keyword model as fallback
+initializeKeywordModel()
 ```
 
 ### 📊 Model Specifications
 - **TensorFlow Lite Model**: `production_sentiment_full_manual.tflite` (3.8MB)
 - **BERT Architecture**: 30,522 vocabulary tokens, 512-token sequences
 - **Keyword Model**: `multilingual_sentiment_production.json` (3.3MB)
-- **Hybrid Logic**: 5+ words → TensorFlow, <5 words → Keyword
+- **Unified Logic**: TensorFlow Lite primary for all builds, keyword model fallback when confidence is low
 - **Performance**: NNAPI/XNNPACK acceleration, 95%+ accuracy
+
+## 🆕 ML Layer Refactoring (v3.0.0)
+
+### 🏗️ Architectural Improvements
+
+#### Data Class Organization
+- **Modular Structure**: All data classes moved to separate files in `ml/model/` package
+- **Explicit Imports**: Replaced wildcard imports (`.*`) with specific class imports
+- **Memory Management**: Implemented WeakReference pattern for singleton to prevent memory leaks
+- **Type Safety**: Explicit imports prevent accidental usage of wrong classes
+
+#### New Structure
+```
+ml/
+├── model/                                  # Data classes and models
+│   ├── SentimentResult.kt                 # Sentiment analysis result
+│   ├── SentimentType.kt                   # Sentiment type enum
+│   ├── ModelInfo.kt                       # Model information
+│   ├── KeywordSentimentModel.kt           # Keyword-based model
+│   ├── AlgorithmConfig.kt                 # Algorithm configuration
+│   ├── ContextBoosters.kt                 # Context boosters
+│   ├── EnhancedModelData.kt               # Enhanced model data
+│   ├── ProductionModelData.kt             # Production model data
+│   └── TensorFlowConfig.kt                # TensorFlow configuration
+├── SentimentAnalyzer.kt                   # Main hybrid analyzer
+├── TensorFlowSentimentModel.kt            # TensorFlow Lite model
+└── SimpleKeywordModelFactory.kt           # Simple model factory
+```
+
+#### Benefits
+- **Maintainability**: Easy to find and modify specific data structures
+- **Reusability**: Data classes can be imported individually where needed
+- **Performance**: Only necessary classes are loaded, reducing memory footprint
+- **Clarity**: Immediately see which classes are used in each file
+
+#### Import Strategy
+```kotlin
+// Before (Wildcard imports)
+import org.studioapp.cinemy.ml.model.*
+
+// After (Explicit imports)
+import org.studioapp.cinemy.ml.model.SentimentResult
+import org.studioapp.cinemy.ml.model.SentimentType
+import org.studioapp.cinemy.ml.model.KeywordSentimentModel
+```
 
 ## 🆕 Previous Updates (v2.4.0)
 
