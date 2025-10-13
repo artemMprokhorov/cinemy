@@ -29,7 +29,8 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     private var tensorFlowModel: TensorFlowSentimentModel? = null
     private var liteRTModel: LiteRTSentimentModel? = null
     private var adaptiveRuntime: AdaptiveMLRuntime? = null
-    private var isInitialized = false
+    var isInitialized = false
+        private set
     private var hybridConfig: HybridSystemConfig? = null
 
     companion object {
@@ -157,14 +158,14 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         runCatching {
             // Try adaptive runtime first (optimal performance)
             val adaptiveResult = adaptiveRuntime?.analyzeSentiment(text)
-            if (adaptiveResult != null && adaptiveResult.isSuccess) {
+            if (adaptiveResult != null && adaptiveResult.isSuccess && adaptiveResult.confidence > 0.6) {
                 return@withContext adaptiveResult
             }
 
             // Try LiteRT model directly (best performance)
             if (liteRTModel?.isReady() == true) {
                 val liteRTResult = liteRTModel!!.analyzeSentiment(text)
-                if (liteRTResult.isSuccess) {
+                if (liteRTResult.isSuccess && liteRTResult.confidence > 0.6) {
                     return@withContext liteRTResult
                 }
             }
@@ -172,7 +173,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             // Fallback to TensorFlow Lite model
             if (tensorFlowModel?.isReady() == true) {
                 val tensorFlowResult = tensorFlowModel!!.analyzeSentiment(text)
-                if (tensorFlowResult.isSuccess) {
+                if (tensorFlowResult.isSuccess && tensorFlowResult.confidence > 0.6) {
                     return@withContext tensorFlowResult
                 }
             }
@@ -198,11 +199,6 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             texts.map { text -> analyzeSentiment(text) }
         }
 
-    /**
-     * Checks if TensorFlow model is available and ready for inference
-     * @return Boolean indicating TensorFlow model availability
-     */
-    fun isTensorFlowAvailable(): Boolean = tensorFlowModel?.isReady() ?: false
 
 
 

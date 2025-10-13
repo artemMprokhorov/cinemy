@@ -326,7 +326,7 @@ class TensorFlowIntegrationTest {
         // Then
         assertFalse(
             "Analyzer should not be initialized after cleanup",
-            analyzer.isTensorFlowAvailable()
+            analyzer.isInitialized
         )
         assertFalse("Model should not be ready after cleanup", model.isReady())
     }
