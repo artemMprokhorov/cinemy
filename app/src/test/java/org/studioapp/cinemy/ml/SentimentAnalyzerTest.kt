@@ -4,6 +4,12 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.studioapp.cinemy.ml.model.SentimentResult
+import org.studioapp.cinemy.ml.model.SentimentType
+import org.studioapp.cinemy.ml.model.KeywordSentimentModel
+import org.studioapp.cinemy.ml.model.ModelInfo
+import org.studioapp.cinemy.ml.model.ContextBoosters
+import org.studioapp.cinemy.ml.model.AlgorithmConfig
 
 /**
  * Test for SentimentAnalyzer functionality

@@ -13,6 +13,8 @@ import org.studioapp.cinemy.ml.model.EnhancedModelData
 import org.studioapp.cinemy.ml.model.ProductionModelData
 import org.studioapp.cinemy.ml.model.TensorFlowConfig
 import org.studioapp.cinemy.ml.model.HybridSystemConfig
+import org.studioapp.cinemy.ml.AdaptiveMLRuntime
+import org.studioapp.cinemy.ml.HardwareDetection
 import kotlin.math.abs
 import java.lang.ref.WeakReference
 
@@ -25,6 +27,8 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
     private var keywordModel: KeywordSentimentModel? = null
     private var tensorFlowModel: TensorFlowSentimentModel? = null
+    private var liteRTModel: LiteRTSentimentModel? = null
+    private var adaptiveRuntime: AdaptiveMLRuntime? = null
     private var isInitialized = false
     private var hybridConfig: HybridSystemConfig? = null
 
@@ -74,9 +78,18 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
     /**
-     * Initializes hybrid sentiment analyzer
-     * Loads TensorFlow Lite model as primary and keyword model as fallback
-     * @return Boolean indicating if initialization was successful
+     * Initializes hybrid sentiment analyzer with adaptive runtime selection
+     * 
+     * This method performs the following steps:
+     * 1. Loads hybrid system configuration
+     * 2. Initializes adaptive ML runtime for optimal performance
+     * 3. Sets up fallback mechanisms for reliability
+     * 4. Configures hardware-optimized model selection
+     * 
+     * The adaptive runtime automatically selects the best available ML runtime
+     * based on device hardware capabilities (LiteRT, TensorFlow Lite, or keyword fallback).
+     * 
+     * @return true if initialization was successful, false otherwise
      */
     suspend fun initialize(): Boolean = withContext(Dispatchers.IO) {
         runCatching {
@@ -85,7 +98,15 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             // Load hybrid configuration
             hybridConfig = loadHybridConfig()
 
-            // Initialize TensorFlow Lite model as primary
+            // Initialize adaptive ML runtime for optimal performance
+            adaptiveRuntime = AdaptiveMLRuntime.getInstance(context)
+            adaptiveRuntime?.initialize()
+
+            // Initialize LiteRT model for best performance (if available)
+            liteRTModel = LiteRTSentimentModel.getInstance(context)
+            liteRTModel?.initialize()
+
+            // Initialize TensorFlow Lite model as backup
             tensorFlowModel = TensorFlowSentimentModel.getInstance(context)
             tensorFlowModel?.initialize()
 
@@ -134,21 +155,33 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         }
 
         runCatching {
-            // Use TensorFlow Lite model if available and ready
+            // Try adaptive runtime first (optimal performance)
+            val adaptiveResult = adaptiveRuntime?.analyzeSentiment(text)
+            if (adaptiveResult != null && adaptiveResult.isSuccess) {
+                return@withContext adaptiveResult
+            }
+
+            // Try LiteRT model directly (best performance)
+            if (liteRTModel?.isReady() == true) {
+                val liteRTResult = liteRTModel!!.analyzeSentiment(text)
+                if (liteRTResult.isSuccess) {
+                    return@withContext liteRTResult
+                }
+            }
+
+            // Fallback to TensorFlow Lite model
             if (tensorFlowModel?.isReady() == true) {
                 val tensorFlowResult = tensorFlowModel!!.analyzeSentiment(text)
-
-                // Check if fallback to keyword model is needed
-                if (shouldFallbackToKeyword(tensorFlowResult) && keywordModel != null) {
-                    analyzeWithKeywords(text, keywordModel!!)
-                } else {
-                    tensorFlowResult
+                if (tensorFlowResult.isSuccess) {
+                    return@withContext tensorFlowResult
                 }
-            } else if (keywordModel != null) {
-                // Use keyword model if TensorFlow is not available
+            }
+
+            // Last resort: keyword model
+            if (keywordModel != null) {
                 analyzeWithKeywords(text, keywordModel!!)
             } else {
-                SentimentResult.error("No sentiment model available")
+                SentimentResult.error("No models available")
             }
         }.getOrElse { e ->
             SentimentResult.error("$ERROR_ANALYSIS_ERROR${e.message}")
@@ -611,10 +644,65 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
     /**
+     * Gets current ML runtime information
+     * 
+     * Returns detailed information about the currently selected ML runtime,
+     * including hardware capabilities, performance score, and configuration.
+     * This is useful for debugging and performance monitoring.
+     * 
+     * @return Formatted string with runtime details
+     */
+    fun getRuntimeInfo(): String {
+        return adaptiveRuntime?.getCurrentRuntimeInfo() ?: "Adaptive runtime not available"
+    }
+
+    /**
+     * Gets performance recommendations
+     * 
+     * Provides actionable recommendations to improve ML performance
+     * based on current hardware setup and selected runtime.
+     * 
+     * @return List of performance recommendations
+     */
+    fun getPerformanceRecommendations(): List<String> {
+        return adaptiveRuntime?.getPerformanceRecommendations() ?: emptyList()
+    }
+
+    /**
+     * Checks if current runtime is optimal for sentiment analysis
+     * 
+     * Determines if the current runtime setup provides optimal performance
+     * for sentiment analysis based on hardware capabilities.
+     * 
+     * @return true if setup is optimal, false otherwise
+     */
+    fun isOptimalForSentimentAnalysis(): Boolean {
+        return adaptiveRuntime?.isOptimalForSentimentAnalysis() ?: false
+    }
+
+    /**
+     * Gets device information for debugging
+     * 
+     * Returns comprehensive device and hardware information useful for
+     * debugging and analytics.
+     * 
+     * @return Formatted string with device information
+     */
+    fun getDeviceInfo(): String {
+        return adaptiveRuntime?.getDeviceInfo() ?: "Device information not available"
+    }
+
+    /**
      * Clean up resources and clear singleton reference
      */
     fun cleanup() {
+        adaptiveRuntime?.cleanup()
+        adaptiveRuntime = null
+        liteRTModel?.cleanup()
+        liteRTModel = null
         tensorFlowModel?.cleanup()
+        tensorFlowModel = null
+        keywordModel = null
         isInitialized = false
         // Clear the singleton reference to prevent memory leaks
         synchronized(this) {

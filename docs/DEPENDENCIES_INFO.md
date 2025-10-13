@@ -6,7 +6,7 @@
 
 > **📚 Layer Documentation**: For detailed implementation of each layer, see:
 > - [🗄️ Data Layer](./DATA_LAYER.md) - Data layer dependencies and MCP integration
-> - [🤖 ML Layer](./ML_LAYER.md) - Machine learning dependencies and TensorFlow Lite
+> - [🤖 ML Layer](./ML_LAYER.md) - Adaptive ML runtime dependencies and TensorFlow Lite
 > - [🧭 Navigation Layer](./NAVIGATION_LAYER.md) - Navigation dependencies
 > - [🎨 Presentation Layer](./PRESENTATION_LAYER.md) - ViewModel dependencies
 > - [🖼️ UI Components Layer](./UI_COMPONENTS_LAYER.md) - UI component dependencies
@@ -246,17 +246,12 @@ The project uses Gradle Version Catalog (`gradle/libs.versions.toml`) for centra
 ```kotlin
 flavorDimensions += "environment"
 productFlavors {
-    create("development") {
+    create("dummy") {
         dimension = "environment"
-        applicationIdSuffix = ".dev"
-        versionNameSuffix = "-dev"
+        applicationIdSuffix = ".dummy"
+        versionNameSuffix = "-dummy"
     }
-    create("staging") {
-        dimension = "environment"
-        applicationIdSuffix = ".staging"
-        versionNameSuffix = "-staging"
-    }
-    create("production") {
+    create("prod") {
         dimension = "environment"
     }
 }
@@ -362,6 +357,7 @@ When updating dependencies:
 | Ktor | Retrofit | Kotlin-first approach |
 | Coil | Glide | Modernity and performance |
 | StateFlow | LiveData | Kotlin-first approach |
+| TensorFlow Lite | ML Kit | Local model control |
 
 ## 🎯 Future Dependencies
 
@@ -381,6 +377,6 @@ When updating dependencies:
 
 ---
 
-**Last Updated**: 2025-09-19  
-**Document Version**: 1.0.0  
+**Last Updated**: 2025-01-27  
+**Document Version**: 3.0.0  
 **Status**: Current

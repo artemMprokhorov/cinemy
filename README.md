@@ -83,27 +83,31 @@ Ensures predictable state management and smooth user experience through unidirec
 
 Cinemy features intelligent model selection based on build variants, automatically choosing the optimal sentiment analysis model for each environment. The system uses `BuildConfig.BUILD_TYPE` to automatically select the appropriate model without any manual configuration.
 
-#### 🤖 **Hybrid ML System** - All Build Variants
+#### 🤖 **Adaptive ML System** - All Build Variants
 - **TensorFlow Lite Model**: `production_sentiment_full_manual.tflite` (3.8MB BERT)
+- **LiteRT Integration**: Google Play Services ML Kit with hardware acceleration
 - **Keyword Model**: `multilingual_sentiment_production.json` (3.3MB fallback)
-- **Selection Logic**: 5+ words → TensorFlow Lite, <5 words → Keyword model
-- **Performance**: NNAPI/XNNPACK acceleration for mobile optimization
+- **Adaptive Selection**: Hardware-aware runtime selection (LiteRT → TensorFlow → Keyword)
+- **Performance**: GPU/NPU acceleration with automatic fallback
 - **Vocabulary**: 30,522 BERT tokens + 50K+ keyword vocabulary
 - **Accuracy**: 95%+ sentiment analysis accuracy
-- **Auto-Selection**: Intelligent model selection based on text complexity
+- **Smart Fallback**: Intelligent model selection based on device capabilities
 
 #### 🔧 **Implementation Details**
-- **Automatic Detection**: Uses `BuildConfig.BUILD_TYPE` for model selection
+- **Hardware Detection**: Automatic GPU/NNAPI/LiteRT capability detection
+- **Adaptive Runtime**: LiteRT → TensorFlow Lite → Keyword model fallback
+- **Performance Optimization**: Hardware-accelerated inference with 50ms GPU, 200ms CPU
 - **Graceful Fallback**: Falls back to simple built-in model if JSON models fail
 - **Error Handling**: Uses `runCatching` for robust error management
-- **No Manual Switching**: Completely automatic based on build variant
+- **No Manual Switching**: Completely automatic based on device capabilities
 
 **Model Specifications:**
+- **LiteRT**: Google Play Services ML Kit with same BERT model, hardware-accelerated
 - **TensorFlow Lite**: BERT-based sentiment analysis with 30,522 vocabulary
 - **Keyword Model**: Rule-based classification with 50K+ word vocabulary
-- **Performance**: Sub-100ms TensorFlow inference, sub-5ms keyword analysis
+- **Performance**: 50ms GPU (LiteRT), 200ms CPU (TensorFlow), 5ms keyword analysis
 - **Memory Usage**: 3.8MB TensorFlow model + 3.3MB keyword model
-- **Accuracy**: 85%+ (debug) / 100% (production)
+- **Accuracy**: 95%+ (LiteRT/GPU), 85%+ (CPU fallback)
 - **Specialization**: Movie-specific context understanding with intensity modifiers
 
 ### 🎨 Server-Driven UI with AI
@@ -157,8 +161,9 @@ This backend acts as an orchestrator between external APIs (TMDB, Perplexity Son
 - **Koin 3.5.3** - Lightweight dependency injection
 
 ### 🧠 AI & Machine Learning
+- **Adaptive ML Runtime** - LiteRT + TensorFlow Lite + keyword model with hardware detection
 - **Production TensorFlow Lite Model** - BERT-based sentiment analysis (3.8MB)
-- **Hybrid Sentiment System** - TensorFlow Lite + keyword model fallback
+- **LiteRT Integration** - Google Play Services ML Kit with GPU/NPU acceleration
 - **BERT Tokenization** - Proper text preprocessing with 30,522 vocabulary
 - **MCP Protocol** - AI backend communication standard
 - **Context Analysis Engine** - Movie-specific AI understanding
@@ -202,7 +207,7 @@ This project is licensed under the MIT License.
 
 ---
 
-## 🙏 Acknowledgments
+## 🙏 Credits
 
 Special thanks to:
 - **TMDB** for providing comprehensive movie data

@@ -5,6 +5,8 @@ import android.content.res.AssetManager
 import io.mockk.every
 import io.mockk.mockk
 import java.io.ByteArrayInputStream
+import org.studioapp.cinemy.ml.model.SentimentResult
+import org.studioapp.cinemy.ml.model.SentimentType
 
 /**
  * Test utilities for ML testing in Cinemy
@@ -14,6 +16,7 @@ object TestUtils {
 
     /**
      * Create a mock context with asset manager for testing
+     * Uses real asset files when available, falls back to mocks
      */
     fun createMockContext(): Context {
         val mockContext = mockk<Context>(relaxed = true)
@@ -23,6 +26,152 @@ object TestUtils {
         every { mockContext.applicationContext } returns mockContext
 
         return mockContext
+    }
+
+    /**
+     * Create a real context for integration testing with actual model files
+     */
+    fun createRealContext(): Context {
+        // For unit tests, we'll use a mock that simulates real file access
+        val mockContext = mockk<Context>(relaxed = true)
+        val mockAssetManager = createRealAssetManager()
+
+        every { mockContext.assets } returns mockAssetManager
+        every { mockContext.applicationContext } returns mockContext
+
+        return mockContext
+    }
+
+    /**
+     * Create a real asset manager that simulates actual model files
+     */
+    private fun createRealAssetManager(): AssetManager {
+        val mockAssetManager = mockk<AssetManager>(relaxed = true)
+
+        // Mock TensorFlow Lite model file (simulate real model)
+        val tfliteModelContent = ByteArray(1024 * 1024) // Mock 1MB model file
+        val tfliteInputStream = ByteArrayInputStream(tfliteModelContent)
+
+        // Mock multilingual sentiment model
+        val sentimentModelContent = """
+        {
+          "model_info": {
+            "type": "multilingual_sentiment_analysis",
+            "version": "2.0.0",
+            "languages": ["en", "es", "ru"],
+            "training_samples": 100000,
+            "accuracy": 0.95,
+            "features": 1000,
+            "vocabulary_size": 50000,
+            "created": "2024-01-01",
+            "performance": {
+              "training_time_seconds": 3600.0,
+              "prediction_time_ms": "50ms",
+              "supported_complexity": ["simple", "medium", "complex"]
+            }
+          },
+          "model_data": {
+            "weights": [0.1, 0.2, 0.3, 0.4, 0.5]
+          }
+        }
+        """.trimIndent().toByteArray()
+        val sentimentInputStream = ByteArrayInputStream(sentimentModelContent)
+
+        // Mock configuration file
+        val configContent = """
+        {
+          "tensorflow_lite": {
+            "model_file": "production_sentiment_full_manual.tflite",
+            "model_type": "sentiment_analysis",
+            "version": "2.0.0",
+            "input_config": {
+              "input_tensor_name": "input_text",
+              "input_shape": [1, 512],
+              "input_type": "string",
+              "preprocessing": {
+                "max_length": 512,
+                "padding": "max_length",
+                "truncation": true,
+                "lowercase": true,
+                "remove_punctuation": false
+              }
+            },
+            "output_config": {
+              "output_tensor_name": "output_sentiment",
+              "output_shape": [1, 3],
+              "output_type": "float",
+              "class_labels": ["negative", "neutral", "positive"],
+              "confidence_threshold": 0.6
+            },
+            "performance": {
+              "use_gpu": true,
+              "use_nnapi": true,
+              "use_xnnpack": true,
+              "num_threads": 4
+            },
+            "fallback": {
+              "use_keyword_model": true,
+              "fallback_threshold": 0.3
+            }
+          },
+          "hybrid_system": {
+            "model_selection": {
+              "use_tensorflow_for": ["complex", "medium"],
+              "use_keyword_for": ["simple"],
+              "complexity_threshold": 10,
+              "confidence_threshold": 0.7
+            },
+            "integration": {
+              "seamless_fallback": true,
+              "performance_monitoring": true,
+              "cache_results": true,
+              "cache_duration_minutes": 30
+            }
+          }
+        }
+        """.trimIndent().toByteArray()
+        val configInputStream = ByteArrayInputStream(configContent)
+
+        // Mock vocabulary file
+        val vocabContent = """
+        {
+          "[PAD]": 0,
+          "[UNK]": 100,
+          "[CLS]": 101,
+          "[SEP]": 102,
+          "[MASK]": 103,
+          "the": 104,
+          "is": 105,
+          "amazing": 106,
+          "terrible": 107,
+          "good": 108,
+          "bad": 109
+        }
+        """.trimIndent().toByteArray()
+        val vocabInputStream = ByteArrayInputStream(vocabContent)
+
+        // Mock file descriptors for assets
+        every { 
+            mockAssetManager.openFd("ml_models/production_sentiment_full_manual.tflite") 
+        } returns mockk<android.content.res.AssetFileDescriptor> {
+            every { fileDescriptor } returns mockk()
+            every { startOffset } returns 0L
+            every { declaredLength } returns tfliteModelContent.size.toLong()
+        }
+
+        every { 
+            mockAssetManager.open("ml_models/multilingual_sentiment_production.json") 
+        } returns sentimentInputStream
+
+        every { 
+            mockAssetManager.open("ml_models/android_integration_config.json") 
+        } returns configInputStream
+
+        every { 
+            mockAssetManager.open("ml_models/vocab.json") 
+        } returns vocabInputStream
+
+        return mockAssetManager
     }
 
     /**

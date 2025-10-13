@@ -18,6 +18,8 @@ ml/
 │   ├── ContextBoosters.kt                # Context boosters
 │   ├── EnhancedModelData.kt               # Enhanced model data
 │   ├── ProductionModelData.kt             # Production model data
+├── HardwareDetection.kt                   # Hardware capability detection
+├── AdaptiveMLRuntime.kt                  # Adaptive ML runtime selector
 │   └── TensorFlowConfig.kt                # TensorFlow configuration
 ├── SentimentAnalyzer.kt                   # Main hybrid sentiment analyzer
 ├── TensorFlowSentimentModel.kt            # TensorFlow Lite model implementation
@@ -46,7 +48,60 @@ The ML system uses a unified approach for all build variants:
 
 ## Key Components
 
-### 1. Data Classes and Models (`model/`)
+### 1. HardwareDetection
+**Purpose**: Detects device hardware capabilities and recommends optimal ML runtime
+
+**Key Features**:
+- GPU support detection
+- NNAPI support detection
+- XNNPACK support detection
+- LiteRT availability detection
+- Play Services support detection
+- Performance score calculation (0-100)
+- Runtime recommendation based on hardware
+
+**Usage**:
+```kotlin
+val hardwareDetection = HardwareDetection.getInstance(context)
+val capabilities = hardwareDetection.detectHardwareCapabilities()
+val recommendations = hardwareDetection.getPerformanceRecommendations()
+```
+
+### 2. AdaptiveMLRuntime
+**Purpose**: Selects and manages optimal ML runtime based on hardware capabilities
+
+**Key Features**:
+- Automatic runtime selection (LiteRT, TensorFlow Lite, or keyword fallback)
+- Hardware-optimized performance
+- Comprehensive fallback mechanisms
+- Performance monitoring and recommendations
+- Device information and debugging
+
+**Usage**:
+```kotlin
+val adaptiveRuntime = AdaptiveMLRuntime.getInstance(context)
+adaptiveRuntime.initialize()
+val result = adaptiveRuntime.analyzeSentiment(text)
+```
+
+### 3. LiteRTSentimentModel
+**Purpose**: Provides sentiment analysis using LiteRT with the same local model as TensorFlow Lite
+
+**Key Features**:
+- Uses same local model as TensorFlow Lite (production_sentiment_full_manual.tflite)
+- Automatic hardware acceleration (GPU, NPU, NNAPI)
+- Optimized model execution
+- Lower memory footprint
+- Better performance on supported devices
+
+**Usage**:
+```kotlin
+val liteRTModel = LiteRTSentimentModel.getInstance(context)
+liteRTModel.initialize()
+val result = liteRTModel.analyzeSentiment(text)
+```
+
+### 4. Data Classes and Models (`model/`)
 
 The `model/` package contains all data classes and model definitions used throughout the ML layer:
 
@@ -689,6 +744,10 @@ companion object {
 
 ✅ **BUILD SUCCESSFUL** - All ML components compile correctly and are fully integrated with the presentation layer.
 
+✅ **ADAPTIVE RUNTIME SYSTEM** - Intelligent ML runtime selection based on hardware capabilities.
+
+✅ **HARDWARE DETECTION** - Automatic detection of GPU, NNAPI, XNNPACK, and LiteRT support.
+
 ✅ **HYBRID SYSTEM** - Complete hybrid sentiment analysis with TensorFlow Lite and keyword models.
 
 ✅ **UNIFIED MODEL STRATEGY** - TensorFlow Lite primary with keyword fallback for all build variants.
@@ -701,4 +760,64 @@ companion object {
 
 ✅ **RESOURCE MANAGEMENT** - Proper memory management and resource cleanup.
 
-The ML layer is now ready for production use with complete hybrid sentiment analysis, build variant optimization, TensorFlow Lite integration, and robust error handling.
+## Adaptive Runtime System
+
+### Hardware Detection
+
+The system automatically detects device hardware capabilities:
+
+```kotlin
+val hardwareDetection = HardwareDetection.getInstance(context)
+val capabilities = hardwareDetection.detectHardwareCapabilities()
+
+// Capabilities detected:
+// - GPU Support: Boolean
+// - NNAPI Support: Boolean  
+// - XNNPACK Support: Boolean
+// - LiteRT Support: Boolean
+// - Play Services: Boolean
+// - Performance Score: 0-100
+```
+
+### Runtime Selection
+
+The system automatically selects the optimal runtime:
+
+```kotlin
+val adaptiveRuntime = AdaptiveMLRuntime.getInstance(context)
+adaptiveRuntime.initialize()
+
+// Runtime selection logic:
+// 1. LiteRT with GPU (best performance, same model as TensorFlow)
+// 2. LiteRT with NPU (good performance, same model as TensorFlow)
+// 3. TensorFlow Lite with GPU (good performance)
+// 4. TensorFlow Lite with NNAPI (decent performance)
+// 5. TensorFlow Lite CPU (basic performance)
+// 6. Keyword Fallback (last resort)
+```
+
+### Model Consistency
+
+Both LiteRT and TensorFlow Lite use the same local model:
+- **Model File**: `production_sentiment_full_manual.tflite`
+- **Model Type**: BERT-based sentiment analysis
+- **Consistency**: Same accuracy and results across runtimes
+- **Performance**: LiteRT provides hardware acceleration optimizations
+
+### Performance Monitoring
+
+```kotlin
+// Get runtime information
+val runtimeInfo = analyzer.getRuntimeInfo()
+
+// Get performance recommendations
+val recommendations = analyzer.getPerformanceRecommendations()
+
+// Check if setup is optimal
+val isOptimal = analyzer.isOptimalForSentimentAnalysis()
+
+// Get device information
+val deviceInfo = analyzer.getDeviceInfo()
+```
+
+The ML layer is now ready for production use with complete adaptive runtime selection, hybrid sentiment analysis, build variant optimization, TensorFlow Lite integration, and robust error handling.
