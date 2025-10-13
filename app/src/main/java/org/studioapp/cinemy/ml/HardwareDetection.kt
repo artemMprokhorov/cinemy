@@ -79,7 +79,6 @@ class HardwareDetection private constructor(private val context: Context) {
      * @param hasLiteRT Whether LiteRT is available through Play Services
      * @param hasPlayServices Whether Google Play Services is available
      * @param recommendedRuntime The optimal runtime for this device
-     * @param performanceScore Calculated performance score (0-100)
      */
     data class HardwareCapabilities(
         val hasGpu: Boolean = false,
@@ -87,8 +86,7 @@ class HardwareDetection private constructor(private val context: Context) {
         val hasXnnpack: Boolean = false,
         val hasLiteRT: Boolean = false,
         val hasPlayServices: Boolean = false,
-        val recommendedRuntime: MLRuntime = MLRuntime.TENSORFLOW_LITE_CPU,
-        val performanceScore: Int = 0
+        val recommendedRuntime: MLRuntime = MLRuntime.TENSORFLOW_LITE_CPU
     )
 
     /**
@@ -110,12 +108,8 @@ class HardwareDetection private constructor(private val context: Context) {
         val hasLiteRT = detectLiteRTSupport()
         val hasPlayServices = detectPlayServicesSupport()
 
-        val performanceScore = calculatePerformanceScore(
-            hasGpu, hasNnapi, hasXnnpack, hasLiteRT, hasPlayServices
-        )
-
         val recommendedRuntime = selectOptimalRuntime(
-            hasGpu, hasNnapi, hasXnnpack, hasLiteRT, hasPlayServices, performanceScore
+            hasGpu, hasNnapi, hasXnnpack, hasLiteRT, hasPlayServices
         )
 
         return HardwareCapabilities(
@@ -124,8 +118,7 @@ class HardwareDetection private constructor(private val context: Context) {
             hasXnnpack = hasXnnpack,
             hasLiteRT = hasLiteRT,
             hasPlayServices = hasPlayServices,
-            recommendedRuntime = recommendedRuntime,
-            performanceScore = performanceScore
+            recommendedRuntime = recommendedRuntime
         )
     }
 
@@ -164,18 +157,9 @@ class HardwareDetection private constructor(private val context: Context) {
      */
     private fun detectNnapiSupport(): Boolean {
         return try {
-            // Test NNAPI availability by creating a test interpreter
-            val testModel = createTestModel()
-            if (testModel != null) {
-                val options = Interpreter.Options().apply {
-                    setUseNNAPI(true)
-                }
-                val testInterpreter = Interpreter(testModel, options)
-                testInterpreter.close()
-                true
-            } else {
-                false
-            }
+            // Check if NNAPI delegate class is available
+            Class.forName("org.tensorflow.lite.nnapi.NnApiDelegate")
+            true
         } catch (e: Exception) {
             false
         }
@@ -192,17 +176,9 @@ class HardwareDetection private constructor(private val context: Context) {
      */
     private fun detectXnnpackSupport(): Boolean {
         return try {
-            val testModel = createTestModel()
-            if (testModel != null) {
-                val options = Interpreter.Options().apply {
-                    setUseXNNPACK(true)
-                }
-                val testInterpreter = Interpreter(testModel, options)
-                testInterpreter.close()
-                true
-            } else {
-                false
-            }
+            // Check if XNNPACK delegate class is available
+            Class.forName("org.tensorflow.lite.xnnpack.XnnpackDelegate")
+            true
         } catch (e: Exception) {
             false
         }
@@ -259,54 +235,6 @@ class HardwareDetection private constructor(private val context: Context) {
         }
     }
 
-    /**
-     * Calculates performance score based on available hardware
-     * 
-     * The performance score is a weighted calculation that considers:
-     * - Base CPU performance (10 points)
-     * - GPU acceleration (+30 points)
-     * - NNAPI acceleration (+25 points)
-     * - XNNPACK optimization (+15 points)
-     * - LiteRT with hardware acceleration (+40/+35 points)
-     * - Play Services availability (+5 points)
-     * 
-     * @param hasGpu Whether GPU is available
-     * @param hasNnapi Whether NNAPI is available
-     * @param hasXnnpack Whether XNNPACK is available
-     * @param hasLiteRT Whether LiteRT is available
-     * @param hasPlayServices Whether Play Services is available
-     * @return Performance score from 0 to 100
-     */
-    private fun calculatePerformanceScore(
-        hasGpu: Boolean,
-        hasNnapi: Boolean,
-        hasXnnpack: Boolean,
-        hasLiteRT: Boolean,
-        hasPlayServices: Boolean
-    ): Int {
-        var score = 0
-        
-        // Base score for CPU
-        score += 10
-        
-        // GPU acceleration
-        if (hasGpu) score += 30
-        
-        // NNAPI acceleration
-        if (hasNnapi) score += 25
-        
-        // XNNPACK optimization
-        if (hasXnnpack) score += 15
-        
-        // LiteRT with hardware acceleration
-        if (hasLiteRT && hasGpu) score += 40
-        if (hasLiteRT && hasNnapi) score += 35
-        
-        // Play Services bonus
-        if (hasPlayServices) score += 5
-        
-        return score.coerceAtMost(100) // Cap at 100
-    }
 
     /**
      * Selects optimal ML runtime based on hardware capabilities
@@ -324,7 +252,6 @@ class HardwareDetection private constructor(private val context: Context) {
      * @param hasXnnpack Whether XNNPACK is available
      * @param hasLiteRT Whether LiteRT is available
      * @param hasPlayServices Whether Play Services is available
-     * @param performanceScore Calculated performance score
      * @return Optimal ML runtime for this device
      */
     private fun selectOptimalRuntime(
@@ -332,8 +259,7 @@ class HardwareDetection private constructor(private val context: Context) {
         hasNnapi: Boolean,
         hasXnnpack: Boolean,
         hasLiteRT: Boolean,
-        hasPlayServices: Boolean,
-        performanceScore: Int
+        hasPlayServices: Boolean
     ): MLRuntime {
         return when {
             // LiteRT with GPU - best performance
@@ -356,21 +282,4 @@ class HardwareDetection private constructor(private val context: Context) {
         }
     }
 
-    /**
-     * Creates a minimal test model for hardware detection
-     * 
-     * This method creates a small test model to verify hardware acceleration
-     * capabilities without loading the full production model.
-     * 
-     * @return MappedByteBuffer containing test model, or null if creation fails
-     */
-    private fun createTestModel(): MappedByteBuffer? {
-        return try {
-            // For now, return null to avoid complexity
-            // In a full implementation, you would create a minimal test model
-            null
-        } catch (e: Exception) {
-            null
-        }
-    }
 }
