@@ -11,8 +11,6 @@ import org.studioapp.cinemy.ml.model.AlgorithmConfig
 import org.studioapp.cinemy.ml.model.ContextBoosters
 import org.studioapp.cinemy.ml.model.EnhancedModelData
 import org.studioapp.cinemy.ml.model.ProductionModelData
-import org.studioapp.cinemy.ml.model.TensorFlowConfig
-import org.studioapp.cinemy.ml.model.HybridSystemConfig
 import org.studioapp.cinemy.ml.AdaptiveMLRuntime
 import org.studioapp.cinemy.ml.HardwareDetection
 import kotlin.math.abs
@@ -31,7 +29,6 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     private var adaptiveRuntime: AdaptiveMLRuntime? = null
     var isInitialized = false
         private set
-    private var hybridConfig: HybridSystemConfig? = null
 
     companion object {
         @Volatile
@@ -95,9 +92,6 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     suspend fun initialize(): Boolean = withContext(Dispatchers.IO) {
         runCatching {
             if (isInitialized) return@withContext true
-
-            // Load hybrid configuration
-            hybridConfig = loadHybridConfig()
 
             // Initialize adaptive ML runtime for optimal performance
             adaptiveRuntime = AdaptiveMLRuntime.getInstance(context)
@@ -599,45 +593,8 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         }
     }
 
-    /**
-     * Load hybrid system configuration
-     */
-    private fun loadHybridConfig(): HybridSystemConfig? {
-        return runCatching {
-            val configJson = context.assets.open("ml_models/android_integration_config.json")
-                .use { inputStream ->
-                    inputStream.bufferedReader().readText()
-                }
-
-            val json = Json { ignoreUnknownKeys = true }
-            val tfConfig = json.decodeFromString<TensorFlowConfig>(configJson)
-            tfConfig.hybridSystem
-        }.getOrNull()
-    }
 
 
-    /**
-     * Determines if TensorFlow result should fallback to keyword model
-     * Checks confidence threshold and low confidence indicators
-     * @param tensorFlowResult Result from TensorFlow model
-     * @return Boolean indicating if fallback is needed
-     */
-    private fun shouldFallbackToKeyword(tensorFlowResult: SentimentResult): Boolean {
-        val config = hybridConfig?.modelSelection ?: return false
-
-        // Check if confidence is below threshold (default: 0.7)
-        val confidenceThreshold = config.confidenceThreshold ?: 0.7
-        if (tensorFlowResult.confidence < confidenceThreshold) {
-            return true
-        }
-
-        // Check if TensorFlow indicates low confidence in keywords
-        if (tensorFlowResult.foundKeywords.any { it.contains("low_confidence") }) {
-            return true
-        }
-
-        return false
-    }
 
 
     /**
