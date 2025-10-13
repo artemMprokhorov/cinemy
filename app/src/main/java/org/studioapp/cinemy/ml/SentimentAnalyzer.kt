@@ -4,9 +4,7 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.ml.model.SentimentResult
-import org.studioapp.cinemy.ml.model.SentimentType
 import org.studioapp.cinemy.ml.model.KeywordSentimentModel
 import org.studioapp.cinemy.ml.model.ModelInfo
 import org.studioapp.cinemy.ml.model.AlgorithmConfig
