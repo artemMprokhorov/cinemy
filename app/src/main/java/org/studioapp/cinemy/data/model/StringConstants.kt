@@ -9,7 +9,6 @@ object StringConstants {
 
     // Error Messages
     const val ERROR_UNKNOWN = "Unknown error"
-    const val ERROR_GENERIC = "Error"
 
     // Error Messages with Parameters
     const val ERROR_FETCHING_POPULAR_MOVIES = "Error fetching popular movies: %s"
@@ -34,7 +33,6 @@ object StringConstants {
 
 
     // Error Messages
-    const val SIMULATED_NETWORK_ERROR = "Simulated network error"
     const val UNKNOWN_MOVIE_TITLE = "Unknown Movie"
     const val NO_DESCRIPTION_AVAILABLE = "No description available"
 
@@ -111,7 +109,6 @@ object StringConstants {
     const val COLOR_ON_BACKGROUND = "#FFFFFF"
     const val COLOR_ON_SURFACE = "#FFFFFF"
     const val COLOR_BUTTON_TEXT = "#FFFFFF"
-    const val COLOR_ERROR = "#FF0000"
 
     // Version and Status Constants
     const val VERSION_2_0_0 = "2.0.0"
@@ -240,8 +237,6 @@ object StringConstants {
     const val SERIALIZED_RESULTS = "results"
     const val SERIALIZED_TOTAL_PAGES = "total_pages"
     const val SERIALIZED_TOTAL_RESULTS = "total_results"
-    const val SERIALIZED_HAS_NEXT = "has_next"
-    const val SERIALIZED_HAS_PREVIOUS = "has_previous"
 
     // Movie Details Fields
     const val SERIALIZED_RUNTIME = "runtime"
@@ -311,6 +306,4 @@ object StringConstants {
     const val SERIALIZED_UI_CONFIG = "ui_config"
     const val SERIALIZED_ERROR = "error"
     const val SERIALIZED_META = "meta"
-    const val SERIALIZED_MOVIES = "movies"
-    const val SERIALIZED_PAGINATION = "pagination"
 }
