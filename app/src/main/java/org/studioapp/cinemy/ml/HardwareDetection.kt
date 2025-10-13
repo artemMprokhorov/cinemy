@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import org.tensorflow.lite.Interpreter
 import java.io.FileInputStream
+import java.lang.ref.WeakReference
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 
@@ -21,19 +22,29 @@ class HardwareDetection private constructor(private val context: Context) {
 
     companion object {
         @Volatile
-        private var INSTANCE: HardwareDetection? = null
+        private var INSTANCE: WeakReference<HardwareDetection>? = null
 
         /**
          * Gets singleton instance of HardwareDetection
-         * Uses singleton pattern to ensure consistent hardware detection across the app
+         * Uses WeakReference to prevent memory leaks
          * 
          * @param context Android context for hardware detection
          * @return HardwareDetection singleton instance
          */
         fun getInstance(context: Context): HardwareDetection {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: HardwareDetection(context.applicationContext).also {
-                    INSTANCE = it
+            val current = INSTANCE?.get()
+            if (current != null) {
+                return current
+            }
+            
+            return synchronized(this) {
+                val existing = INSTANCE?.get()
+                if (existing != null) {
+                    existing
+                } else {
+                    val newInstance = HardwareDetection(context.applicationContext)
+                    INSTANCE = WeakReference(newInstance)
+                    newInstance
                 }
             }
         }
