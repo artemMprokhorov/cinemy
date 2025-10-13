@@ -639,54 +639,6 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         return false
     }
 
-    /**
-     * Gets current ML runtime information
-     * 
-     * Returns detailed information about the currently selected ML runtime,
-     * including hardware capabilities, performance score, and configuration.
-     * This is useful for debugging and performance monitoring.
-     * 
-     * @return Formatted string with runtime details
-     */
-    fun getRuntimeInfo(): String {
-        return adaptiveRuntime?.getCurrentRuntimeInfo() ?: "Adaptive runtime not available"
-    }
-
-    /**
-     * Gets performance recommendations
-     * 
-     * Provides actionable recommendations to improve ML performance
-     * based on current hardware setup and selected runtime.
-     * 
-     * @return List of performance recommendations
-     */
-    fun getPerformanceRecommendations(): List<String> {
-        return adaptiveRuntime?.getPerformanceRecommendations() ?: emptyList()
-    }
-
-    /**
-     * Checks if current runtime is optimal for sentiment analysis
-     * 
-     * Determines if the current runtime setup provides optimal performance
-     * for sentiment analysis based on hardware capabilities.
-     * 
-     * @return true if setup is optimal, false otherwise
-     */
-    fun isOptimalForSentimentAnalysis(): Boolean {
-        return adaptiveRuntime?.isOptimalForSentimentAnalysis() ?: false
-    }
-
-    /**
-     * Gets device information for debugging
-     * 
-     * Returns comprehensive device and hardware information useful for
-     * debugging and analytics.
-     * 
-     * @return Formatted string with device information
-     */
-    fun getDeviceInfo(): String {
-        return adaptiveRuntime?.getDeviceInfo() ?: "Device information not available"
-    }
 
     /**
      * Clean up resources and clear singleton reference
