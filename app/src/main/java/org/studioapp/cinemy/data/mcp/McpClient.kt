@@ -82,6 +82,10 @@ import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_VIDEO
 import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_VOTE_AVERAGE
 import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_VOTE_COUNT
 import org.studioapp.cinemy.data.model.StringConstants.VERSION_2_0_0
+import org.studioapp.cinemy.data.model.StringConstants.JSON_FIELD_DATA
+import org.studioapp.cinemy.data.model.StringConstants.JSON_FIELD_UI_CONFIG
+import org.studioapp.cinemy.data.model.StringConstants.JSON_FIELD_COLORS
+import org.studioapp.cinemy.data.model.StringConstants.JSON_FIELD_TEXTS
 import org.studioapp.cinemy.data.remote.api.MovieApiService
 import org.studioapp.cinemy.data.remote.dto.ButtonConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.ColorMetadataDto
@@ -380,7 +384,7 @@ class McpClient(private val context: Context) : MovieApiService {
 
                 // The backend response structure is: [{"success": true, "data": {"movieDetails": {...}, ...}, ...}]
                 // So we need to access data["data"]["movieDetails"]
-                val innerData = data?.get("data") as? Map<String, Any>
+                val innerData = data?.get(JSON_FIELD_DATA) as? Map<String, Any>
                 val movieDetailsData =
                     innerData?.get(FIELD_MOVIE_DETAILS) as? Map<String, Any>
 
@@ -472,11 +476,11 @@ class McpClient(private val context: Context) : MovieApiService {
                         MovieMapper.mapSentimentMetadataDtoToSentimentMetadata(sentimentMetadata)
 
                     // Extract uiConfig from backend response
-                    val backendUiConfig = data?.get("uiConfig") as? Map<String, Any>
+                    val backendUiConfig = data?.get(JSON_FIELD_UI_CONFIG) as? Map<String, Any>
                     val uiConfig = if (backendUiConfig != null) {
                         // Parse uiConfig from backend response
-                        val colors = backendUiConfig["colors"] as? Map<String, Any>
-                        val texts = backendUiConfig["texts"] as? Map<String, Any>
+                        val colors = backendUiConfig[JSON_FIELD_COLORS] as? Map<String, Any>
+                        val texts = backendUiConfig[JSON_FIELD_TEXTS] as? Map<String, Any>
                         val buttons = backendUiConfig["buttons"] as? Map<String, Any>
 
                         if (colors != null && texts != null && buttons != null) {

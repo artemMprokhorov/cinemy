@@ -16,8 +16,38 @@ import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.model.StringConstants.ERROR_NETWORK_WITH_MESSAGE
 import org.studioapp.cinemy.data.model.StringConstants.ERROR_UNKNOWN
 import org.studioapp.cinemy.data.model.StringConstants.NETWORK_DELAY_BASE_MS
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_MOVIE_TITLE
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_MOVIE_DESCRIPTION
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_MOVIE_POSTER_PATH
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_MOVIE_BACKDROP_PATH
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_MOVIE_RELEASE_DATE
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_GENRE_ACTION
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_GENRE_DRAMA
 import org.studioapp.cinemy.data.model.StringConstants.PAGINATION_FIRST_PAGE
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_APP_TITLE
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_LOADING_TEXT
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_ERROR_MESSAGE
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_NO_MOVIES_FOUND
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_RETRY_BUTTON
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_BACK_BUTTON
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_PLAY_BUTTON
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_PRIMARY_COLOR_HEX
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_SECONDARY_COLOR_HEX
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_ACCENT_COLOR_HEX
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_WHITE_COLOR_HEX
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_BLACK_COLOR_HEX
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_METHOD
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_RESULTS_COUNT
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_VERSION
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_BUTTON_CORNER_RADIUS
 import org.studioapp.cinemy.data.model.UiConfiguration
+import org.studioapp.cinemy.data.model.Genre
+import org.studioapp.cinemy.data.model.ProductionCompany
+import org.studioapp.cinemy.data.model.SentimentReviews
+import org.studioapp.cinemy.data.model.ColorScheme
+import org.studioapp.cinemy.data.model.TextConfiguration
+import org.studioapp.cinemy.data.model.ButtonConfiguration
+import org.studioapp.cinemy.data.model.GeminiColors
 
 class MovieRepositoryImpl(
     private val mcpClient: McpClient,
@@ -127,7 +157,7 @@ class MovieRepositoryImpl(
         delay(NETWORK_DELAY_BASE_MS)
 
         val movieDetails = loadMockMovieDetailsFromAssets()
-        val sentimentReviews: org.studioapp.cinemy.data.model.SentimentReviews? = null
+        val sentimentReviews: SentimentReviews? = null
 
         val movieDetailsData = MovieDetailsData(
             movieDetails = movieDetails,
@@ -162,20 +192,20 @@ class MovieRepositoryImpl(
     private fun createDefaultMovieDetails(): MovieDetails {
         return MovieDetails(
             id = 1,
-            title = "Default Movie",
-            description = "Default description",
-            posterPath = "/default.jpg",
-            backdropPath = "/default_backdrop.jpg",
+            title = DEFAULT_MOVIE_TITLE,
+            description = DEFAULT_MOVIE_DESCRIPTION,
+            posterPath = DEFAULT_MOVIE_POSTER_PATH,
+            backdropPath = DEFAULT_MOVIE_BACKDROP_PATH,
             rating = 5.0,
             voteCount = 100,
-            releaseDate = "2024-01-01",
+            releaseDate = DEFAULT_MOVIE_RELEASE_DATE,
             runtime = 120,
             genres = listOf(
-                org.studioapp.cinemy.data.model.Genre(1, "Action"),
-                org.studioapp.cinemy.data.model.Genre(2, "Drama")
+                Genre(1, DEFAULT_GENRE_ACTION),
+                Genre(2, DEFAULT_GENRE_DRAMA)
             ),
             productionCompanies = listOf(
-                org.studioapp.cinemy.data.model.ProductionCompany(
+                ProductionCompany(
                     id = 1,
                     logoPath = "/logo.jpg",
                     name = "Default Studio",
@@ -194,7 +224,7 @@ class MovieRepositoryImpl(
      */
     private fun createDefaultUiConfig(): UiConfiguration {
         return UiConfiguration(
-            colors = org.studioapp.cinemy.data.model.ColorScheme(
+            colors = ColorScheme(
                 primary = Color(0xFF6200EE),
                 secondary = Color(0xFF03DAC6),
                 background = Color(0xFFFFFFFF),
@@ -205,20 +235,20 @@ class MovieRepositoryImpl(
                 onSurface = Color(0xFF000000),
                 moviePosterColors = listOf(Color(0xFF6200EE), Color(0xFF03DAC6))
             ),
-            texts = org.studioapp.cinemy.data.model.TextConfiguration(
-                appTitle = "Cinemy",
-                loadingText = "Loading...",
-                errorMessage = "Error occurred",
-                noMoviesFound = "No movies found",
-                retryButton = "Retry",
-                backButton = "Back",
-                playButton = "Play"
+            texts = TextConfiguration(
+                appTitle = DEFAULT_APP_TITLE,
+                loadingText = DEFAULT_LOADING_TEXT,
+                errorMessage = DEFAULT_ERROR_MESSAGE,
+                noMoviesFound = DEFAULT_NO_MOVIES_FOUND,
+                retryButton = DEFAULT_RETRY_BUTTON,
+                backButton = DEFAULT_BACK_BUTTON,
+                playButton = DEFAULT_PLAY_BUTTON
             ),
-            buttons = org.studioapp.cinemy.data.model.ButtonConfiguration(
+            buttons = ButtonConfiguration(
                 primaryButtonColor = Color(0xFF6200EE),
                 secondaryButtonColor = Color(0xFF03DAC6),
                 buttonTextColor = Color(0xFFFFFFFF),
-                buttonCornerRadius = 8
+                buttonCornerRadius = DEFAULT_BUTTON_CORNER_RADIUS
             )
         )
     }
@@ -230,15 +260,15 @@ class MovieRepositoryImpl(
     private fun createDefaultMeta(): Meta {
         return Meta(
             timestamp = System.currentTimeMillis().toString(),
-            method = "mock",
-            resultsCount = 1,
+            method = DEFAULT_METHOD,
+            resultsCount = DEFAULT_RESULTS_COUNT,
             aiGenerated = false,
-            geminiColors = org.studioapp.cinemy.data.model.GeminiColors(
-                primary = "#6200EE",
-                secondary = "#03DAC6",
-                accent = "#FF6B6B"
+            geminiColors = GeminiColors(
+                primary = DEFAULT_PRIMARY_COLOR_HEX,
+                secondary = DEFAULT_SECONDARY_COLOR_HEX,
+                accent = DEFAULT_ACCENT_COLOR_HEX
             ),
-            version = "1.0.0"
+            version = DEFAULT_VERSION
         )
     }
 }

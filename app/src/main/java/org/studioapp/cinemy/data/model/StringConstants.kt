@@ -82,6 +82,7 @@ object StringConstants {
 
     // Language
     const val DEFAULT_LANGUAGE = "en"
+    const val LANGUAGE_EN = "en"
 
     // MCP Method Names
     const val MCP_METHOD_GET_POPULAR_MOVIES = "getPopularMovies"
@@ -274,6 +275,36 @@ object StringConstants {
 
     // Parameter Names
     const val PARAM_MOVIE_ID = "movieId"
+    
+    // JSON Response Field Names
+    const val JSON_FIELD_DATA = "data"
+    const val JSON_FIELD_UI_CONFIG = "uiConfig"
+    const val JSON_FIELD_COLORS = "colors"
+    const val JSON_FIELD_TEXTS = "texts"
+    
+    // Category Values
+    const val CATEGORY_MEDIUM = "MEDIUM"
+    
+    // Default Movie Values
+    const val DEFAULT_MOVIE_TITLE = "Default Movie"
+    const val DEFAULT_MOVIE_DESCRIPTION = "Default description"
+    const val DEFAULT_MOVIE_POSTER_PATH = "/default.jpg"
+    const val DEFAULT_MOVIE_BACKDROP_PATH = "/default_backdrop.jpg"
+    const val DEFAULT_MOVIE_RELEASE_DATE = "2024-01-01"
+    const val DEFAULT_GENRE_ACTION = "Action"
+    const val DEFAULT_GENRE_DRAMA = "Drama"
+    
+    // Default Color Values (Hex)
+    const val DEFAULT_PRIMARY_COLOR_HEX = "#6200EE"
+    const val DEFAULT_SECONDARY_COLOR_HEX = "#03DAC6"
+    const val DEFAULT_ACCENT_COLOR_HEX = "#FF6B6B"
+    const val DEFAULT_WHITE_COLOR_HEX = "#FFFFFF"
+    const val DEFAULT_BLACK_COLOR_HEX = "#000000"
+    
+    // Default Meta Values
+    const val DEFAULT_METHOD = "mock"
+    const val DEFAULT_RESULTS_COUNT = 1
+    const val DEFAULT_VERSION = "1.0.0"
 
 
     // Serialized Name Constants for MovieDto

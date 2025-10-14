@@ -97,12 +97,18 @@ import org.studioapp.cinemy.data.model.StringConstants.FIELD_VIDEO
 import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_VIDEO
 import org.studioapp.cinemy.data.model.StringConstants.MOVIE_COLORS_METADATA
 import org.studioapp.cinemy.data.model.StringConstants.FIELD_ACCENT
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_MOVIE_ACCENT_COLOR
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_MOVIE_PRIMARY_COLOR
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_MOVIE_SECONDARY_COLOR
 import org.studioapp.cinemy.data.model.StringConstants.MOVIE_COLORS_CATEGORY
+import org.studioapp.cinemy.data.model.StringConstants.LANGUAGE_EN
+import org.studioapp.cinemy.data.model.StringConstants.CATEGORY_MEDIUM
 import org.studioapp.cinemy.data.model.StringConstants.MOVIE_COLORS_MODEL_USED
 import org.studioapp.cinemy.data.model.StringConstants.FIELD_VALUE
 import org.studioapp.cinemy.data.remote.dto.ButtonConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.ColorMetadataDto
 import org.studioapp.cinemy.data.remote.dto.ColorSchemeDto
+import org.studioapp.cinemy.data.mapper.MovieMapper
 import org.studioapp.cinemy.data.remote.dto.GeminiColorsDto
 import org.studioapp.cinemy.data.remote.dto.MetaDto
 import org.studioapp.cinemy.data.remote.dto.MovieColorsDto
@@ -223,107 +229,7 @@ class AssetDataLoader(private val context: Context) {
         val buttonsJson = uiConfigJson.optJSONObject(FIELD_BUTTONS)
 
 
-        return UiConfigurationDto(
-            colors = if (colorsJson != null) {
-                ColorSchemeDto(
-                    primary = colorsJson.optString(
-                        FIELD_PRIMARY,
-                        COLOR_PRIMARY
-                    ),
-                    secondary = colorsJson.optString(
-                        FIELD_SECONDARY,
-                        COLOR_SECONDARY
-                    ),
-                    background = colorsJson.optString(
-                        FIELD_BACKGROUND,
-                        COLOR_BACKGROUND
-                    ),
-                    surface = colorsJson.optString(
-                        FIELD_SURFACE,
-                        COLOR_SURFACE
-                    ),
-                    onPrimary = colorsJson.optString(
-                        FIELD_ON_PRIMARY,
-                        COLOR_ON_PRIMARY
-                    ),
-                    onSecondary = colorsJson.optString(
-                        FIELD_ON_SECONDARY,
-                        COLOR_ON_SECONDARY
-                    ),
-                    onBackground = colorsJson.optString(
-                        FIELD_ON_BACKGROUND,
-                        COLOR_ON_BACKGROUND
-                    ),
-                    onSurface = colorsJson.optString(
-                        FIELD_ON_SURFACE,
-                        COLOR_ON_SURFACE
-                    ),
-                    moviePosterColors = parseMoviePosterColors(
-                        colorsJson.optJSONArray(
-                            FIELD_MOVIE_POSTER_COLORS
-                        )
-                    )
-                )
-            } else {
-                createDefaultColorScheme()
-            },
-            texts = if (textsJson != null) {
-                TextConfigurationDto(
-                    appTitle = textsJson.optString(
-                        FIELD_APP_TITLE,
-                        MOVIES_TITLE
-                    ),
-                    loadingText = textsJson.optString(
-                        FIELD_LOADING_TEXT,
-                        LOADING_MOVIES_TEXT
-                    ),
-                    errorMessage = textsJson.optString(
-                        FIELD_ERROR_MESSAGE,
-                        ERROR_UNKNOWN
-                    ),
-                    noMoviesFound = textsJson.optString(
-                        FIELD_NO_MOVIES_FOUND,
-                        NO_MOVIES_FOUND
-                    ),
-                    retryButton = textsJson.optString(
-                        FIELD_RETRY_BUTTON,
-                        RETRY_BUTTON
-                    ),
-                    backButton = textsJson.optString(
-                        FIELD_BACK_BUTTON,
-                        BACK_BUTTON
-                    ),
-                    playButton = textsJson.optString(
-                        FIELD_PLAY_BUTTON,
-                        PLAY_BUTTON
-                    )
-                )
-            } else {
-                createDefaultTextConfiguration()
-            },
-            buttons = if (buttonsJson != null) {
-                ButtonConfigurationDto(
-                    primaryButtonColor = buttonsJson.optString(
-                        FIELD_PRIMARY_BUTTON_COLOR,
-                        COLOR_PRIMARY
-                    ),
-                    secondaryButtonColor = buttonsJson.optString(
-                        FIELD_SECONDARY_BUTTON_COLOR,
-                        COLOR_SECONDARY
-                    ),
-                    buttonTextColor = buttonsJson.optString(
-                        FIELD_BUTTON_TEXT_COLOR,
-                        COLOR_BUTTON_TEXT
-                    ),
-                    buttonCornerRadius = buttonsJson.optInt(
-                        FIELD_BUTTON_CORNER_RADIUS,
-                        8
-                    )
-                )
-            } else {
-                createDefaultButtonConfiguration()
-            }
-        )
+        return MovieMapper.mapJsonToUiConfigurationDto(colorsJson, textsJson, buttonsJson)
     }
 
     /**
@@ -386,105 +292,9 @@ class AssetDataLoader(private val context: Context) {
      * @return List of MovieDto objects
      */
     private fun parseMoviesFromJson(moviesJson: JSONArray): List<MovieDto> {
-        val movies = mutableListOf<MovieDto>()
-        for (i in 0 until moviesJson.length()) {
-            val movieJson = moviesJson.getJSONObject(i)
-            movies.add(
-                MovieDto(
-                    id = movieJson.optInt(FIELD_ID, 0),
-                    title = movieJson.optString(
-                        FIELD_TITLE,
-                        UNKNOWN_MOVIE_TITLE
-                    ),
-                    description = movieJson.optString(
-                        FIELD_DESCRIPTION,
-                        NO_DESCRIPTION_AVAILABLE
-                    ).takeIf { it.isNotEmpty() } ?: movieJson.optString(
-                        SERIALIZED_OVERVIEW,
-                        NO_DESCRIPTION_AVAILABLE
-                    ),
-                    posterPath = movieJson.optString(FIELD_POSTER_PATH, null)
-                        ?: movieJson.optString(SERIALIZED_POSTER_PATH, null) ?: "",
-                    backdropPath = movieJson.optString(FIELD_BACKDROP_PATH, null)
-                        ?: movieJson.optString(SERIALIZED_BACKDROP_PATH, null)
-                        ?: "",
-                    rating = movieJson.optDouble(FIELD_RATING, 0.0)
-                        .takeIf { it > 0 }
-                        ?: movieJson.optDouble(SERIALIZED_VOTE_AVERAGE, 0.0),
-                    voteCount = movieJson.optInt(FIELD_VOTE_COUNT, 0)
-                        .takeIf { it > 0 }
-                        ?: movieJson.optInt(SERIALIZED_VOTE_COUNT, 0),
-                    releaseDate = movieJson.optString(FIELD_RELEASE_DATE, null)
-                        ?: movieJson.optString(SERIALIZED_RELEASE_DATE, null) ?: "",
-                    genreIds = parseGenreIds(movieJson.optJSONArray(FIELD_GENRE_IDS))
-                        .takeIf { it.isNotEmpty() } ?: parseGenreIds(
-                        movieJson.optJSONArray(
-                            SERIALIZED_GENRE_IDS
-                        )
-                    ),
-                    popularity = movieJson.optDouble(FIELD_POPULARITY, 0.0)
-                        .takeIf { it > 0 }
-                        ?: movieJson.optDouble(SERIALIZED_POPULARITY, 0.0),
-                    adult = movieJson.optBoolean(FIELD_ADULT, false)
-                        .takeIf { movieJson.has(FIELD_ADULT) }
-                        ?: movieJson.optBoolean(SERIALIZED_ADULT, false),
-                    originalLanguage = movieJson.optString(
-                        FIELD_ORIGINAL_LANGUAGE,
-                        null
-                    )
-                        ?: movieJson.optString(SERIALIZED_ORIGINAL_LANGUAGE, null)
-                        ?: "en",
-                    originalTitle = movieJson.optString(FIELD_ORIGINAL_TITLE, null)
-                        ?: movieJson.optString(SERIALIZED_ORIGINAL_TITLE, null)
-                        ?: movieJson.optString(
-                            FIELD_TITLE,
-                            UNKNOWN_MOVIE_TITLE
-                        ),
-                    video = movieJson.optBoolean(FIELD_VIDEO, false)
-                        .takeIf { movieJson.has(FIELD_VIDEO) }
-                        ?: movieJson.optBoolean(SERIALIZED_VIDEO, false),
-                    colors = parseMovieColors(movieJson)
-                )
-            )
-        }
-        return movies
+        return MovieMapper.mapJsonArrayToMovieDtoList(moviesJson)
     }
 
-    /**
-     * Parses movie colors from JSON object
-     * @param movieJson JSON object containing movie data
-     * @return MovieColorsDto with parsed color information
-     */
-    private fun parseMovieColors(movieJson: JSONObject): MovieColorsDto {
-        val colorsJson = movieJson.optJSONObject(FIELD_COLORS)
-        return if (colorsJson != null) {
-            val metadataJson = colorsJson.optJSONObject(MOVIE_COLORS_METADATA)
-            MovieColorsDto(
-                accent = colorsJson.optString(FIELD_ACCENT, "#3AA1EF"),
-                primary = colorsJson.optString(FIELD_PRIMARY, "#1278D4"),
-                secondary = colorsJson.optString(FIELD_SECONDARY, "#238EE5"),
-                metadata = ColorMetadataDto(
-                    category = metadataJson?.optString(MOVIE_COLORS_CATEGORY, "MEDIUM") ?: "MEDIUM",
-                    modelUsed = metadataJson?.optBoolean(MOVIE_COLORS_MODEL_USED, true) ?: true,
-                    rating = metadataJson?.optDouble(FIELD_RATING, 0.0) ?: 0.0
-                )
-            )
-        } else {
-            // Default colors if not present
-            MovieColorsDto(
-                accent = FIELD_ACCENT,
-                primary = "#1278D4",
-                secondary = "#238EE5",
-                metadata = ColorMetadataDto(
-                    category = MOVIE_COLORS_CATEGORY,
-                    modelUsed = true,
-                    rating = movieJson.optDouble(FIELD_RATING, 0.0)
-                        .takeIf { it > 0 }
-                        ?: movieJson.optDouble(SERIALIZED_VOTE_AVERAGE, 0.0)
-                )
-            )
-        }
-    }
 
     /**
      * Parses movie poster colors from JSON array
