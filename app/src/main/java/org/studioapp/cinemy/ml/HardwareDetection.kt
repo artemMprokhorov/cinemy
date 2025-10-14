@@ -2,6 +2,12 @@ package org.studioapp.cinemy.ml
 
 import android.content.Context
 import android.os.Build
+import org.studioapp.cinemy.ml.MLConstants.TENSORFLOW_LITE_NNAPI_DELEGATE_CLASS
+import org.studioapp.cinemy.ml.MLConstants.TENSORFLOW_LITE_XNNPACK_DELEGATE_CLASS
+import org.studioapp.cinemy.ml.MLConstants.GOOGLE_PLAY_SERVICES_PACKAGE
+import org.studioapp.cinemy.ml.MLConstants.MLKIT_EXCEPTION_CLASS
+import org.studioapp.cinemy.ml.MLConstants.MLKIT_DOWNLOAD_CONDITIONS_CLASS
+import org.studioapp.cinemy.ml.MLConstants.MIN_PLAY_SERVICES_VERSION
 import java.lang.ref.WeakReference
 
 /**
@@ -133,7 +139,7 @@ class HardwareDetection private constructor(private val context: Context) {
      * @return true if GPU acceleration is available, false otherwise
      */
     private fun detectGpuSupport(): Boolean {
-        return try {
+        return runCatching {
             // Check if device has sufficient Android version for GPU support
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
                 return false
@@ -143,9 +149,7 @@ class HardwareDetection private constructor(private val context: Context) {
             // In a full implementation, you would check for GPU delegate support
             // by attempting to create a GpuDelegate instance
             true
-        } catch (e: Exception) {
-            false
-        }
+        }.getOrElse { false }
     }
 
     /**
@@ -157,13 +161,11 @@ class HardwareDetection private constructor(private val context: Context) {
      * @return true if NNAPI acceleration is available, false otherwise
      */
     private fun detectNnapiSupport(): Boolean {
-        return try {
+        return runCatching {
             // Check if NNAPI delegate class is available
-            Class.forName("org.tensorflow.lite.nnapi.NnApiDelegate")
+            Class.forName(TENSORFLOW_LITE_NNAPI_DELEGATE_CLASS)
             true
-        } catch (e: Exception) {
-            false
-        }
+        }.getOrElse { false }
     }
 
     /**
@@ -176,13 +178,11 @@ class HardwareDetection private constructor(private val context: Context) {
      * @return true if XNNPACK optimization is available, false otherwise
      */
     private fun detectXnnpackSupport(): Boolean {
-        return try {
+        return runCatching {
             // Check if XNNPACK delegate class is available
-            Class.forName("org.tensorflow.lite.xnnpack.XnnpackDelegate")
+            Class.forName(TENSORFLOW_LITE_XNNPACK_DELEGATE_CLASS)
             true
-        } catch (e: Exception) {
-            false
-        }
+        }.getOrElse { false }
     }
 
     /**
@@ -194,28 +194,24 @@ class HardwareDetection private constructor(private val context: Context) {
      * @return true if LiteRT is available, false otherwise
      */
     private fun detectLiteRTSupport(): Boolean {
-        return try {
+        return runCatching {
             // Check if Google Play Services is available
             val packageManager = context.packageManager
-            val playServicesInfo = packageManager.getPackageInfo("com.google.android.gms", 0)
+            val playServicesInfo = packageManager.getPackageInfo(GOOGLE_PLAY_SERVICES_PACKAGE, 0)
 
             // Check if Play Services version supports ML Kit
-            if (playServicesInfo.versionCode >= 20000000) { // Version 20.0.0+
+            if (playServicesInfo.versionCode >= MIN_PLAY_SERVICES_VERSION) { // Version 20.0.0+
                 // Check for ML Kit availability
-                try {
+                runCatching {
                     // Try to access ML Kit classes to verify availability
-                    Class.forName("com.google.mlkit.common.MlKitException")
-                    Class.forName("com.google.mlkit.common.model.DownloadConditions")
+                    Class.forName(MLKIT_EXCEPTION_CLASS)
+                    Class.forName(MLKIT_DOWNLOAD_CONDITIONS_CLASS)
                     true
-                } catch (e: ClassNotFoundException) {
-                    false
-                }
+                }.getOrElse { false }
             } else {
                 false
             }
-        } catch (e: Exception) {
-            false
-        }
+        }.getOrElse { false }
     }
 
     /**
@@ -227,13 +223,11 @@ class HardwareDetection private constructor(private val context: Context) {
      * @return true if Google Play Services is available, false otherwise
      */
     private fun detectPlayServicesSupport(): Boolean {
-        return try {
+        return runCatching {
             val packageManager = context.packageManager
-            packageManager.getPackageInfo("com.google.android.gms", 0)
+            packageManager.getPackageInfo(GOOGLE_PLAY_SERVICES_PACKAGE, 0)
             true
-        } catch (e: Exception) {
-            false
-        }
+        }.getOrElse { false }
     }
 
 
