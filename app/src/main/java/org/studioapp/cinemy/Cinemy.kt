@@ -1,8 +1,12 @@
 package org.studioapp.cinemy
 
 import android.app.Application
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 import android.content.res.Configuration
+import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.N
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +15,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +32,11 @@ import org.studioapp.cinemy.navigation.AppNavigation
 import org.studioapp.cinemy.presentation.di.presentationModule
 import org.studioapp.cinemy.ui.theme.CinemyTheme
 import org.studioapp.cinemy.utils.DeviceUtils
+import org.studioapp.cinemy.utils.DeviceUtils.DeviceType.FOLDABLE
+import org.studioapp.cinemy.utils.DeviceUtils.DeviceType.DESKTOP
 import org.studioapp.cinemy.utils.VersionUtils
+import org.studioapp.cinemy.utils.VersionUtils.safeEnableEdgeToEdge
+import org.studioapp.cinemy.utils.DeviceUtils.getDeviceType
 
 class CinemyApplication : Application() {
 
@@ -67,16 +76,16 @@ class MainActivity : ComponentActivity() {
 
         // Safely enable edge-to-edge display only on supported Android versions
         // This prevents UI issues on older devices that don't support this feature
-        VersionUtils.safeEnableEdgeToEdge(this)
+        safeEnableEdgeToEdge(this)
 
         // Initialize device type detection
-        currentDeviceType = DeviceUtils.getDeviceType(this)
+        currentDeviceType = getDeviceType(this)
 
         setContent {
             CinemyTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = Color.White
+                    color = White
                 ) {
                     val navController = rememberNavController()
                     AppNavigation(navController = navController)
@@ -93,19 +102,19 @@ class MainActivity : ComponentActivity() {
         super.onConfigurationChanged(newConfig)
 
         // Update device type detection
-        val newDeviceType = DeviceUtils.getDeviceType(this)
+        val newDeviceType = getDeviceType(this)
 
         // Log configuration change for debugging
         if (newDeviceType != currentDeviceType) {
             currentDeviceType = newDeviceType
             // Handle device type change if needed
             when (newDeviceType) {
-                DeviceUtils.DeviceType.FOLDABLE -> {
+                FOLDABLE -> {
                     // Optimize for foldable device
                     optimizeForFoldableDevice()
                 }
 
-                DeviceUtils.DeviceType.DESKTOP -> {
+                DESKTOP -> {
                     // Optimize for desktop
                     optimizeForDesktop()
                 }
@@ -117,7 +126,7 @@ class MainActivity : ComponentActivity() {
         }
 
         // Handle orientation changes
-        val isLandscape = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val isLandscape = newConfig.orientation == ORIENTATION_LANDSCAPE
         if (isLandscape) {
             // Optimize for landscape orientation
             handleOrientationChange(true)
@@ -134,16 +143,16 @@ class MainActivity : ComponentActivity() {
      */
     private fun handleOrientationChange(isLandscape: Boolean) {
         // Use cached device type to avoid redundant calls
-        val deviceType = currentDeviceType ?: DeviceUtils.getDeviceType(this)
+        val deviceType = currentDeviceType ?: getDeviceType(this)
         
         when (deviceType) {
-            DeviceUtils.DeviceType.FOLDABLE -> {
+            FOLDABLE -> {
                 // For foldable devices, always optimize regardless of orientation
                 // The device might be folded/unfolded or just rotated
                 optimizeForFoldableDevice()
             }
             
-            DeviceUtils.DeviceType.DESKTOP -> {
+            DESKTOP -> {
                 // Desktop orientation changes are rare but handled
                 optimizeForDesktop()
             }
@@ -159,8 +168,8 @@ class MainActivity : ComponentActivity() {
      * Set up orientation support for devices that support multi-window
      */
     private fun setupOrientationSupport() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+        if (SDK_INT >= N) {
+            setRequestedOrientation(SCREEN_ORIENTATION_UNSPECIFIED)
         }
     }
 
