@@ -13,8 +13,10 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import org.json.JSONArray
-import org.json.JSONObject
 import org.studioapp.cinemy.BuildConfig
+import org.studioapp.cinemy.data.mapper.HttpRequestMapper.buildJsonRequestBody
+import org.studioapp.cinemy.data.mapper.HttpResponseMapper.parseJsonArrayResponse
+import org.studioapp.cinemy.data.mapper.HttpResponseMapper.parseJsonStringResponse
 import org.studioapp.cinemy.data.mcp.models.McpRequest
 import org.studioapp.cinemy.data.mcp.models.McpResponse
 import org.studioapp.cinemy.data.model.StringConstants.EMPTY_STRING
@@ -23,17 +25,12 @@ import org.studioapp.cinemy.data.model.StringConstants.HTML_DOCTYPE
 import org.studioapp.cinemy.data.model.StringConstants.HTML_ERROR_TITLE
 import org.studioapp.cinemy.data.model.StringConstants.HTML_TAG
 import org.studioapp.cinemy.data.model.StringConstants.HTTP_CONNECT_TIMEOUT_MS
+import org.studioapp.cinemy.data.model.StringConstants.HTTP_ERROR_NETWORK_ERROR
+import org.studioapp.cinemy.data.model.StringConstants.HTTP_ERROR_UNABLE_TO_CONNECT
 import org.studioapp.cinemy.data.model.StringConstants.HTTP_REQUEST_TIMEOUT_MS
 import org.studioapp.cinemy.data.model.StringConstants.JSON_ARRAY_START
-import org.studioapp.cinemy.data.model.StringConstants.JSON_CLOSE_BRACE
-import org.studioapp.cinemy.data.model.StringConstants.JSON_COMMA
-import org.studioapp.cinemy.data.model.StringConstants.JSON_METHOD_FIELD
 import org.studioapp.cinemy.data.model.StringConstants.JSON_OPEN_BRACE
-import org.studioapp.cinemy.data.model.StringConstants.JSON_PARAM_ENTRY
-import org.studioapp.cinemy.data.model.StringConstants.JSON_PARAMS_FIELD
 import org.studioapp.cinemy.data.model.StringConstants.MCP_MESSAGE_ALL_ENDPOINTS_FAILED
-import org.studioapp.cinemy.data.model.StringConstants.MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE
-import org.studioapp.cinemy.data.model.StringConstants.MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL
 
 class McpHttpClient(private val context: Context) {
     private val fakeInterceptor = FakeInterceptor(context)
@@ -73,18 +70,8 @@ class McpHttpClient(private val context: Context) {
             }
 
 
-            // Manually create JSON request body to avoid serialization issues
-            val requestBody = buildString {
-                append(JSON_OPEN_BRACE)
-                append(JSON_METHOD_FIELD.format(request.method))
-                append(JSON_PARAMS_FIELD)
-                request.params.entries.forEachIndexed { index, entry ->
-                    if (index > 0) append(JSON_COMMA)
-                    append(JSON_PARAM_ENTRY.format(entry.key, entry.value))
-                }
-                append(JSON_CLOSE_BRACE)
-                append(JSON_CLOSE_BRACE)
-            }
+            // Build JSON request body using mapper
+            val requestBody = buildJsonRequestBody(request)
 
             // Use only the exact endpoint provided in the URL
             val endpoints = listOf(EMPTY_STRING)
@@ -127,45 +114,15 @@ class McpHttpClient(private val context: Context) {
                 throw lastError ?: Exception(MCP_MESSAGE_ALL_ENDPOINTS_FAILED)
             }
 
-            // Parse the JSON response manually
+            // Parse the JSON response using mapper
             val responseText = successfulResponse!!
             runCatching {
                 // Backend returns a direct array [{...}], so we need to handle this format
                 val jsonArray = JSONArray(responseText)
-                if (jsonArray.length() > 0) {
-                    val firstObject = jsonArray.getJSONObject(0)
-                    val jsonResponse = parseJsonObject(firstObject)
-                    val mcpResponse = McpResponse<T>(
-                        success = true, // Backend response is always successful if we get here
-                        data = jsonResponse as? T,
-                        error = null,
-                        message = MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL
-                    )
-                    mcpResponse
-                } else {
-                    throw Exception("Empty response array")
-                }
+                parseJsonArrayResponse<T>(jsonArray)
             }.getOrElse { e ->
                 // Fallback: try to parse as direct object or return raw data
-                runCatching {
-                    val jsonResponse = parseJsonResponse(responseText)
-                    // Backend returns the actual data directly, not wrapped in success/data structure
-                    val mcpResponse = McpResponse<T>(
-                        success = true, // Backend response is always successful if we get here
-                        data = jsonResponse as? T, // The entire parsed object is the data
-                        error = null,
-                        message = MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL
-                    )
-                    mcpResponse
-                }.getOrElse { e2 ->
-                    // Return a successful response with the raw data
-                    McpResponse<T>(
-                        success = true,
-                        data = responseText as? T,
-                        error = null,
-                        message = MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE
-                    )
-                }
+                parseJsonStringResponse<T>(responseText)
             }
 
         }.getOrElse { e ->
@@ -173,51 +130,10 @@ class McpHttpClient(private val context: Context) {
             McpResponse<T>(
                 success = false,
                 data = null,
-                error = "Network error: ${e.message}",
-                message = "Unable to connect to server"
+                error = HTTP_ERROR_NETWORK_ERROR.format(e.message),
+                message = HTTP_ERROR_UNABLE_TO_CONNECT
             )
         }
-    }
-
-
-    /**
-     * Converts JSONObject to Map<String, Any>
-     * @param jsonObject JSON object to convert
-     * @return Map representation of JSON object
-     */
-    private fun jsonObjectToMap(jsonObject: JSONObject): Map<String, Any> {
-        val map = mutableMapOf<String, Any>()
-        val keys = jsonObject.keys()
-        while (keys.hasNext()) {
-            val key = keys.next()
-            val value = jsonObject.get(key)
-            map[key] = when (value) {
-                is JSONObject -> jsonObjectToMap(value)
-                is JSONArray -> jsonArrayToList(value)
-                else -> value
-            }
-        }
-        return map
-    }
-
-    /**
-     * Converts JSONArray to List<Any>
-     * @param jsonArray JSON array to convert
-     * @return List representation of JSON array
-     */
-    private fun jsonArrayToList(jsonArray: JSONArray): List<Any> {
-        val list = mutableListOf<Any>()
-        for (i in 0 until jsonArray.length()) {
-            val value = jsonArray.get(i)
-            list.add(
-                when (value) {
-                    is JSONObject -> jsonObjectToMap(value)
-                    is JSONArray -> jsonArrayToList(value)
-                    else -> value
-                }
-            )
-        }
-        return list
     }
 
 
@@ -226,101 +142,6 @@ class McpHttpClient(private val context: Context) {
      */
     fun close() {
         httpClient.close()
-    }
-
-    /**
-     * Parses JSONObject to Map<String, Any>
-     * @param jsonObject JSON object to parse
-     * @return Map representation of JSON object
-     */
-    private fun parseJsonObject(jsonObject: JSONObject): Map<String, Any> {
-        val result = mutableMapOf<String, Any>()
-
-        // Convert JSONObject to Map<String, Any>
-        for (key in jsonObject.keys()) {
-            val value = jsonObject.get(key)
-            result[key] = when (value) {
-                is JSONObject -> {
-                    val nestedMap = mutableMapOf<String, Any>()
-                    for (nestedKey in value.keys()) {
-                        val nestedValue = value.get(nestedKey)
-                        nestedMap[nestedKey] = when (nestedValue) {
-                            is JSONObject -> jsonObjectToMap(nestedValue)
-                            is JSONArray -> jsonArrayToList(nestedValue)
-                            else -> nestedValue
-                        }
-                    }
-                    nestedMap
-                }
-
-                is JSONArray -> jsonArrayToList(value)
-                else -> value
-            }
-        }
-        return result
-    }
-
-    /**
-     * Parses JSON string to Map<String, Any>
-     * @param jsonString JSON string to parse
-     * @return Map representation of JSON string
-     */
-    private fun parseJsonResponse(jsonString: String): Map<String, Any> {
-        val jsonObject = JSONObject(jsonString)
-        val result = mutableMapOf<String, Any>()
-
-        // Convert JSONObject to Map<String, Any>
-        for (key in jsonObject.keys()) {
-            val value = jsonObject.get(key)
-            result[key] = when (value) {
-                is JSONObject -> {
-                    val nestedMap = mutableMapOf<String, Any>()
-                    for (nestedKey in value.keys()) {
-                        nestedMap[nestedKey] = parseValue(value.get(nestedKey))
-                    }
-                    nestedMap
-                }
-
-                is JSONArray -> {
-                    val list = mutableListOf<Any>()
-                    for (i in 0 until value.length()) {
-                        list.add(parseValue(value.get(i)))
-                    }
-                    list
-                }
-
-                else -> value
-            }
-        }
-
-        return result
-    }
-
-    /**
-     * Recursively parses JSON values to native types
-     * @param value JSON value to parse
-     * @return Parsed native value
-     */
-    private fun parseValue(value: Any): Any {
-        return when (value) {
-            is JSONObject -> {
-                val nestedMap = mutableMapOf<String, Any>()
-                for (nestedKey in value.keys()) {
-                    nestedMap[nestedKey] = parseValue(value.get(nestedKey))
-                }
-                nestedMap
-            }
-
-            is JSONArray -> {
-                val list = mutableListOf<Any>()
-                for (i in 0 until value.length()) {
-                    list.add(parseValue(value.get(i)))
-                }
-                list
-            }
-
-            else -> value
-        }
     }
 
 

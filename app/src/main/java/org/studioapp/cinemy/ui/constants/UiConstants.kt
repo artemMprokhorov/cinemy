@@ -4,7 +4,7 @@ package org.studioapp.cinemy.ui.constants
  * UI constants for content descriptions, test tags, and other UI-related strings
  */
 object UiConstants {
-    
+
     // Content Descriptions
     const val LOADING_MOVIES = "Loading movies, please wait"
     const val LOADING_MOVIE_DETAILS = "Loading movie details, please wait"
@@ -13,7 +13,7 @@ object UiConstants {
     const val ERROR_FAILED_LOAD_MOVIES = "Error: Failed to load movies"
     const val MOVIES_LIST_SCREEN = "Movies list screen"
     const val PULL_DOWN_RETRY_MOVIES = "Pull down to retry loading movies"
-    
+
     // Test Tags
     const val LOADING_TEXT = "loading_text"
     const val LOADING_INDICATOR = "loading_indicator"

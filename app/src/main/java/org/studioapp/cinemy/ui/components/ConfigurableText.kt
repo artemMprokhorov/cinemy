@@ -1,6 +1,5 @@
 package org.studioapp.cinemy.ui.components
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text

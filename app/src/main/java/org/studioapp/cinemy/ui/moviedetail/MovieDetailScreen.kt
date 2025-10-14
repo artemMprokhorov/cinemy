@@ -22,7 +22,6 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.Composable
@@ -33,10 +32,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import org.studioapp.cinemy.R
@@ -47,15 +46,14 @@ import org.studioapp.cinemy.presentation.moviedetail.MovieDetailState
 import org.studioapp.cinemy.presentation.moviedetail.MovieDetailViewModel
 import org.studioapp.cinemy.ui.components.ConfigurableText
 import org.studioapp.cinemy.ui.components.PullToReloadArrow
-import org.studioapp.cinemy.ui.constants.UiConstants
-import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_MOVIE_DETAILS
-import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_LOADING_MOVIE_DETAILS_RETRY
-import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_TEXT
-import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_INDICATOR
-import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_TITLE
-import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_SUBTITLE
-import org.studioapp.cinemy.ui.constants.UiConstants.RETRY_INSTRUCTION
 import org.studioapp.cinemy.ui.components.SentimentAnalysisCard
+import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_LOADING_MOVIE_DETAILS_RETRY
+import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_SUBTITLE
+import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_TITLE
+import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_INDICATOR
+import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_MOVIE_DETAILS
+import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_TEXT
+import org.studioapp.cinemy.ui.constants.UiConstants.RETRY_INSTRUCTION
 import org.studioapp.cinemy.ui.theme.CinemyTheme
 import org.studioapp.cinemy.ui.theme.Dimens100
 import org.studioapp.cinemy.ui.theme.Dimens12
@@ -79,7 +77,7 @@ fun MovieDetailScreen(
     onBackClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
-    
+
 
     LaunchedEffect(movieId) {
         viewModel.processIntent(MovieDetailIntent.LoadMovieDetails(movieId))

@@ -19,40 +19,20 @@ object StringConstants {
     const val INVALID_MOVIE_DETAILS_DATA = "Invalid movie details data"
     const val LOADING_MOVIES_TEXT = "Loading movies..."
 
-    // UI Configuration Keys
-    const val UI_CONFIG_COLORS = "colors"
-    const val UI_CONFIG_TEXTS = "texts"
-    const val UI_CONFIG_BUTTONS = "buttons"
-    const val UI_CONFIG_PRIMARY = "primary"
-    const val UI_CONFIG_SECONDARY = "secondary"
-    const val UI_CONFIG_BACKGROUND = "background"
-    const val UI_CONFIG_SURFACE = "surface"
-    const val UI_CONFIG_ON_PRIMARY = "onPrimary"
-    const val UI_CONFIG_ON_SECONDARY = "onSecondary"
-    const val UI_CONFIG_ON_BACKGROUND = "onBackground"
-    const val UI_CONFIG_ON_SURFACE = "onSurface"
-    const val UI_CONFIG_MOVIE_POSTER_COLORS = "moviePosterColors"
-    const val UI_CONFIG_APP_TITLE = "appTitle"
-    const val UI_CONFIG_LOADING_TEXT = "loadingText"
-    const val UI_CONFIG_ERROR_MESSAGE = "errorMessage"
-    const val UI_CONFIG_NO_MOVIES_FOUND = "noMoviesFound"
-    const val UI_CONFIG_RETRY_BUTTON = "retryButton"
-    const val UI_CONFIG_BACK_BUTTON = "backButton"
-    const val UI_CONFIG_PLAY_BUTTON = "playButton"
-    const val UI_CONFIG_PRIMARY_BUTTON_COLOR = "primaryButtonColor"
-    const val UI_CONFIG_SECONDARY_BUTTON_COLOR = "secondaryButtonColor"
-    const val UI_CONFIG_BUTTON_TEXT_COLOR = "buttonTextColor"
-    const val UI_CONFIG_BUTTON_CORNER_RADIUS = "buttonCornerRadius"
-
+    // Language
+    const val LANGUAGE_EN = "en"
+    
+    // Movie Colors Keys
+    const val MOVIE_COLORS_METADATA = "metadata"
+    const val MOVIE_COLORS_CATEGORY = "category"
+    const val MOVIE_COLORS_MODEL_USED = "model_used"
+    
+    // Default Movie Colors
+    const val DEFAULT_MOVIE_ACCENT_COLOR = "#3AA1EF"
+    const val DEFAULT_MOVIE_PRIMARY_COLOR = "#1278D4"
+    const val DEFAULT_MOVIE_SECONDARY_COLOR = "#238EE5"
+    
     // Default UI Values
-    const val DEFAULT_PRIMARY_COLOR = "#DC3528"
-    const val DEFAULT_SECONDARY_COLOR = "#E64539"
-    const val DEFAULT_BACKGROUND_COLOR = "#121212"
-    const val DEFAULT_SURFACE_COLOR = "#1E1E1E"
-    const val DEFAULT_ON_PRIMARY_COLOR = "#FFFFFF"
-    const val DEFAULT_ON_SECONDARY_COLOR = "#FFFFFF"
-    const val DEFAULT_ON_BACKGROUND_COLOR = "#FFFFFF"
-    const val DEFAULT_ON_SURFACE_COLOR = "#FFFFFF"
     const val DEFAULT_APP_TITLE = "TmdbAi - Movie Details"
     const val DEFAULT_LOADING_TEXT = "Loading details..."
     const val DEFAULT_ERROR_MESSAGE = "Error loading movie"
@@ -62,36 +42,12 @@ object StringConstants {
     const val DEFAULT_PLAY_BUTTON = "Watch"
     const val DEFAULT_BUTTON_CORNER_RADIUS = 12
 
-    // Movie Colors Keys
-    const val MOVIE_COLORS_JSON = "colors"
-    const val MOVIE_COLORS_ACCENT = "accent"
-    const val MOVIE_COLORS_PRIMARY = "primary"
-    const val MOVIE_COLORS_SECONDARY = "secondary"
-    const val MOVIE_COLORS_METADATA = "metadata"
-    const val MOVIE_COLORS_CATEGORY = "category"
-    const val MOVIE_COLORS_MODEL_USED = "model_used"
-    const val MOVIE_COLORS_RATING = "rating"
-
-    // Default Movie Colors
-    const val DEFAULT_MOVIE_ACCENT_COLOR = "#3AA1EF"
-    const val DEFAULT_MOVIE_PRIMARY_COLOR = "#1278D4"
-    const val DEFAULT_MOVIE_SECONDARY_COLOR = "#238EE5"
-    const val DEFAULT_MOVIE_CATEGORY = "MEDIUM"
-    const val DEFAULT_MOVIE_MODEL_USED = true
-    const val DEFAULT_MOVIE_RATING = 0.0
-
-    // Language
-    const val DEFAULT_LANGUAGE = "en"
-    const val LANGUAGE_EN = "en"
-
     // MCP Method Names
     const val MCP_METHOD_GET_POPULAR_MOVIES = "getPopularMovies"
     const val MCP_METHOD_GET_MOVIE_DETAILS = "getMovieDetails"
-    const val MCP_METHOD_MOCK = "mock"
 
     // UI Text Constants (for data layer)
     const val MOVIES_TITLE = "Movies"
-    const val LOADING_TEXT = "Loading..."
     const val NO_MOVIES_FOUND = "No movies found"
     const val RETRY_BUTTON = "Retry"
     const val BACK_BUTTON = "Back"
@@ -134,6 +90,35 @@ object StringConstants {
     const val MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL = "Real request successful"
     const val MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE = "Real request successful (raw response)"
     const val MCP_MESSAGE_MOCK_DATA_LOADED_SUCCESSFULLY = "Mock data loaded successfully"
+    
+    // HTTP Client Error Messages
+    const val HTTP_ERROR_NETWORK_ERROR = "Network error: %s"
+    const val HTTP_ERROR_UNABLE_TO_CONNECT = "Unable to connect to server"
+    
+    // Default Data Constants
+    const val DEFAULT_MOVIE_ID = 1
+    const val DEFAULT_MOVIE_RATING_VALUE = 5.0
+    const val DEFAULT_MOVIE_VOTE_COUNT = 100
+    const val DEFAULT_MOVIE_RUNTIME = 120
+    const val DEFAULT_MOVIE_BUDGET = 1000000L
+    const val DEFAULT_MOVIE_REVENUE = 2000000L
+    const val DEFAULT_MOVIE_STATUS = "Released"
+    const val DEFAULT_STUDIO_LOGO_PATH = "/logo.jpg"
+    const val DEFAULT_STUDIO_NAME = "Default Studio"
+    const val DEFAULT_STUDIO_ORIGIN_COUNTRY = "US"
+    const val DEFAULT_GENRE_ACTION_ID = 1
+    const val DEFAULT_GENRE_DRAMA_ID = 2
+    const val DEFAULT_PRODUCTION_COMPANY_ID = 1
+    
+    // Default Color Hex Values
+    const val DEFAULT_PRIMARY_COLOR_HEX_VALUE = 0xFF6200EE
+    const val DEFAULT_SECONDARY_COLOR_HEX_VALUE = 0xFF03DAC6
+    const val DEFAULT_WHITE_COLOR_HEX_VALUE = 0xFFFFFFFF
+    const val DEFAULT_BLACK_COLOR_HEX_VALUE = 0xFF000000
+    
+    // Pagination Constants
+    const val DEFAULT_MOCK_TOTAL_PAGES = 3
+    const val DEFAULT_MOCK_TOTAL_RESULTS = 30
 
     // JSON Structure Constants
     const val JSON_OPEN_BRACE = "{"
@@ -226,7 +211,6 @@ object StringConstants {
 
     // Response Field Names
     const val FIELD_SUCCESS = "success"
-    const val FIELD_ERROR = "error"
     const val FIELD_MESSAGE = "message"
 
     // Color Field Names
@@ -402,4 +386,49 @@ object StringConstants {
     const val SERIALIZED_UI_CONFIG = "ui_config"
     const val SERIALIZED_ERROR = "error"
     const val SERIALIZED_META = "meta"
+    
+    // Hardcoded color values from McpClient
+    const val DEFAULT_BACKEND_PRIMARY_COLOR = "#DC3528"
+    const val DEFAULT_BACKEND_SECONDARY_COLOR = "#E64539"
+    const val DEFAULT_BACKEND_BACKGROUND_COLOR = "#121212"
+    const val DEFAULT_BACKEND_SURFACE_COLOR = "#1E1E1E"
+    const val DEFAULT_BACKEND_ON_PRIMARY_COLOR = "#FFFFFF"
+    const val DEFAULT_BACKEND_ON_SECONDARY_COLOR = "#FFFFFF"
+    const val DEFAULT_BACKEND_ON_BACKGROUND_COLOR = "#FFFFFF"
+    const val DEFAULT_BACKEND_ON_SURFACE_COLOR = "#FFFFFF"
+    
+    // Hardcoded text values from McpClient
+    const val DEFAULT_BACKEND_APP_TITLE = "TmdbAi - Movie Details"
+    const val DEFAULT_BACKEND_LOADING_TEXT = "Loading details..."
+    const val DEFAULT_BACKEND_ERROR_MESSAGE = "Error loading movie"
+    const val DEFAULT_BACKEND_NO_MOVIES_FOUND = "Movie not found"
+    const val DEFAULT_BACKEND_RETRY_BUTTON = "Retry"
+    const val DEFAULT_BACKEND_BACK_BUTTON = "Back to list"
+    const val DEFAULT_BACKEND_PLAY_BUTTON = "Watch"
+    
+    // Hardcoded button values from McpClient
+    const val DEFAULT_BACKEND_BUTTON_CORNER_RADIUS = 12
+    
+    // JSON field names
+    const val JSON_FIELD_BUTTONS = "buttons"
+    const val JSON_FIELD_PRIMARY = "primary"
+    const val JSON_FIELD_SECONDARY = "secondary"
+    const val JSON_FIELD_BACKGROUND = "background"
+    const val JSON_FIELD_SURFACE = "surface"
+    const val JSON_FIELD_ON_PRIMARY = "onPrimary"
+    const val JSON_FIELD_ON_SECONDARY = "onSecondary"
+    const val JSON_FIELD_ON_BACKGROUND = "onBackground"
+    const val JSON_FIELD_ON_SURFACE = "onSurface"
+    const val JSON_FIELD_MOVIE_POSTER_COLORS = "moviePosterColors"
+    const val JSON_FIELD_APP_TITLE = "appTitle"
+    const val JSON_FIELD_LOADING_TEXT = "loadingText"
+    const val JSON_FIELD_ERROR_MESSAGE = "errorMessage"
+    const val JSON_FIELD_NO_MOVIES_FOUND = "noMoviesFound"
+    const val JSON_FIELD_RETRY_BUTTON = "retryButton"
+    const val JSON_FIELD_BACK_BUTTON = "backButton"
+    const val JSON_FIELD_PLAY_BUTTON = "playButton"
+    const val JSON_FIELD_PRIMARY_BUTTON_COLOR = "primaryButtonColor"
+    const val JSON_FIELD_SECONDARY_BUTTON_COLOR = "secondaryButtonColor"
+    const val JSON_FIELD_BUTTON_TEXT_COLOR = "buttonTextColor"
+    const val JSON_FIELD_BUTTON_CORNER_RADIUS = "buttonCornerRadius"
 }

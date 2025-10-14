@@ -2,19 +2,15 @@ package org.studioapp.cinemy.ml
 
 import android.content.Context
 import android.os.Build
-import org.tensorflow.lite.Interpreter
-import java.io.FileInputStream
 import java.lang.ref.WeakReference
-import java.nio.MappedByteBuffer
-import java.nio.channels.FileChannel
 
 /**
  * Hardware detection and ML runtime selection for Cinemy
  * Automatically detects available hardware acceleration and selects optimal ML runtime
- * 
+ *
  * This class provides comprehensive hardware detection capabilities to determine
  * the best ML runtime for sentiment analysis based on device capabilities.
- * 
+ *
  * @author Cinemy Team
  * @since 1.0.0
  */
@@ -27,7 +23,7 @@ class HardwareDetection private constructor(private val context: Context) {
         /**
          * Gets singleton instance of HardwareDetection
          * Uses WeakReference to prevent memory leaks
-         * 
+         *
          * @param context Android context for hardware detection
          * @return HardwareDetection singleton instance
          */
@@ -36,7 +32,7 @@ class HardwareDetection private constructor(private val context: Context) {
             if (current != null) {
                 return current
             }
-            
+
             return synchronized(this) {
                 val existing = INSTANCE?.get()
                 if (existing != null) {
@@ -57,14 +53,19 @@ class HardwareDetection private constructor(private val context: Context) {
     enum class MLRuntime {
         /** LiteRT with GPU acceleration - best performance, requires Play Services */
         LITERT_GPU,
+
         /** LiteRT with NPU acceleration - good performance, requires Play Services */
         LITERT_NPU,
+
         /** TensorFlow Lite with GPU acceleration - good performance, no Play Services dependency */
         TENSORFLOW_LITE_GPU,
+
         /** TensorFlow Lite with NNAPI acceleration - decent performance */
         TENSORFLOW_LITE_NNAPI,
+
         /** TensorFlow Lite CPU with XNNPACK optimization - basic performance */
         TENSORFLOW_LITE_CPU,
+
         /** Keyword-based fallback model - last resort */
         KEYWORD_FALLBACK
     }
@@ -72,7 +73,7 @@ class HardwareDetection private constructor(private val context: Context) {
     /**
      * Hardware capabilities detected on the device
      * Contains information about available acceleration options
-     * 
+     *
      * @param hasGpu Whether GPU acceleration is available
      * @param hasNnapi Whether NNAPI acceleration is available
      * @param hasXnnpack Whether XNNPACK CPU optimization is available
@@ -91,14 +92,14 @@ class HardwareDetection private constructor(private val context: Context) {
 
     /**
      * Detects hardware capabilities and recommends optimal ML runtime
-     * 
+     *
      * This method performs comprehensive hardware detection including:
      * - GPU support detection
-     * - NNAPI support detection  
+     * - NNAPI support detection
      * - XNNPACK support detection
      * - LiteRT availability through Play Services
      * - Performance score calculation
-     * 
+     *
      * @return HardwareCapabilities object with detected capabilities and recommendations
      */
     fun detectHardwareCapabilities(): HardwareCapabilities {
@@ -124,11 +125,11 @@ class HardwareDetection private constructor(private val context: Context) {
 
     /**
      * Detects GPU support for TensorFlow Lite
-     * 
+     *
      * Checks if the device supports GPU acceleration for ML inference.
      * This is determined by checking Android version and attempting to create
      * a GPU delegate for TensorFlow Lite.
-     * 
+     *
      * @return true if GPU acceleration is available, false otherwise
      */
     private fun detectGpuSupport(): Boolean {
@@ -137,7 +138,7 @@ class HardwareDetection private constructor(private val context: Context) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
                 return false
             }
-            
+
             // For now, assume GPU support is available on modern devices
             // In a full implementation, you would check for GPU delegate support
             // by attempting to create a GpuDelegate instance
@@ -149,10 +150,10 @@ class HardwareDetection private constructor(private val context: Context) {
 
     /**
      * Detects NNAPI support for TensorFlow Lite
-     * 
+     *
      * NNAPI (Neural Networks API) provides hardware acceleration for ML inference
      * on Android devices. This method checks if NNAPI is available and functional.
-     * 
+     *
      * @return true if NNAPI acceleration is available, false otherwise
      */
     private fun detectNnapiSupport(): Boolean {
@@ -167,11 +168,11 @@ class HardwareDetection private constructor(private val context: Context) {
 
     /**
      * Detects XNNPACK support for TensorFlow Lite
-     * 
+     *
      * XNNPACK is a highly optimized library of floating-point neural network
      * inference operators for ARM, WebAssembly, and x86 platforms. It provides
      * CPU optimization for ML inference.
-     * 
+     *
      * @return true if XNNPACK optimization is available, false otherwise
      */
     private fun detectXnnpackSupport(): Boolean {
@@ -186,10 +187,10 @@ class HardwareDetection private constructor(private val context: Context) {
 
     /**
      * Detects LiteRT support through Google Play Services
-     * 
+     *
      * LiteRT is Google's ML runtime distributed through Play Services.
      * It provides optimized ML inference with automatic hardware acceleration.
-     * 
+     *
      * @return true if LiteRT is available, false otherwise
      */
     private fun detectLiteRTSupport(): Boolean {
@@ -197,7 +198,7 @@ class HardwareDetection private constructor(private val context: Context) {
             // Check if Google Play Services is available
             val packageManager = context.packageManager
             val playServicesInfo = packageManager.getPackageInfo("com.google.android.gms", 0)
-            
+
             // Check if Play Services version supports ML Kit
             if (playServicesInfo.versionCode >= 20000000) { // Version 20.0.0+
                 // Check for ML Kit availability
@@ -219,10 +220,10 @@ class HardwareDetection private constructor(private val context: Context) {
 
     /**
      * Detects Google Play Services support
-     * 
+     *
      * Google Play Services is required for LiteRT and other Google ML services.
      * This method checks if Play Services is installed and available.
-     * 
+     *
      * @return true if Google Play Services is available, false otherwise
      */
     private fun detectPlayServicesSupport(): Boolean {
@@ -238,7 +239,7 @@ class HardwareDetection private constructor(private val context: Context) {
 
     /**
      * Selects optimal ML runtime based on hardware capabilities
-     * 
+     *
      * The selection follows this priority order:
      * 1. LiteRT with GPU (best performance, requires Play Services)
      * 2. LiteRT with NNAPI (good performance, requires Play Services)
@@ -246,7 +247,7 @@ class HardwareDetection private constructor(private val context: Context) {
      * 4. TensorFlow Lite with NNAPI (decent performance)
      * 5. TensorFlow Lite CPU (basic performance)
      * 6. Keyword fallback (last resort)
-     * 
+     *
      * @param hasGpu Whether GPU is available
      * @param hasNnapi Whether NNAPI is available
      * @param hasXnnpack Whether XNNPACK is available
@@ -264,19 +265,19 @@ class HardwareDetection private constructor(private val context: Context) {
         return when {
             // LiteRT with GPU - best performance
             hasLiteRT && hasGpu && hasPlayServices -> MLRuntime.LITERT_GPU
-            
+
             // LiteRT with NNAPI - good performance
             hasLiteRT && hasNnapi && hasPlayServices -> MLRuntime.LITERT_NPU
-            
+
             // TensorFlow Lite with GPU - good performance, no Play Services dependency
             hasGpu -> MLRuntime.TENSORFLOW_LITE_GPU
-            
+
             // TensorFlow Lite with NNAPI - decent performance
             hasNnapi -> MLRuntime.TENSORFLOW_LITE_NNAPI
-            
+
             // TensorFlow Lite CPU with XNNPACK - basic performance
             hasXnnpack -> MLRuntime.TENSORFLOW_LITE_CPU
-            
+
             // Fallback to keyword model
             else -> MLRuntime.KEYWORD_FALLBACK
         }

@@ -3,115 +3,40 @@ package org.studioapp.cinemy.data.mcp
 import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
+import org.studioapp.cinemy.data.mapper.MovieMapper.createDefaultMetaDto
+import org.studioapp.cinemy.data.mapper.MovieMapper.mapJsonArrayToMovieDtoList
+import org.studioapp.cinemy.data.mapper.MovieMapper.mapJsonToMetaDto
+import org.studioapp.cinemy.data.mapper.MovieMapper.mapJsonToUiConfigurationDto
 import org.studioapp.cinemy.data.model.StringConstants.ASSET_MOCK_MOVIES
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_UI_CONFIG
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_META
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_DATA
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_COLORS
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_TEXTS
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_BUTTONS
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_MOVIE_POSTER_COLORS
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_GEMINI_COLORS
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_PRIMARY
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_SECONDARY
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_BACKGROUND
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_SURFACE
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_ON_PRIMARY
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_ON_SECONDARY
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_ON_BACKGROUND
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_ON_SURFACE
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_PRIMARY_BUTTON_COLOR
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_SECONDARY_BUTTON_COLOR
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_BUTTON_TEXT_COLOR
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_BUTTON_CORNER_RADIUS
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_APP_TITLE
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_LOADING_TEXT
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_ERROR_MESSAGE
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_NO_MOVIES_FOUND
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_RETRY_BUTTON
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_BACK_BUTTON
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_PLAY_BUTTON
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_SEARCH_QUERY
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_AI_GENERATED
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_AVG_RATING
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_MOVIE_RATING
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_VERSION
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_TIMESTAMP
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_ID
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_TITLE
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_DESCRIPTION
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_POSTER_PATH
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_BACKDROP_PATH
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_RATING
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_VOTE_COUNT
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_RELEASE_DATE
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_RUNTIME
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_GENRES
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_PRODUCTION_COMPANIES
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_BUDGET
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_REVENUE
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_STATUS
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_NAME
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_LOGO_PATH
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_ORIGIN_COUNTRY
-import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_RELEASE_DATE
-import org.studioapp.cinemy.data.model.StringConstants.COLOR_PRIMARY
-import org.studioapp.cinemy.data.model.StringConstants.COLOR_SECONDARY
+import org.studioapp.cinemy.data.model.StringConstants.BACK_BUTTON
+import org.studioapp.cinemy.data.model.StringConstants.BUTTON_CORNER_RADIUS
 import org.studioapp.cinemy.data.model.StringConstants.COLOR_BACKGROUND
-import org.studioapp.cinemy.data.model.StringConstants.COLOR_SURFACE
+import org.studioapp.cinemy.data.model.StringConstants.COLOR_BUTTON_TEXT
+import org.studioapp.cinemy.data.model.StringConstants.COLOR_ON_BACKGROUND
 import org.studioapp.cinemy.data.model.StringConstants.COLOR_ON_PRIMARY
 import org.studioapp.cinemy.data.model.StringConstants.COLOR_ON_SECONDARY
-import org.studioapp.cinemy.data.model.StringConstants.COLOR_ON_BACKGROUND
 import org.studioapp.cinemy.data.model.StringConstants.COLOR_ON_SURFACE
-import org.studioapp.cinemy.data.model.StringConstants.COLOR_ACCENT
-import org.studioapp.cinemy.data.model.StringConstants.COLOR_BUTTON_TEXT
-import org.studioapp.cinemy.data.model.StringConstants.BUTTON_CORNER_RADIUS
-import org.studioapp.cinemy.data.model.StringConstants.MOVIES_TITLE
-import org.studioapp.cinemy.data.model.StringConstants.LOADING_MOVIES_TEXT
+import org.studioapp.cinemy.data.model.StringConstants.COLOR_PRIMARY
+import org.studioapp.cinemy.data.model.StringConstants.COLOR_SECONDARY
+import org.studioapp.cinemy.data.model.StringConstants.COLOR_SURFACE
 import org.studioapp.cinemy.data.model.StringConstants.ERROR_UNKNOWN
-import org.studioapp.cinemy.data.model.StringConstants.NO_MOVIES_FOUND
-import org.studioapp.cinemy.data.model.StringConstants.RETRY_BUTTON
-import org.studioapp.cinemy.data.model.StringConstants.BACK_BUTTON
-import org.studioapp.cinemy.data.model.StringConstants.PLAY_BUTTON
-import org.studioapp.cinemy.data.model.StringConstants.VERSION_2_0_0
-import org.studioapp.cinemy.data.model.StringConstants.UNKNOWN_MOVIE_TITLE
-import org.studioapp.cinemy.data.model.StringConstants.NO_DESCRIPTION_AVAILABLE
-import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_RESULTS
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_BUTTONS
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_COLORS
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_DATA
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_META
 import org.studioapp.cinemy.data.model.StringConstants.FIELD_MOVIES
-import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_OVERVIEW
-import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_POSTER_PATH
-import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_BACKDROP_PATH
-import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_VOTE_AVERAGE
-import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_VOTE_COUNT
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_GENRE_IDS
-import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_GENRE_IDS
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_POPULARITY
-import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_POPULARITY
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_ADULT
-import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_ADULT
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_ORIGINAL_LANGUAGE
-import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_ORIGINAL_LANGUAGE
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_ORIGINAL_TITLE
-import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_ORIGINAL_TITLE
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_VIDEO
-import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_VIDEO
-import org.studioapp.cinemy.data.model.StringConstants.MOVIE_COLORS_METADATA
-import org.studioapp.cinemy.data.model.StringConstants.FIELD_ACCENT
-import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_MOVIE_ACCENT_COLOR
-import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_MOVIE_PRIMARY_COLOR
-import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_MOVIE_SECONDARY_COLOR
-import org.studioapp.cinemy.data.model.StringConstants.MOVIE_COLORS_CATEGORY
-import org.studioapp.cinemy.data.model.StringConstants.LANGUAGE_EN
-import org.studioapp.cinemy.data.model.StringConstants.CATEGORY_MEDIUM
-import org.studioapp.cinemy.data.model.StringConstants.MOVIE_COLORS_MODEL_USED
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_TEXTS
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_UI_CONFIG
 import org.studioapp.cinemy.data.model.StringConstants.FIELD_VALUE
+import org.studioapp.cinemy.data.model.StringConstants.LOADING_MOVIES_TEXT
+import org.studioapp.cinemy.data.model.StringConstants.MOVIES_TITLE
+import org.studioapp.cinemy.data.model.StringConstants.NO_MOVIES_FOUND
+import org.studioapp.cinemy.data.model.StringConstants.PLAY_BUTTON
+import org.studioapp.cinemy.data.model.StringConstants.RETRY_BUTTON
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_RESULTS
 import org.studioapp.cinemy.data.remote.dto.ButtonConfigurationDto
-import org.studioapp.cinemy.data.remote.dto.ColorMetadataDto
 import org.studioapp.cinemy.data.remote.dto.ColorSchemeDto
-import org.studioapp.cinemy.data.mapper.MovieMapper
-import org.studioapp.cinemy.data.remote.dto.GeminiColorsDto
 import org.studioapp.cinemy.data.remote.dto.MetaDto
-import org.studioapp.cinemy.data.remote.dto.MovieColorsDto
 import org.studioapp.cinemy.data.remote.dto.MovieDto
 import org.studioapp.cinemy.data.remote.dto.TextConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
@@ -229,7 +154,7 @@ class AssetDataLoader(private val context: Context) {
         val buttonsJson = uiConfigJson.optJSONObject(FIELD_BUTTONS)
 
 
-        return MovieMapper.mapJsonToUiConfigurationDto(colorsJson, textsJson, buttonsJson)
+        return mapJsonToUiConfigurationDto(colorsJson, textsJson, buttonsJson)
     }
 
     /**
@@ -246,44 +171,7 @@ class AssetDataLoader(private val context: Context) {
         resultsCount: Int,
         movieId: Int?
     ): MetaDto {
-        val geminiColorsJson = metaJson.optJSONObject(FIELD_GEMINI_COLORS)
-
-        return MetaDto(
-            timestamp = metaJson.optString(
-                FIELD_TIMESTAMP,
-                System.currentTimeMillis().toString()
-            ),
-            method = method,
-            searchQuery = metaJson.optString(FIELD_SEARCH_QUERY, null) ?: "",
-            movieId = movieId,
-            resultsCount = resultsCount,
-            aiGenerated = metaJson.optBoolean(FIELD_AI_GENERATED, true),
-            geminiColors = if (geminiColorsJson != null) {
-                GeminiColorsDto(
-                    primary = geminiColorsJson.optString(
-                        FIELD_PRIMARY,
-                        COLOR_PRIMARY
-                    ),
-                    secondary = geminiColorsJson.optString(
-                        FIELD_SECONDARY,
-                        COLOR_SECONDARY
-                    ),
-                    accent = geminiColorsJson.optString(
-                        FIELD_ACCENT,
-                        COLOR_ACCENT
-                    )
-                )
-            } else {
-                createDefaultGeminiColors()
-            },
-            avgRating = metaJson.optDouble(FIELD_AVG_RATING, 0.0).takeIf { it > 0 },
-            movieRating = metaJson.optDouble(FIELD_MOVIE_RATING, 0.0)
-                .takeIf { it > 0 },
-            version = metaJson.optString(
-                FIELD_VERSION,
-                VERSION_2_0_0
-            )
-        )
+        return mapJsonToMetaDto(metaJson, method, resultsCount, movieId)
     }
 
     /**
@@ -292,7 +180,7 @@ class AssetDataLoader(private val context: Context) {
      * @return List of MovieDto objects
      */
     private fun parseMoviesFromJson(moviesJson: JSONArray): List<MovieDto> {
-        return MovieMapper.mapJsonArrayToMovieDtoList(moviesJson)
+        return mapJsonArrayToMovieDtoList(moviesJson)
     }
 
 
@@ -399,29 +287,11 @@ class AssetDataLoader(private val context: Context) {
      * @return MetaDto with default metadata values
      */
     private fun createDefaultMeta(method: String, resultsCount: Int, movieId: Int?): MetaDto {
-        return MetaDto(
-            timestamp = System.currentTimeMillis().toString(),
-            method = method,
-            searchQuery = null,
-            movieId = movieId,
-            resultsCount = resultsCount,
-            aiGenerated = true,
-            geminiColors = createDefaultGeminiColors(),
-            avgRating = null,
-            movieRating = null,
-            version = VERSION_2_0_0
-        )
+        return createDefaultMetaDto(method, resultsCount, movieId)
     }
 
     /**
      * Creates default Gemini colors when asset loading fails
      * @return GeminiColorsDto with default color values
      */
-    private fun createDefaultGeminiColors(): GeminiColorsDto {
-        return GeminiColorsDto(
-            primary = COLOR_PRIMARY,
-            secondary = COLOR_SECONDARY,
-            accent = COLOR_ACCENT
-        )
-    }
 }

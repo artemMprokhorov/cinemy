@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 import android.content.res.Configuration
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
-import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.N
 import android.os.Bundle
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
@@ -32,11 +30,10 @@ import org.studioapp.cinemy.navigation.AppNavigation
 import org.studioapp.cinemy.presentation.di.presentationModule
 import org.studioapp.cinemy.ui.theme.CinemyTheme
 import org.studioapp.cinemy.utils.DeviceUtils
-import org.studioapp.cinemy.utils.DeviceUtils.DeviceType.FOLDABLE
 import org.studioapp.cinemy.utils.DeviceUtils.DeviceType.DESKTOP
-import org.studioapp.cinemy.utils.VersionUtils
-import org.studioapp.cinemy.utils.VersionUtils.safeEnableEdgeToEdge
+import org.studioapp.cinemy.utils.DeviceUtils.DeviceType.FOLDABLE
 import org.studioapp.cinemy.utils.DeviceUtils.getDeviceType
+import org.studioapp.cinemy.utils.VersionUtils.safeEnableEdgeToEdge
 
 class CinemyApplication : Application() {
 
@@ -144,19 +141,19 @@ class MainActivity : ComponentActivity() {
     private fun handleOrientationChange(isLandscape: Boolean) {
         // Use cached device type to avoid redundant calls
         val deviceType = currentDeviceType ?: getDeviceType(this)
-        
+
         when (deviceType) {
             FOLDABLE -> {
                 // For foldable devices, always optimize regardless of orientation
                 // The device might be folded/unfolded or just rotated
                 optimizeForFoldableDevice()
             }
-            
+
             DESKTOP -> {
                 // Desktop orientation changes are rare but handled
                 optimizeForDesktop()
             }
-            
+
             else -> {
                 // For tablets and phones, UI components handle orientation changes automatically
                 // No additional optimization needed

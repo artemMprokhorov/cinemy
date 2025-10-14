@@ -9,18 +9,18 @@ import java.util.concurrent.ConcurrentHashMap
 
 /**
  * LiteRT-based sentiment analysis model for Cinemy
- * 
+ *
  * This class provides sentiment analysis using Google's LiteRT runtime
  * with the same local model as TensorFlow Lite for consistency.
  * It offers optimized ML inference with automatic hardware acceleration.
- * 
+ *
  * LiteRT provides:
  * - Same local model as TensorFlow Lite (production_sentiment_full_manual.tflite)
  * - Automatic hardware acceleration (GPU, NPU, NNAPI)
  * - Optimized model execution
  * - Lower memory footprint
  * - Better performance on supported devices
- * 
+ *
  * @author Cinemy Team
  * @since 1.0.0
  */
@@ -39,7 +39,7 @@ class LiteRTSentimentModel private constructor(private val context: Context) {
         /**
          * Gets singleton instance of LiteRTSentimentModel
          * Uses WeakReference to prevent memory leaks
-         * 
+         *
          * @param context Android context for ML model initialization
          * @return LiteRTSentimentModel singleton instance
          */
@@ -48,7 +48,7 @@ class LiteRTSentimentModel private constructor(private val context: Context) {
             if (current != null) {
                 return current
             }
-            
+
             return synchronized(this) {
                 val existing = INSTANCE?.get()
                 if (existing != null) {
@@ -64,11 +64,11 @@ class LiteRTSentimentModel private constructor(private val context: Context) {
 
     /**
      * Initializes LiteRT sentiment analysis model
-     * 
+     *
      * This method initializes the sentiment analysis model using the same
      * local model as TensorFlow Lite (production_sentiment_full_manual.tflite)
      * but with LiteRT optimizations and hardware acceleration.
-     * 
+     *
      * @return true if initialization was successful, false otherwise
      */
     suspend fun initialize(): Boolean = withContext(Dispatchers.IO) {
@@ -90,11 +90,11 @@ class LiteRTSentimentModel private constructor(private val context: Context) {
 
     /**
      * Analyzes sentiment of input text using LiteRT
-     * 
+     *
      * This method performs sentiment analysis using the same local model
      * as TensorFlow Lite but with LiteRT optimizations and hardware acceleration.
      * It provides high accuracy sentiment classification with optimized performance.
-     * 
+     *
      * @param text Input text to analyze for sentiment
      * @return SentimentResult with sentiment classification and confidence
      */
@@ -112,16 +112,16 @@ class LiteRTSentimentModel private constructor(private val context: Context) {
 
         runCatching {
             val startTime = System.currentTimeMillis()
-            
+
             // Perform sentiment analysis using LiteRT
             val result = performLiteRTSentimentAnalysis(text)
-            
+
             val processingTime = System.currentTimeMillis() - startTime
-            
+
             // Cache the result
             val cachedResult = result.copy(processingTimeMs = processingTime)
             cache[text] = cachedResult
-            
+
             cachedResult
         }.getOrElse { e ->
             SentimentResult.error("LiteRT analysis failed: ${e.message}")
@@ -131,16 +131,15 @@ class LiteRTSentimentModel private constructor(private val context: Context) {
 
     /**
      * Checks if LiteRT model is ready for analysis
-     * 
+     *
      * @return true if model is ready, false otherwise
      */
     fun isReady(): Boolean = isReady
 
 
-
     /**
      * Cleans up LiteRT resources
-     * 
+     *
      * Properly cleans up all LiteRT resources to prevent memory leaks.
      * This should be called when the model is no longer needed.
      */
@@ -149,10 +148,10 @@ class LiteRTSentimentModel private constructor(private val context: Context) {
             // Clean up ML Kit resources
             mlKitTextAnalyzer = null
             sentimentAnalyzer = null
-            
+
             // Clear cache
             cache.clear()
-            
+
             isInitialized = false
             isReady = false
         } catch (e: Exception) {
@@ -162,7 +161,7 @@ class LiteRTSentimentModel private constructor(private val context: Context) {
 
     /**
      * Initializes ML Kit text analyzer
-     * 
+     *
      * Sets up the ML Kit text analyzer for sentiment analysis using
      * Google's LiteRT runtime with automatic hardware acceleration.
      * Uses the same local model as TensorFlow Lite for consistency.
@@ -173,11 +172,11 @@ class LiteRTSentimentModel private constructor(private val context: Context) {
             // This ensures consistency between LiteRT and TensorFlow implementations
             val tensorFlowModel = TensorFlowSentimentModel.getInstance(context)
             tensorFlowModel.initialize()
-            
+
             // Use TensorFlow model for LiteRT analysis
             mlKitTextAnalyzer = tensorFlowModel
             sentimentAnalyzer = tensorFlowModel
-            
+
         } catch (e: Exception) {
             throw RuntimeException("Failed to initialize ML Kit text analyzer", e)
         }
@@ -185,10 +184,10 @@ class LiteRTSentimentModel private constructor(private val context: Context) {
 
     /**
      * Performs sentiment analysis using LiteRT
-     * 
+     *
      * This method performs the actual sentiment analysis using the same
      * local model as TensorFlow Lite but with LiteRT optimizations.
-     * 
+     *
      * @param text Input text to analyze
      * @return SentimentResult with analysis results
      */
@@ -203,7 +202,7 @@ class LiteRTSentimentModel private constructor(private val context: Context) {
                 // Fallback to simulation if TensorFlow model is not available
                 simulateSentimentAnalysis(text)
             }
-            
+
         } catch (e: Exception) {
             SentimentResult.error("LiteRT analysis failed: ${e.message}")
         }
@@ -211,39 +210,63 @@ class LiteRTSentimentModel private constructor(private val context: Context) {
 
     /**
      * Simulates sentiment analysis for testing
-     * 
+     *
      * This method provides a realistic simulation of sentiment analysis
      * results for testing purposes when ML Kit is not available.
-     * 
+     *
      * @param text Input text to analyze
      * @return Simulated SentimentResult
      */
     private fun simulateSentimentAnalysis(text: String): SentimentResult {
         val words = text.lowercase().split("\\s+".toRegex())
-        
+
         // Simple keyword-based sentiment analysis
-        val positiveWords = listOf("good", "great", "excellent", "amazing", "wonderful", "fantastic", "love", "best", "perfect", "awesome")
-        val negativeWords = listOf("bad", "terrible", "awful", "horrible", "hate", "worst", "disgusting", "boring", "stupid", "ugly")
-        
+        val positiveWords = listOf(
+            "good",
+            "great",
+            "excellent",
+            "amazing",
+            "wonderful",
+            "fantastic",
+            "love",
+            "best",
+            "perfect",
+            "awesome"
+        )
+        val negativeWords = listOf(
+            "bad",
+            "terrible",
+            "awful",
+            "horrible",
+            "hate",
+            "worst",
+            "disgusting",
+            "boring",
+            "stupid",
+            "ugly"
+        )
+
         var positiveScore = 0.0
         var negativeScore = 0.0
-        
+
         words.forEach { word ->
             if (positiveWords.contains(word)) positiveScore += 1.0
             if (negativeWords.contains(word)) negativeScore += 1.0
         }
-        
+
         val totalWords = words.size.toDouble()
         val positiveConfidence = if (totalWords > 0) positiveScore / totalWords else 0.0
         val negativeConfidence = if (totalWords > 0) negativeScore / totalWords else 0.0
-        
+
         return when {
             positiveConfidence > negativeConfidence && positiveConfidence > 0.3 -> {
                 SentimentResult.positive(confidence = positiveConfidence)
             }
+
             negativeConfidence > positiveConfidence && negativeConfidence > 0.3 -> {
                 SentimentResult.negative(confidence = negativeConfidence)
             }
+
             else -> {
                 SentimentResult.neutral(confidence = maxOf(positiveConfidence, negativeConfidence))
             }

@@ -14,12 +14,13 @@ package org.studioapp.cinemy.navigation
 sealed class Screen(val route: String) {
     /** Splash screen route */
     object Splash : Screen(NavigationConstants.ROUTE_SPLASH)
-    
+
     /** Movies list screen route */
     object MoviesList : Screen(NavigationConstants.ROUTE_MOVIES_LIST)
-    
+
     /** Dual pane screen route for tablets and foldable devices */
     object DualPane : Screen(NavigationConstants.ROUTE_DUAL_PANE)
+
     /**
      * Movie detail screen route with movie ID parameter
      * @param movieId Unique identifier of the movie

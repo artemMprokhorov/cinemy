@@ -4,16 +4,15 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import org.studioapp.cinemy.ml.model.SentimentResult
-import org.studioapp.cinemy.ml.model.KeywordSentimentModel
-import org.studioapp.cinemy.ml.model.ModelInfo
 import org.studioapp.cinemy.ml.model.AlgorithmConfig
 import org.studioapp.cinemy.ml.model.ContextBoosters
 import org.studioapp.cinemy.ml.model.EnhancedModelData
+import org.studioapp.cinemy.ml.model.KeywordSentimentModel
+import org.studioapp.cinemy.ml.model.ModelInfo
 import org.studioapp.cinemy.ml.model.ProductionModelData
-import org.studioapp.cinemy.ml.AdaptiveMLRuntime
-import kotlin.math.abs
+import org.studioapp.cinemy.ml.model.SentimentResult
 import java.lang.ref.WeakReference
+import kotlin.math.abs
 
 /**
  * Hybrid sentiment analyzer for Cinemy
@@ -44,7 +43,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             if (current != null) {
                 return current
             }
-            
+
             return synchronized(this) {
                 val existing = INSTANCE?.get()
                 if (existing != null) {
@@ -60,7 +59,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         /**
          * Note: TensorFlow Lite model file is managed by TensorFlowSentimentModel class.
          * It uses "production_sentiment_full_manual.tflite" as defined in TensorFlowSentimentModel.MODEL_FILE
-         * 
+         *
          * TensorFlow model is PRIMARY for all build variants.
          * Keyword model serves as FALLBACK when TensorFlow has low confidence or is unavailable.
          */
@@ -76,16 +75,16 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
     /**
      * Initializes hybrid sentiment analyzer with adaptive runtime selection
-     * 
+     *
      * This method performs the following steps:
      * 1. Loads hybrid system configuration
      * 2. Initializes adaptive ML runtime for optimal performance
      * 3. Sets up fallback mechanisms for reliability
      * 4. Configures hardware-optimized model selection
-     * 
+     *
      * The adaptive runtime automatically selects the best available ML runtime
      * based on device hardware capabilities (LiteRT, TensorFlow Lite, or keyword fallback).
-     * 
+     *
      * @return true if initialization was successful, false otherwise
      */
     suspend fun initialize(): Boolean = withContext(Dispatchers.IO) {
@@ -191,8 +190,6 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         withContext(Dispatchers.Default) {
             texts.map { text -> analyzeSentiment(text) }
         }
-
-
 
 
     /**
@@ -363,6 +360,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 "выдающийся", "великолепный", "идеальный", "невероятный", "впечатляющий",
                 "красивый", "прекрасный", "хороший", "лучший", "любимый", "любить", "наслаждаться"
             )
+
             "negative" -> listOf(
                 // English
                 "terrible", "awful", "horrible", "bad", "worst", "hate", "disgusting",
@@ -379,6 +377,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 "скучный", "глупый", "раздражающий", "разочаровывающий",
                 "мусор", "жалкий", "отвратительный", "ужасный", "посредственный"
             )
+
             "neutral" -> listOf(
                 // English
                 "okay", "decent", "average", "fine", "acceptable", "reasonable",
@@ -390,6 +389,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 "нормально", "приличный", "средний", "приемлемый", "разумный",
                 "стандартный", "типичный", "обычный", "посредственный"
             )
+
             else -> emptyList()
         }
     }
@@ -591,9 +591,6 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             else -> SentimentResult.neutral()
         }
     }
-
-
-
 
 
     /**

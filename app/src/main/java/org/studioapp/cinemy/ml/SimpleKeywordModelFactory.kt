@@ -1,9 +1,9 @@
 package org.studioapp.cinemy.ml
 
-import org.studioapp.cinemy.ml.model.KeywordSentimentModel
-import org.studioapp.cinemy.ml.model.ModelInfo
 import org.studioapp.cinemy.ml.model.AlgorithmConfig
 import org.studioapp.cinemy.ml.model.ContextBoosters
+import org.studioapp.cinemy.ml.model.KeywordSentimentModel
+import org.studioapp.cinemy.ml.model.ModelInfo
 
 /**
  * Factory for creating simple keyword-based sentiment models

@@ -1,6 +1,5 @@
 package org.studioapp.cinemy.utils
 
-import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.LOLLIPOP
 import androidx.activity.ComponentActivity

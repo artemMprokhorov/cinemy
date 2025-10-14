@@ -1,5 +1,6 @@
 package org.studioapp.cinemy.ui.movieslist
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -24,14 +25,12 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -44,33 +43,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.launch
 import org.studioapp.cinemy.R
 import org.studioapp.cinemy.data.model.Movie
 import org.studioapp.cinemy.data.model.UiConfiguration
 import org.studioapp.cinemy.presentation.movieslist.MoviesListIntent
-import org.studioapp.cinemy.presentation.movieslist.MoviesListIntent.PreviousPage
 import org.studioapp.cinemy.presentation.movieslist.MoviesListIntent.LoadPopularMovies
 import org.studioapp.cinemy.presentation.movieslist.MoviesListIntent.NextPage
+import org.studioapp.cinemy.presentation.movieslist.MoviesListIntent.PreviousPage
 import org.studioapp.cinemy.presentation.movieslist.MoviesListState
 import org.studioapp.cinemy.presentation.movieslist.MoviesListViewModel
 import org.studioapp.cinemy.ui.components.ConfigurableMovieCard
 import org.studioapp.cinemy.ui.components.PullToReloadArrow
-import org.studioapp.cinemy.ui.constants.UiConstants
-import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_MOVIES
-import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_LOADING_MOVIES_RETRY
 import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_FAILED_LOAD_MOVIES
+import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_LOADING_MOVIES_RETRY
+import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_SUBTITLE
+import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_TITLE
+import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_INDICATOR
+import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_MOVIES
+import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_TEXT
 import org.studioapp.cinemy.ui.constants.UiConstants.MOVIES_LIST_SCREEN
 import org.studioapp.cinemy.ui.constants.UiConstants.PULL_DOWN_RETRY_MOVIES
-import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_TEXT
-import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_INDICATOR
-import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_TITLE
-import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_SUBTITLE
 import org.studioapp.cinemy.ui.constants.UiConstants.RETRY_INSTRUCTION
 import org.studioapp.cinemy.ui.theme.CinemyTheme
 import org.studioapp.cinemy.ui.theme.Dimens100
@@ -96,12 +94,12 @@ fun MoviesListScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-    
+
 
     // Handle back navigation - navigate to previous page if available, otherwise allow default back behavior
     val pagination = state.pagination
     val hasPreviousPage = pagination != null && pagination.hasPrevious && !state.isLoading
-    
+
     BackHandler(enabled = hasPreviousPage) {
         if (hasPreviousPage) {
             // Navigate to previous page

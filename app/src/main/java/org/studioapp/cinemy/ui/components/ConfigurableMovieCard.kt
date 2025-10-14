@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -344,7 +343,7 @@ fun ConfigurableMovieCard(
                                 .height(Dimens8)
                                 .width(Dimens8)
                                 .background(
-                                    parseColor(movie.colors.primary) 
+                                    parseColor(movie.colors.primary)
                                         ?: primaryColor,
                                     RoundedCornerShape(Dimens4)
                                 )
@@ -355,7 +354,7 @@ fun ConfigurableMovieCard(
                                 .height(Dimens8)
                                 .width(Dimens8)
                                 .background(
-                                    parseColor(movie.colors.secondary) 
+                                    parseColor(movie.colors.secondary)
                                         ?: primaryColor.copy(alpha = Float07),
                                     RoundedCornerShape(Dimens4)
                                 )
@@ -366,7 +365,7 @@ fun ConfigurableMovieCard(
                                 .height(Dimens8)
                                 .width(Dimens8)
                                 .background(
-                                    parseColor(movie.colors.accent) 
+                                    parseColor(movie.colors.accent)
                                         ?: primaryColor.copy(alpha = Float05),
                                     RoundedCornerShape(Dimens4)
                                 )
