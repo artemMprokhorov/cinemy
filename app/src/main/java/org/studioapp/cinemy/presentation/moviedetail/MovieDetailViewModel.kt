@@ -40,14 +40,14 @@ class MovieDetailViewModel(
             }
 
             is MovieDetailIntent.Retry -> {
-                // Retry loading the current movie details using stored movie ID
+                // MovieDetailIntent.Retry loading the current movie details using stored movie ID
                 if (currentMovieId > PresentationConstants.DEFAULT_MOVIE_ID) {
                     loadMovieDetails(currentMovieId)
                 }
             }
 
             is MovieDetailIntent.Refresh -> {
-                // Refresh current movie details using stored movie ID
+                // MovieDetailIntent.Refresh current movie details using stored movie ID
                 if (currentMovieId > PresentationConstants.DEFAULT_MOVIE_ID) {
                     loadMovieDetails(currentMovieId)
                 }

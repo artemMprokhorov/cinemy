@@ -48,6 +48,13 @@ import org.studioapp.cinemy.presentation.moviedetail.MovieDetailViewModel
 import org.studioapp.cinemy.ui.components.ConfigurableText
 import org.studioapp.cinemy.ui.components.PullToReloadArrow
 import org.studioapp.cinemy.ui.constants.UiConstants
+import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_MOVIE_DETAILS
+import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_LOADING_MOVIE_DETAILS_RETRY
+import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_TEXT
+import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_INDICATOR
+import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_TITLE
+import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_SUBTITLE
+import org.studioapp.cinemy.ui.constants.UiConstants.RETRY_INSTRUCTION
 import org.studioapp.cinemy.ui.components.SentimentAnalysisCard
 import org.studioapp.cinemy.ui.theme.CinemyTheme
 import org.studioapp.cinemy.ui.theme.Dimens100
@@ -123,16 +130,16 @@ private fun MovieDetailContent(
                             uiConfig = state.uiConfig,
                             color = Color.White,
                             contentDescription = stringResource(R.string.loading_movie_details_please_wait),
-                            testTag = UiConstants.TestTags.LOADING_TEXT
+                            testTag = LOADING_TEXT
                         )
                         Spacer(modifier = Modifier.height(Dimens16))
                         CircularProgressIndicator(
                             color = state.uiConfig?.colors?.primary ?: Color.White,
                             modifier = Modifier
                                 .semantics {
-                                    contentDescription = UiConstants.ContentDescriptions.LOADING_MOVIE_DETAILS
+                                    contentDescription = LOADING_MOVIE_DETAILS
                                 }
-                                .testTag(UiConstants.TestTags.LOADING_INDICATOR)
+                                .testTag(LOADING_INDICATOR)
                         )
                     }
                 }
@@ -145,7 +152,7 @@ private fun MovieDetailContent(
                         .verticalScroll(rememberScrollState())
                         .pullRefresh(pullRefreshState)
                         .semantics {
-                            contentDescription = UiConstants.ContentDescriptions.ERROR_LOADING_MOVIE_DETAILS_RETRY
+                            contentDescription = ERROR_LOADING_MOVIE_DETAILS_RETRY
                         },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
@@ -157,7 +164,7 @@ private fun MovieDetailContent(
                         uiConfig = state.uiConfig,
                         color = Color.White,
                         contentDescription = stringResource(R.string.error_failed_load_movie_details),
-                        testTag = UiConstants.TestTags.ERROR_TITLE
+                        testTag = ERROR_TITLE
                     )
                     ConfigurableText(
                         text = stringResource(R.string.movie_details),
@@ -165,7 +172,7 @@ private fun MovieDetailContent(
                         uiConfig = state.uiConfig,
                         color = Color.White,
                         contentDescription = stringResource(R.string.movie_details_screen),
-                        testTag = UiConstants.TestTags.ERROR_SUBTITLE
+                        testTag = ERROR_SUBTITLE
                     )
                     Spacer(modifier = Modifier.height(Dimens16))
                     PullToReloadArrow()
@@ -176,7 +183,7 @@ private fun MovieDetailContent(
                         uiConfig = state.uiConfig,
                         color = Color.White,
                         contentDescription = stringResource(R.string.pull_down_retry_movie_details),
-                        testTag = UiConstants.TestTags.RETRY_INSTRUCTION
+                        testTag = RETRY_INSTRUCTION
                     )
                     Spacer(modifier = Modifier.height(Dimens100))
                 }

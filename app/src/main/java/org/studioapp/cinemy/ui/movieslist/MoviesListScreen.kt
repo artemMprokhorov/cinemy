@@ -62,6 +62,16 @@ import org.studioapp.cinemy.presentation.movieslist.MoviesListViewModel
 import org.studioapp.cinemy.ui.components.ConfigurableMovieCard
 import org.studioapp.cinemy.ui.components.PullToReloadArrow
 import org.studioapp.cinemy.ui.constants.UiConstants
+import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_MOVIES
+import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_LOADING_MOVIES_RETRY
+import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_FAILED_LOAD_MOVIES
+import org.studioapp.cinemy.ui.constants.UiConstants.MOVIES_LIST_SCREEN
+import org.studioapp.cinemy.ui.constants.UiConstants.PULL_DOWN_RETRY_MOVIES
+import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_TEXT
+import org.studioapp.cinemy.ui.constants.UiConstants.LOADING_INDICATOR
+import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_TITLE
+import org.studioapp.cinemy.ui.constants.UiConstants.ERROR_SUBTITLE
+import org.studioapp.cinemy.ui.constants.UiConstants.RETRY_INSTRUCTION
 import org.studioapp.cinemy.ui.theme.CinemyTheme
 import org.studioapp.cinemy.ui.theme.Dimens100
 import org.studioapp.cinemy.ui.theme.Dimens112
@@ -158,18 +168,18 @@ private fun MoviesListContent(
                                 style = typography.headlineMedium,
                                 modifier = Modifier
                                     .semantics {
-                                        contentDescription = UiConstants.ContentDescriptions.LOADING_MOVIES
+                                        contentDescription = LOADING_MOVIES
                                     }
-                                    .testTag(UiConstants.TestTags.LOADING_TEXT)
+                                    .testTag(LOADING_TEXT)
                             )
                             Spacer(modifier = Modifier.height(Dimens16))
                             CircularProgressIndicator(
                                 color = Color.White,
                                 modifier = Modifier
                                     .semantics {
-                                        contentDescription = UiConstants.ContentDescriptions.LOADING_MOVIES
+                                        contentDescription = LOADING_MOVIES
                                     }
-                                    .testTag(UiConstants.TestTags.LOADING_INDICATOR)
+                                    .testTag(LOADING_INDICATOR)
                             )
                         }
                     }
@@ -184,7 +194,7 @@ private fun MoviesListContent(
                             modifier = Modifier
                                 .verticalScroll(rememberScrollState())
                                 .semantics {
-                                    contentDescription = UiConstants.ContentDescriptions.ERROR_LOADING_MOVIES_RETRY
+                                    contentDescription = ERROR_LOADING_MOVIES_RETRY
                                 },
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -195,9 +205,9 @@ private fun MoviesListContent(
                                 style = typography.headlineLarge,
                                 modifier = Modifier
                                     .semantics {
-                                        contentDescription = UiConstants.ContentDescriptions.ERROR_FAILED_LOAD_MOVIES
+                                        contentDescription = ERROR_FAILED_LOAD_MOVIES
                                     }
-                                    .testTag(UiConstants.TestTags.ERROR_TITLE)
+                                    .testTag(ERROR_TITLE)
                             )
                             Text(
                                 text = stringResource(R.string.movie_details),
@@ -205,9 +215,9 @@ private fun MoviesListContent(
                                 style = typography.headlineLarge,
                                 modifier = Modifier
                                     .semantics {
-                                        contentDescription = UiConstants.ContentDescriptions.MOVIES_LIST_SCREEN
+                                        contentDescription = MOVIES_LIST_SCREEN
                                     }
-                                    .testTag(UiConstants.TestTags.ERROR_SUBTITLE)
+                                    .testTag(ERROR_SUBTITLE)
                             )
                             Spacer(modifier = Modifier.height(Dimens16))
                             PullToReloadArrow()
@@ -218,9 +228,9 @@ private fun MoviesListContent(
                                 style = typography.headlineMedium,
                                 modifier = Modifier
                                     .semantics {
-                                        contentDescription = UiConstants.ContentDescriptions.PULL_DOWN_RETRY_MOVIES
+                                        contentDescription = PULL_DOWN_RETRY_MOVIES
                                     }
-                                    .testTag(UiConstants.TestTags.RETRY_INSTRUCTION)
+                                    .testTag(RETRY_INSTRUCTION)
                             )
                             Spacer(modifier = Modifier.height(Dimens100))
                         }

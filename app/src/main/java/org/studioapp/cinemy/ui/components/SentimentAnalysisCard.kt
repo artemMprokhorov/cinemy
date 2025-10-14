@@ -30,6 +30,8 @@ import org.studioapp.cinemy.ui.theme.Dimens8
 import org.studioapp.cinemy.ui.theme.Float01
 import org.studioapp.cinemy.ui.theme.Float07
 import org.studioapp.cinemy.ui.constants.UiConstants
+import org.studioapp.cinemy.ui.constants.UiConstants.SENTIMENT_ANALYSIS_CARD
+import org.studioapp.cinemy.ui.constants.UiConstants.SENTIMENT_TITLE
 import org.studioapp.cinemy.ui.theme.SentimentNegative
 import org.studioapp.cinemy.ui.theme.SentimentPositive
 
@@ -48,7 +50,7 @@ fun SentimentAnalysisCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .testTag(UiConstants.TestTags.SENTIMENT_ANALYSIS_CARD),
+            .testTag(SENTIMENT_ANALYSIS_CARD),
         colors = CardDefaults.cardColors(
             containerColor = colorScheme.surface
         ),
@@ -63,7 +65,7 @@ fun SentimentAnalysisCard(
                 style = typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = colorScheme.onSurface,
-                modifier = Modifier.testTag(UiConstants.TestTags.SENTIMENT_TITLE)
+                modifier = Modifier.testTag(SENTIMENT_TITLE)
             )
 
             Text(
