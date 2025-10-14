@@ -5,6 +5,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.studioapp.cinemy.ml.model.KeywordSentimentModel
 import org.studioapp.cinemy.ml.model.SentimentResult
+import org.studioapp.cinemy.ml.HardwareDetection.MLRuntime.LITERT_GPU
+import org.studioapp.cinemy.ml.HardwareDetection.MLRuntime.LITERT_NPU
+import org.studioapp.cinemy.ml.HardwareDetection.MLRuntime.TENSORFLOW_LITE_GPU
+import org.studioapp.cinemy.ml.HardwareDetection.MLRuntime.TENSORFLOW_LITE_NNAPI
+import org.studioapp.cinemy.ml.HardwareDetection.MLRuntime.TENSORFLOW_LITE_CPU
+import org.studioapp.cinemy.ml.HardwareDetection.MLRuntime.KEYWORD_FALLBACK
+import org.studioapp.cinemy.ml.MLConstants.ML_RUNTIME_NOT_INITIALIZED_ERROR
+import org.studioapp.cinemy.ml.MLConstants.LITERT_MODEL_NOT_AVAILABLE_ERROR
+import org.studioapp.cinemy.ml.MLConstants.TENSORFLOW_LITE_MODEL_NOT_AVAILABLE_ERROR
+import org.studioapp.cinemy.ml.MLConstants.KEYWORD_MODEL_NOT_AVAILABLE_ERROR
+import org.studioapp.cinemy.ml.MLConstants.WORD_SPLIT_REGEX
+import org.studioapp.cinemy.ml.MLConstants.DEFAULT_SCORE
+import org.studioapp.cinemy.ml.MLConstants.SCORE_INCREMENT
+import org.studioapp.cinemy.ml.MLConstants.MIN_CONFIDENCE_THRESHOLD
 import java.lang.ref.WeakReference
 
 /**
@@ -88,25 +102,25 @@ class AdaptiveMLRuntime private constructor(private val context: Context) {
 
             // Initialize selected runtime
             when (currentRuntime) {
-                HardwareDetection.MLRuntime.LITERT_GPU,
-                HardwareDetection.MLRuntime.LITERT_NPU -> {
+                LITERT_GPU,
+                LITERT_NPU -> {
                     initializeLiteRT()
                 }
 
-                HardwareDetection.MLRuntime.TENSORFLOW_LITE_GPU,
-                HardwareDetection.MLRuntime.TENSORFLOW_LITE_NNAPI,
-                HardwareDetection.MLRuntime.TENSORFLOW_LITE_CPU -> {
+                TENSORFLOW_LITE_GPU,
+                TENSORFLOW_LITE_NNAPI,
+                TENSORFLOW_LITE_CPU -> {
                     initializeTensorFlowLite()
                 }
 
-                HardwareDetection.MLRuntime.KEYWORD_FALLBACK -> {
+                KEYWORD_FALLBACK -> {
                     initializeKeywordModel()
                 }
 
                 null -> {
                     // Fallback to keyword model if detection fails
                     initializeKeywordModel()
-                    currentRuntime = HardwareDetection.MLRuntime.KEYWORD_FALLBACK
+                    currentRuntime = KEYWORD_FALLBACK
                 }
             }
 
@@ -115,7 +129,7 @@ class AdaptiveMLRuntime private constructor(private val context: Context) {
         }.getOrElse { e ->
             // If initialization fails, fallback to keyword model
             initializeKeywordModel()
-            currentRuntime = HardwareDetection.MLRuntime.KEYWORD_FALLBACK
+            currentRuntime = KEYWORD_FALLBACK
             isInitialized = true
             true
         }
@@ -133,7 +147,7 @@ class AdaptiveMLRuntime private constructor(private val context: Context) {
      */
     suspend fun analyzeSentiment(text: String): SentimentResult = withContext(Dispatchers.Default) {
         if (!isInitialized) {
-            return@withContext SentimentResult.error("ML runtime not initialized")
+            return@withContext SentimentResult.error(ML_RUNTIME_NOT_INITIALIZED_ERROR)
         }
 
         if (text.isBlank()) {
@@ -142,18 +156,18 @@ class AdaptiveMLRuntime private constructor(private val context: Context) {
 
         runCatching {
             when (currentRuntime) {
-                HardwareDetection.MLRuntime.LITERT_GPU,
-                HardwareDetection.MLRuntime.LITERT_NPU -> {
+                LITERT_GPU,
+                LITERT_NPU -> {
                     analyzeWithLiteRT(text)
                 }
 
-                HardwareDetection.MLRuntime.TENSORFLOW_LITE_GPU,
-                HardwareDetection.MLRuntime.TENSORFLOW_LITE_NNAPI,
-                HardwareDetection.MLRuntime.TENSORFLOW_LITE_CPU -> {
+                TENSORFLOW_LITE_GPU,
+                TENSORFLOW_LITE_NNAPI,
+                TENSORFLOW_LITE_CPU -> {
                     analyzeWithTensorFlowLite(text)
                 }
 
-                HardwareDetection.MLRuntime.KEYWORD_FALLBACK -> {
+                KEYWORD_FALLBACK -> {
                     analyzeWithKeywordModel(text)
                 }
 
@@ -231,7 +245,7 @@ class AdaptiveMLRuntime private constructor(private val context: Context) {
      */
     private suspend fun analyzeWithLiteRT(text: String): SentimentResult {
         return liteRTModel?.analyzeSentiment(text)
-            ?: SentimentResult.error("LiteRT model not available")
+            ?: SentimentResult.error(LITERT_MODEL_NOT_AVAILABLE_ERROR)
     }
 
     /**
@@ -245,7 +259,7 @@ class AdaptiveMLRuntime private constructor(private val context: Context) {
      */
     private suspend fun analyzeWithTensorFlowLite(text: String): SentimentResult {
         return tensorFlowModel?.analyzeSentiment(text)
-            ?: SentimentResult.error("TensorFlow Lite model not available")
+            ?: SentimentResult.error(TENSORFLOW_LITE_MODEL_NOT_AVAILABLE_ERROR)
     }
 
     /**
@@ -260,28 +274,28 @@ class AdaptiveMLRuntime private constructor(private val context: Context) {
     private suspend fun analyzeWithKeywordModel(text: String): SentimentResult {
         return keywordModel?.let { model ->
             // Simple keyword-based analysis
-            val words = text.lowercase().split("\\s+".toRegex())
+            val words = text.lowercase().split(WORD_SPLIT_REGEX.toRegex())
             val positiveWords = model.positiveKeywords
             val negativeWords = model.negativeKeywords
 
-            var positiveScore = 0.0
-            var negativeScore = 0.0
+            var positiveScore = DEFAULT_SCORE
+            var negativeScore = DEFAULT_SCORE
 
             words.forEach { word ->
-                if (positiveWords.contains(word)) positiveScore += 1.0
-                if (negativeWords.contains(word)) negativeScore += 1.0
+                if (positiveWords.contains(word)) positiveScore += SCORE_INCREMENT
+                if (negativeWords.contains(word)) negativeScore += SCORE_INCREMENT
             }
 
             val totalWords = words.size.toDouble()
-            val positiveConfidence = if (totalWords > 0) positiveScore / totalWords else 0.0
-            val negativeConfidence = if (totalWords > 0) negativeScore / totalWords else 0.0
+            val positiveConfidence = if (totalWords > 0) positiveScore / totalWords else DEFAULT_SCORE
+            val negativeConfidence = if (totalWords > 0) negativeScore / totalWords else DEFAULT_SCORE
 
             when {
-                positiveConfidence > negativeConfidence && positiveConfidence > 0.3 -> {
+                positiveConfidence > negativeConfidence && positiveConfidence > MIN_CONFIDENCE_THRESHOLD -> {
                     SentimentResult.positive(confidence = positiveConfidence)
                 }
 
-                negativeConfidence > positiveConfidence && negativeConfidence > 0.3 -> {
+                negativeConfidence > positiveConfidence && negativeConfidence > MIN_CONFIDENCE_THRESHOLD -> {
                     SentimentResult.negative(confidence = negativeConfidence)
                 }
 
@@ -294,7 +308,7 @@ class AdaptiveMLRuntime private constructor(private val context: Context) {
                     )
                 }
             }
-        } ?: SentimentResult.error("Keyword model not available")
+        } ?: SentimentResult.error(KEYWORD_MODEL_NOT_AVAILABLE_ERROR)
     }
 
     /**

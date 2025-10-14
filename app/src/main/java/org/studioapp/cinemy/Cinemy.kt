@@ -24,7 +24,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.studioapp.cinemy.data.di.dataModule
-import org.studioapp.cinemy.di.mlModule
+import org.studioapp.cinemy.ml.di.mlModule
 import org.studioapp.cinemy.ml.SentimentAnalyzer
 import org.studioapp.cinemy.navigation.AppNavigation
 import org.studioapp.cinemy.presentation.di.presentationModule

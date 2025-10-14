@@ -1,4 +1,4 @@
-package org.studioapp.cinemy.di
+package org.studioapp.cinemy.ml.di
 
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
