@@ -46,6 +46,7 @@ import org.studioapp.cinemy.ui.theme.Float05
 import org.studioapp.cinemy.ui.theme.Float06
 import org.studioapp.cinemy.ui.theme.Float07
 import org.studioapp.cinemy.ui.theme.ImageConfig
+import org.studioapp.cinemy.utils.ColorUtils
 
 private const val POPULARITY_THRESHOLD = 0.0
 private const val MAX_LINES_TITLE = 2
@@ -343,15 +344,8 @@ fun ConfigurableMovieCard(
                                 .height(Dimens8)
                                 .width(Dimens8)
                                 .background(
-                                    try {
-                                        androidx.compose.ui.graphics.Color(
-                                            android.graphics.Color.parseColor(
-                                                movie.colors.primary
-                                            )
-                                        )
-                                    } catch (e: Exception) {
-                                        primaryColor
-                                    },
+                                    ColorUtils.safeParseColor(movie.colors.primary) 
+                                        ?: primaryColor,
                                     RoundedCornerShape(Dimens4)
                                 )
                         )
@@ -361,15 +355,8 @@ fun ConfigurableMovieCard(
                                 .height(Dimens8)
                                 .width(Dimens8)
                                 .background(
-                                    try {
-                                        androidx.compose.ui.graphics.Color(
-                                            android.graphics.Color.parseColor(
-                                                movie.colors.secondary
-                                            )
-                                        )
-                                    } catch (e: Exception) {
-                                        primaryColor.copy(alpha = Float07)
-                                    },
+                                    ColorUtils.safeParseColor(movie.colors.secondary) 
+                                        ?: primaryColor.copy(alpha = Float07),
                                     RoundedCornerShape(Dimens4)
                                 )
                         )
@@ -379,15 +366,8 @@ fun ConfigurableMovieCard(
                                 .height(Dimens8)
                                 .width(Dimens8)
                                 .background(
-                                    try {
-                                        androidx.compose.ui.graphics.Color(
-                                            android.graphics.Color.parseColor(
-                                                movie.colors.accent
-                                            )
-                                        )
-                                    } catch (e: Exception) {
-                                        primaryColor.copy(alpha = Float05)
-                                    },
+                                    ColorUtils.safeParseColor(movie.colors.accent) 
+                                        ?: primaryColor.copy(alpha = Float05),
                                     RoundedCornerShape(Dimens4)
                                 )
                         )
