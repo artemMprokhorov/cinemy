@@ -28,7 +28,7 @@ import org.studioapp.cinemy.data.remote.dto.SentimentMetadataDto
 import org.studioapp.cinemy.data.remote.dto.SentimentReviewsDto
 import org.studioapp.cinemy.data.remote.dto.TextConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
-import org.studioapp.cinemy.data.util.ColorUtils
+import org.studioapp.cinemy.utils.ColorUtils.parseColor
 
 object MovieMapper {
 
@@ -165,15 +165,15 @@ object MovieMapper {
      */
     fun mapColorSchemeDtoToColorScheme(dto: ColorSchemeDto): ColorScheme {
         return ColorScheme(
-            primary = ColorUtils.parseColor(dto.primary),
-            secondary = ColorUtils.parseColor(dto.secondary),
-            background = ColorUtils.parseColor(dto.background),
-            surface = ColorUtils.parseColor(dto.surface),
-            onPrimary = ColorUtils.parseColor(dto.onPrimary),
-            onSecondary = ColorUtils.parseColor(dto.onSecondary),
-            onBackground = ColorUtils.parseColor(dto.onBackground),
-            onSurface = ColorUtils.parseColor(dto.onSurface),
-            moviePosterColors = dto.moviePosterColors.map { ColorUtils.parseColor(it) }
+            primary = parseColor(dto.primary),
+            secondary = parseColor(dto.secondary),
+            background = parseColor(dto.background),
+            surface = parseColor(dto.surface),
+            onPrimary = parseColor(dto.onPrimary),
+            onSecondary = parseColor(dto.onSecondary),
+            onBackground = parseColor(dto.onBackground),
+            onSurface = parseColor(dto.onSurface),
+            moviePosterColors = dto.moviePosterColors.map { parseColor(it) }
         )
     }
 
@@ -201,9 +201,9 @@ object MovieMapper {
      */
     fun mapButtonConfigurationDtoToButtonConfiguration(dto: ButtonConfigurationDto): ButtonConfiguration {
         return ButtonConfiguration(
-            primaryButtonColor = ColorUtils.parseColor(dto.primaryButtonColor),
-            secondaryButtonColor = ColorUtils.parseColor(dto.secondaryButtonColor),
-            buttonTextColor = ColorUtils.parseColor(dto.buttonTextColor),
+            primaryButtonColor = parseColor(dto.primaryButtonColor),
+            secondaryButtonColor = parseColor(dto.secondaryButtonColor),
+            buttonTextColor = parseColor(dto.buttonTextColor),
             buttonCornerRadius = dto.buttonCornerRadius
         )
     }

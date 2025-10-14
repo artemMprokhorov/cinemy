@@ -46,7 +46,7 @@ import org.studioapp.cinemy.ui.theme.Float05
 import org.studioapp.cinemy.ui.theme.Float06
 import org.studioapp.cinemy.ui.theme.Float07
 import org.studioapp.cinemy.ui.theme.ImageConfig
-import org.studioapp.cinemy.utils.ColorUtils
+import org.studioapp.cinemy.utils.ColorUtils.parseColor
 
 private const val POPULARITY_THRESHOLD = 0.0
 private const val MAX_LINES_TITLE = 2
@@ -344,7 +344,7 @@ fun ConfigurableMovieCard(
                                 .height(Dimens8)
                                 .width(Dimens8)
                                 .background(
-                                    ColorUtils.safeParseColor(movie.colors.primary) 
+                                    parseColor(movie.colors.primary) 
                                         ?: primaryColor,
                                     RoundedCornerShape(Dimens4)
                                 )
@@ -355,7 +355,7 @@ fun ConfigurableMovieCard(
                                 .height(Dimens8)
                                 .width(Dimens8)
                                 .background(
-                                    ColorUtils.safeParseColor(movie.colors.secondary) 
+                                    parseColor(movie.colors.secondary) 
                                         ?: primaryColor.copy(alpha = Float07),
                                     RoundedCornerShape(Dimens4)
                                 )
@@ -366,7 +366,7 @@ fun ConfigurableMovieCard(
                                 .height(Dimens8)
                                 .width(Dimens8)
                                 .background(
-                                    ColorUtils.safeParseColor(movie.colors.accent) 
+                                    parseColor(movie.colors.accent) 
                                         ?: primaryColor.copy(alpha = Float05),
                                     RoundedCornerShape(Dimens4)
                                 )
