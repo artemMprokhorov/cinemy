@@ -6,7 +6,7 @@ import org.json.JSONObject
 import org.studioapp.cinemy.data.mcp.models.McpRequest
 import org.studioapp.cinemy.data.mcp.models.McpResponse
 import org.studioapp.cinemy.data.model.StringConstants
-import org.studioapp.cinemy.data.util.AssetUtils
+import org.studioapp.cinemy.data.util.AssetUtils.loadJsonFromAssets
 
 /**
  * Fake interceptor for dummy configuration that provides mock responses
@@ -53,7 +53,7 @@ class FakeInterceptor(private val context: Context) {
         page: Int
     ): McpResponse<Any> {
         return runCatching {
-            val jsonString = AssetUtils.loadJsonFromAssets(context, fileName)
+            val jsonString = loadJsonFromAssets(context, fileName)
             if (jsonString != null) {
                 val jsonResponse = parseJsonResponse(jsonString)
 
@@ -102,7 +102,7 @@ class FakeInterceptor(private val context: Context) {
      */
     private fun loadMockDataFromAssets(fileName: String): McpResponse<Any> {
         return runCatching {
-            val jsonString = AssetUtils.loadJsonFromAssets(context, fileName)
+            val jsonString = loadJsonFromAssets(context, fileName)
             if (jsonString != null) {
                 val jsonResponse = parseJsonResponse(jsonString)
                 McpResponse<Any>(
