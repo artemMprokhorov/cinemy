@@ -19,9 +19,74 @@ object StringConstants {
     const val INVALID_MOVIE_DETAILS_DATA = "Invalid movie details data"
     const val LOADING_MOVIES_TEXT = "Loading movies..."
 
+    // UI Configuration Keys
+    const val UI_CONFIG_COLORS = "colors"
+    const val UI_CONFIG_TEXTS = "texts"
+    const val UI_CONFIG_BUTTONS = "buttons"
+    const val UI_CONFIG_PRIMARY = "primary"
+    const val UI_CONFIG_SECONDARY = "secondary"
+    const val UI_CONFIG_BACKGROUND = "background"
+    const val UI_CONFIG_SURFACE = "surface"
+    const val UI_CONFIG_ON_PRIMARY = "onPrimary"
+    const val UI_CONFIG_ON_SECONDARY = "onSecondary"
+    const val UI_CONFIG_ON_BACKGROUND = "onBackground"
+    const val UI_CONFIG_ON_SURFACE = "onSurface"
+    const val UI_CONFIG_MOVIE_POSTER_COLORS = "moviePosterColors"
+    const val UI_CONFIG_APP_TITLE = "appTitle"
+    const val UI_CONFIG_LOADING_TEXT = "loadingText"
+    const val UI_CONFIG_ERROR_MESSAGE = "errorMessage"
+    const val UI_CONFIG_NO_MOVIES_FOUND = "noMoviesFound"
+    const val UI_CONFIG_RETRY_BUTTON = "retryButton"
+    const val UI_CONFIG_BACK_BUTTON = "backButton"
+    const val UI_CONFIG_PLAY_BUTTON = "playButton"
+    const val UI_CONFIG_PRIMARY_BUTTON_COLOR = "primaryButtonColor"
+    const val UI_CONFIG_SECONDARY_BUTTON_COLOR = "secondaryButtonColor"
+    const val UI_CONFIG_BUTTON_TEXT_COLOR = "buttonTextColor"
+    const val UI_CONFIG_BUTTON_CORNER_RADIUS = "buttonCornerRadius"
+
+    // Default UI Values
+    const val DEFAULT_PRIMARY_COLOR = "#DC3528"
+    const val DEFAULT_SECONDARY_COLOR = "#E64539"
+    const val DEFAULT_BACKGROUND_COLOR = "#121212"
+    const val DEFAULT_SURFACE_COLOR = "#1E1E1E"
+    const val DEFAULT_ON_PRIMARY_COLOR = "#FFFFFF"
+    const val DEFAULT_ON_SECONDARY_COLOR = "#FFFFFF"
+    const val DEFAULT_ON_BACKGROUND_COLOR = "#FFFFFF"
+    const val DEFAULT_ON_SURFACE_COLOR = "#FFFFFF"
+    const val DEFAULT_APP_TITLE = "TmdbAi - Movie Details"
+    const val DEFAULT_LOADING_TEXT = "Loading details..."
+    const val DEFAULT_ERROR_MESSAGE = "Error loading movie"
+    const val DEFAULT_NO_MOVIES_FOUND = "Movie not found"
+    const val DEFAULT_RETRY_BUTTON = "Retry"
+    const val DEFAULT_BACK_BUTTON = "Back to list"
+    const val DEFAULT_PLAY_BUTTON = "Watch"
+    const val DEFAULT_BUTTON_CORNER_RADIUS = 12
+
+    // Movie Colors Keys
+    const val MOVIE_COLORS_JSON = "colors"
+    const val MOVIE_COLORS_ACCENT = "accent"
+    const val MOVIE_COLORS_PRIMARY = "primary"
+    const val MOVIE_COLORS_SECONDARY = "secondary"
+    const val MOVIE_COLORS_METADATA = "metadata"
+    const val MOVIE_COLORS_CATEGORY = "category"
+    const val MOVIE_COLORS_MODEL_USED = "model_used"
+    const val MOVIE_COLORS_RATING = "rating"
+
+    // Default Movie Colors
+    const val DEFAULT_MOVIE_ACCENT_COLOR = "#3AA1EF"
+    const val DEFAULT_MOVIE_PRIMARY_COLOR = "#1278D4"
+    const val DEFAULT_MOVIE_SECONDARY_COLOR = "#238EE5"
+    const val DEFAULT_MOVIE_CATEGORY = "MEDIUM"
+    const val DEFAULT_MOVIE_MODEL_USED = true
+    const val DEFAULT_MOVIE_RATING = 0.0
+
+    // Language
+    const val DEFAULT_LANGUAGE = "en"
+
     // MCP Method Names
     const val MCP_METHOD_GET_POPULAR_MOVIES = "getPopularMovies"
     const val MCP_METHOD_GET_MOVIE_DETAILS = "getMovieDetails"
+    const val MCP_METHOD_MOCK = "mock"
 
     // UI Text Constants (for data layer)
     const val MOVIES_TITLE = "Movies"
