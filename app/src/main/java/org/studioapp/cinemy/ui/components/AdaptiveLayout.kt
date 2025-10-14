@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -90,7 +91,7 @@ private fun FoldableDualPaneLayout(
             modifier = Modifier
                 .width(1.dp)
                 .fillMaxSize(),
-            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+            color = colorScheme.outline.copy(alpha = 0.3f)
         )
 
         // Right pane - Movie details (flexible width)
@@ -133,7 +134,7 @@ private fun StandardDualPaneLayout(
             modifier = Modifier
                 .width(1.dp)
                 .fillMaxSize(),
-            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+            color = colorScheme.outline.copy(alpha = 0.3f)
         )
 
         // Right pane - Movie details (flexible width)

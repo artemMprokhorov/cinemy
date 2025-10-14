@@ -11,6 +11,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -27,6 +29,7 @@ import org.studioapp.cinemy.ui.theme.Dimens200
 import org.studioapp.cinemy.ui.theme.Dimens8
 import org.studioapp.cinemy.ui.theme.Float01
 import org.studioapp.cinemy.ui.theme.Float07
+import org.studioapp.cinemy.ui.constants.UiConstants
 import org.studioapp.cinemy.ui.theme.SentimentNegative
 import org.studioapp.cinemy.ui.theme.SentimentPositive
 
@@ -45,9 +48,9 @@ fun SentimentAnalysisCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .testTag("sentiment_analysis_card"),
+            .testTag(UiConstants.TestTags.SENTIMENT_ANALYSIS_CARD),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = colorScheme.surface
         ),
         shape = RoundedCornerShape(Dimens16)
     ) {
@@ -57,24 +60,24 @@ fun SentimentAnalysisCard(
         ) {
             Text(
                 text = stringResource(R.string.sentiment_analysis_title),
-                style = MaterialTheme.typography.titleMedium,
+                style = typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.testTag("sentiment_title")
+                color = colorScheme.onSurface,
+                modifier = Modifier.testTag(UiConstants.TestTags.SENTIMENT_TITLE)
             )
 
             Text(
                 text = stringResource(R.string.sentiment_analysis_subtitle),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = Float07)
+                style = typography.bodySmall,
+                color = colorScheme.onSurface.copy(alpha = Float07)
             )
 
             // Error display
             error?.let { errorText ->
                 Text(
                     text = errorText,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall
+                    color = colorScheme.error,
+                    style = typography.bodySmall
                 )
             }
 
@@ -85,8 +88,8 @@ fun SentimentAnalysisCard(
                 } else {
                     Text(
                         text = stringResource(R.string.sentiment_reviews_not_loaded),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = Float07)
+                        style = typography.bodyMedium,
+                        color = colorScheme.onSurface.copy(alpha = Float07)
                     )
                 }
             } ?: run {
@@ -94,8 +97,8 @@ fun SentimentAnalysisCard(
                 if (error == null) {
                     Text(
                         text = stringResource(R.string.sentiment_reviews_loading),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = Float07)
+                        style = typography.bodyMedium,
+                        color = colorScheme.onSurface.copy(alpha = Float07)
                     )
                 }
             }
@@ -116,7 +119,7 @@ private fun SentimentReviewsContent(
         if (reviews.hasPositiveReviews) {
             Text(
                 text = stringResource(R.string.sentiment_positive_reviews, reviews.positive.size),
-                style = MaterialTheme.typography.titleSmall,
+                style = typography.titleSmall,
                 fontWeight = FontWeight.Medium,
                 color = SentimentPositive
             )
@@ -139,7 +142,7 @@ private fun SentimentReviewsContent(
         if (reviews.hasNegativeReviews) {
             Text(
                 text = stringResource(R.string.sentiment_negative_reviews, reviews.negative.size),
-                style = MaterialTheme.typography.titleSmall,
+                style = typography.titleSmall,
                 fontWeight = FontWeight.Medium,
                 color = SentimentNegative
             )
@@ -174,7 +177,7 @@ private fun ReviewItem(
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.bodySmall,
+            style = typography.bodySmall,
             color = textColor,
             modifier = Modifier.padding(Dimens12)
         )

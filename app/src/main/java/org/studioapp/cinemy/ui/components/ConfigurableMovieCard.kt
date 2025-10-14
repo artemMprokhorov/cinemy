@@ -17,6 +17,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -144,7 +146,7 @@ fun ConfigurableMovieCard(
                     .fillMaxWidth()
                     .height(Dimens200)
                     .clip(RoundedCornerShape(Dimens8))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .background(colorScheme?.surface ?: MaterialTheme.colorScheme.surface)
             ) {
                 // Try backdrop first, then poster
                 val imagePath = ImageConfig.buildBackdropUrl(movie.backdropPath)
@@ -165,14 +167,14 @@ fun ConfigurableMovieCard(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.surfaceVariant),
+                            .background(colorScheme?.surface ?: MaterialTheme.colorScheme.surface),
                         contentAlignment = Alignment.Center
                     ) {
                         ConfigurableText(
                             text = stringResource(R.string.no_image),
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = typography.bodyMedium,
                             uiConfig = uiConfig,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = colorScheme?.onSurface ?: MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -192,7 +194,7 @@ fun ConfigurableMovieCard(
                                 movie.rating,
                                 movie.voteCount
                             ),
-                            style = MaterialTheme.typography.labelSmall,
+                            style = typography.labelSmall,
                             uiConfig = uiConfig,
                             color = Color.White,
                             modifier = Modifier.padding(horizontal = Dimens8, vertical = Dimens4)
@@ -206,7 +208,7 @@ fun ConfigurableMovieCard(
             // Movie title
             ConfigurableText(
                 text = movie.title,
-                style = MaterialTheme.typography.titleMedium,
+                style = typography.titleMedium,
                 uiConfig = uiConfig,
                 color = textColor,
                 maxLines = MAX_LINES_TITLE,
@@ -218,7 +220,7 @@ fun ConfigurableMovieCard(
             // Movie description
             ConfigurableText(
                 text = movie.description,
-                style = MaterialTheme.typography.bodySmall,
+                style = typography.bodySmall,
                 uiConfig = uiConfig,
                 color = textColor.copy(alpha = Float07),
                 maxLines = MAX_LINES_DESCRIPTION,
@@ -237,7 +239,7 @@ fun ConfigurableMovieCard(
                 if (showReleaseDate) {
                     ConfigurableText(
                         text = movie.releaseDate,
-                        style = MaterialTheme.typography.labelSmall,
+                        style = typography.labelSmall,
                         uiConfig = uiConfig,
                         color = textColor.copy(alpha = Float06)
                     )
@@ -251,7 +253,7 @@ fun ConfigurableMovieCard(
                     ) {
                         ConfigurableText(
                             text = stringResource(R.string.adult_content_indicator),
-                            style = MaterialTheme.typography.labelSmall,
+                            style = typography.labelSmall,
                             uiConfig = uiConfig,
                             color = Color.White,
                             modifier = Modifier.padding(horizontal = Dimens4, vertical = Dimens2)
@@ -274,7 +276,7 @@ fun ConfigurableMovieCard(
                                 R.string.original_language_label,
                                 movie.originalLanguage.uppercase()
                             ),
-                            style = MaterialTheme.typography.labelSmall,
+                            style = typography.labelSmall,
                             uiConfig = uiConfig,
                             color = textColor.copy(alpha = Float05)
                         )
@@ -288,7 +290,7 @@ fun ConfigurableMovieCard(
                         ) {
                             ConfigurableText(
                                 text = stringResource(R.string.video_available),
-                                style = MaterialTheme.typography.labelSmall,
+                                style = typography.labelSmall,
                                 uiConfig = uiConfig,
                                 color = Color.White,
                                 modifier = Modifier.padding(
@@ -306,7 +308,7 @@ fun ConfigurableMovieCard(
                 Spacer(modifier = Modifier.height(Dimens4))
                 ConfigurableText(
                     text = stringResource(R.string.original_title_label, movie.originalTitle),
-                    style = MaterialTheme.typography.labelSmall,
+                    style = typography.labelSmall,
                     uiConfig = uiConfig,
                     color = textColor.copy(alpha = Float05),
                     maxLines = 1
@@ -326,7 +328,7 @@ fun ConfigurableMovieCard(
                             R.string.color_category_label,
                             movie.colors.metadata.category
                         ),
-                        style = MaterialTheme.typography.labelSmall,
+                        style = typography.labelSmall,
                         uiConfig = uiConfig,
                         color = textColor.copy(alpha = Float05)
                     )
@@ -398,7 +400,7 @@ fun ConfigurableMovieCard(
                 Spacer(modifier = Modifier.height(Dimens4))
                 ConfigurableText(
                     text = stringResource(R.string.popularity_label, movie.popularity),
-                    style = MaterialTheme.typography.labelSmall,
+                    style = typography.labelSmall,
                     uiConfig = uiConfig,
                     color = textColor.copy(alpha = Float05)
                 )

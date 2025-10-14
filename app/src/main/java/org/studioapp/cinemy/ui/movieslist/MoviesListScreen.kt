@@ -25,6 +25,8 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -52,10 +54,14 @@ import org.studioapp.cinemy.R
 import org.studioapp.cinemy.data.model.Movie
 import org.studioapp.cinemy.data.model.UiConfiguration
 import org.studioapp.cinemy.presentation.movieslist.MoviesListIntent
+import org.studioapp.cinemy.presentation.movieslist.MoviesListIntent.PreviousPage
+import org.studioapp.cinemy.presentation.movieslist.MoviesListIntent.LoadPopularMovies
+import org.studioapp.cinemy.presentation.movieslist.MoviesListIntent.NextPage
 import org.studioapp.cinemy.presentation.movieslist.MoviesListState
 import org.studioapp.cinemy.presentation.movieslist.MoviesListViewModel
 import org.studioapp.cinemy.ui.components.ConfigurableMovieCard
 import org.studioapp.cinemy.ui.components.PullToReloadArrow
+import org.studioapp.cinemy.ui.constants.UiConstants
 import org.studioapp.cinemy.ui.theme.CinemyTheme
 import org.studioapp.cinemy.ui.theme.Dimens100
 import org.studioapp.cinemy.ui.theme.Dimens112
@@ -80,6 +86,7 @@ fun MoviesListScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    
 
     // Handle back navigation - navigate to previous page if available, otherwise allow default back behavior
     val pagination = state.pagination
@@ -88,7 +95,7 @@ fun MoviesListScreen(
     BackHandler(enabled = hasPreviousPage) {
         if (hasPreviousPage) {
             // Navigate to previous page
-            viewModel.processIntent(MoviesListIntent.PreviousPage)
+            viewModel.processIntent(PreviousPage)
         }
         // If hasPreviousPage is false, BackHandler is disabled and system will handle back press
     }
@@ -119,7 +126,7 @@ private fun MoviesListContent(
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.isLoading,
         onRefresh = {
-            onIntent(MoviesListIntent.LoadPopularMovies)
+            onIntent(LoadPopularMovies)
         }
     )
 
@@ -148,21 +155,21 @@ private fun MoviesListContent(
                             Text(
                                 text = stringResource(R.string.loading_text),
                                 color = Color.White,
-                                style = MaterialTheme.typography.headlineMedium,
+                                style = typography.headlineMedium,
                                 modifier = Modifier
                                     .semantics {
-                                        contentDescription = "Loading movies, please wait"
+                                        contentDescription = UiConstants.ContentDescriptions.LOADING_MOVIES
                                     }
-                                    .testTag("loading_text")
+                                    .testTag(UiConstants.TestTags.LOADING_TEXT)
                             )
                             Spacer(modifier = Modifier.height(Dimens16))
                             CircularProgressIndicator(
                                 color = Color.White,
                                 modifier = Modifier
                                     .semantics {
-                                        contentDescription = "Loading movies, please wait"
+                                        contentDescription = UiConstants.ContentDescriptions.LOADING_MOVIES
                                     }
-                                    .testTag("loading_indicator")
+                                    .testTag(UiConstants.TestTags.LOADING_INDICATOR)
                             )
                         }
                     }
@@ -177,7 +184,7 @@ private fun MoviesListContent(
                             modifier = Modifier
                                 .verticalScroll(rememberScrollState())
                                 .semantics {
-                                    contentDescription = "Error loading movies, pull down to retry"
+                                    contentDescription = UiConstants.ContentDescriptions.ERROR_LOADING_MOVIES_RETRY
                                 },
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -185,22 +192,22 @@ private fun MoviesListContent(
                             Text(
                                 text = stringResource(R.string.error_generic),
                                 color = Color.White,
-                                style = MaterialTheme.typography.headlineLarge,
+                                style = typography.headlineLarge,
                                 modifier = Modifier
                                     .semantics {
-                                        contentDescription = "Error: Failed to load movies"
+                                        contentDescription = UiConstants.ContentDescriptions.ERROR_FAILED_LOAD_MOVIES
                                     }
-                                    .testTag("error_title")
+                                    .testTag(UiConstants.TestTags.ERROR_TITLE)
                             )
                             Text(
                                 text = stringResource(R.string.movie_details),
                                 color = Color.White,
-                                style = MaterialTheme.typography.headlineLarge,
+                                style = typography.headlineLarge,
                                 modifier = Modifier
                                     .semantics {
-                                        contentDescription = "Movies list screen"
+                                        contentDescription = UiConstants.ContentDescriptions.MOVIES_LIST_SCREEN
                                     }
-                                    .testTag("error_subtitle")
+                                    .testTag(UiConstants.TestTags.ERROR_SUBTITLE)
                             )
                             Spacer(modifier = Modifier.height(Dimens16))
                             PullToReloadArrow()
@@ -208,12 +215,12 @@ private fun MoviesListContent(
                             Text(
                                 text = stringResource(R.string.pull_to_reload),
                                 color = Color.White,
-                                style = MaterialTheme.typography.headlineMedium,
+                                style = typography.headlineMedium,
                                 modifier = Modifier
                                     .semantics {
-                                        contentDescription = "Pull down to retry loading movies"
+                                        contentDescription = UiConstants.ContentDescriptions.PULL_DOWN_RETRY_MOVIES
                                     }
-                                    .testTag("retry_instruction")
+                                    .testTag(UiConstants.TestTags.RETRY_INSTRUCTION)
                             )
                             Spacer(modifier = Modifier.height(Dimens100))
                         }
@@ -230,8 +237,8 @@ private fun MoviesListContent(
                         uiConfig = state.uiConfig,
                         onMovieClick = onMovieClick,
                         pagination = state.pagination,
-                        onNextPage = { onIntent(MoviesListIntent.NextPage) },
-                        onPreviousPage = { onIntent(MoviesListIntent.PreviousPage) },
+                        onNextPage = { onIntent(NextPage) },
+                        onPreviousPage = { onIntent(PreviousPage) },
                         snackbarHostState = snackbarHostState
                     )
                 }
@@ -344,7 +351,7 @@ private fun MoviesGrid(
                 ) {
                     Text(
                         text = stringResource(R.string.popular_title),
-                        style = MaterialTheme.typography.headlineMedium,
+                        style = typography.headlineMedium,
                         color = Color.White
                     )
                 }
@@ -393,7 +400,7 @@ private fun PaginationControls(
         Text(
             text = stringResource(R.string.page_info, pagination.page, pagination.totalPages),
             color = Color.White,
-            style = MaterialTheme.typography.bodyMedium
+            style = typography.bodyMedium
         )
 
         // Navigation buttons
@@ -449,14 +456,14 @@ private fun EmptyState() {
         ) {
             Text(
                 text = stringResource(R.string.no_movies_found),
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onSurface
+                style = typography.headlineSmall,
+                color = colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(Dimens8))
             Text(
                 text = stringResource(R.string.pull_to_refresh_try_again),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                style = typography.bodyMedium,
+                color = colorScheme.onSurfaceVariant
             )
         }
     }

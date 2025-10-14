@@ -27,6 +27,7 @@ import org.studioapp.cinemy.ui.theme.Dimens8
 import org.studioapp.cinemy.ui.theme.SplashBackground
 import org.studioapp.cinemy.ui.theme.TextSecondary
 import org.studioapp.cinemy.ui.theme.Typography16
+import kotlinx.coroutines.delay
 import org.studioapp.cinemy.ui.theme.Typography32
 
 private const val SPLASH_DISPLAY_DURATION_MS = 3000L
@@ -41,7 +42,7 @@ fun MovieAppSplashScreen(
     onSplashComplete: () -> Unit = {}
 ) {
     LaunchedEffect(key1 = true) {
-        kotlinx.coroutines.delay(SPLASH_DISPLAY_DURATION_MS) // 3 seconds
+        delay(SPLASH_DISPLAY_DURATION_MS) // 3 seconds
         onSplashComplete()
     }
     Box(

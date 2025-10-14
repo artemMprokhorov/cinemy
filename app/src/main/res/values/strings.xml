@@ -3,6 +3,22 @@
 
     <!-- UI Text -->
     <string name="loading_text">Loading...</string>
+    <string name="loading_movies_please_wait">Loading movies, please wait</string>
+    <string name="loading_movie_details_please_wait">Loading movie details, please wait</string>
+    <string name="error_loading_movies_retry">Error loading movies, pull down to retry</string>
+    <string name="error_failed_load_movies">Error: Failed to load movies</string>
+    <string name="movies_list_screen">Movies list screen</string>
+    <string name="pull_down_retry_movies">Pull down to retry loading movies</string>
+    <string name="error_loading_movie_details_retry">Error loading movie details, pull down to retry</string>
+    <string name="error_failed_load_movie_details">Error: Failed to load movie details</string>
+    <string name="movie_details_screen">Movie details screen</string>
+    <string name="pull_down_retry_movie_details">Pull down to retry loading movie details</string>
+    <string name="select_movie">Select a movie</string>
+    <string name="choose_movie_from_list">Choose a movie from the list to view details</string>
+    <string name="sample_movie">Sample Movie</string>
+    <string name="sample_movie_description">This is a sample movie description that shows how the detail screen looks.</string>
+    <string name="sample_release_date">2023-01-01</string>
+    <string name="sample_status">Released</string>
     <string name="no_movies_found">No movies found</string>
     <string name="retry_button">Retry</string>
     <string name="back_button">Back</string>
@@ -65,6 +81,9 @@
     <string name="error_mcp_unknown">Service error occurred</string>
     <string name="error_generic_unknown">An unexpected error occurred</string>
     <string name="error_generic_unexpected">Something went wrong</string>
+    <string name="error_title">Error</string>
+    <string name="error_subtitle">Something went wrong</string>
+    <string name="retry_instruction">Pull down to retry</string>
 
     <!-- Landscape mode strings -->
     <string name="landscape_hint">Rotate device for better viewing experience</string>

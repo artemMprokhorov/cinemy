@@ -1,6 +1,8 @@
 package org.studioapp.cinemy.ui.components
 
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,7 +32,7 @@ import org.studioapp.cinemy.data.model.UiConfiguration
 @Composable
 fun ConfigurableText(
     text: String,
-    style: TextStyle = MaterialTheme.typography.bodyMedium,
+    style: TextStyle = typography.bodyMedium,
     uiConfig: UiConfiguration? = null,
     modifier: Modifier = Modifier,
     color: Color? = null,
@@ -49,7 +51,7 @@ fun ConfigurableText(
             uiConfig.colors.onSurface
         }
 
-        else -> MaterialTheme.colorScheme.onBackground
+        else -> colorScheme.onBackground
     }
 
     // Debug logging for color application (removed to prevent infinite loop)

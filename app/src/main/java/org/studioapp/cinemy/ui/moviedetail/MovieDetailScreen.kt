@@ -23,6 +23,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,6 +47,7 @@ import org.studioapp.cinemy.presentation.moviedetail.MovieDetailState
 import org.studioapp.cinemy.presentation.moviedetail.MovieDetailViewModel
 import org.studioapp.cinemy.ui.components.ConfigurableText
 import org.studioapp.cinemy.ui.components.PullToReloadArrow
+import org.studioapp.cinemy.ui.constants.UiConstants
 import org.studioapp.cinemy.ui.components.SentimentAnalysisCard
 import org.studioapp.cinemy.ui.theme.CinemyTheme
 import org.studioapp.cinemy.ui.theme.Dimens100
@@ -69,6 +72,7 @@ fun MovieDetailScreen(
     onBackClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+    
 
     LaunchedEffect(movieId) {
         viewModel.processIntent(MovieDetailIntent.LoadMovieDetails(movieId))
@@ -115,20 +119,20 @@ private fun MovieDetailContent(
                     ) {
                         ConfigurableText(
                             text = stringResource(R.string.loading_text),
-                            style = MaterialTheme.typography.headlineMedium,
+                            style = typography.headlineMedium,
                             uiConfig = state.uiConfig,
                             color = Color.White,
-                            contentDescription = "Loading movie details, please wait",
-                            testTag = "loading_text"
+                            contentDescription = stringResource(R.string.loading_movie_details_please_wait),
+                            testTag = UiConstants.TestTags.LOADING_TEXT
                         )
                         Spacer(modifier = Modifier.height(Dimens16))
                         CircularProgressIndicator(
                             color = state.uiConfig?.colors?.primary ?: Color.White,
                             modifier = Modifier
                                 .semantics {
-                                    contentDescription = "Loading movie details, please wait"
+                                    contentDescription = UiConstants.ContentDescriptions.LOADING_MOVIE_DETAILS
                                 }
-                                .testTag("loading_indicator")
+                                .testTag(UiConstants.TestTags.LOADING_INDICATOR)
                         )
                     }
                 }
@@ -141,7 +145,7 @@ private fun MovieDetailContent(
                         .verticalScroll(rememberScrollState())
                         .pullRefresh(pullRefreshState)
                         .semantics {
-                            contentDescription = "Error loading movie details, pull down to retry"
+                            contentDescription = UiConstants.ContentDescriptions.ERROR_LOADING_MOVIE_DETAILS_RETRY
                         },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
@@ -149,30 +153,30 @@ private fun MovieDetailContent(
                     Spacer(modifier = Modifier.height(Dimens100))
                     ConfigurableText(
                         text = stringResource(R.string.error_generic),
-                        style = MaterialTheme.typography.headlineLarge,
+                        style = typography.headlineLarge,
                         uiConfig = state.uiConfig,
                         color = Color.White,
-                        contentDescription = "Error: Failed to load movie details",
-                        testTag = "error_title"
+                        contentDescription = stringResource(R.string.error_failed_load_movie_details),
+                        testTag = UiConstants.TestTags.ERROR_TITLE
                     )
                     ConfigurableText(
                         text = stringResource(R.string.movie_details),
-                        style = MaterialTheme.typography.headlineLarge,
+                        style = typography.headlineLarge,
                         uiConfig = state.uiConfig,
                         color = Color.White,
-                        contentDescription = "Movie details screen",
-                        testTag = "error_subtitle"
+                        contentDescription = stringResource(R.string.movie_details_screen),
+                        testTag = UiConstants.TestTags.ERROR_SUBTITLE
                     )
                     Spacer(modifier = Modifier.height(Dimens16))
                     PullToReloadArrow()
                     Spacer(modifier = Modifier.height(Dimens16))
                     ConfigurableText(
                         text = stringResource(R.string.pull_to_reload),
-                        style = MaterialTheme.typography.headlineMedium,
+                        style = typography.headlineMedium,
                         uiConfig = state.uiConfig,
                         color = Color.White,
-                        contentDescription = "Pull down to retry loading movie details",
-                        testTag = "retry_instruction"
+                        contentDescription = stringResource(R.string.pull_down_retry_movie_details),
+                        testTag = UiConstants.TestTags.RETRY_INSTRUCTION
                     )
                     Spacer(modifier = Modifier.height(Dimens100))
                 }
@@ -222,7 +226,7 @@ private fun MovieDetailsContent(
                 containerColor = if (uiConfig?.colors?.surface != null) {
                     uiConfig.colors.surface
                 } else {
-                    MaterialTheme.colorScheme.surface
+                    colorScheme.surface
                 }
             )
         ) {
@@ -233,7 +237,7 @@ private fun MovieDetailsContent(
                 // Title
                 ConfigurableText(
                     text = movieDetails.title,
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = typography.headlineMedium,
                     uiConfig = uiConfig
                 )
 
@@ -243,14 +247,14 @@ private fun MovieDetailsContent(
                 ) {
                     ConfigurableText(
                         text = stringResource(R.string.rating_label, movieDetails.rating),
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = typography.bodyLarge,
                         uiConfig = uiConfig,
                         color = uiConfig?.colors?.primary
                     )
                     Spacer(modifier = Modifier.width(Dimens16))
                     ConfigurableText(
                         text = stringResource(R.string.votes_label, movieDetails.voteCount),
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = typography.bodyMedium,
                         uiConfig = uiConfig
                     )
                 }
@@ -258,14 +262,14 @@ private fun MovieDetailsContent(
                 // Release date
                 ConfigurableText(
                     text = stringResource(R.string.release_date_label, movieDetails.releaseDate),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = typography.bodyMedium,
                     uiConfig = uiConfig
                 )
 
                 // Description
                 ConfigurableText(
                     text = movieDetails.description,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = typography.bodyMedium,
                     uiConfig = uiConfig
                 )
 
@@ -275,7 +279,7 @@ private fun MovieDetailsContent(
                         text = stringResource(
                             R.string.genres_label,
                             movieDetails.genres.joinToString(", ") { it.name }),
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = typography.bodyMedium,
                         uiConfig = uiConfig
                     )
                 }
@@ -301,19 +305,19 @@ private fun MovieDetailScreenPreview() {
         MovieDetailsContent(
             movieDetails = MovieDetails(
                 id = 1,
-                title = "Sample Movie",
-                description = "This is a sample movie description that shows how the detail screen looks.",
+                title = stringResource(R.string.sample_movie),
+                description = stringResource(R.string.sample_movie_description),
                 posterPath = null,
                 backdropPath = null,
                 rating = 8.5,
                 voteCount = 1000,
-                releaseDate = "2023-01-01",
+                releaseDate = stringResource(R.string.sample_release_date),
                 runtime = 120,
                 genres = emptyList(),
                 productionCompanies = emptyList(),
                 budget = 50000000,
                 revenue = 100000000,
-                status = "Released"
+                status = stringResource(R.string.sample_status)
             ),
             uiConfig = null,
             state = MovieDetailState()

@@ -6,12 +6,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.studioapp.cinemy.R
 import org.koin.androidx.compose.koinViewModel
 import org.studioapp.cinemy.data.model.Movie
 import org.studioapp.cinemy.presentation.moviedetail.MovieDetailViewModel
@@ -63,16 +67,16 @@ fun DualPaneScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "Select a movie",
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
+                            text = stringResource(R.string.select_movie),
+                            style = typography.headlineMedium,
+                            color = colorScheme.onSurface,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(16.dp)
                         )
                         Text(
-                            text = "Choose a movie from the list to view details",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            text = stringResource(R.string.choose_movie_from_list),
+                            style = typography.bodyLarge,
+                            color = colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(horizontal = 32.dp)
                         )
