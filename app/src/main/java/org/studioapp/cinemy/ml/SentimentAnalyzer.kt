@@ -11,6 +11,67 @@ import org.studioapp.cinemy.ml.model.KeywordSentimentModel
 import org.studioapp.cinemy.ml.model.ModelInfo
 import org.studioapp.cinemy.ml.model.ProductionModelData
 import org.studioapp.cinemy.ml.model.SentimentResult
+import org.studioapp.cinemy.ml.MLConstants.KEYWORD_MODEL_FILE
+import org.studioapp.cinemy.ml.MLConstants.ERROR_ANALYZER_NOT_INITIALIZED
+import org.studioapp.cinemy.ml.MLConstants.ERROR_ANALYSIS_ERROR
+import org.studioapp.cinemy.ml.MLConstants.NO_MODELS_AVAILABLE_ERROR
+import org.studioapp.cinemy.ml.MLConstants.ML_MODELS_PATH
+import org.studioapp.cinemy.ml.MLConstants.MODIFIER_ABSOLUTELY
+import org.studioapp.cinemy.ml.MLConstants.MODIFIER_COMPLETELY
+import org.studioapp.cinemy.ml.MLConstants.MODIFIER_TOTALLY
+import org.studioapp.cinemy.ml.MLConstants.MODIFIER_EXTREMELY
+import org.studioapp.cinemy.ml.MLConstants.MODIFIER_INCREDIBLY
+import org.studioapp.cinemy.ml.MLConstants.MODIFIER_VERY
+import org.studioapp.cinemy.ml.MLConstants.MODIFIER_REALLY
+import org.studioapp.cinemy.ml.MLConstants.MODIFIER_PRETTY
+import org.studioapp.cinemy.ml.MLConstants.MODIFIER_SOMEWHAT
+import org.studioapp.cinemy.ml.MLConstants.MODIFIER_SLIGHTLY
+import org.studioapp.cinemy.ml.MLConstants.MODIFIER_NOT
+import org.studioapp.cinemy.ml.MLConstants.MODIFIER_NEVER
+import org.studioapp.cinemy.ml.MLConstants.MODIFIER_BARELY
+import org.studioapp.cinemy.ml.MLConstants.CONTEXT_CINEMATOGRAPHY
+import org.studioapp.cinemy.ml.MLConstants.CONTEXT_ACTING
+import org.studioapp.cinemy.ml.MLConstants.CONTEXT_PLOT
+import org.studioapp.cinemy.ml.MLConstants.CONTEXT_STORY
+import org.studioapp.cinemy.ml.MLConstants.CONTEXT_DIRECTOR
+import org.studioapp.cinemy.ml.MLConstants.CONTEXT_PERFORMANCE
+import org.studioapp.cinemy.ml.MLConstants.CONTEXT_SCRIPT
+import org.studioapp.cinemy.ml.MLConstants.CONTEXT_DIALOGUE
+import org.studioapp.cinemy.ml.MLConstants.CONTEXT_VISUALS
+import org.studioapp.cinemy.ml.MLConstants.CONTEXT_EFFECTS
+import org.studioapp.cinemy.ml.MLConstants.CONTEXT_SOUNDTRACK
+import org.studioapp.cinemy.ml.MLConstants.CONTEXT_EDITING
+import org.studioapp.cinemy.ml.MLConstants.QUALITY_MASTERPIECE
+import org.studioapp.cinemy.ml.MLConstants.QUALITY_ARTISTRY
+import org.studioapp.cinemy.ml.MLConstants.QUALITY_BRILLIANT
+import org.studioapp.cinemy.ml.MLConstants.QUALITY_GENIUS
+import org.studioapp.cinemy.ml.MLConstants.QUALITY_INNOVATIVE
+import org.studioapp.cinemy.ml.MLConstants.QUALITY_GROUNDBREAKING
+import org.studioapp.cinemy.ml.MLConstants.QUALITY_REVOLUTIONARY
+import org.studioapp.cinemy.ml.MLConstants.QUALITY_TIMELESS
+import org.studioapp.cinemy.ml.MLConstants.QUALITY_CLASSIC
+import org.studioapp.cinemy.ml.MLConstants.FAILURE_FLOP
+import org.studioapp.cinemy.ml.MLConstants.FAILURE_DISASTER
+import org.studioapp.cinemy.ml.MLConstants.FAILURE_FAILURE
+import org.studioapp.cinemy.ml.MLConstants.FAILURE_RUINED
+import org.studioapp.cinemy.ml.MLConstants.FAILURE_DESTROYED
+import org.studioapp.cinemy.ml.MLConstants.FAILURE_BUTCHERED
+import org.studioapp.cinemy.ml.MLConstants.FAILURE_MANGLED
+import org.studioapp.cinemy.ml.MLConstants.FAILURE_TORTURE
+import org.studioapp.cinemy.ml.MLConstants.FAILURE_NIGHTMARE
+import org.studioapp.cinemy.ml.MLConstants.WORD_SPLIT_REGEX_PATTERN
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_POSITIVE
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_NEGATIVE
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_NEUTRAL
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_MODIFIER
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_MOVIE
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_QUALITY
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_FAILURE
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_PATTERN
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_NEGATIVE_PATTERN
+import org.studioapp.cinemy.ml.MLConstants.SENTIMENT_POSITIVE
+import org.studioapp.cinemy.ml.MLConstants.SENTIMENT_NEGATIVE
+import org.studioapp.cinemy.ml.MLConstants.SENTIMENT_NEUTRAL
 import java.lang.ref.WeakReference
 import kotlin.math.abs
 
@@ -65,12 +126,12 @@ class SentimentAnalyzer private constructor(private val context: Context) {
          */
 
         // Keyword model file for fallback
-        private const val KEYWORD_MODEL_FILE = "multilingual_sentiment_production.json"
+        private const val KEYWORD_MODEL_FILE = MLConstants.KEYWORD_MODEL_FILE
 
 
         // Error messages
-        private const val ERROR_ANALYZER_NOT_INITIALIZED = "Analyzer not initialized"
-        private const val ERROR_ANALYSIS_ERROR = "Analysis error: "
+        private const val ERROR_ANALYZER_NOT_INITIALIZED = MLConstants.ERROR_ANALYZER_NOT_INITIALIZED
+        private const val ERROR_ANALYSIS_ERROR = MLConstants.ERROR_ANALYSIS_ERROR
     }
 
     /**
@@ -119,7 +180,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
      */
     private suspend fun initializeKeywordModel() {
         val modelJson = runCatching {
-            context.assets.open("ml_models/$KEYWORD_MODEL_FILE").use { inputStream ->
+            context.assets.open("$ML_MODELS_PATH$KEYWORD_MODEL_FILE").use { inputStream ->
                 inputStream.bufferedReader().readText()
             }
         }.getOrNull()
@@ -174,7 +235,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             if (keywordModel != null) {
                 analyzeWithKeywords(text, keywordModel!!)
             } else {
-                SentimentResult.error("No models available")
+                SentimentResult.error(NO_MODELS_AVAILABLE_ERROR)
             }
         }.getOrElse { e ->
             SentimentResult.error("$ERROR_ANALYSIS_ERROR${e.message}")
@@ -293,38 +354,38 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         )
 
         // Create multilingual keywords based on production model
-        val positiveKeywords = createMultilingualKeywords("positive")
-        val negativeKeywords = createMultilingualKeywords("negative")
-        val neutralIndicators = createMultilingualKeywords("neutral")
+        val positiveKeywords = createMultilingualKeywords(SENTIMENT_POSITIVE)
+        val negativeKeywords = createMultilingualKeywords(SENTIMENT_NEGATIVE)
+        val neutralIndicators = createMultilingualKeywords(SENTIMENT_NEUTRAL)
 
         val intensityModifiers = mapOf(
-            "absolutely" to 1.5,
-            "completely" to 1.4,
-            "totally" to 1.3,
-            "extremely" to 1.3,
-            "incredibly" to 1.3,
-            "very" to 1.2,
-            "really" to 1.1,
-            "pretty" to 0.8,
-            "somewhat" to 0.7,
-            "slightly" to 0.6,
-            "not" to -1.0,
-            "never" to -1.0,
-            "barely" to -0.5
+            MODIFIER_ABSOLUTELY to 1.5,
+            MODIFIER_COMPLETELY to 1.4,
+            MODIFIER_TOTALLY to 1.3,
+            MODIFIER_EXTREMELY to 1.3,
+            MODIFIER_INCREDIBLY to 1.3,
+            MODIFIER_VERY to 1.2,
+            MODIFIER_REALLY to 1.1,
+            MODIFIER_PRETTY to 0.8,
+            MODIFIER_SOMEWHAT to 0.7,
+            MODIFIER_SLIGHTLY to 0.6,
+            MODIFIER_NOT to -1.0,
+            MODIFIER_NEVER to -1.0,
+            MODIFIER_BARELY to -0.5
         )
 
         val contextBoosters = ContextBoosters(
             movieTerms = listOf(
-                "cinematography", "acting", "plot", "story", "director", "performance",
-                "script", "dialogue", "visuals", "effects", "soundtrack", "editing"
+                CONTEXT_CINEMATOGRAPHY, CONTEXT_ACTING, CONTEXT_PLOT, CONTEXT_STORY, CONTEXT_DIRECTOR, CONTEXT_PERFORMANCE,
+                CONTEXT_SCRIPT, CONTEXT_DIALOGUE, CONTEXT_VISUALS, CONTEXT_EFFECTS, CONTEXT_SOUNDTRACK, CONTEXT_EDITING
             ),
             positiveContext = listOf(
-                "masterpiece", "artistry", "brilliant", "genius", "innovative",
-                "groundbreaking", "revolutionary", "timeless", "classic"
+                QUALITY_MASTERPIECE, QUALITY_ARTISTRY, QUALITY_BRILLIANT, QUALITY_GENIUS, QUALITY_INNOVATIVE,
+                QUALITY_GROUNDBREAKING, QUALITY_REVOLUTIONARY, QUALITY_TIMELESS, QUALITY_CLASSIC
             ),
             negativeContext = listOf(
-                "flop", "disaster", "failure", "ruined", "destroyed", "butchered",
-                "mangled", "torture", "nightmare"
+                FAILURE_FLOP, FAILURE_DISASTER, FAILURE_FAILURE, FAILURE_RUINED, FAILURE_DESTROYED, FAILURE_BUTCHERED,
+                FAILURE_MANGLED, FAILURE_TORTURE, FAILURE_NIGHTMARE
             )
         )
 
@@ -416,7 +477,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         model: KeywordSentimentModel
     ): SentimentResult {
         val textLower = text.lowercase()
-        val words = textLower.split(Regex("\\W+")).filter { it.isNotBlank() }
+        val words = textLower.split(Regex(WORD_SPLIT_REGEX_PATTERN)).filter { it.isNotBlank() }
 
         var positiveScore = 0.0
         var negativeScore = 0.0
@@ -428,17 +489,17 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             when {
                 model.positiveKeywords.contains(word) -> {
                     positiveScore += 1.0
-                    foundWords.add("+$word")
+                    foundWords.add("$EMOJI_POSITIVE$word")
                 }
 
                 model.negativeKeywords.contains(word) -> {
                     negativeScore += 1.0
-                    foundWords.add("-$word")
+                    foundWords.add("$EMOJI_NEGATIVE$word")
                 }
 
                 model.neutralIndicators?.contains(word) == true -> {
                     neutralScore += 0.5
-                    foundWords.add("~$word")
+                    foundWords.add("$EMOJI_NEUTRAL$word")
                 }
             }
         }
@@ -464,7 +525,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                         negativeScore *= multiplier
                     }
                 }
-                foundWords.add("*$modifier")
+                    foundWords.add("$EMOJI_MODIFIER$modifier")
             }
         }
 
@@ -472,21 +533,21 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         model.contextBoosters?.let { boosters ->
             boosters.movieTerms?.forEach { term ->
                 if (textLower.contains(term)) {
-                    foundWords.add("🎬$term")
+                    foundWords.add("$EMOJI_MOVIE$term")
                 }
             }
 
             boosters.positiveContext?.forEach { context ->
                 if (textLower.contains(context)) {
                     positiveScore += 0.3
-                    foundWords.add("✨$context")
+                    foundWords.add("$EMOJI_QUALITY$context")
                 }
             }
 
             boosters.negativeContext?.forEach { context ->
                 if (textLower.contains(context)) {
                     negativeScore += 0.3
-                    foundWords.add("💥$context")
+                    foundWords.add("$EMOJI_FAILURE$context")
                 }
             }
         }
@@ -496,14 +557,14 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             boosters.positiveContext?.forEach { pattern ->
                 if (textLower.contains(pattern)) {
                     positiveScore += 0.5 // Higher bonus for context patterns
-                    foundWords.add("🔥$pattern")
+                    foundWords.add("$EMOJI_PATTERN$pattern")
                 }
             }
 
             boosters.negativeContext?.forEach { pattern ->
                 if (textLower.contains(pattern)) {
                     negativeScore += 0.5 // Higher bonus for context patterns
-                    foundWords.add("💀$pattern")
+                    foundWords.add("$EMOJI_NEGATIVE_PATTERN$pattern")
                 }
             }
         }
@@ -552,7 +613,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         model: KeywordSentimentModel
     ): SentimentResult {
         val textLower = text.lowercase()
-        val words = textLower.split(Regex("\\W+")).filter { it.isNotBlank() }
+        val words = textLower.split(Regex(WORD_SPLIT_REGEX_PATTERN)).filter { it.isNotBlank() }
 
         var positiveScore = 0.0
         var negativeScore = 0.0

@@ -53,4 +53,81 @@ object MLConstants {
     const val NEGATIVE_KEYWORD_UGLY = "ugly"
     
     const val UNKNOWN_ERROR_MESSAGE = "Unknown error"
+    
+    // Sentiment Analyzer Constants
+    const val KEYWORD_MODEL_FILE = "multilingual_sentiment_production.json"
+    const val ERROR_ANALYZER_NOT_INITIALIZED = "Analyzer not initialized"
+    const val ERROR_ANALYSIS_ERROR = "Analysis error: "
+    const val NO_MODELS_AVAILABLE_ERROR = "No models available"
+    const val ML_MODELS_PATH = "ml_models/"
+    
+    // Sentiment Analysis Modifiers
+    const val MODIFIER_ABSOLUTELY = "absolutely"
+    const val MODIFIER_COMPLETELY = "completely"
+    const val MODIFIER_TOTALLY = "totally"
+    const val MODIFIER_EXTREMELY = "extremely"
+    const val MODIFIER_INCREDIBLY = "incredibly"
+    const val MODIFIER_VERY = "very"
+    const val MODIFIER_REALLY = "really"
+    const val MODIFIER_PRETTY = "pretty"
+    const val MODIFIER_SOMEWHAT = "somewhat"
+    const val MODIFIER_SLIGHTLY = "slightly"
+    const val MODIFIER_NOT = "not"
+    const val MODIFIER_NEVER = "never"
+    const val MODIFIER_BARELY = "barely"
+    
+    // Sentiment Analysis Context Terms
+    const val CONTEXT_CINEMATOGRAPHY = "cinematography"
+    const val CONTEXT_ACTING = "acting"
+    const val CONTEXT_PLOT = "plot"
+    const val CONTEXT_STORY = "story"
+    const val CONTEXT_DIRECTOR = "director"
+    const val CONTEXT_PERFORMANCE = "performance"
+    const val CONTEXT_SCRIPT = "script"
+    const val CONTEXT_DIALOGUE = "dialogue"
+    const val CONTEXT_VISUALS = "visuals"
+    const val CONTEXT_EFFECTS = "effects"
+    const val CONTEXT_SOUNDTRACK = "soundtrack"
+    const val CONTEXT_EDITING = "editing"
+    
+    // Sentiment Analysis Quality Terms
+    const val QUALITY_MASTERPIECE = "masterpiece"
+    const val QUALITY_ARTISTRY = "artistry"
+    const val QUALITY_BRILLIANT = "brilliant"
+    const val QUALITY_GENIUS = "genius"
+    const val QUALITY_INNOVATIVE = "innovative"
+    const val QUALITY_GROUNDBREAKING = "groundbreaking"
+    const val QUALITY_REVOLUTIONARY = "revolutionary"
+    const val QUALITY_TIMELESS = "timeless"
+    const val QUALITY_CLASSIC = "classic"
+    
+    // Sentiment Analysis Failure Terms
+    const val FAILURE_FLOP = "flop"
+    const val FAILURE_DISASTER = "disaster"
+    const val FAILURE_FAILURE = "failure"
+    const val FAILURE_RUINED = "ruined"
+    const val FAILURE_DESTROYED = "destroyed"
+    const val FAILURE_BUTCHERED = "butchered"
+    const val FAILURE_MANGLED = "mangled"
+    const val FAILURE_TORTURE = "torture"
+    const val FAILURE_NIGHTMARE = "nightmare"
+    
+    // Sentiment Analysis Regex
+    const val WORD_SPLIT_REGEX_PATTERN = "\\W+"
+    
+    // Sentiment Analysis Emojis
+    const val EMOJI_POSITIVE = "+"
+    const val EMOJI_NEGATIVE = "-"
+    const val EMOJI_NEUTRAL = "~"
+    const val EMOJI_MODIFIER = "*"
+    const val EMOJI_MOVIE = "🎬"
+    const val EMOJI_QUALITY = "✨"
+    const val EMOJI_FAILURE = "💥"
+    const val EMOJI_PATTERN = "🔥"
+    const val EMOJI_NEGATIVE_PATTERN = "💀"
+    
+    // Sentiment Analysis Categories
+    const val SENTIMENT_POSITIVE = "positive"
+    const val SENTIMENT_NEGATIVE = "negative"
+    const val SENTIMENT_NEUTRAL = "neutral"
 }
