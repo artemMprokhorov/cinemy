@@ -13,7 +13,10 @@ import org.studioapp.cinemy.data.model.MovieDetailsResponse
 import org.studioapp.cinemy.data.model.MovieListResponse
 import org.studioapp.cinemy.data.model.Pagination
 import org.studioapp.cinemy.data.model.Result
-import org.studioapp.cinemy.data.model.StringConstants
+import org.studioapp.cinemy.data.model.StringConstants.ERROR_NETWORK_WITH_MESSAGE
+import org.studioapp.cinemy.data.model.StringConstants.ERROR_UNKNOWN
+import org.studioapp.cinemy.data.model.StringConstants.NETWORK_DELAY_BASE_MS
+import org.studioapp.cinemy.data.model.StringConstants.PAGINATION_FIRST_PAGE
 import org.studioapp.cinemy.data.model.UiConfiguration
 
 class MovieRepositoryImpl(
@@ -49,7 +52,7 @@ class MovieRepositoryImpl(
                     is Result.Loading -> Result.Loading
                 }
             }.getOrElse { exception ->
-                Result.Error("${StringConstants.ERROR_NETWORK_WITH_MESSAGE.format(exception.message ?: StringConstants.ERROR_UNKNOWN)}")
+                Result.Error("${ERROR_NETWORK_WITH_MESSAGE.format(exception.message ?: ERROR_UNKNOWN)}")
             }
         }
     }
@@ -79,7 +82,7 @@ class MovieRepositoryImpl(
                     is Result.Loading -> Result.Loading
                 }
             }.getOrElse { exception ->
-                Result.Error("${StringConstants.ERROR_NETWORK_WITH_MESSAGE.format(exception.message ?: StringConstants.ERROR_UNKNOWN)}")
+                Result.Error("${ERROR_NETWORK_WITH_MESSAGE.format(exception.message ?: ERROR_UNKNOWN)}")
             }
         }
     }
@@ -90,7 +93,7 @@ class MovieRepositoryImpl(
      * @return Result containing MovieListResponse with mock movies and UI config
      */
     private suspend fun loadMockPopularMovies(page: Int): Result<MovieListResponse> {
-        delay(StringConstants.NETWORK_DELAY_BASE_MS)
+        delay(NETWORK_DELAY_BASE_MS)
 
         val movieDtos = assetDataLoader.loadMockMovies()
         val movies = movieDtos.map { MovieMapper.mapMovieDtoToMovie(it) }
@@ -100,7 +103,7 @@ class MovieRepositoryImpl(
             totalPages = 3,
             totalResults = 30,
             hasNext = page < 3,
-            hasPrevious = page > StringConstants.PAGINATION_FIRST_PAGE
+            hasPrevious = page > PAGINATION_FIRST_PAGE
         )
 
         val uiConfig = createDefaultUiConfig()
@@ -121,7 +124,7 @@ class MovieRepositoryImpl(
      * @return Result containing MovieDetailsResponse with mock movie details and UI config
      */
     private suspend fun loadMockMovieDetails(movieId: Int): Result<MovieDetailsResponse> {
-        delay(StringConstants.NETWORK_DELAY_BASE_MS)
+        delay(NETWORK_DELAY_BASE_MS)
 
         val movieDetails = loadMockMovieDetailsFromAssets()
         val sentimentReviews: org.studioapp.cinemy.data.model.SentimentReviews? = null

@@ -17,15 +17,31 @@ import org.json.JSONObject
 import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.mcp.models.McpRequest
 import org.studioapp.cinemy.data.mcp.models.McpResponse
-import org.studioapp.cinemy.data.model.StringConstants
+import org.studioapp.cinemy.data.model.StringConstants.EMPTY_STRING
+import org.studioapp.cinemy.data.model.StringConstants.HTML_CANNOT_POST
+import org.studioapp.cinemy.data.model.StringConstants.HTML_DOCTYPE
+import org.studioapp.cinemy.data.model.StringConstants.HTML_ERROR_TITLE
+import org.studioapp.cinemy.data.model.StringConstants.HTML_TAG
+import org.studioapp.cinemy.data.model.StringConstants.HTTP_CONNECT_TIMEOUT_MS
+import org.studioapp.cinemy.data.model.StringConstants.HTTP_REQUEST_TIMEOUT_MS
+import org.studioapp.cinemy.data.model.StringConstants.JSON_ARRAY_START
+import org.studioapp.cinemy.data.model.StringConstants.JSON_CLOSE_BRACE
+import org.studioapp.cinemy.data.model.StringConstants.JSON_COMMA
+import org.studioapp.cinemy.data.model.StringConstants.JSON_METHOD_FIELD
+import org.studioapp.cinemy.data.model.StringConstants.JSON_OPEN_BRACE
+import org.studioapp.cinemy.data.model.StringConstants.JSON_PARAM_ENTRY
+import org.studioapp.cinemy.data.model.StringConstants.JSON_PARAMS_FIELD
+import org.studioapp.cinemy.data.model.StringConstants.MCP_MESSAGE_ALL_ENDPOINTS_FAILED
+import org.studioapp.cinemy.data.model.StringConstants.MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE
+import org.studioapp.cinemy.data.model.StringConstants.MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL
 
 class McpHttpClient(private val context: Context) {
     private val fakeInterceptor = FakeInterceptor(context)
 
     private val httpClient = HttpClient(Android) {
         install(HttpTimeout) {
-            requestTimeoutMillis = StringConstants.HTTP_REQUEST_TIMEOUT_MS
-            connectTimeoutMillis = StringConstants.HTTP_CONNECT_TIMEOUT_MS
+            requestTimeoutMillis = HTTP_REQUEST_TIMEOUT_MS
+            connectTimeoutMillis = HTTP_CONNECT_TIMEOUT_MS
         }
         install(DefaultRequest) {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
@@ -59,19 +75,19 @@ class McpHttpClient(private val context: Context) {
 
             // Manually create JSON request body to avoid serialization issues
             val requestBody = buildString {
-                append(StringConstants.JSON_OPEN_BRACE)
-                append(StringConstants.JSON_METHOD_FIELD.format(request.method))
-                append(StringConstants.JSON_PARAMS_FIELD)
+                append(JSON_OPEN_BRACE)
+                append(JSON_METHOD_FIELD.format(request.method))
+                append(JSON_PARAMS_FIELD)
                 request.params.entries.forEachIndexed { index, entry ->
-                    if (index > 0) append(StringConstants.JSON_COMMA)
-                    append(StringConstants.JSON_PARAM_ENTRY.format(entry.key, entry.value))
+                    if (index > 0) append(JSON_COMMA)
+                    append(JSON_PARAM_ENTRY.format(entry.key, entry.value))
                 }
-                append(StringConstants.JSON_CLOSE_BRACE)
-                append(StringConstants.JSON_CLOSE_BRACE)
+                append(JSON_CLOSE_BRACE)
+                append(JSON_CLOSE_BRACE)
             }
 
             // Use only the exact endpoint provided in the URL
-            val endpoints = listOf(StringConstants.EMPTY_STRING)
+            val endpoints = listOf(EMPTY_STRING)
 
             var lastError: Exception? = null
             var successfulResponse: String? = null
@@ -88,13 +104,13 @@ class McpHttpClient(private val context: Context) {
                     val responseText = response.body<String>()
 
                     // Check if response looks like an error page or is not JSON
-                    if (responseText.contains(StringConstants.HTML_DOCTYPE) ||
-                        responseText.contains(StringConstants.HTML_CANNOT_POST) ||
-                        responseText.contains(StringConstants.HTML_TAG) ||
-                        responseText.contains(StringConstants.HTML_ERROR_TITLE) ||
+                    if (responseText.contains(HTML_DOCTYPE) ||
+                        responseText.contains(HTML_CANNOT_POST) ||
+                        responseText.contains(HTML_TAG) ||
+                        responseText.contains(HTML_ERROR_TITLE) ||
                         !responseText.trimStart()
-                            .startsWith(StringConstants.JSON_OPEN_BRACE) && !responseText.trimStart()
-                            .startsWith(StringConstants.JSON_ARRAY_START)
+                            .startsWith(JSON_OPEN_BRACE) && !responseText.trimStart()
+                            .startsWith(JSON_ARRAY_START)
                     ) {
                         return@runCatching null
                     }
@@ -108,7 +124,7 @@ class McpHttpClient(private val context: Context) {
             }
 
             if (successfulResponse == null) {
-                throw lastError ?: Exception(StringConstants.MCP_MESSAGE_ALL_ENDPOINTS_FAILED)
+                throw lastError ?: Exception(MCP_MESSAGE_ALL_ENDPOINTS_FAILED)
             }
 
             // Parse the JSON response manually
@@ -123,7 +139,7 @@ class McpHttpClient(private val context: Context) {
                         success = true, // Backend response is always successful if we get here
                         data = jsonResponse as? T,
                         error = null,
-                        message = StringConstants.MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL
+                        message = MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL
                     )
                     mcpResponse
                 } else {
@@ -138,7 +154,7 @@ class McpHttpClient(private val context: Context) {
                         success = true, // Backend response is always successful if we get here
                         data = jsonResponse as? T, // The entire parsed object is the data
                         error = null,
-                        message = StringConstants.MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL
+                        message = MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL
                     )
                     mcpResponse
                 }.getOrElse { e2 ->
@@ -147,7 +163,7 @@ class McpHttpClient(private val context: Context) {
                         success = true,
                         data = responseText as? T,
                         error = null,
-                        message = StringConstants.MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE
+                        message = MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE
                     )
                 }
             }

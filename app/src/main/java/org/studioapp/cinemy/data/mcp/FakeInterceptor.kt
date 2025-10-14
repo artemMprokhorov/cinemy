@@ -5,7 +5,26 @@ import kotlinx.coroutines.delay
 import org.json.JSONObject
 import org.studioapp.cinemy.data.mcp.models.McpRequest
 import org.studioapp.cinemy.data.mcp.models.McpResponse
-import org.studioapp.cinemy.data.model.StringConstants
+import org.studioapp.cinemy.data.model.StringConstants.ASSET_MOCK_MOVIES
+import org.studioapp.cinemy.data.model.StringConstants.ASSET_MOCK_MOVIE_DETAILS
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_PAGE_NUMBER
+import org.studioapp.cinemy.data.model.StringConstants.ERROR_LOADING_MOCK_DATA
+import org.studioapp.cinemy.data.model.StringConstants.ERROR_UNKNOWN_METHOD
+import org.studioapp.cinemy.data.model.StringConstants.FAKE_INTERCEPTOR_DELAY_BASE_MS
+import org.studioapp.cinemy.data.model.StringConstants.FAKE_INTERCEPTOR_DELAY_RANDOM_MAX_MS
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_DATA
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_HAS_NEXT
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_HAS_PREVIOUS
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_MESSAGE
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_MOVIES
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_PAGE
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_PAGINATION
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_SUCCESS
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_TOTAL_PAGES
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_TOTAL_RESULTS
+import org.studioapp.cinemy.data.model.StringConstants.MCP_MESSAGE_MOCK_DATA_LOADED_SUCCESSFULLY
+import org.studioapp.cinemy.data.model.StringConstants.MCP_METHOD_GET_MOVIE_DETAILS
+import org.studioapp.cinemy.data.model.StringConstants.MCP_METHOD_GET_POPULAR_MOVIES
 import org.studioapp.cinemy.data.util.AssetUtils.loadJsonFromAssets
 
 /**
@@ -19,27 +38,27 @@ class FakeInterceptor(private val context: Context) {
      */
     suspend fun <T> intercept(request: McpRequest): McpResponse<T> {
         // Simulate realistic network delay
-        delay(StringConstants.FAKE_INTERCEPTOR_DELAY_BASE_MS + (Math.random() * StringConstants.FAKE_INTERCEPTOR_DELAY_RANDOM_MAX_MS).toLong())
+        delay(FAKE_INTERCEPTOR_DELAY_BASE_MS + (Math.random() * FAKE_INTERCEPTOR_DELAY_RANDOM_MAX_MS).toLong())
 
         return when (request.method) {
-            StringConstants.MCP_METHOD_GET_POPULAR_MOVIES -> {
+            MCP_METHOD_GET_POPULAR_MOVIES -> {
                 loadMockDataFromAssetsWithPagination(
-                    StringConstants.ASSET_MOCK_MOVIES,
-                    request.params[StringConstants.FIELD_PAGE]?.toIntOrNull()
-                        ?: StringConstants.DEFAULT_PAGE_NUMBER
+                    ASSET_MOCK_MOVIES,
+                    request.params[FIELD_PAGE]?.toIntOrNull()
+                        ?: DEFAULT_PAGE_NUMBER
                 ) as McpResponse<T>
             }
 
-            StringConstants.MCP_METHOD_GET_MOVIE_DETAILS -> {
-                loadMockDataFromAssets(StringConstants.ASSET_MOCK_MOVIE_DETAILS) as McpResponse<T>
+            MCP_METHOD_GET_MOVIE_DETAILS -> {
+                loadMockDataFromAssets(ASSET_MOCK_MOVIE_DETAILS) as McpResponse<T>
             }
 
             else -> {
                 McpResponse(
                     success = false,
                     data = null,
-                    error = StringConstants.ERROR_UNKNOWN_METHOD.format(request.method),
-                    message = StringConstants.ERROR_UNKNOWN_METHOD.format(request.method)
+                    error = ERROR_UNKNOWN_METHOD.format(request.method),
+                    message = ERROR_UNKNOWN_METHOD.format(request.method)
                 )
             }
         }
@@ -59,8 +78,8 @@ class FakeInterceptor(private val context: Context) {
 
                 // Create paginated response based on page
                 val allMovies =
-                    (jsonResponse[StringConstants.FIELD_DATA] as? Map<String, Any>)?.get(
-                        StringConstants.FIELD_MOVIES
+                    (jsonResponse[FIELD_DATA] as? Map<String, Any>)?.get(
+                        FIELD_MOVIES
                     ) as? List<Map<String, Any>> ?: emptyList()
                 val moviesPerPage = 15 // Default movies per page
                 val startIndex = (page - 1) * moviesPerPage
@@ -69,25 +88,25 @@ class FakeInterceptor(private val context: Context) {
 
                 val totalPages = 3 // We have 3 pages of mock data
                 val hasNext = page < totalPages
-                val hasPrevious = page > StringConstants.DEFAULT_PAGE_NUMBER
+                val hasPrevious = page > DEFAULT_PAGE_NUMBER
 
                 val paginatedData = mapOf(
-                    StringConstants.FIELD_MOVIES to pageMovies,
-                    StringConstants.FIELD_PAGINATION to mapOf(
-                        StringConstants.FIELD_PAGE to page,
-                        StringConstants.FIELD_TOTAL_PAGES to totalPages,
-                        StringConstants.FIELD_TOTAL_RESULTS to allMovies.size,
-                        StringConstants.FIELD_HAS_NEXT to hasNext,
-                        StringConstants.FIELD_HAS_PREVIOUS to hasPrevious
+                    FIELD_MOVIES to pageMovies,
+                    FIELD_PAGINATION to mapOf(
+                        FIELD_PAGE to page,
+                        FIELD_TOTAL_PAGES to totalPages,
+                        FIELD_TOTAL_RESULTS to allMovies.size,
+                        FIELD_HAS_NEXT to hasNext,
+                        FIELD_HAS_PREVIOUS to hasPrevious
                     )
                 )
 
                 McpResponse<Any>(
-                    success = jsonResponse[StringConstants.FIELD_SUCCESS] as? Boolean ?: true,
+                    success = jsonResponse[FIELD_SUCCESS] as? Boolean ?: true,
                     data = paginatedData,
                     error = null,
-                    message = jsonResponse[StringConstants.FIELD_MESSAGE] as? String
-                        ?: StringConstants.MCP_MESSAGE_MOCK_DATA_LOADED_SUCCESSFULLY
+                    message = jsonResponse[FIELD_MESSAGE] as? String
+                        ?: MCP_MESSAGE_MOCK_DATA_LOADED_SUCCESSFULLY
                 )
             } else {
                 createFallbackResponse()
@@ -106,11 +125,11 @@ class FakeInterceptor(private val context: Context) {
             if (jsonString != null) {
                 val jsonResponse = parseJsonResponse(jsonString)
                 McpResponse<Any>(
-                    success = jsonResponse[StringConstants.FIELD_SUCCESS] as? Boolean ?: true,
-                    data = jsonResponse[StringConstants.FIELD_DATA],
+                    success = jsonResponse[FIELD_SUCCESS] as? Boolean ?: true,
+                    data = jsonResponse[FIELD_DATA],
                     error = null,
-                    message = jsonResponse[StringConstants.FIELD_MESSAGE] as? String
-                        ?: StringConstants.MCP_MESSAGE_MOCK_DATA_LOADED_SUCCESSFULLY
+                    message = jsonResponse[FIELD_MESSAGE] as? String
+                        ?: MCP_MESSAGE_MOCK_DATA_LOADED_SUCCESSFULLY
                 )
             } else {
                 createFallbackResponse()
@@ -172,8 +191,8 @@ class FakeInterceptor(private val context: Context) {
         return McpResponse(
             success = false,
             data = null,
-            error = StringConstants.ERROR_LOADING_MOCK_DATA,
-            message = StringConstants.ERROR_LOADING_MOCK_DATA
+            error = ERROR_LOADING_MOCK_DATA,
+            message = ERROR_LOADING_MOCK_DATA
         )
     }
 }
