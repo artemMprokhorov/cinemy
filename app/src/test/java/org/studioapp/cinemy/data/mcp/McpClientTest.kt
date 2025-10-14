@@ -43,7 +43,7 @@ import org.studioapp.cinemy.data.remote.dto.ProductionCompanyDto
 import org.studioapp.cinemy.data.remote.dto.SearchInfoDto
 import org.studioapp.cinemy.data.remote.dto.TextConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
-import org.studioapp.cinemy.data.util.ColorUtils
+import org.studioapp.cinemy.utils.ColorUtils
 import org.studioapp.cinemy.data.util.TestColorUtils
 
 object TestMovieMapper {

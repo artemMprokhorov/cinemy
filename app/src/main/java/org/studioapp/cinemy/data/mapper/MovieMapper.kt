@@ -29,8 +29,127 @@ import org.studioapp.cinemy.data.remote.dto.SentimentReviewsDto
 import org.studioapp.cinemy.data.remote.dto.TextConfigurationDto
 import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
 import org.studioapp.cinemy.utils.ColorUtils.parseColor
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_BOOLEAN_VALUE
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_DOUBLE_VALUE
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_INT_VALUE
+import org.studioapp.cinemy.data.model.StringConstants.EMPTY_STRING
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_ACCENT
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_ADULT
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_BACKDROP_PATH
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_CATEGORY
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_COLORS
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_GENRE_IDS
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_ID
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_METADATA
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_MODEL_USED
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_ORIGINAL_LANGUAGE
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_ORIGINAL_TITLE
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_OVERVIEW
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_POPULARITY
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_POSTER_PATH
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_PRIMARY
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_RATING
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_RELEASE_DATE
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_SECONDARY
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_TITLE
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_VIDEO
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_VOTE_AVERAGE
+import org.studioapp.cinemy.data.model.StringConstants.SERIALIZED_VOTE_COUNT
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_BACKDROP_PATH
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_BUDGET
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_DESCRIPTION
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_GENRES
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_ID
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_LOGO_PATH
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_MOVIE_DETAILS
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_NAME
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_ORIGIN_COUNTRY
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_POSTER_PATH
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_PRODUCTION_COMPANIES
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_RATING
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_RELEASE_DATE
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_REVENUE
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_RUNTIME
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_STATUS
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_TITLE
+import org.studioapp.cinemy.data.model.StringConstants.FIELD_VOTE_COUNT
+import org.studioapp.cinemy.data.model.StringConstants.DEFAULT_LONG_VALUE
 
 object MovieMapper {
+
+    /**
+     * Maps raw JSON movie data to MovieDto
+     * @param movieData Raw JSON map from MCP response
+     * @return MovieDto
+     */
+    fun mapJsonToMovieDto(movieData: Map<String, Any>): MovieDto {
+        val colorsData = movieData[SERIALIZED_COLORS] as? Map<String, Any>
+        val metadataData = colorsData?.get(SERIALIZED_METADATA) as? Map<String, Any>
+
+        return MovieDto(
+            id = (movieData[SERIALIZED_ID] as? Number)?.toInt() ?: DEFAULT_INT_VALUE,
+            title = movieData[SERIALIZED_TITLE] as? String ?: EMPTY_STRING,
+            description = movieData[SERIALIZED_OVERVIEW] as? String ?: EMPTY_STRING,
+            posterPath = movieData[SERIALIZED_POSTER_PATH] as? String,
+            backdropPath = movieData[SERIALIZED_BACKDROP_PATH] as? String,
+            rating = (movieData[SERIALIZED_VOTE_AVERAGE] as? Number)?.toDouble() ?: DEFAULT_DOUBLE_VALUE,
+            voteCount = (movieData[SERIALIZED_VOTE_COUNT] as? Number)?.toInt() ?: DEFAULT_INT_VALUE,
+            releaseDate = movieData[SERIALIZED_RELEASE_DATE] as? String ?: EMPTY_STRING,
+            genreIds = (movieData[SERIALIZED_GENRE_IDS] as? List<Number>)?.map { it.toInt() } ?: emptyList(),
+            popularity = (movieData[SERIALIZED_POPULARITY] as? Number)?.toDouble() ?: DEFAULT_DOUBLE_VALUE,
+            adult = movieData[SERIALIZED_ADULT] as? Boolean ?: DEFAULT_BOOLEAN_VALUE,
+            originalLanguage = movieData[SERIALIZED_ORIGINAL_LANGUAGE] as? String ?: EMPTY_STRING,
+            originalTitle = movieData[SERIALIZED_ORIGINAL_TITLE] as? String ?: EMPTY_STRING,
+            video = movieData[SERIALIZED_VIDEO] as? Boolean ?: DEFAULT_BOOLEAN_VALUE,
+            colors = MovieColorsDto(
+                accent = colorsData?.get(SERIALIZED_ACCENT) as? String ?: EMPTY_STRING,
+                primary = colorsData?.get(SERIALIZED_PRIMARY) as? String ?: EMPTY_STRING,
+                secondary = colorsData?.get(SERIALIZED_SECONDARY) as? String ?: EMPTY_STRING,
+                metadata = ColorMetadataDto(
+                    category = metadataData?.get(SERIALIZED_CATEGORY) as? String ?: EMPTY_STRING,
+                    modelUsed = metadataData?.get(SERIALIZED_MODEL_USED) as? Boolean ?: DEFAULT_BOOLEAN_VALUE,
+                    rating = (metadataData?.get(SERIALIZED_RATING) as? Number)?.toDouble() ?: DEFAULT_DOUBLE_VALUE
+                )
+            )
+        )
+    }
+
+    /**
+     * Maps raw JSON movie details data to MovieDetailsDto
+     * @param movieDetailsData Raw JSON map from MCP response
+     * @param movieId Movie ID as fallback
+     * @return MovieDetailsDto
+     */
+    fun mapJsonToMovieDetailsDto(movieDetailsData: Map<String, Any>, movieId: Int): MovieDetailsDto {
+        return MovieDetailsDto(
+            id = (movieDetailsData[FIELD_ID] as? Number)?.toInt() ?: movieId,
+            title = movieDetailsData[FIELD_TITLE] as? String ?: EMPTY_STRING,
+            description = movieDetailsData[FIELD_DESCRIPTION] as? String ?: EMPTY_STRING,
+            posterPath = movieDetailsData[FIELD_POSTER_PATH] as? String,
+            backdropPath = movieDetailsData[FIELD_BACKDROP_PATH] as? String,
+            rating = (movieDetailsData[FIELD_RATING] as? Number)?.toDouble() ?: DEFAULT_DOUBLE_VALUE,
+            voteCount = (movieDetailsData[FIELD_VOTE_COUNT] as? Number)?.toInt() ?: DEFAULT_INT_VALUE,
+            releaseDate = movieDetailsData[FIELD_RELEASE_DATE] as? String ?: EMPTY_STRING,
+            runtime = (movieDetailsData[FIELD_RUNTIME] as? Number)?.toInt() ?: DEFAULT_INT_VALUE,
+            genres = (movieDetailsData[FIELD_GENRES] as? List<Map<String, Any>>)?.map { genreData ->
+                GenreDto(
+                    id = (genreData[FIELD_ID] as? Number)?.toInt() ?: DEFAULT_INT_VALUE,
+                    name = genreData[FIELD_NAME] as? String ?: EMPTY_STRING
+                )
+            } ?: emptyList(),
+            productionCompanies = (movieDetailsData[FIELD_PRODUCTION_COMPANIES] as? List<Map<String, Any>>)?.map { companyData ->
+                ProductionCompanyDto(
+                    id = (companyData[FIELD_ID] as? Number)?.toInt() ?: DEFAULT_INT_VALUE,
+                    logoPath = companyData[FIELD_LOGO_PATH] as? String,
+                    name = companyData[FIELD_NAME] as? String ?: EMPTY_STRING,
+                    originCountry = companyData[FIELD_ORIGIN_COUNTRY] as? String ?: EMPTY_STRING
+                )
+            } ?: emptyList(),
+            budget = (movieDetailsData[FIELD_BUDGET] as? Number)?.toLong() ?: DEFAULT_LONG_VALUE,
+            revenue = (movieDetailsData[FIELD_REVENUE] as? Number)?.toLong() ?: DEFAULT_LONG_VALUE,
+            status = movieDetailsData[FIELD_STATUS] as? String ?: EMPTY_STRING
+        )
+    }
 
     /**
      * Maps MovieDto to domain Movie model
