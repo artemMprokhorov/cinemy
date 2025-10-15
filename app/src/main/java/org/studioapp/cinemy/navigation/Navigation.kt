@@ -19,9 +19,17 @@ import org.studioapp.cinemy.navigation.NavigationConstants.NAV_ARG_MOVIE_ID
 import org.studioapp.cinemy.navigation.NavigationConstants.DEFAULT_MOVIE_ID
 
 /**
- * Main navigation composable for the Cinemy app
- * Handles navigation between splash, movies list, movie detail, and dual pane screens
- * @param navController NavHostController for navigation management
+ * Main navigation composable for the Cinemy app.
+ * 
+ * Handles device-adaptive navigation between splash, movies list, movie detail, and dual pane screens.
+ * Automatically detects device capabilities and routes to appropriate navigation pattern:
+ * - Single-pane navigation for phones (Splash → MoviesList → MovieDetail)
+ * - Dual-pane navigation for tablets/foldables (Splash → DualPane → DualPaneWithMovie)
+ * 
+ * Uses type-safe navigation with sealed class routes and proper parameter passing.
+ * Integrates with Koin for ViewModel dependency injection and maintains proper back stack.
+ * 
+ * @param navController NavHostController for navigation management and route handling
  */
 @Composable
 fun AppNavigation(navController: NavHostController) {
