@@ -107,24 +107,80 @@ when (result) {
 
 #### DTOs (`dto/MovieDto.kt`)
 
+- **Documentation Quality**: ✅ **FULLY DOCUMENTED** - Complete KDoc with property descriptions, usage context, and cross-references
 - **Movie Data DTOs**: 
   - `MovieDto` - Basic movie information with colors and metadata
+    - **Purpose**: Core movie data structure for movie lists and basic information
+    - **Properties**: id, title, description, posterPath, rating, voteCount, releaseDate, backdropPath, genreIds, popularity, adult, originalLanguage, originalTitle, video, colors
+    - **Usage**: Used in movie list responses and basic movie display
   - `MovieDetailsDto` - Complete movie details with genres, companies, sentiment data
-  - `GenreDto`, `ProductionCompanyDto` - Supporting data structures
+    - **Purpose**: Comprehensive movie information including extended details
+    - **Properties**: All MovieDto properties plus runtime, genres, productionCompanies, budget, revenue, status, sentimentReviews, sentimentMetadata
+    - **Usage**: Used for detailed movie information screens
+  - `MovieListResponseDto` - Paginated movie list response
+    - **Purpose**: Response structure for movie list API calls with pagination
+    - **Properties**: page, results, totalPages, totalResults
+    - **Usage**: Used for paginated movie list responses
+  - `GenreDto` - Movie genre information
+    - **Purpose**: Represents movie genre with identifier and name
+    - **Properties**: id, name
+    - **Usage**: Used in movie details for genre display
+  - `ProductionCompanyDto` - Production company information
+    - **Purpose**: Represents production company involved in movie creation
+    - **Properties**: id, logoPath, name, originCountry
+    - **Usage**: Used in movie details for production company display
 - **UI Configuration DTOs**: 
   - `UiConfigurationDto` - Complete UI configuration from backend
+    - **Purpose**: Comprehensive UI configuration including color schemes, text content, button styling, and search settings
+    - **Properties**: colors, texts, buttons, searchInfo
+    - **Usage**: Used for dynamic theming and UI customization
   - `ColorSchemeDto` - Color palette configuration
+    - **Purpose**: Color palette used throughout the application UI
+    - **Properties**: primary, secondary, background, surface, onPrimary, onSecondary, onBackground, onSurface, moviePosterColors
+    - **Usage**: Used for dynamic color theming
   - `TextConfigurationDto` - Text content configuration
+    - **Purpose**: All text content used throughout the application UI
+    - **Properties**: appTitle, loadingText, errorMessage, noMoviesFound, retryButton, backButton, playButton
+    - **Usage**: Used for configurable text content
   - `ButtonConfigurationDto` - Button styling configuration
+    - **Purpose**: Styling configuration for buttons throughout the application
+    - **Properties**: primaryButtonColor, secondaryButtonColor, buttonTextColor, buttonCornerRadius
+    - **Usage**: Used for dynamic button styling
   - `SearchInfoDto` - Search-specific UI configuration
+    - **Purpose**: Search-related configuration and metadata for search operations
+    - **Properties**: query, resultCount, avgRating, ratingType, colorBased
+    - **Usage**: Used for search-specific UI customization
 - **MCP Response DTOs**: 
   - `McpResponseDto<T>` - Generic MCP response wrapper
-  - `MovieListResponseDto` - Paginated movie list response
-  - `SentimentReviewsDto`, `SentimentMetadataDto` - Sentiment analysis data
+    - **Purpose**: Standard response structure from MCP backend calls
+    - **Properties**: success, data, uiConfig, error, meta
+    - **Usage**: Used for all MCP backend responses
+  - `SentimentReviewsDto` - Sentiment analysis review results
+    - **Purpose**: Categorized sentiment analysis results containing positive and negative review texts
+    - **Properties**: positive, negative (both default to empty list)
+    - **Usage**: Used for sentiment analysis display in movie details
+  - `SentimentMetadataDto` - Sentiment analysis metadata
+    - **Purpose**: High-level counters and provenance information for sentiment analysis results
+    - **Properties**: totalReviews, positiveCount, negativeCount, source, timestamp, apiSuccess (all with defaults)
+    - **Usage**: Used for sentiment analysis metadata display
 - **Color System DTOs**:
   - `MovieColorsDto` - Movie-specific color palette
+    - **Purpose**: Color palette extracted from a specific movie for dynamic theming
+    - **Properties**: accent, primary, secondary, metadata
+    - **Usage**: Used for movie-specific color theming
   - `ColorMetadataDto` - Color analysis metadata
+    - **Purpose**: Metadata about the color analysis process used to extract colors from movies
+    - **Properties**: category, modelUsed, rating
+    - **Usage**: Used for color analysis metadata
   - `GeminiColorsDto` - AI-generated color suggestions
+    - **Purpose**: Color palette suggestions generated by AI (Gemini) for dynamic theming
+    - **Properties**: primary, secondary, accent
+    - **Usage**: Used for AI-generated color suggestions
+- **Metadata DTOs**:
+  - `MetaDto` - API response metadata
+    - **Purpose**: Metadata about API responses including timing, method information, context data, and AI generation details
+    - **Properties**: timestamp, method, searchQuery, movieId, resultsCount, aiGenerated, geminiColors, avgRating, movieRating, version
+    - **Usage**: Used for API response metadata tracking
 
 ### 2. MCP Client (`mcp/`)
 
@@ -454,20 +510,35 @@ Documentation quality: the three converter methods are fully documented in KDoc 
 
 #### Interface (`MovieRepository.kt`)
 
+- **Documentation Quality**: ✅ **FULLY DOCUMENTED** - Complete KDoc with parameter descriptions, return types, and cross-references
 - **Contract Definition**: Defines repository interface with suspend functions
 - **Return Types**: All methods return `Result<T>` sealed class for error handling
 - **Methods**:
-  - `getPopularMovies(page: Int)` - Fetches popular movies with pagination
-  - `getMovieDetails(movieId: Int)` - Fetches detailed movie information
+  - `getPopularMovies(page: Int = 1): Result<MovieListResponse>` - Fetches popular movies with pagination support
+    - **Parameters**: `page` - Page number for pagination (default: 1)
+    - **Returns**: Result containing MovieListResponse with movies, pagination, and UI config
+    - **Features**: Pagination support, dynamic theming data, error handling via Result sealed class
+  - `getMovieDetails(movieId: Int): Result<MovieDetailsResponse>` - Fetches detailed movie information by ID
+    - **Parameters**: `movieId` - Unique identifier of the movie
+    - **Returns**: Result containing MovieDetailsResponse with complete movie details and UI config
+    - **Features**: Complete movie information, sentiment analysis data, UI configuration for specific movie
 - **Type Safety**: Uses sealed Result class for compile-time safety
+- **MVI Integration**: Serves as the Model component in MVI architecture, providing data to ViewModels
 
 #### Implementation (`MovieRepositoryImpl.kt`)
 
+- **Documentation Quality**: ✅ **FULLY DOCUMENTED** - Complete KDoc for all public and private methods with detailed parameter descriptions, return types, and implementation details
 - **Dual Mode Support**: Routes between mock data and MCP client based on BuildConfig.USE_MOCK_DATA
 - **MCP Integration**: Uses McpClient for backend communication
 - **Mock Data Support**: Provides mock data for development and testing
 - **Error Handling**: Comprehensive error handling with fallback configurations
 - **UI Configuration**: Handles UI configuration extraction and mapping
+- **Private Methods**: All private helper methods have comprehensive KDoc documentation including:
+  - `loadMockPopularMovies()` - Mock popular movies with pagination and network simulation
+  - `loadMockMovieDetails()` - Mock movie details with complete response structure
+  - `loadMockMovieDetailsFromAssets()` - Asset-based mock data loading
+  - `createDefaultUiConfig()` - Default UI configuration generation
+  - `createDefaultMeta()` - Default metadata generation
 
 #### Key Features
 
