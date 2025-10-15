@@ -70,7 +70,19 @@ data class DefaultMovieDetails(
     val status: String = DEFAULT_MOVIE_STATUS
 ) {
     /**
-     * Converts to MovieDetails domain model
+     * Converts this default seed into the domain `MovieDetails` model.
+     *
+     * Purpose:
+     * - Provides a straightforward way to obtain a fully-populated domain model for mock/demo flows
+     *   using sensible defaults from `StringConstants`.
+     *
+     * Return:
+     * - `MovieDetails` — a domain object whose fields mirror this default container: identifiers,
+     *   textual attributes, media paths, rating metrics, runtime, genres, production companies,
+     *   and financial/status fields.
+     *
+     * Exceptions:
+     * - None. This method is pure and non-throwing.
      */
     fun toMovieDetails(): MovieDetails {
         return MovieDetails(
@@ -121,7 +133,18 @@ data class DefaultUiConfiguration(
     val buttonCornerRadius: Int = DEFAULT_BUTTON_CORNER_RADIUS
 ) {
     /**
-     * Converts to UiConfiguration domain model
+     * Converts this default UI seed into the domain `UiConfiguration` model.
+     *
+     * Purpose:
+     * - Supplies a complete, Compose-ready UI configuration for mock/demo screens, including
+     *   color palette, text resources, and button presentation.
+     *
+     * Return:
+     * - `UiConfiguration` — encapsulates `ColorScheme`, `TextConfiguration`, and
+     *   `ButtonConfiguration` constructed from the default values provided here.
+     *
+     * Exceptions:
+     * - None. This method is pure and non-throwing.
      */
     fun toUiConfiguration(): UiConfiguration {
         return UiConfiguration(
@@ -169,7 +192,18 @@ data class DefaultMeta(
     val version: String = DEFAULT_VERSION
 ) {
     /**
-     * Converts to Meta domain model
+     * Converts this default metadata seed into the domain `Meta` model.
+     *
+     * Purpose:
+     * - Produces a standard metadata envelope for responses, including timestamps,
+     *   MCP method name, results count, AI-generation flag, version, and color hints.
+     *
+     * Return:
+     * - `Meta` — domain metadata with `GeminiColors` composed from `primaryColor`, `secondaryColor`,
+     *   and `accentColor`.
+     *
+     * Exceptions:
+     * - None. This method is pure and non-throwing.
      */
     fun toMeta(): Meta {
         return Meta(

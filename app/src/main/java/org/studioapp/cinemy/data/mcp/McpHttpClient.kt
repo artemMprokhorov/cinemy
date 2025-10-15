@@ -32,6 +32,19 @@ import org.studioapp.cinemy.data.model.StringConstants.JSON_ARRAY_START
 import org.studioapp.cinemy.data.model.StringConstants.JSON_OPEN_BRACE
 import org.studioapp.cinemy.data.model.StringConstants.MCP_MESSAGE_ALL_ENDPOINTS_FAILED
 
+/**
+ * HTTP transport for the MCP backend.
+ *
+ * Behavior:
+ * - If `BuildConfig.USE_MOCK_DATA == true`, requests are handled by `FakeInterceptor` (assets-based mocks).
+ * - Otherwise, real HTTP requests are sent to `BuildConfig.MCP_SERVER_URL` using Ktor.
+ * - When `BuildConfig.MCP_SERVER_URL` is blank, real-mode transparently falls back to `FakeInterceptor`.
+ * - Real responses are validated to be JSON and then parsed; array payloads are supported as first-class.
+ *
+ * This client never throws for public APIs; all failures are expressed via `McpResponse`.
+ *
+ * @param context Android context used by the mock interceptor for asset access.
+ */
 class McpHttpClient(private val context: Context) {
     private val fakeInterceptor = FakeInterceptor(context)
 
@@ -46,9 +59,17 @@ class McpHttpClient(private val context: Context) {
     }
 
     /**
-     * Sends MCP request to backend or returns mock data
-     * @param request MCP request object
-     * @return McpResponse with data or error
+     * Sends an MCP request either to the real backend or to the mock interceptor depending on build flags.
+     *
+     * Routing rules:
+     * - When `BuildConfig.USE_MOCK_DATA == true` → handled by `FakeInterceptor` (local assets, no network).
+     * - Otherwise → delegates to the internal HTTP path.
+     *
+     * The method is non-throwing. Network and parsing failures are represented in the returned `McpResponse` with
+     * `success=false`, `data=null`, and `error`/`message` populated.
+     *
+     * @param request the MCP request to send; see `McpRequest` for structure and parameters.
+     * @return a typed `McpResponse<T>` containing the parsed payload on success, or an error contract on failure.
      */
     suspend fun <T> sendRequest(request: McpRequest): McpResponse<T> {
         return if (BuildConfig.USE_MOCK_DATA) {
@@ -59,9 +80,16 @@ class McpHttpClient(private val context: Context) {
     }
 
     /**
-     * Sends real HTTP request to MCP backend
-     * @param request MCP request object
-     * @return McpResponse with parsed data or error
+     * Sends a real HTTP request to the MCP backend.
+     *
+     * Details:
+     * - Falls back to `FakeInterceptor` when `BuildConfig.MCP_SERVER_URL` is blank.
+     * - Builds a JSON body via `HttpRequestMapper.buildJsonRequestBody` and posts it with `Content-Type: application/json`.
+     * - Validates textual responses, rejecting HTML/error pages and non-JSON payloads.
+     * - Parsing strategy: tries array-first (`parseJsonArrayResponse`), then falls back to string/object parsing (`parseJsonStringResponse`).
+     * - On any failure, returns `McpResponse(success=false, data=null, error=..., message=HTTP_ERROR_UNABLE_TO_CONNECT)`.
+     *
+     * Note: This method is private; all exceptions are handled internally and converted to `McpResponse` by callers.
      */
     private suspend fun <T> sendRealRequest(request: McpRequest): McpResponse<T> {
         return runCatching {
@@ -138,7 +166,9 @@ class McpHttpClient(private val context: Context) {
 
 
     /**
-     * Closes HTTP client and cleans up resources
+     * Closes the underlying Ktor `HttpClient` and releases resources.
+     *
+     * The method is idempotent and non-throwing under normal circumstances.
      */
     fun close() {
         httpClient.close()

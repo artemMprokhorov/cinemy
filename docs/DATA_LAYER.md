@@ -166,7 +166,19 @@ when (result) {
       - Legacy contract: falls back to object structure `data.movies` or `data.serializedResults`.
       - Never throws; returns empty list on error/missing data.
   - Notes: Threading left to callers; functions are CPU-light JSON parsing and synchronous.
-- **McpHttpClient** (`McpHttpClient.kt`) - HTTP client for MCP communication
+- **McpHttpClient** (`McpHttpClient.kt`)
+  - Purpose: HTTP transport for MCP communication using Ktor with mock fallback.
+  - Routing:
+    - When `BuildConfig.USE_MOCK_DATA == true` → handled entirely by `FakeInterceptor` (assets-based, no network).
+    - When `BuildConfig.USE_MOCK_DATA == false` and `BuildConfig.MCP_SERVER_URL` is blank → transparently falls back to `FakeInterceptor`.
+    - Otherwise → posts JSON to `BuildConfig.MCP_SERVER_URL` with `Content-Type: application/json`.
+  - Request Building: Uses `HttpRequestMapper.buildJsonRequestBody(request)` to serialize `McpRequest` to JSON.
+  - Response Validation: Rejects HTML/error pages and non-JSON payloads before parsing.
+  - Parsing Strategy:
+    - Array-first: attempts `parseJsonArrayResponse<T>(JSONArray(response))` to support array-wrapped payloads like `[{...}]`.
+    - Fallback: `parseJsonStringResponse<T>(response)` for direct object or raw-string cases.
+  - Error Semantics: Non-throwing public API; failures return `McpResponse(success=false, data=null, error=HTTP_ERROR_NETWORK_ERROR.format(message), message=HTTP_ERROR_UNABLE_TO_CONNECT)`.
+  - Resource Management: `close()` closes the underlying Ktor `HttpClient`.
 - **FakeInterceptor** (`FakeInterceptor.kt`) - Network interceptor for testing and development
 
 #### FakeInterceptor (`FakeInterceptor.kt`)
@@ -300,6 +312,25 @@ when (result) {
   - Error messages, MCP method names, UI text constants
   - Serialization field names, default values, color constants
   - Network configuration, pagination constants
+
+#### Default Seeds and Converters (`DefaultData.kt`)
+
+- **Purpose**: Provide sensible, strongly-typed defaults for demos/tests and convert them into domain models.
+- **Classes**:
+  - `DefaultMovieDetails`
+    - Fields: mirrors core `MovieDetails` attributes such as identifiers, title, description, poster/backdrop paths, rating, vote count, release date, runtime, genres, production companies, budget, revenue, status.
+    - Method: `toMovieDetails()` → returns domain `MovieDetails`.
+      - Non-throwing; directly maps each property to the domain model.
+  - `DefaultUiConfiguration`
+    - Fields: Compose `Color` palette values, app texts (title, loading/error/no-movies, buttons), and button settings (colors, text color, corner radius).
+    - Method: `toUiConfiguration()` → returns domain `UiConfiguration`.
+      - Non-throwing; builds `ColorScheme`, `TextConfiguration`, `ButtonConfiguration`.
+  - `DefaultMeta`
+    - Fields: timestamp, MCP `method`, `resultsCount`, `aiGenerated` flag, color hexes, and `version`.
+    - Method: `toMeta()` → returns domain `Meta` with `GeminiColors` composed from the seed.
+      - Non-throwing; composes `Meta` verbatim from provided defaults.
+
+Documentation quality: the three converter methods are fully documented in KDoc with purpose, return type, and exception semantics.
 
 #### Result Handling
 
