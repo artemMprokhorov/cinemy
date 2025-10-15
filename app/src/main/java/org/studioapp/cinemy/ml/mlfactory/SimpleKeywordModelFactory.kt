@@ -1,4 +1,4 @@
-package org.studioapp.cinemy.ml
+package org.studioapp.cinemy.ml.mlfactory
 
 import org.studioapp.cinemy.ml.model.AlgorithmConfig
 import org.studioapp.cinemy.ml.model.ContextBoosters

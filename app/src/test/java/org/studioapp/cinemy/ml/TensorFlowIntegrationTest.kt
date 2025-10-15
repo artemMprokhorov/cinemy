@@ -15,6 +15,7 @@ import org.junit.Test
 import org.tensorflow.lite.Interpreter
 import org.studioapp.cinemy.ml.model.SentimentResult
 import org.studioapp.cinemy.ml.model.SentimentType
+import org.studioapp.cinemy.ml.mlmodels.TensorFlowSentimentModel
 
 /**
  * Comprehensive test suite for TensorFlow Lite integration in Cinemy

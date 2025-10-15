@@ -18,13 +18,237 @@ ml/
 │   ├── ContextBoosters.kt                # Context boosters
 │   ├── EnhancedModelData.kt               # Enhanced model data
 │   ├── ProductionModelData.kt             # Production model data
-├── HardwareDetection.kt                   # Hardware capability detection
-├── AdaptiveMLRuntime.kt                  # Adaptive ML runtime selector
 │   └── TensorFlowConfig.kt                # TensorFlow configuration
+├── mlfactory/                             # Factory classes for ML components
+│   ├── KeywordFactory.kt                  # Multilingual keyword creation
+│   ├── ContextBoostersFactory.kt         # Context boosters factory
+│   ├── IntensityModifiersFactory.kt      # Intensity modifiers factory
+│   ├── Algorithm.kt                       # Algorithm configuration factory
+│   └── SimpleKeywordModelFactory.kt      # Simple keyword model factory
+├── mltools/                               # ML utility classes
+│   └── HardwareDetection.kt               # Hardware capability detection
+├── mlmodels/                              # ML model implementations
+│   ├── LiteRTSentimentModel.kt            # LiteRT implementation
+│   └── TensorFlowSentimentModel.kt       # TensorFlow Lite model
+├── di/                                    # ML dependency injection
+│   └── MLModule.kt                          # ML module configuration
 ├── SentimentAnalyzer.kt                   # Main hybrid sentiment analyzer
-├── TensorFlowSentimentModel.kt            # TensorFlow Lite model implementation
-└── SimpleKeywordModelFactory.kt           # Simple keyword model factory
+├── AdaptiveMLRuntime.kt                   # Adaptive ML runtime selector
+└── MLConstants.kt                         # Centralized ML constants
 ```
+
+## 🆕 Recent ML Layer Improvements
+
+### 🎯 **Direct Imports Pattern Implementation**
+
+The ML layer has been refactored to use **direct imports** for constants, improving code readability and maintainability:
+
+#### **Before (Object Prefix Pattern)**
+```kotlin
+// ❌ Verbose and repetitive
+import org.studioapp.cinemy.ml.MLConstants
+
+class SentimentAnalyzer {
+    fun analyzeSentiment(text: String): SentimentResult {
+        return runCatching {
+            // Analysis logic
+        }.getOrElse { e ->
+            if (BuildConfig.DEBUG) {
+                Log.e("SentimentAnalyzer", MLConstants.ERROR_ANALYSIS_FAILED, e)
+            }
+            SentimentResult.error(MLConstants.ERROR_ANALYSIS_FAILED)
+        }
+    }
+}
+```
+
+#### **After (Direct Import Pattern)**
+```kotlin
+// ✅ Clean and readable
+import org.studioapp.cinemy.ml.MLConstants.ERROR_ANALYSIS_FAILED
+import org.studioapp.cinemy.ml.MLConstants.WORD_SPLIT_REGEX
+import org.studioapp.cinemy.ml.MLConstants.DEFAULT_SCORE
+
+class SentimentAnalyzer {
+    fun analyzeSentiment(text: String): SentimentResult {
+        return runCatching {
+            // Analysis logic
+        }.getOrElse { e ->
+            if (BuildConfig.DEBUG) {
+                Log.e("SentimentAnalyzer", ERROR_ANALYSIS_FAILED, e)
+            }
+            SentimentResult.error(ERROR_ANALYSIS_FAILED)
+        }
+    }
+}
+```
+
+### 🏗️ **ML Layer Reorganization**
+
+The ML layer has been restructured for better organization and maintainability:
+
+#### **New Directory Structure**
+```
+ml/
+├── mlfactory/               # Factory classes for ML components
+│   ├── KeywordFactory.kt    # Multilingual keyword creation
+│   ├── ContextBoostersFactory.kt # Context boosters factory
+│   ├── IntensityModifiersFactory.kt # Intensity modifiers factory
+│   ├── Algorithm.kt         # Algorithm configuration factory
+│   └── SimpleKeywordModelFactory.kt # Simple model factory
+├── mltools/                 # ML utility classes
+│   └── HardwareDetection.kt # Hardware capability detection
+├── mlmodels/                # ML model implementations
+│   ├── LiteRTSentimentModel.kt # LiteRT implementation
+│   └── TensorFlowSentimentModel.kt # TensorFlow Lite model
+├── di/                      # ML dependency injection
+│   └── MLModule.kt          # ML module configuration
+└── MLConstants.kt           # Centralized ML constants
+```
+
+#### **Benefits of Reorganization**
+- **Modularity**: Clear separation of concerns
+- **Maintainability**: Easy to find and modify specific components
+- **Scalability**: Easy to add new ML components
+- **Testing**: Isolated components for better testing
+
+### 🧹 **Magic Value Elimination**
+
+All hardcoded values have been moved to centralized constants:
+
+#### **ML Constants**
+```kotlin
+// MLConstants.kt
+object MLConstants {
+    // Error messages
+    const val ML_RUNTIME_NOT_INITIALIZED_ERROR = "ML runtime not initialized"
+    const val LITERT_MODEL_NOT_AVAILABLE_ERROR = "LiteRT model not available"
+    const val TENSORFLOW_LITE_MODEL_NOT_AVAILABLE_ERROR = "TensorFlow Lite model not available"
+    const val KEYWORD_MODEL_NOT_AVAILABLE_ERROR = "Keyword model not available"
+    
+    // Processing constants
+    const val WORD_SPLIT_REGEX = "\\s+"
+    const val DEFAULT_SCORE = 0.0
+    const val SCORE_INCREMENT = 1.0
+    const val MIN_CONFIDENCE_THRESHOLD = 0.3
+    
+    // Hardware detection constants
+    const val TENSORFLOW_LITE_NNAPI_DELEGATE_CLASS = "org.tensorflow.lite.nnapi.NnApiDelegate"
+    const val TENSORFLOW_LITE_XNNPACK_DELEGATE_CLASS = "org.tensorflow.lite.xnnpack.XnnpackDelegate"
+    const val GOOGLE_PLAY_SERVICES_PACKAGE = "com.google.android.gms"
+    const val MLKIT_EXCEPTION_CLASS = "com.google.mlkit.common.MlKitException"
+    const val MIN_PLAY_SERVICES_VERSION = 20000000
+}
+```
+
+### 🔄 **Factory Pattern Implementation**
+
+The ML layer now uses factory patterns for better component creation:
+
+#### **KeywordFactory.kt**
+```kotlin
+object KeywordFactory {
+    fun createMultilingualKeywords(type: String): List<String> {
+        return when (type) {
+            SENTIMENT_POSITIVE -> createPositiveKeywords()
+            SENTIMENT_NEGATIVE -> createNegativeKeywords()
+            SENTIMENT_NEUTRAL -> createNeutralKeywords()
+            else -> emptyList()
+        }
+    }
+    
+    private fun createPositiveKeywords(): List<String> {
+        return listOf(
+            // English
+            "amazing", "fantastic", "great", "excellent", "wonderful", "brilliant",
+            // Spanish
+            "increíble", "fantástico", "excelente", "maravilloso", "brillante",
+            // Russian
+            "потрясающий", "фантастический", "отличный", "замечательный", "блестящий"
+        )
+    }
+}
+```
+
+#### **ContextBoostersFactory.kt**
+```kotlin
+object ContextBoostersFactory {
+    fun createMovieContextBoosters(): ContextBoosters {
+        return ContextBoosters(
+            movieTerms = createMovieTerms(),
+            positiveContext = createPositiveContext(),
+            negativeContext = createNegativeContext()
+        )
+    }
+    
+    private fun createMovieTerms(): List<String> {
+        return listOf(
+            CONTEXT_CINEMATOGRAPHY, CONTEXT_ACTING, CONTEXT_PLOT, CONTEXT_STORY,
+            CONTEXT_DIRECTOR, CONTEXT_PERFORMANCE, CONTEXT_SCRIPT, CONTEXT_DIALOGUE
+        )
+    }
+}
+```
+
+#### **IntensityModifiersFactory.kt**
+```kotlin
+object IntensityModifiersFactory {
+    fun createIntensityModifiers(): Map<String, Double> {
+        return mapOf(
+            MODIFIER_ABSOLUTELY to 1.5,
+            MODIFIER_COMPLETELY to 1.4,
+            MODIFIER_TOTALLY to 1.3,
+            MODIFIER_EXTREMELY to 1.3,
+            MODIFIER_INCREDIBLY to 1.3,
+            MODIFIER_VERY to 1.2,
+            MODIFIER_REALLY to 1.1,
+            MODIFIER_PRETTY to 0.8,
+            MODIFIER_SOMEWHAT to 0.7,
+            MODIFIER_SLIGHTLY to 0.6,
+            MODIFIER_NOT to -1.0,
+            MODIFIER_NEVER to -1.0,
+            MODIFIER_BARELY to -0.5
+        )
+    }
+}
+```
+
+#### **Algorithm.kt**
+```kotlin
+object Algorithm {
+    val PRODUCTION_CONFIG = AlgorithmConfig(
+        baseConfidence = 0.8,
+        keywordWeight = 1.0,
+        contextWeight = 0.4,
+        modifierWeight = 0.5,
+        neutralThreshold = 0.5,
+        minConfidence = 0.4,
+        maxConfidence = 0.95
+    )
+    
+    fun createFromEnhancedModel(modelData: EnhancedModelData): AlgorithmConfig {
+        return AlgorithmConfig(
+            baseConfidence = modelData.algorithm.base_confidence,
+            keywordWeight = 1.0,
+            contextWeight = 0.3,
+            modifierWeight = 0.4,
+            neutralThreshold = modelData.algorithm.neutral_threshold,
+            minConfidence = modelData.algorithm.min_confidence,
+            maxConfidence = modelData.algorithm.max_confidence
+        )
+    }
+}
+```
+
+### 🎯 **Benefits of Recent Changes**
+
+1. **Code Readability**: Direct imports make code more readable
+2. **Maintainability**: Centralized constants are easier to maintain
+3. **Modularity**: ML layer reorganization improves modularity
+4. **Testability**: Factory patterns make components easier to test
+5. **Scalability**: New components can be easily added
+6. **Performance**: Reduced object prefix lookups
+7. **Consistency**: Uniform patterns across all layers
 
 ## ML Architecture
 

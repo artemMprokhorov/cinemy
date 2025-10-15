@@ -1,4 +1,4 @@
-package org.studioapp.cinemy.ml
+package org.studioapp.cinemy.ml.mlmodels
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
@@ -9,26 +9,10 @@ import org.studioapp.cinemy.ml.MLConstants.LITERT_ANALYSIS_FAILED_ERROR
 import org.studioapp.cinemy.ml.MLConstants.ML_KIT_INITIALIZATION_FAILED_ERROR
 import org.studioapp.cinemy.ml.MLConstants.WORD_SPLIT_REGEX
 import org.studioapp.cinemy.ml.MLConstants.UNKNOWN_ERROR_MESSAGE
-import org.studioapp.cinemy.ml.MLConstants.POSITIVE_KEYWORD_GOOD
-import org.studioapp.cinemy.ml.MLConstants.POSITIVE_KEYWORD_GREAT
-import org.studioapp.cinemy.ml.MLConstants.POSITIVE_KEYWORD_EXCELLENT
-import org.studioapp.cinemy.ml.MLConstants.POSITIVE_KEYWORD_AMAZING
-import org.studioapp.cinemy.ml.MLConstants.POSITIVE_KEYWORD_WONDERFUL
-import org.studioapp.cinemy.ml.MLConstants.POSITIVE_KEYWORD_FANTASTIC
-import org.studioapp.cinemy.ml.MLConstants.POSITIVE_KEYWORD_LOVE
-import org.studioapp.cinemy.ml.MLConstants.POSITIVE_KEYWORD_BEST
-import org.studioapp.cinemy.ml.MLConstants.POSITIVE_KEYWORD_PERFECT
-import org.studioapp.cinemy.ml.MLConstants.POSITIVE_KEYWORD_AWESOME
-import org.studioapp.cinemy.ml.MLConstants.NEGATIVE_KEYWORD_BAD
-import org.studioapp.cinemy.ml.MLConstants.NEGATIVE_KEYWORD_TERRIBLE
-import org.studioapp.cinemy.ml.MLConstants.NEGATIVE_KEYWORD_AWFUL
-import org.studioapp.cinemy.ml.MLConstants.NEGATIVE_KEYWORD_HORRIBLE
-import org.studioapp.cinemy.ml.MLConstants.NEGATIVE_KEYWORD_HATE
-import org.studioapp.cinemy.ml.MLConstants.NEGATIVE_KEYWORD_WORST
-import org.studioapp.cinemy.ml.MLConstants.NEGATIVE_KEYWORD_DISGUSTING
-import org.studioapp.cinemy.ml.MLConstants.NEGATIVE_KEYWORD_BORING
-import org.studioapp.cinemy.ml.MLConstants.NEGATIVE_KEYWORD_STUPID
-import org.studioapp.cinemy.ml.MLConstants.NEGATIVE_KEYWORD_UGLY
+import org.studioapp.cinemy.ml.MLConstants.SENTIMENT_POSITIVE
+import org.studioapp.cinemy.ml.MLConstants.SENTIMENT_NEGATIVE
+import org.studioapp.cinemy.ml.mlfactory.KeywordFactory
+import org.studioapp.cinemy.ml.mlmodels.TensorFlowSentimentModel
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 
@@ -246,30 +230,8 @@ class LiteRTSentimentModel private constructor(private val context: Context) {
         val words = text.lowercase().split(WORD_SPLIT_REGEX.toRegex())
 
         // Simple keyword-based sentiment analysis
-        val positiveWords = listOf(
-            POSITIVE_KEYWORD_GOOD,
-            POSITIVE_KEYWORD_GREAT,
-            POSITIVE_KEYWORD_EXCELLENT,
-            POSITIVE_KEYWORD_AMAZING,
-            POSITIVE_KEYWORD_WONDERFUL,
-            POSITIVE_KEYWORD_FANTASTIC,
-            POSITIVE_KEYWORD_LOVE,
-            POSITIVE_KEYWORD_BEST,
-            POSITIVE_KEYWORD_PERFECT,
-            POSITIVE_KEYWORD_AWESOME
-        )
-        val negativeWords = listOf(
-            NEGATIVE_KEYWORD_BAD,
-            NEGATIVE_KEYWORD_TERRIBLE,
-            NEGATIVE_KEYWORD_AWFUL,
-            NEGATIVE_KEYWORD_HORRIBLE,
-            NEGATIVE_KEYWORD_HATE,
-            NEGATIVE_KEYWORD_WORST,
-            NEGATIVE_KEYWORD_DISGUSTING,
-            NEGATIVE_KEYWORD_BORING,
-            NEGATIVE_KEYWORD_STUPID,
-            NEGATIVE_KEYWORD_UGLY
-        )
+        val positiveWords = KeywordFactory.createMultilingualKeywords(SENTIMENT_POSITIVE)
+        val negativeWords = KeywordFactory.createMultilingualKeywords(SENTIMENT_NEGATIVE)
 
         var positiveScore = 0.0
         var negativeScore = 0.0

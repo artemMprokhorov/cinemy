@@ -1,4 +1,4 @@
-package org.studioapp.cinemy.ml
+package org.studioapp.cinemy.ml.mltools
 
 import android.content.Context
 import android.os.Build

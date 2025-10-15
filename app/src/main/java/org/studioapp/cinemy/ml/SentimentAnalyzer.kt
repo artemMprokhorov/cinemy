@@ -11,54 +11,8 @@ import org.studioapp.cinemy.ml.model.KeywordSentimentModel
 import org.studioapp.cinemy.ml.model.ModelInfo
 import org.studioapp.cinemy.ml.model.ProductionModelData
 import org.studioapp.cinemy.ml.model.SentimentResult
-import org.studioapp.cinemy.ml.MLConstants.KEYWORD_MODEL_FILE
-import org.studioapp.cinemy.ml.MLConstants.ERROR_ANALYZER_NOT_INITIALIZED
-import org.studioapp.cinemy.ml.MLConstants.ERROR_ANALYSIS_ERROR
 import org.studioapp.cinemy.ml.MLConstants.NO_MODELS_AVAILABLE_ERROR
 import org.studioapp.cinemy.ml.MLConstants.ML_MODELS_PATH
-import org.studioapp.cinemy.ml.MLConstants.MODIFIER_ABSOLUTELY
-import org.studioapp.cinemy.ml.MLConstants.MODIFIER_COMPLETELY
-import org.studioapp.cinemy.ml.MLConstants.MODIFIER_TOTALLY
-import org.studioapp.cinemy.ml.MLConstants.MODIFIER_EXTREMELY
-import org.studioapp.cinemy.ml.MLConstants.MODIFIER_INCREDIBLY
-import org.studioapp.cinemy.ml.MLConstants.MODIFIER_VERY
-import org.studioapp.cinemy.ml.MLConstants.MODIFIER_REALLY
-import org.studioapp.cinemy.ml.MLConstants.MODIFIER_PRETTY
-import org.studioapp.cinemy.ml.MLConstants.MODIFIER_SOMEWHAT
-import org.studioapp.cinemy.ml.MLConstants.MODIFIER_SLIGHTLY
-import org.studioapp.cinemy.ml.MLConstants.MODIFIER_NOT
-import org.studioapp.cinemy.ml.MLConstants.MODIFIER_NEVER
-import org.studioapp.cinemy.ml.MLConstants.MODIFIER_BARELY
-import org.studioapp.cinemy.ml.MLConstants.CONTEXT_CINEMATOGRAPHY
-import org.studioapp.cinemy.ml.MLConstants.CONTEXT_ACTING
-import org.studioapp.cinemy.ml.MLConstants.CONTEXT_PLOT
-import org.studioapp.cinemy.ml.MLConstants.CONTEXT_STORY
-import org.studioapp.cinemy.ml.MLConstants.CONTEXT_DIRECTOR
-import org.studioapp.cinemy.ml.MLConstants.CONTEXT_PERFORMANCE
-import org.studioapp.cinemy.ml.MLConstants.CONTEXT_SCRIPT
-import org.studioapp.cinemy.ml.MLConstants.CONTEXT_DIALOGUE
-import org.studioapp.cinemy.ml.MLConstants.CONTEXT_VISUALS
-import org.studioapp.cinemy.ml.MLConstants.CONTEXT_EFFECTS
-import org.studioapp.cinemy.ml.MLConstants.CONTEXT_SOUNDTRACK
-import org.studioapp.cinemy.ml.MLConstants.CONTEXT_EDITING
-import org.studioapp.cinemy.ml.MLConstants.QUALITY_MASTERPIECE
-import org.studioapp.cinemy.ml.MLConstants.QUALITY_ARTISTRY
-import org.studioapp.cinemy.ml.MLConstants.QUALITY_BRILLIANT
-import org.studioapp.cinemy.ml.MLConstants.QUALITY_GENIUS
-import org.studioapp.cinemy.ml.MLConstants.QUALITY_INNOVATIVE
-import org.studioapp.cinemy.ml.MLConstants.QUALITY_GROUNDBREAKING
-import org.studioapp.cinemy.ml.MLConstants.QUALITY_REVOLUTIONARY
-import org.studioapp.cinemy.ml.MLConstants.QUALITY_TIMELESS
-import org.studioapp.cinemy.ml.MLConstants.QUALITY_CLASSIC
-import org.studioapp.cinemy.ml.MLConstants.FAILURE_FLOP
-import org.studioapp.cinemy.ml.MLConstants.FAILURE_DISASTER
-import org.studioapp.cinemy.ml.MLConstants.FAILURE_FAILURE
-import org.studioapp.cinemy.ml.MLConstants.FAILURE_RUINED
-import org.studioapp.cinemy.ml.MLConstants.FAILURE_DESTROYED
-import org.studioapp.cinemy.ml.MLConstants.FAILURE_BUTCHERED
-import org.studioapp.cinemy.ml.MLConstants.FAILURE_MANGLED
-import org.studioapp.cinemy.ml.MLConstants.FAILURE_TORTURE
-import org.studioapp.cinemy.ml.MLConstants.FAILURE_NIGHTMARE
 import org.studioapp.cinemy.ml.MLConstants.WORD_SPLIT_REGEX_PATTERN
 import org.studioapp.cinemy.ml.MLConstants.EMOJI_POSITIVE
 import org.studioapp.cinemy.ml.MLConstants.EMOJI_NEGATIVE
@@ -72,6 +26,14 @@ import org.studioapp.cinemy.ml.MLConstants.EMOJI_NEGATIVE_PATTERN
 import org.studioapp.cinemy.ml.MLConstants.SENTIMENT_POSITIVE
 import org.studioapp.cinemy.ml.MLConstants.SENTIMENT_NEGATIVE
 import org.studioapp.cinemy.ml.MLConstants.SENTIMENT_NEUTRAL
+import org.studioapp.cinemy.ml.mlfactory.KeywordFactory.createMultilingualKeywords
+import org.studioapp.cinemy.ml.mlfactory.ContextBoostersFactory.createMovieContextBoosters
+import org.studioapp.cinemy.ml.mlfactory.ContextBoostersFactory.createFromEnhancedModel
+import org.studioapp.cinemy.ml.mlfactory.IntensityModifiersFactory.createIntensityModifiers
+import org.studioapp.cinemy.ml.mlfactory.SimpleKeywordModelFactory
+import org.studioapp.cinemy.ml.mlfactory.Algorithm
+import org.studioapp.cinemy.ml.mlmodels.LiteRTSentimentModel
+import org.studioapp.cinemy.ml.mlmodels.TensorFlowSentimentModel
 import java.lang.ref.WeakReference
 import kotlin.math.abs
 
@@ -125,13 +87,6 @@ class SentimentAnalyzer private constructor(private val context: Context) {
          * Keyword model serves as FALLBACK when TensorFlow has low confidence or is unavailable.
          */
 
-        // Keyword model file for fallback
-        private const val KEYWORD_MODEL_FILE = MLConstants.KEYWORD_MODEL_FILE
-
-
-        // Error messages
-        private const val ERROR_ANALYZER_NOT_INITIALIZED = MLConstants.ERROR_ANALYZER_NOT_INITIALIZED
-        private const val ERROR_ANALYSIS_ERROR = MLConstants.ERROR_ANALYSIS_ERROR
     }
 
     /**
@@ -180,13 +135,13 @@ class SentimentAnalyzer private constructor(private val context: Context) {
      */
     private suspend fun initializeKeywordModel() {
         val modelJson = runCatching {
-            context.assets.open("$ML_MODELS_PATH$KEYWORD_MODEL_FILE").use { inputStream ->
+            context.assets.open("$ML_MODELS_PATH$MLConstants.KEYWORD_MODEL_FILE").use { inputStream ->
                 inputStream.bufferedReader().readText()
             }
         }.getOrNull()
 
         keywordModel = if (modelJson != null) {
-            loadModelFromJson(modelJson, KEYWORD_MODEL_FILE)
+            loadModelFromJson(modelJson, MLConstants.KEYWORD_MODEL_FILE)
         } else {
             // Only use simple model if production model file is not found
             SimpleKeywordModelFactory().createSimpleModel()
@@ -201,7 +156,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
      */
     suspend fun analyzeSentiment(text: String): SentimentResult = withContext(Dispatchers.Default) {
         if (!isInitialized) {
-            return@withContext SentimentResult.error(ERROR_ANALYZER_NOT_INITIALIZED)
+            return@withContext SentimentResult.error(MLConstants.ERROR_ANALYZER_NOT_INITIALIZED)
         }
 
         if (text.isBlank()) {
@@ -238,7 +193,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                 SentimentResult.error(NO_MODELS_AVAILABLE_ERROR)
             }
         }.getOrElse { e ->
-            SentimentResult.error("$ERROR_ANALYSIS_ERROR${e.message}")
+            SentimentResult.error("$MLConstants.ERROR_ANALYSIS_ERROR${e.message}")
         }
     }
 
@@ -261,7 +216,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             val json = Json { ignoreUnknownKeys = true }
 
             when (fileName) {
-                KEYWORD_MODEL_FILE -> {
+                MLConstants.KEYWORD_MODEL_FILE -> {
                     loadProductionModel(json, jsonString)
                 }
 
@@ -303,21 +258,9 @@ class SentimentAnalyzer private constructor(private val context: Context) {
             speed = modelData.model_info.speed
         )
 
-        val algorithm = AlgorithmConfig(
-            baseConfidence = modelData.algorithm.base_confidence,
-            keywordWeight = 1.0,
-            contextWeight = 0.3,
-            modifierWeight = 0.4,
-            neutralThreshold = modelData.algorithm.neutral_threshold,
-            minConfidence = modelData.algorithm.min_confidence,
-            maxConfidence = modelData.algorithm.max_confidence
-        )
+        val algorithm = Algorithm.createFromEnhancedModel(modelData)
 
-        val contextBoosters = ContextBoosters(
-            movieTerms = null, // Not in v2 model
-            positiveContext = modelData.context_patterns?.strong_positive,
-            negativeContext = modelData.context_patterns?.strong_negative
-        )
+        val contextBoosters = createFromEnhancedModel(modelData)
 
         return KeywordSentimentModel(
             modelInfo = modelInfo,
@@ -343,51 +286,16 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         )
 
         // Use production model weights for advanced analysis
-        val algorithm = AlgorithmConfig(
-            baseConfidence = 0.8, // Higher confidence for production model
-            keywordWeight = 1.0,
-            contextWeight = 0.4,
-            modifierWeight = 0.5,
-            neutralThreshold = 0.5,
-            minConfidence = 0.4,
-            maxConfidence = 0.95
-        )
+        val algorithm = Algorithm.PRODUCTION_CONFIG
 
         // Create multilingual keywords based on production model
         val positiveKeywords = createMultilingualKeywords(SENTIMENT_POSITIVE)
         val negativeKeywords = createMultilingualKeywords(SENTIMENT_NEGATIVE)
         val neutralIndicators = createMultilingualKeywords(SENTIMENT_NEUTRAL)
 
-        val intensityModifiers = mapOf(
-            MODIFIER_ABSOLUTELY to 1.5,
-            MODIFIER_COMPLETELY to 1.4,
-            MODIFIER_TOTALLY to 1.3,
-            MODIFIER_EXTREMELY to 1.3,
-            MODIFIER_INCREDIBLY to 1.3,
-            MODIFIER_VERY to 1.2,
-            MODIFIER_REALLY to 1.1,
-            MODIFIER_PRETTY to 0.8,
-            MODIFIER_SOMEWHAT to 0.7,
-            MODIFIER_SLIGHTLY to 0.6,
-            MODIFIER_NOT to -1.0,
-            MODIFIER_NEVER to -1.0,
-            MODIFIER_BARELY to -0.5
-        )
+        val intensityModifiers = createIntensityModifiers()
 
-        val contextBoosters = ContextBoosters(
-            movieTerms = listOf(
-                CONTEXT_CINEMATOGRAPHY, CONTEXT_ACTING, CONTEXT_PLOT, CONTEXT_STORY, CONTEXT_DIRECTOR, CONTEXT_PERFORMANCE,
-                CONTEXT_SCRIPT, CONTEXT_DIALOGUE, CONTEXT_VISUALS, CONTEXT_EFFECTS, CONTEXT_SOUNDTRACK, CONTEXT_EDITING
-            ),
-            positiveContext = listOf(
-                QUALITY_MASTERPIECE, QUALITY_ARTISTRY, QUALITY_BRILLIANT, QUALITY_GENIUS, QUALITY_INNOVATIVE,
-                QUALITY_GROUNDBREAKING, QUALITY_REVOLUTIONARY, QUALITY_TIMELESS, QUALITY_CLASSIC
-            ),
-            negativeContext = listOf(
-                FAILURE_FLOP, FAILURE_DISASTER, FAILURE_FAILURE, FAILURE_RUINED, FAILURE_DESTROYED, FAILURE_BUTCHERED,
-                FAILURE_MANGLED, FAILURE_TORTURE, FAILURE_NIGHTMARE
-            )
-        )
+        val contextBoosters = createMovieContextBoosters()
 
         return KeywordSentimentModel(
             modelInfo = modelInfo,
@@ -400,60 +308,6 @@ class SentimentAnalyzer private constructor(private val context: Context) {
         )
     }
 
-    /**
-     * Create multilingual keywords for production model
-     */
-    private fun createMultilingualKeywords(type: String): List<String> {
-        return when (type) {
-            "positive" -> listOf(
-                // English
-                "amazing", "fantastic", "great", "excellent", "wonderful", "brilliant",
-                "outstanding", "superb", "magnificent", "perfect", "incredible", "awesome",
-                "beautiful", "lovely", "good", "nice", "best", "favorite", "love", "enjoy",
-                "phenomenal", "spectacular", "remarkable", "exceptional", "marvelous",
-                "stunning", "impressive", "captivating", "engaging", "compelling",
-                // Spanish
-                "increíble", "fantástico", "excelente", "maravilloso", "brillante",
-                "sobresaliente", "magnífico", "perfecto", "asombroso", "impresionante",
-                "hermoso", "encantador", "bueno", "mejor", "favorito", "amar", "disfrutar",
-                // Russian
-                "потрясающий", "фантастический", "отличный", "замечательный", "блестящий",
-                "выдающийся", "великолепный", "идеальный", "невероятный", "впечатляющий",
-                "красивый", "прекрасный", "хороший", "лучший", "любимый", "любить", "наслаждаться"
-            )
-
-            "negative" -> listOf(
-                // English
-                "terrible", "awful", "horrible", "bad", "worst", "hate", "disgusting",
-                "boring", "stupid", "dumb", "annoying", "frustrating", "disappointing",
-                "waste", "rubbish", "garbage", "trash", "sucks", "pathetic", "lame",
-                "atrocious", "dreadful", "appalling", "mediocre", "unwatchable",
-                "cringe", "cheesy", "predictable", "cliché", "overrated",
-                // Spanish
-                "terrible", "horrible", "malo", "peor", "odiar", "asqueroso",
-                "aburrido", "estúpido", "molesto", "frustrante", "decepcionante",
-                "basura", "patético", "atroz", "espantoso", "mediocre",
-                // Russian
-                "ужасный", "отвратительный", "плохой", "худший", "ненавидеть", "мерзкий",
-                "скучный", "глупый", "раздражающий", "разочаровывающий",
-                "мусор", "жалкий", "отвратительный", "ужасный", "посредственный"
-            )
-
-            "neutral" -> listOf(
-                // English
-                "okay", "decent", "average", "fine", "acceptable", "reasonable",
-                "standard", "typical", "normal", "ordinary", "mediocre", "so-so",
-                // Spanish
-                "bien", "decente", "promedio", "aceptable", "razonable",
-                "estándar", "típico", "normal", "ordinario", "mediocre",
-                // Russian
-                "нормально", "приличный", "средний", "приемлемый", "разумный",
-                "стандартный", "типичный", "обычный", "посредственный"
-            )
-
-            else -> emptyList()
-        }
-    }
 
 
     /**

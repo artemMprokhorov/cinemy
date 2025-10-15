@@ -12,7 +12,25 @@
 > - [🖼️ UI Components Layer](./UI_COMPONENTS_LAYER.md) - UI components and theming
 > - [🔧 Utils Layer](./UTILS_LAYER.md) - Utility classes and helper functions
 
-## 🆕 Latest Updates (v2.11.0)
+## 🆕 Latest Updates (v3.0.0)
+
+### 🎯 **Direct Imports Pattern Implementation** - January 2025
+- **Code Readability**: Implemented direct imports for constants across all layers
+- **Maintainability**: Centralized constants in dedicated files (StringConstants, PresentationConstants, MLConstants)
+- **Performance**: Reduced object prefix lookups for better performance
+- **Consistency**: Uniform patterns across all layers
+
+### 🏗️ **ML Layer Reorganization** - January 2025
+- **Modular Structure**: Reorganized ML layer into mlfactory/, mltools/, mlmodels/ directories
+- **Factory Pattern**: Implemented factory patterns for ML component creation
+- **Separation of Concerns**: Clear separation between factories, tools, and models
+- **Scalability**: Easy to add new ML components
+
+### 🧹 **Magic Value Elimination** - January 2025
+- **Constants Organization**: All hardcoded values moved to centralized constants
+- **No Magic Values**: Eliminated all hardcoded strings, numbers, and boolean values
+- **Data Mapping**: Enhanced data layer with dedicated mappers (MovieMapper, HttpResponseMapper, HttpRequestMapper)
+- **Default Data**: Created DefaultData classes for mock data management
 
 ### 🧹 **Code Cleanup and Optimization** - January 2025
 - **Unused Code Removal**: Comprehensive analysis and removal of unused imports
@@ -393,10 +411,76 @@ import org.studioapp.cinemy.data.model.ProductionCompany
 import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.model.SearchInfo
 import org.studioapp.cinemy.data.model.SentimentReviews
-import org.studioapp.cinemy.data.model.StringConstants
 import org.studioapp.cinemy.data.model.TextConfiguration
 import org.studioapp.cinemy.data.model.UiConfiguration
 ```
+
+### 🎯 **Direct Imports Pattern**
+
+#### ✅ **Required Patterns for Constants**
+```kotlin
+// ❌ BAD - Object prefix pattern
+import org.studioapp.cinemy.presentation.PresentationConstants
+
+class MoviesListViewModel {
+    fun processIntent(intent: MoviesListIntent) {
+        _state.value = _state.value.copy(
+            currentPage = PresentationConstants.DEFAULT_PAGE_NUMBER,
+            isLoading = PresentationConstants.DEFAULT_BOOLEAN_FALSE
+        )
+    }
+}
+
+// ✅ GOOD - Direct import pattern
+import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_PAGE_NUMBER
+import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_BOOLEAN_FALSE
+
+class MoviesListViewModel {
+    fun processIntent(intent: MoviesListIntent) {
+        _state.value = _state.value.copy(
+            currentPage = DEFAULT_PAGE_NUMBER,
+            isLoading = DEFAULT_BOOLEAN_FALSE
+        )
+    }
+}
+```
+
+#### ✅ **Constants Organization**
+```kotlin
+// ✅ GOOD - Centralized constants
+// StringConstants.kt (Data layer)
+object StringConstants {
+    const val DEFAULT_MOVIE_ID = 0
+    const val DEFAULT_PAGE_NUMBER = 1
+    const val DEFAULT_BOOLEAN_FALSE = false
+    const val HTTP_ERROR_NETWORK_ERROR = "Network error: %s"
+    const val JSON_FIELD_DATA = "data"
+}
+
+// PresentationConstants.kt (Presentation layer)
+object PresentationConstants {
+    const val DEFAULT_MOVIE_ID = 0
+    const val DEFAULT_PAGE_NUMBER = 1
+    const val DEFAULT_BOOLEAN_FALSE = false
+    const val MINUTES_PER_HOUR = 60
+    const val RUNTIME_HOURS_FORMAT = "h"
+}
+
+// MLConstants.kt (ML layer)
+object MLConstants {
+    const val ML_RUNTIME_NOT_INITIALIZED_ERROR = "ML runtime not initialized"
+    const val WORD_SPLIT_REGEX = "\\s+"
+    const val DEFAULT_SCORE = 0.0
+    const val MIN_CONFIDENCE_THRESHOLD = 0.3
+}
+```
+
+#### ✅ **Benefits of Direct Imports**
+- **Code Readability**: Constants are more readable without object prefixes
+- **Performance**: Reduced object prefix lookups
+- **Maintainability**: Easy to see which constants are used
+- **Consistency**: Uniform patterns across all layers
+- **IDE Support**: Better autocomplete and refactoring support
 
 ## 📏 Code Development Rules
 

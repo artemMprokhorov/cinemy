@@ -66,11 +66,14 @@ MVI is an architectural pattern that ensures **unidirectional data flow** and **
 - `MovieDetailIntent` - Intents for movie details
 - `MoviesListState` - Movie list state
 - `MovieDetailState` - Movie details state
+- `PresentationConstants` - Centralized constants for presentation layer
 
 **Principles**:
 - ViewModels don't know about UI details
 - State is represented as immutable data class
 - Intents describe all possible user actions
+- **Direct Imports Pattern**: Use direct imports for constants to improve code readability
+- **Constants Organization**: All hardcoded values moved to `PresentationConstants.kt`
 
 ### 🎯 Domain Layer (Use Cases + Models)
 
@@ -96,11 +99,16 @@ MVI is an architectural pattern that ensures **unidirectional data flow** and **
 - `McpHttpClient` - HTTP client
 - Data Models - DTO models
 - Mappers - Data transformation
+- `StringConstants` - Centralized constants for data layer
+- `DefaultData` - Default data classes for mock data
 
 **Principles**:
 - Repository pattern
 - Data source abstraction
 - Caching and synchronization
+- **Direct Imports Pattern**: Use direct imports for constants to improve code readability
+- **Constants Organization**: All hardcoded values moved to `StringConstants.kt`
+- **Magic Value Elimination**: No hardcoded strings, numbers, or boolean values
 
 ### 🤖 ML Layer (Machine Learning)
 
@@ -120,6 +128,10 @@ MVI is an architectural pattern that ensures **unidirectional data flow** and **
 - `HardwareDetection` - Hardware capability detection
 - `TensorFlowSentimentModel` - TensorFlow Lite model
 - `model/` - Data classes and model definitions
+- `mlfactory/` - Factory classes for ML components
+- `mltools/` - ML utility classes
+- `mlmodels/` - ML model implementations
+- `MLConstants` - Centralized constants for ML layer
 
 **Key Features**:
 - **Adaptive Runtime**: Intelligent ML runtime selection
@@ -135,7 +147,8 @@ app/src/main/java/org/studioapp/cinemy/
 ├── Cinemy.kt                    # Main application class
 ├── navigation/                   # Navigation
 │   ├── Navigation.kt            # Main navigation
-│   └── Screen.kt                # Screen definitions
+│   ├── Screen.kt                # Screen definitions
+│   └── NavigationConstants.kt   # Navigation constants
 ├── ui/                          # UI Layer
 │   ├── components/              # Reusable components
 │   ├── movieslist/              # Movie list screen
@@ -146,12 +159,18 @@ app/src/main/java/org/studioapp/cinemy/
 │   ├── di/                      # DI modules
 │   ├── commons/                 # Common components
 │   ├── movieslist/              # MoviesList ViewModel
-│   └── moviedetail/             # MovieDetail ViewModel
+│   ├── moviedetail/             # MovieDetail ViewModel
+│   └── PresentationConstants.kt # Presentation constants
 ├── data/                        # Data Layer
 │   ├── di/                      # Data DI modules
 │   ├── mcp/                     # MCP client and models
 │   ├── model/                   # Data models
-│   ├── mapper/                  # Data mappers
+│   │   ├── StringConstants.kt  # Data layer constants
+│   │   └── DefaultData.kt       # Default data classes
+│   ├── mapper/                # Data mappers
+│   │   ├── MovieMapper.kt       # Movie data mapping
+│   │   ├── HttpResponseMapper.kt # HTTP response mapping
+│   │   └── HttpRequestMapper.kt  # HTTP request mapping
 │   ├── remote/                  # Remote data sources
 │   └── repository/              # Repositories
 ├── ml/                          # ML Layer
@@ -164,14 +183,236 @@ app/src/main/java/org/studioapp/cinemy/
 │   │   ├── EnhancedModelData.kt # Enhanced model data
 │   │   ├── ProductionModelData.kt # Production model data
 │   │   └── TensorFlowConfig.kt  # TensorFlow configuration
+│   ├── mlfactory/               # ML Factory classes
+│   │   ├── KeywordFactory.kt    # Keyword creation factory
+│   │   ├── ContextBoostersFactory.kt # Context boosters factory
+│   │   ├── IntensityModifiersFactory.kt # Intensity modifiers factory
+│   │   ├── Algorithm.kt         # Algorithm configuration factory
+│   │   └── SimpleKeywordModelFactory.kt # Simple model factory
+│   ├── mltools/                 # ML Utility classes
+│   │   └── HardwareDetection.kt # Hardware detection
+│   ├── mlmodels/                # ML Model implementations
+│   │   ├── LiteRTSentimentModel.kt # LiteRT implementation
+│   │   └── TensorFlowSentimentModel.kt # TensorFlow Lite model
+│   ├── di/                      # ML DI modules
+│   │   └── MLModule.kt          # ML dependency injection
 │   ├── SentimentAnalyzer.kt     # Main hybrid analyzer
 │   ├── AdaptiveMLRuntime.kt     # Adaptive runtime selector
-│   ├── LiteRTSentimentModel.kt   # LiteRT implementation
-│   ├── HardwareDetection.kt     # Hardware detection
-│   ├── TensorFlowSentimentModel.kt # TensorFlow Lite model
-│   └── SimpleKeywordModelFactory.kt # Simple model factory
+│   └── MLConstants.kt           # ML constants
 └── utils/                       # Utilities
 ```
+
+## 🆕 Recent Architecture Improvements
+
+### 🎯 **Direct Imports Pattern Implementation**
+
+The project has been refactored to use **direct imports** for constants, improving code readability and maintainability:
+
+#### **Before (Object Prefix Pattern)**
+```kotlin
+// ❌ Verbose and repetitive
+import org.studioapp.cinemy.presentation.PresentationConstants
+
+class MoviesListViewModel {
+    fun processIntent(intent: MoviesListIntent) {
+        _state.value = _state.value.copy(
+            currentPage = PresentationConstants.DEFAULT_PAGE_NUMBER,
+            isLoading = PresentationConstants.DEFAULT_BOOLEAN_FALSE
+        )
+    }
+}
+```
+
+#### **After (Direct Import Pattern)**
+```kotlin
+// ✅ Clean and readable
+import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_PAGE_NUMBER
+import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_BOOLEAN_FALSE
+
+class MoviesListViewModel {
+    fun processIntent(intent: MoviesListIntent) {
+        _state.value = _state.value.copy(
+            currentPage = DEFAULT_PAGE_NUMBER,
+            isLoading = DEFAULT_BOOLEAN_FALSE
+        )
+    }
+}
+```
+
+### 🏗️ **ML Layer Reorganization**
+
+The ML layer has been restructured for better organization and maintainability:
+
+#### **New Directory Structure**
+```
+ml/
+├── mlfactory/               # Factory classes for ML components
+│   ├── KeywordFactory.kt    # Multilingual keyword creation
+│   ├── ContextBoostersFactory.kt # Context boosters factory
+│   ├── IntensityModifiersFactory.kt # Intensity modifiers factory
+│   ├── Algorithm.kt         # Algorithm configuration factory
+│   └── SimpleKeywordModelFactory.kt # Simple model factory
+├── mltools/                 # ML utility classes
+│   └── HardwareDetection.kt # Hardware capability detection
+├── mlmodels/                # ML model implementations
+│   ├── LiteRTSentimentModel.kt # LiteRT implementation
+│   └── TensorFlowSentimentModel.kt # TensorFlow Lite model
+├── di/                      # ML dependency injection
+│   └── MLModule.kt          # ML module configuration
+└── MLConstants.kt           # Centralized ML constants
+```
+
+#### **Benefits of Reorganization**
+- **Modularity**: Clear separation of concerns
+- **Maintainability**: Easy to find and modify specific components
+- **Scalability**: Easy to add new ML components
+- **Testing**: Isolated components for better testing
+
+### 🧹 **Magic Value Elimination**
+
+All hardcoded values have been moved to centralized constants:
+
+#### **Data Layer Constants**
+```kotlin
+// StringConstants.kt
+object StringConstants {
+    // Default values
+    const val DEFAULT_MOVIE_ID = 0
+    const val DEFAULT_PAGE_NUMBER = 1
+    const val DEFAULT_BOOLEAN_FALSE = false
+    
+    // HTTP error messages
+    const val HTTP_ERROR_NETWORK_ERROR = "Network error: %s"
+    const val HTTP_ERROR_UNABLE_TO_CONNECT = "Unable to connect to server"
+    
+    // JSON field names
+    const val JSON_FIELD_DATA = "data"
+    const val JSON_FIELD_UI_CONFIG = "uiConfig"
+    const val JSON_FIELD_COLORS = "colors"
+}
+```
+
+#### **Presentation Layer Constants**
+```kotlin
+// PresentationConstants.kt
+object PresentationConstants {
+    // Default values
+    const val DEFAULT_MOVIE_ID = 0
+    const val DEFAULT_PAGE_NUMBER = 1
+    const val DEFAULT_BOOLEAN_FALSE = false
+    
+    // Runtime formatting
+    const val MINUTES_PER_HOUR = 60
+    const val RUNTIME_HOURS_FORMAT = "h"
+    const val RUNTIME_MINUTES_FORMAT = "m"
+    
+    // Budget formatting
+    const val BUDGET_DIVISOR = 1_000_000
+    const val BUDGET_CURRENCY_SYMBOL = "$"
+    const val BUDGET_SUFFIX = "M"
+}
+```
+
+#### **ML Layer Constants**
+```kotlin
+// MLConstants.kt
+object MLConstants {
+    // Error messages
+    const val ML_RUNTIME_NOT_INITIALIZED_ERROR = "ML runtime not initialized"
+    const val LITERT_MODEL_NOT_AVAILABLE_ERROR = "LiteRT model not available"
+    
+    // Processing constants
+    const val WORD_SPLIT_REGEX = "\\s+"
+    const val DEFAULT_SCORE = 0.0
+    const val SCORE_INCREMENT = 1.0
+    const val MIN_CONFIDENCE_THRESHOLD = 0.3
+}
+```
+
+### 🔄 **Factory Pattern Implementation**
+
+The ML layer now uses factory patterns for better component creation:
+
+#### **KeywordFactory.kt**
+```kotlin
+object KeywordFactory {
+    fun createMultilingualKeywords(type: String): List<String> {
+        return when (type) {
+            SENTIMENT_POSITIVE -> createPositiveKeywords()
+            SENTIMENT_NEGATIVE -> createNegativeKeywords()
+            SENTIMENT_NEUTRAL -> createNeutralKeywords()
+            else -> emptyList()
+        }
+    }
+}
+```
+
+#### **ContextBoostersFactory.kt**
+```kotlin
+object ContextBoostersFactory {
+    fun createMovieContextBoosters(): ContextBoosters {
+        return ContextBoosters(
+            movieTerms = createMovieTerms(),
+            positiveContext = createPositiveContext(),
+            negativeContext = createNegativeContext()
+        )
+    }
+}
+```
+
+#### **IntensityModifiersFactory.kt**
+```kotlin
+object IntensityModifiersFactory {
+    fun createIntensityModifiers(): Map<String, Double> {
+        return mapOf(
+            MODIFIER_ABSOLUTELY to 1.5,
+            MODIFIER_COMPLETELY to 1.4,
+            MODIFIER_TOTALLY to 1.3,
+            // ... more modifiers
+        )
+    }
+}
+```
+
+### 📊 **Data Mapping Improvements**
+
+The data layer has been enhanced with dedicated mappers:
+
+#### **MovieMapper.kt**
+```kotlin
+object MovieMapper {
+    fun mapJsonToMovieDto(movieData: Map<String, Any>): MovieDto {
+        return MovieDto(
+            id = movieData[SERIALIZED_ID] as? Int ?: DEFAULT_MOVIE_ID,
+            title = movieData[SERIALIZED_TITLE] as? String ?: DEFAULT_MOVIE_TITLE,
+            // ... more mappings
+        )
+    }
+}
+```
+
+#### **HttpResponseMapper.kt**
+```kotlin
+object HttpResponseMapper {
+    fun <T> parseJsonArrayResponse(jsonArray: JSONArray): McpResponse<T> {
+        // JSON parsing logic
+    }
+    
+    fun <T> parseJsonStringResponse(responseText: String): McpResponse<T> {
+        // String response parsing logic
+    }
+}
+```
+
+### 🎯 **Benefits of Recent Changes**
+
+1. **Code Readability**: Direct imports make code more readable
+2. **Maintainability**: Centralized constants are easier to maintain
+3. **Modularity**: ML layer reorganization improves modularity
+4. **Testability**: Factory patterns make components easier to test
+5. **Scalability**: New components can be easily added
+6. **Performance**: Reduced object prefix lookups
+7. **Consistency**: Uniform patterns across all layers
 
 ## 🔄 Dependency Injection (Koin)
 

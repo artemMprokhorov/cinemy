@@ -14,6 +14,9 @@ import org.studioapp.cinemy.ui.moviedetail.MovieDetailScreen
 import org.studioapp.cinemy.ui.movieslist.MoviesListScreen
 import org.studioapp.cinemy.ui.splash.MovieAppSplashScreen
 import org.studioapp.cinemy.utils.supportsDualPane
+import org.studioapp.cinemy.navigation.NavigationConstants.DEFAULT_MOVIE_ID_FOR_ROUTE
+import org.studioapp.cinemy.navigation.NavigationConstants.NAV_ARG_MOVIE_ID
+import org.studioapp.cinemy.navigation.NavigationConstants.DEFAULT_MOVIE_ID
 
 /**
  * Main navigation composable for the Cinemy app
@@ -63,15 +66,15 @@ fun AppNavigation(navController: NavHostController) {
         }
 
         composable(
-            route = Screen.DualPaneWithMovie(NavigationConstants.DEFAULT_MOVIE_ID_FOR_ROUTE).route,
+            route = Screen.DualPaneWithMovie(DEFAULT_MOVIE_ID_FOR_ROUTE).route,
             arguments = listOf(
-                navArgument(NavigationConstants.NAV_ARG_MOVIE_ID) {
+                navArgument(NAV_ARG_MOVIE_ID) {
                     type = NavType.IntType
                 }
             )
         ) { backStackEntry ->
-            val movieId = backStackEntry.arguments?.getInt(NavigationConstants.NAV_ARG_MOVIE_ID)
-                ?: NavigationConstants.DEFAULT_MOVIE_ID
+            val movieId = backStackEntry.arguments?.getInt(NAV_ARG_MOVIE_ID)
+                ?: DEFAULT_MOVIE_ID
             DualPaneScreen(
                 selectedMovieId = movieId,
                 onMovieSelected = { movie ->
@@ -81,15 +84,15 @@ fun AppNavigation(navController: NavHostController) {
         }
 
         composable(
-            route = Screen.MovieDetail(NavigationConstants.DEFAULT_MOVIE_ID_FOR_ROUTE).route,
+            route = Screen.MovieDetail(DEFAULT_MOVIE_ID_FOR_ROUTE).route,
             arguments = listOf(
-                navArgument(NavigationConstants.NAV_ARG_MOVIE_ID) {
+                navArgument(NAV_ARG_MOVIE_ID) {
                     type = NavType.IntType
                 }
             )
         ) { backStackEntry ->
-            val movieId = backStackEntry.arguments?.getInt(NavigationConstants.NAV_ARG_MOVIE_ID)
-                ?: NavigationConstants.DEFAULT_MOVIE_ID
+            val movieId = backStackEntry.arguments?.getInt(NAV_ARG_MOVIE_ID)
+                ?: DEFAULT_MOVIE_ID
             val movieDetailViewModel: MovieDetailViewModel = koinViewModel()
             MovieDetailScreen(
                 movieId = movieId,

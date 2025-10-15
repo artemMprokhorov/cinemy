@@ -9,7 +9,15 @@ import kotlinx.coroutines.launch
 import org.studioapp.cinemy.BuildConfig
 import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.repository.MovieRepository
-import org.studioapp.cinemy.presentation.PresentationConstants
+import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_PAGE_NUMBER
+import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_BOOLEAN_FALSE
+import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_BOOLEAN_TRUE
+import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_CAN_RETRY
+import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_RETRY_COUNT
+import org.studioapp.cinemy.presentation.PresentationConstants.PAGE_INCREMENT
+import org.studioapp.cinemy.presentation.PresentationConstants.PAGE_DECREMENT
+import org.studioapp.cinemy.presentation.PresentationConstants.BACKEND_UNAVAILABLE_KEYWORD
+import org.studioapp.cinemy.presentation.PresentationConstants.MOCK_KEYWORD
 
 /**
  * ViewModel for Movies List screen following MVI pattern
@@ -51,14 +59,14 @@ class MoviesListViewModel(
     }
 
     private fun loadPopularMovies(
-        page: Int = PresentationConstants.DEFAULT_PAGE_NUMBER,
-        isRetry: Boolean = PresentationConstants.DEFAULT_BOOLEAN_FALSE
+        page: Int = DEFAULT_PAGE_NUMBER,
+        isRetry: Boolean = DEFAULT_BOOLEAN_FALSE
     ) {
         viewModelScope.launch {
             _state.value = _state.value.copy(
-                isLoading = PresentationConstants.DEFAULT_BOOLEAN_TRUE,
+                isLoading = DEFAULT_BOOLEAN_TRUE,
                 error = if (isRetry) null else _state.value.error,
-                canRetry = PresentationConstants.DEFAULT_CAN_RETRY
+                canRetry = DEFAULT_CAN_RETRY
             )
 
             when (val result = movieRepository.getPopularMovies(page)) {
@@ -75,7 +83,7 @@ class MoviesListViewModel(
                     )
 
                     _state.value = _state.value.copy(
-                        isLoading = PresentationConstants.DEFAULT_BOOLEAN_FALSE,
+                        isLoading = DEFAULT_BOOLEAN_FALSE,
                         error = null, // Clear any previous error
                         movies = response.results,
                         pagination = pagination,
@@ -83,10 +91,10 @@ class MoviesListViewModel(
                         hasMore = pagination.hasNext,
 
                         // NEW: Connection status handling
-                        isUsingMockData = PresentationConstants.DEFAULT_BOOLEAN_FALSE, // Will be determined by BuildConfig
+                        isUsingMockData = DEFAULT_BOOLEAN_FALSE, // Will be determined by BuildConfig
                         connectionStatus = determineConnectionStatus(null),
-                        retryCount = PresentationConstants.DEFAULT_RETRY_COUNT,
-                        canRetry = PresentationConstants.DEFAULT_CAN_RETRY,
+                        retryCount = DEFAULT_RETRY_COUNT,
+                        canRetry = DEFAULT_CAN_RETRY,
 
                         uiConfig = result.uiConfig
                     )
@@ -94,10 +102,10 @@ class MoviesListViewModel(
 
                 is Result.Error -> {
                     _state.value = _state.value.copy(
-                        isLoading = PresentationConstants.DEFAULT_BOOLEAN_FALSE,
+                        isLoading = DEFAULT_BOOLEAN_FALSE,
                         error = result.message,
-                        canRetry = PresentationConstants.DEFAULT_BOOLEAN_TRUE,
-                        retryCount = if (isRetry) _state.value.retryCount + PresentationConstants.PAGE_INCREMENT else PresentationConstants.DEFAULT_RETRY_COUNT,
+                        canRetry = DEFAULT_BOOLEAN_TRUE,
+                        retryCount = if (isRetry) _state.value.retryCount + PAGE_INCREMENT else DEFAULT_RETRY_COUNT,
                         connectionStatus = MoviesListState.ConnectionStatus.Disconnected,
                         uiConfig = result.uiConfig
                     )
@@ -105,7 +113,7 @@ class MoviesListViewModel(
 
                 is Result.Loading -> {
                     _state.value =
-                        _state.value.copy(isLoading = PresentationConstants.DEFAULT_BOOLEAN_TRUE)
+                        _state.value.copy(isLoading = DEFAULT_BOOLEAN_TRUE)
                 }
             }
         }
@@ -115,7 +123,7 @@ class MoviesListViewModel(
     private fun loadMoreMovies() {
         val currentState = _state.value
         if (currentState.hasMore && !currentState.isLoading) {
-            val nextPage = currentState.currentPage + PresentationConstants.PAGE_INCREMENT
+            val nextPage = currentState.currentPage + PAGE_INCREMENT
             loadPopularMovies(nextPage)
         }
     }
@@ -129,8 +137,8 @@ class MoviesListViewModel(
     private fun determineConnectionStatus(message: String?): MoviesListState.ConnectionStatus {
         return when {
             BuildConfig.USE_MOCK_DATA -> MoviesListState.ConnectionStatus.MockOnly
-            message?.contains(PresentationConstants.BACKEND_UNAVAILABLE_KEYWORD) == true -> MoviesListState.ConnectionStatus.Disconnected
-            message?.contains(PresentationConstants.MOCK_KEYWORD) == true -> MoviesListState.ConnectionStatus.Disconnected
+            message?.contains(BACKEND_UNAVAILABLE_KEYWORD) == true -> MoviesListState.ConnectionStatus.Disconnected
+            message?.contains(MOCK_KEYWORD) == true -> MoviesListState.ConnectionStatus.Disconnected
             else -> MoviesListState.ConnectionStatus.Connected
         }
     }
@@ -140,15 +148,15 @@ class MoviesListViewModel(
         when (intent) {
             is MoviesListIntent.RetryConnection -> {
                 loadPopularMovies(
-                    page = PresentationConstants.DEFAULT_PAGE_NUMBER,
-                    isRetry = PresentationConstants.DEFAULT_BOOLEAN_TRUE
+                    page = DEFAULT_PAGE_NUMBER,
+                    isRetry = DEFAULT_BOOLEAN_TRUE
                 )
             }
 
             is MoviesListIntent.RefreshData -> {
                 _state.value =
                     _state.value.copy(connectionStatus = MoviesListState.ConnectionStatus.Unknown)
-                loadPopularMovies(page = PresentationConstants.DEFAULT_PAGE_NUMBER)
+                loadPopularMovies(page = DEFAULT_PAGE_NUMBER)
             }
 
             is MoviesListIntent.CheckConnectionStatus -> {
@@ -158,7 +166,7 @@ class MoviesListViewModel(
             is MoviesListIntent.DismissError -> {
                 _state.value = _state.value.copy(
                     error = null,
-                    canRetry = PresentationConstants.DEFAULT_CAN_RETRY
+                    canRetry = DEFAULT_CAN_RETRY
                 )
             }
 
@@ -173,7 +181,7 @@ class MoviesListViewModel(
         viewModelScope.launch {
             // Quick ping to check if backend is available
             runCatching {
-                movieRepository.getPopularMovies(PresentationConstants.DEFAULT_PAGE_NUMBER)
+                movieRepository.getPopularMovies(DEFAULT_PAGE_NUMBER)
             }.fold(
                 onSuccess = { result ->
                     _state.value = _state.value.copy(
@@ -200,7 +208,7 @@ class MoviesListViewModel(
         val pagination = currentState.pagination
 
         if (pagination != null && pagination.hasNext && !currentState.isLoading) {
-            loadPopularMovies(pagination.page + PresentationConstants.PAGE_INCREMENT)
+            loadPopularMovies(pagination.page + PAGE_INCREMENT)
         }
     }
 
@@ -209,7 +217,7 @@ class MoviesListViewModel(
         val pagination = currentState.pagination
 
         if (pagination != null && pagination.hasPrevious && !currentState.isLoading) {
-            loadPopularMovies(pagination.page - PresentationConstants.PAGE_DECREMENT)
+            loadPopularMovies(pagination.page - PAGE_DECREMENT)
         }
     }
 }

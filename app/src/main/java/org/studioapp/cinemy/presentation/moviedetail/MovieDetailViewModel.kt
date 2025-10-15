@@ -10,7 +10,9 @@ import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.repository.MovieRepository
 import org.studioapp.cinemy.ml.SentimentAnalyzer
 import org.studioapp.cinemy.ml.model.SentimentResult
-import org.studioapp.cinemy.presentation.PresentationConstants
+import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_MOVIE_ID
+import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_BOOLEAN_TRUE
+import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_BOOLEAN_FALSE
 
 /**
  * ViewModel for Movie Detail screen following MVI pattern
@@ -26,7 +28,7 @@ class MovieDetailViewModel(
     private val _state = MutableStateFlow(MovieDetailState())
     val state: StateFlow<MovieDetailState> = _state.asStateFlow()
 
-    private var currentMovieId: Int = PresentationConstants.DEFAULT_MOVIE_ID
+    private var currentMovieId: Int = DEFAULT_MOVIE_ID
 
     /**
      * Processes user intents and updates state accordingly
@@ -41,14 +43,14 @@ class MovieDetailViewModel(
 
             is MovieDetailIntent.Retry -> {
                 // MovieDetailIntent.Retry loading the current movie details using stored movie ID
-                if (currentMovieId > PresentationConstants.DEFAULT_MOVIE_ID) {
+                if (currentMovieId > DEFAULT_MOVIE_ID) {
                     loadMovieDetails(currentMovieId)
                 }
             }
 
             is MovieDetailIntent.Refresh -> {
                 // MovieDetailIntent.Refresh current movie details using stored movie ID
-                if (currentMovieId > PresentationConstants.DEFAULT_MOVIE_ID) {
+                if (currentMovieId > DEFAULT_MOVIE_ID) {
                     loadMovieDetails(currentMovieId)
                 }
             }
@@ -60,7 +62,7 @@ class MovieDetailViewModel(
     private fun loadMovieDetails(movieId: Int) {
         viewModelScope.launch {
             _state.value = _state.value.copy(
-                isLoading = PresentationConstants.DEFAULT_BOOLEAN_TRUE,
+                isLoading = DEFAULT_BOOLEAN_TRUE,
                 error = null
             )
 
@@ -73,7 +75,7 @@ class MovieDetailViewModel(
 
                     _state.value = _state.value.copy(
                         movieDetails = response.data.movieDetails,
-                        isLoading = PresentationConstants.DEFAULT_BOOLEAN_FALSE,
+                        isLoading = DEFAULT_BOOLEAN_FALSE,
                         error = null,
                         uiConfig = result.uiConfig,
                         meta = response.meta,
@@ -88,7 +90,7 @@ class MovieDetailViewModel(
 
                 is Result.Error -> {
                     _state.value = _state.value.copy(
-                        isLoading = PresentationConstants.DEFAULT_BOOLEAN_FALSE,
+                        isLoading = DEFAULT_BOOLEAN_FALSE,
                         error = result.message,
                         uiConfig = result.uiConfig
                     )
@@ -96,7 +98,7 @@ class MovieDetailViewModel(
 
                 is Result.Loading -> {
                     _state.value =
-                        _state.value.copy(isLoading = PresentationConstants.DEFAULT_BOOLEAN_TRUE)
+                        _state.value.copy(isLoading = DEFAULT_BOOLEAN_TRUE)
                 }
             }
         }

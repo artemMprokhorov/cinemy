@@ -1,4 +1,4 @@
-package org.studioapp.cinemy.ml
+package org.studioapp.cinemy.ml.mlmodels
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
