@@ -570,17 +570,26 @@ class MoviesListViewModel(
 ### Domain Model Usage
 
 ```kotlin
-// Clean domain models for UI consumption
+// Clean domain models for UI consumption (exact signature from model/Movie.kt)
 data class Movie(
     val id: Int,
     val title: String,
     val description: String,
     val posterPath: String?,
+    val backdropPath: String?,
     val rating: Double,
-    val releaseDate: String
+    val voteCount: Int,
+    val releaseDate: String,
+    val genreIds: List<Int> = emptyList(),
+    val popularity: Double,
+    val adult: Boolean,
+    val originalLanguage: String,
+    val originalTitle: String,
+    val video: Boolean,
+    val colors: MovieColors
 )
 
-// Result handling for type-safe state management
+// Result handling for type-safe state management (exact signature)
 sealed class Result<out T> {
     data class Success<T>(val data: T, val uiConfig: UiConfiguration? = null) : Result<T>()
     data class Error(val message: String, val uiConfig: UiConfiguration? = null) : Result<Nothing>()
