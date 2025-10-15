@@ -31,7 +31,8 @@ class MovieDetailViewModel(
     private var currentMovieId: Int = DEFAULT_MOVIE_ID
 
     /**
-     * Processes user intents and updates state accordingly
+     * Processes user intents and updates state accordingly following MVI pattern
+     * Handles all user interactions including loading, retry, refresh, and sentiment operations
      * @param intent User intent to process
      */
     fun processIntent(intent: MovieDetailIntent) {
@@ -59,6 +60,11 @@ class MovieDetailViewModel(
         }
     }
 
+    /**
+     * Loads movie details from repository and updates state
+     * Handles loading states, error states, and triggers sentiment analysis
+     * @param movieId ID of the movie to load details for
+     */
     private fun loadMovieDetails(movieId: Int) {
         viewModelScope.launch {
             _state.value = _state.value.copy(
@@ -104,6 +110,10 @@ class MovieDetailViewModel(
         }
     }
 
+    /**
+     * Clears sentiment analysis results from state
+     * Removes both sentiment result and any sentiment errors
+     */
     private fun clearSentimentResult() {
         _state.value = _state.value.copy(
             sentimentResult = null,
@@ -111,6 +121,11 @@ class MovieDetailViewModel(
         )
     }
 
+    /**
+     * Analyzes sentiment using local ML model
+     * Processes positive and negative reviews and calculates overall sentiment
+     * @param reviews Sentiment reviews data containing positive and negative review lists
+     */
     private fun analyzeSentimentWithLocalModel(reviews: org.studioapp.cinemy.data.model.SentimentReviews) {
         viewModelScope.launch {
             runCatching {
@@ -133,6 +148,13 @@ class MovieDetailViewModel(
         }
     }
 
+    /**
+     * Calculates overall sentiment from positive and negative analysis results
+     * Compares confidence levels to determine final sentiment classification
+     * @param positiveResults List of positive sentiment analysis results
+     * @param negativeResults List of negative sentiment analysis results
+     * @return Overall sentiment result with confidence and keywords
+     */
     private fun calculateOverallSentiment(
         positiveResults: List<SentimentResult>,
         negativeResults: List<SentimentResult>

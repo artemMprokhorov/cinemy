@@ -29,6 +29,14 @@ class MoviesListViewModel(
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MoviesListState())
+    
+    /**
+     * Public state flow for UI to observe state changes.
+     * Provides reactive access to current movies list state including movies data,
+     * loading states, errors, pagination, and connection status.
+     *
+     * @return StateFlow of MoviesListState for UI consumption
+     */
     val state: StateFlow<MoviesListState> = _state.asStateFlow()
 
     init {
@@ -37,8 +45,11 @@ class MoviesListViewModel(
     }
 
     /**
-     * Processes user intents and updates state accordingly
-     * @param intent User intent to process
+     * Processes user intents and updates state accordingly following MVI pattern.
+     * Handles all user interactions including loading movies, pagination, connection management,
+     * and error recovery operations.
+     *
+     * @param intent User intent to process from MoviesListIntent sealed class
      */
     fun processIntent(intent: MoviesListIntent) {
         when (intent) {

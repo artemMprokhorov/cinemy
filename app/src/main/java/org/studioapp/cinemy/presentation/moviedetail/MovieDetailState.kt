@@ -19,6 +19,15 @@ import org.studioapp.cinemy.presentation.PresentationConstants.BUDGET_SUFFIX
  * State class for the Movie Detail screen
  * Holds all UI state data for the movie detail functionality
  * Follows MVI pattern for state management
+ * 
+ * @param isLoading Loading state indicator for movie details
+ * @param movieDetails Complete movie information from API
+ * @param error Error message if any operation failed
+ * @param uiConfig Dynamic UI configuration from backend
+ * @param meta API response metadata
+ * @param sentimentResult ML sentiment analysis result
+ * @param sentimentError Sentiment analysis error message
+ * @param sentimentReviews Sentiment reviews from backend
  */
 data class MovieDetailState(
     val isLoading: Boolean = DEFAULT_BOOLEAN_FALSE,
@@ -33,11 +42,21 @@ data class MovieDetailState(
     val sentimentError: String? = null,
     val sentimentReviews: SentimentReviews? = null
 ) {
+    /**
+     * Formats movie runtime from minutes to hours and minutes display format
+     * 
+     * @return Formatted runtime string in "Xh Ym" format or empty string if no runtime
+     */
     val formattedRuntime: String
         get() = movieDetails?.runtime?.let {
             "${it / MINUTES_PER_HOUR}${RUNTIME_HOURS_FORMAT} ${it % MINUTES_PER_HOUR}${RUNTIME_MINUTES_FORMAT}"
         } ?: MESSAGE_EMPTY
 
+    /**
+     * Formats movie budget for display with currency symbol and appropriate scaling
+     * 
+     * @return Formatted budget string with currency symbol or empty string if budget is below threshold
+     */
     val formattedBudget: String
         get() = movieDetails?.budget?.let {
             if (it > BUDGET_THRESHOLD) "${BUDGET_CURRENCY_SYMBOL}${it / BUDGET_DIVISOR}${BUDGET_SUFFIX}" else MESSAGE_EMPTY
