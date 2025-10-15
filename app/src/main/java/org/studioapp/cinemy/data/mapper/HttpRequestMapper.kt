@@ -16,10 +16,16 @@ object HttpRequestMapper {
 
     /**
      * Builds JSON request body from MCP request
-     * @param request MCP request object
-     * @return JSON string representation of the request
+     * Creates a properly formatted JSON string for MCP backend communication
+     * @param request MCP request object containing method and parameters
+     * @return JSON string representation of the request in format: {"method":"methodName","params":{"key":"value"}}
+     * @throws IllegalArgumentException if request is invalid
      */
     fun buildJsonRequestBody(request: McpRequest): String {
+        if (!validateRequest(request)) {
+            throw IllegalArgumentException("Invalid MCP request: method and params must be provided")
+        }
+        
         return buildString {
             append(JSON_OPEN_BRACE)
             append(JSON_METHOD_FIELD.format(request.method))
@@ -35,8 +41,9 @@ object HttpRequestMapper {
 
     /**
      * Validates MCP request parameters
-     * @param request MCP request object
-     * @return true if request is valid, false otherwise
+     * Checks if the request has a non-empty method and at least one parameter
+     * @param request MCP request object to validate
+     * @return true if request is valid (has method and params), false otherwise
      */
     fun validateRequest(request: McpRequest): Boolean {
         return request.method.isNotBlank() && request.params.isNotEmpty()
@@ -44,9 +51,10 @@ object HttpRequestMapper {
 
     /**
      * Creates a formatted parameter entry for JSON
-     * @param key Parameter key
-     * @param value Parameter value
-     * @return Formatted JSON parameter entry
+     * Formats a key-value pair into JSON parameter format: "key":"value"
+     * @param key Parameter key (will be escaped if needed)
+     * @param value Parameter value (will be converted to JSON-safe string)
+     * @return Formatted JSON parameter entry as string
      */
     fun formatParameterEntry(key: String, value: Any): String {
         return JSON_PARAM_ENTRY.format(key, value)
@@ -54,8 +62,9 @@ object HttpRequestMapper {
 
     /**
      * Escapes JSON string values to prevent injection
+     * Applies JSON string escaping rules to prevent malformed JSON and security issues
      * @param value String value to escape
-     * @return Escaped JSON string
+     * @return Escaped JSON string with proper escape sequences for backslash, quotes, and control characters
      */
     fun escapeJsonString(value: String): String {
         return value
@@ -69,8 +78,9 @@ object HttpRequestMapper {
 
     /**
      * Converts parameter value to JSON-safe string
-     * @param value Parameter value
-     * @return JSON-safe string representation
+     * Handles different data types and converts them to proper JSON format
+     * @param value Parameter value of any type
+     * @return JSON-safe string representation with proper formatting for strings, numbers, booleans, maps, and lists
      */
     fun parameterValueToJsonString(value: Any): String {
         return when (value) {
@@ -85,8 +95,9 @@ object HttpRequestMapper {
 
     /**
      * Builds JSON from Map
+     * Recursively converts a Map to JSON object string format
      * @param map Map to convert to JSON
-     * @return JSON string representation
+     * @return JSON string representation of the map as {"key":"value",...}
      */
     private fun buildJsonFromMap(map: Map<String, Any>): String {
         return buildString {
@@ -102,8 +113,9 @@ object HttpRequestMapper {
 
     /**
      * Builds JSON from List
+     * Recursively converts a List to JSON array string format
      * @param list List to convert to JSON
-     * @return JSON string representation
+     * @return JSON string representation of the list as [item1,item2,...]
      */
     private fun buildJsonFromList(list: List<*>): String {
         return buildString {

@@ -197,9 +197,13 @@ import org.studioapp.cinemy.utils.ColorUtils.parseColor
 object MovieMapper {
 
     /**
-     * Maps raw JSON movie data to MovieDto
-     * @param movieData Raw JSON map from MCP response
-     * @return MovieDto
+     * Maps raw JSON movie data to `MovieDto`.
+     *
+     * Extracts primitive fields and nested color information under `colors.metadata`.
+     * Missing or invalid fields are replaced with safe defaults from `StringConstants`.
+     *
+     * @param movieData Raw JSON map from MCP/MCP-like response schema.
+     * @return Parsed `MovieDto` with defaulted values when fields are absent.
      */
     fun mapJsonToMovieDto(movieData: Map<String, Any>): MovieDto {
         val colorsData = movieData[SERIALIZED_COLORS] as? Map<String, Any>
@@ -239,10 +243,14 @@ object MovieMapper {
     }
 
     /**
-     * Maps raw JSON movie details data to MovieDetailsDto
-     * @param movieDetailsData Raw JSON map from MCP response
-     * @param movieId Movie ID as fallback
-     * @return MovieDetailsDto
+     * Maps raw JSON movie details data to `MovieDetailsDto`.
+     *
+     * Also maps nested lists of `genres` and `production_companies` into their DTO counterparts.
+     * If `id` is missing, the provided [movieId] is used as a fallback.
+     *
+     * @param movieDetailsData Raw JSON map from MCP response.
+     * @param movieId Movie ID used when the payload does not provide one.
+     * @return Parsed `MovieDetailsDto` with safe defaults for absent values.
      */
     fun mapJsonToMovieDetailsDto(
         movieDetailsData: Map<String, Any>,
@@ -306,9 +314,12 @@ object MovieMapper {
     }
 
     /**
-     * Maps MovieDetailsDto to domain MovieDetails model
-     * @param dto MovieDetailsDto from API
-     * @return MovieDetails domain model
+     * Maps `MovieDetailsDto` to domain `MovieDetails` model.
+     *
+     * Note: `runtime` defaults to 0 when null.
+     *
+     * @param dto `MovieDetailsDto` from API.
+     * @return Domain `MovieDetails` model.
      */
     fun mapMovieDetailsDtoToMovieDetails(dto: MovieDetailsDto): MovieDetails {
         return MovieDetails(
@@ -514,11 +525,15 @@ object MovieMapper {
     }
 
     /**
-     * Maps JSON to UiConfigurationDto
-     * @param colorsJson JSON object containing color configuration
-     * @param textsJson JSON object containing text configuration
-     * @param buttonsJson JSON object containing button configuration
-     * @return UiConfigurationDto with parsed configuration
+     * Maps JSON to `UiConfigurationDto`.
+     *
+     * For any null section (`colorsJson`, `textsJson`, `buttonsJson`), corresponding default
+     * configuration DTOs are created to ensure a complete, valid UI configuration structure.
+     *
+     * @param colorsJson JSON object containing color configuration (nullable).
+     * @param textsJson JSON object containing text configuration (nullable).
+     * @param buttonsJson JSON object containing button configuration (nullable).
+     * @return `UiConfigurationDto` with parsed values or sensible defaults when sections are absent.
      */
     fun mapJsonToUiConfigurationDto(
         colorsJson: org.json.JSONObject?,
@@ -799,12 +814,16 @@ object MovieMapper {
     }
 
     /**
-     * Maps JSON to MetaDto
-     * @param metaJson JSON object containing metadata
-     * @param method Method name
-     * @param resultsCount Number of results
-     * @param movieId Movie ID (optional)
-     * @return MetaDto with parsed metadata
+     * Maps JSON to `MetaDto`.
+     *
+     * Applies defaults for optional metrics and version fields, and delegates optional nested
+     * `geminiColors` parsing to dedicated helpers with default fallbacks when absent.
+     *
+     * @param metaJson JSON object containing metadata.
+     * @param method API method name.
+     * @param resultsCount Number of results.
+     * @param movieId Movie ID (optional).
+     * @return `MetaDto` with parsed metadata and defaults when values are missing.
      */
     fun mapJsonToMetaDto(
         metaJson: org.json.JSONObject,
@@ -885,9 +904,13 @@ object MovieMapper {
     }
 
     /**
-     * Maps backend UI configuration JSON to UiConfigurationDto
-     * @param backendUiConfig Map containing backend UI configuration
-     * @return UiConfigurationDto with parsed UI configuration
+     * Maps backend UI configuration JSON to `UiConfigurationDto`.
+     *
+     * When any of the required sections (`colors`, `texts`, `buttons`) are missing, returns
+     * a fully defaulted UI configuration to preserve a valid contract.
+     *
+     * @param backendUiConfig Map containing backend UI configuration.
+     * @return `UiConfigurationDto` with parsed sections or defaulted values if sections are missing.
      */
     fun mapBackendUiConfigToUiConfigurationDto(backendUiConfig: Map<String, Any>): UiConfigurationDto {
         val colors = backendUiConfig[JSON_FIELD_COLORS] as? Map<String, Any>
@@ -1003,10 +1026,14 @@ object MovieMapper {
     }
 
     /**
-     * Maps backend movie details JSON to MovieDetailsDto
-     * @param innerData Map containing movie details data
-     * @param movieId Movie ID
-     * @return MovieDetailsDto with parsed movie details
+     * Maps backend movie details JSON to `MovieDetailsDto`.
+     *
+     * Parses nested sentiment blocks (`sentiment_reviews`, `sentiment_metadata`) when present
+     * and maps them to their DTO representations.
+     *
+     * @param innerData Map containing movie details data.
+     * @param movieId Movie ID used when the payload does not provide one.
+     * @return `MovieDetailsDto` with parsed details and optional sentiment fields.
      */
     fun mapBackendMovieDetailsToMovieDetailsDto(
         innerData: Map<String, Any>,
@@ -1178,10 +1205,13 @@ object MovieMapper {
     }
 
     /**
-     * Maps backend movie list response JSON to MovieListResponseDto
-     * @param data Map containing response data
-     * @param page Current page number
-     * @return MovieListResponseDto with parsed response information
+     * Maps backend movie list response JSON to `MovieListResponseDto`.
+     *
+     * Falls back to the provided [page] and default totals when the backend omits them.
+     *
+     * @param data Map containing response data.
+     * @param page Current page number used as fallback.
+     * @return `MovieListResponseDto` with parsed pagination and results.
      */
     fun mapBackendMovieListResponseToMovieListResponseDto(
         data: Map<String, Any>,
@@ -1204,12 +1234,17 @@ object MovieMapper {
     }
 
     /**
-     * Maps backend movie details response to complete domain models
-     * @param innerData Map containing movie details data
-     * @param movieId Movie ID
-     * @param backendUiConfig Optional backend UI configuration
-     * @param assetDataLoader Asset data loader for fallback
-     * @return Triple containing domain movie details, sentiment reviews, sentiment metadata, and UI config
+     * Maps backend movie details response to domain models.
+     *
+     * Returns a triple of domain `MovieDetails`, optional `SentimentReviews`, and optional
+     * `SentimentMetadata`. Parameters [backendUiConfig] and [assetDataLoader] are not used
+     * by this mapping function; UI configuration is handled elsewhere.
+     *
+     * @param innerData Map containing movie details data.
+     * @param movieId Movie ID.
+     * @param backendUiConfig Optional backend UI configuration (unused).
+     * @param assetDataLoader Asset data loader for fallback (unused here).
+     * @return Triple of (`MovieDetails`, `SentimentReviews?`, `SentimentMetadata?`).
      */
     fun mapBackendMovieDetailsResponseToDomainModels(
         innerData: Map<String, Any>,

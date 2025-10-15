@@ -222,7 +222,79 @@ when (result) {
   - `mapSentimentMetadataDtoToSentimentMetadata()` - SentimentMetadataDto → SentimentMetadata
   - Supporting mappings for Genre, ProductionCompany, ColorScheme, etc.
 
-### 5. Repository Layer (`repository/`)
+### 5. HTTP Mappers (`mapper/`)
+
+#### HttpRequestMapper (`HttpRequestMapper.kt`)
+
+- **Purpose**: Handles HTTP request building and JSON serialization for MCP communication
+- **JSON Generation**: Converts MCP requests to properly formatted JSON strings
+- **Security**: Implements JSON string escaping to prevent injection attacks
+- **Type Safety**: Handles different data types (String, Number, Boolean, Map, List)
+
+#### Key Methods
+
+- **`buildJsonRequestBody(request: McpRequest)`** - Main method for creating JSON request bodies
+  - Validates request parameters before processing
+  - Returns JSON string in format: `{"method":"methodName","params":{"key":"value"}}`
+  - Throws `IllegalArgumentException` for invalid requests
+
+- **`validateRequest(request: McpRequest)`** - Request validation
+  - Checks for non-empty method and at least one parameter
+  - Returns boolean validation result
+
+- **`escapeJsonString(value: String)`** - JSON string escaping
+  - Applies proper escape sequences for backslash, quotes, and control characters
+  - Prevents malformed JSON and security issues
+
+- **`parameterValueToJsonString(value: Any)`** - Type-safe JSON conversion
+  - Handles String, Number, Boolean, Map, and List types
+  - Recursively processes complex data structures
+
+- **`formatParameterEntry(key: String, value: Any)`** - Parameter formatting
+  - Creates formatted JSON parameter entries: `"key":"value"`
+
+#### Private Helper Methods
+
+- **`buildJsonFromMap(map: Map<String, Any>)`** - Recursive map to JSON conversion
+- **`buildJsonFromList(list: List<*>)`** - Recursive list to JSON array conversion
+
+#### Features
+
+- **JSON Security**: Comprehensive string escaping to prevent injection
+- **Type Support**: Full support for primitive and complex data types
+- **Recursive Processing**: Handles nested Maps and Lists
+- **Error Handling**: Validation with meaningful error messages
+- **Performance**: Efficient string building with StringBuilder
+
+#### HttpResponseMapper (`HttpResponseMapper.kt`)
+
+- **Purpose**: Parses HTTP/MCP JSON responses into native Kotlin structures and wraps them in `McpResponse<T>` when needed.
+- **JSON Parsing**: Converts `JSONObject`/`JSONArray`/raw JSON strings to `Map<String, Any>` and `List<Any>` recursively.
+- **Robustness**: For string responses, on parse failure returns a successful response with the raw string and `MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE`.
+
+#### Key Methods
+
+- **`parseJsonArrayResponse(jsonArray: JSONArray): McpResponse<T>`**
+  - Parses the first `JSONObject` into `Map<String, Any>` and returns `McpResponse(success=true, message=MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL)`.
+  - Throws `Exception` if the array is empty.
+
+- **`parseJsonStringResponse(jsonString: String): McpResponse<T>`**
+  - On success: `data` is the parsed map, `message=MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL`.
+  - On parse failure: `data` is the raw string, `message=MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE`.
+
+- **`parseJsonObject(jsonObject: JSONObject): Map<String, Any>`**, **`parseJsonResponse(jsonString: String): Map<String, Any>`**
+  - Recursive conversions to native maps/lists.
+
+- **`jsonObjectToMap(jsonObject: JSONObject): Map<String, Any>`**, **`jsonArrayToList(jsonArray: JSONArray): List<Any>`**, **`parseValue(value: Any): Any`**
+  - Utilities used by higher-level parsers; handle nested structures consistently.
+
+#### Behavior and Error Handling
+
+- **Success Messages**: `MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL` for parsed responses; `MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE` when returning raw string on parse failure.
+- **Exceptions**: `parseJsonArrayResponse` throws on empty arrays; `org.json` operations may throw `org.json.JSONException`.
+- **Type Casting**: `McpResponse<T>.data` is assigned from parsed maps or raw strings; callers must request the correct `T`.
+
+### 6. Repository Layer (`repository/`)
 
 #### Interface (`MovieRepository.kt`)
 
@@ -251,7 +323,7 @@ when (result) {
 - **Pagination**: Full pagination support for movie lists
 - **Sentiment Analysis**: Support for sentiment reviews and metadata
 
-### 6. Utility Classes (`util/`)
+### 7. Utility Classes (`util/`)
 
 #### AssetUtils (`AssetUtils.kt`)
 
@@ -266,7 +338,7 @@ when (result) {
 - **Default Colors**: Provides fallback colors for invalid color strings
 - **Color Validation**: Ensures color strings are valid before conversion
 
-### 7. Dependency Injection (`di/DataModule.kt`)
+### 8. Dependency Injection (`di/DataModule.kt`)
 
 - **Koin Module**: Dependency injection configuration for data layer
 - **Singleton Management**: Provides singleton instances for MCP client and repositories

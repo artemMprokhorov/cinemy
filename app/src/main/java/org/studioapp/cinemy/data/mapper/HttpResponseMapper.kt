@@ -7,15 +7,23 @@ import org.studioapp.cinemy.data.model.StringConstants.MCP_MESSAGE_REAL_REQUEST_
 import org.studioapp.cinemy.data.model.StringConstants.MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL
 
 /**
- * Mapper for HTTP response parsing and JSON conversion
- * Handles conversion between JSON objects and native Kotlin types
+ * Mapper for HTTP response parsing and JSON conversion.
+ *
+ * Provides utilities to convert `JSONObject`/`JSONArray` instances and raw JSON strings
+ * into native Kotlin structures (`Map<String, Any>`, `List<Any>`) and to wrap parsed
+ * payloads into `McpResponse<T>` for higher layers.
  */
 object HttpResponseMapper {
 
     /**
-     * Parses JSON array response to McpResponse
-     * @param jsonArray JSON array response
-     * @return McpResponse with parsed data
+     * Parses a JSON array response and maps the first element into an `McpResponse<T>`.
+     *
+     * The first element of the `jsonArray` must be a `JSONObject`. It is converted to a
+     * `Map<String, Any>` via [parseJsonObject] and assigned to the `data` field (cast to `T`).
+     *
+     * @param jsonArray JSON array response where the first element represents the payload.
+     * @return `McpResponse<T>` with `success=true`, `message=MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL`, and parsed `data` when the array is not empty.
+     * @throws Exception if the array is empty or its first element is not a valid `JSONObject`.
      */
     fun <T> parseJsonArrayResponse(jsonArray: JSONArray): McpResponse<T> {
         return if (jsonArray.length() > 0) {
@@ -33,9 +41,14 @@ object HttpResponseMapper {
     }
 
     /**
-     * Parses JSON string response to McpResponse
-     * @param jsonString JSON string response
-     * @return McpResponse with parsed data
+     * Parses a JSON string response and maps it into an `McpResponse<T>`.
+     *
+     * The method attempts to parse the string via [parseJsonResponse]. If parsing fails,
+     * it returns a successful response containing the raw `jsonString` as `data` to aid
+     * troubleshooting while maintaining a consistent response contract.
+     *
+     * @param jsonString Raw JSON string response.
+     * @return `McpResponse<T>` with `success=true`. When parsing succeeds, `data` contains the parsed map (cast to `T`) and `message=MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL`. When parsing fails, `data` contains the original `jsonString` (cast to `T`) and `message=MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE`.
      */
     fun <T> parseJsonStringResponse(jsonString: String): McpResponse<T> {
         return runCatching {
@@ -58,9 +71,14 @@ object HttpResponseMapper {
     }
 
     /**
-     * Converts JSONObject to Map<String, Any>
-     * @param jsonObject JSON object to convert
-     * @return Map representation of JSON object
+     * Converts a `JSONObject` to a `Map<String, Any>` recursively.
+     *
+     * Nested `JSONObject` and `JSONArray` instances are converted via [jsonObjectToMap]
+     * and [jsonArrayToList] respectively.
+     *
+     * @param jsonObject JSON object to convert.
+     * @return Map representation of the given JSON object.
+     * @throws org.json.JSONException if a key lookup fails inside the JSON object.
      */
     fun jsonObjectToMap(jsonObject: JSONObject): Map<String, Any> {
         val map = mutableMapOf<String, Any>()
@@ -78,9 +96,14 @@ object HttpResponseMapper {
     }
 
     /**
-     * Converts JSONArray to List<Any>
-     * @param jsonArray JSON array to convert
-     * @return List representation of JSON array
+     * Converts a `JSONArray` to a `List<Any>` recursively.
+     *
+     * Nested `JSONObject` and `JSONArray` elements are converted via [jsonObjectToMap]
+     * and [jsonArrayToList] respectively.
+     *
+     * @param jsonArray JSON array to convert.
+     * @return List representation of the given JSON array.
+     * @throws org.json.JSONException if an index access fails inside the JSON array.
      */
     fun jsonArrayToList(jsonArray: JSONArray): List<Any> {
         val list = mutableListOf<Any>()
@@ -98,9 +121,14 @@ object HttpResponseMapper {
     }
 
     /**
-     * Parses JSONObject to Map<String, Any>
-     * @param jsonObject JSON object to parse
-     * @return Map representation of JSON object
+     * Parses a `JSONObject` into a `Map<String, Any>` recursively.
+     *
+     * This function iterates keys in the provided object and converts nested values
+     * using [jsonObjectToMap] and [jsonArrayToList].
+     *
+     * @param jsonObject JSON object to parse.
+     * @return Map representation of the provided JSON object.
+     * @throws org.json.JSONException if a key lookup fails.
      */
     fun parseJsonObject(jsonObject: JSONObject): Map<String, Any> {
         val result = mutableMapOf<String, Any>()
@@ -130,9 +158,11 @@ object HttpResponseMapper {
     }
 
     /**
-     * Parses JSON string to Map<String, Any>
-     * @param jsonString JSON string to parse
-     * @return Map representation of JSON string
+     * Parses a JSON string into a `Map<String, Any>` recursively.
+     *
+     * @param jsonString JSON string to parse.
+     * @return Map representation of the JSON payload.
+     * @throws org.json.JSONException if the string is not valid JSON or lookups fail.
      */
     fun parseJsonResponse(jsonString: String): Map<String, Any> {
         val jsonObject = JSONObject(jsonString)
@@ -166,9 +196,14 @@ object HttpResponseMapper {
     }
 
     /**
-     * Recursively parses JSON values to native types
-     * @param value JSON value to parse
-     * @return Parsed native value
+     * Recursively parses a JSON value to native Kotlin types.
+     *
+     * - `JSONObject` → `Map<String, Any>`
+     * - `JSONArray` → `List<Any>`
+     * - Other values are returned unchanged.
+     *
+     * @param value JSON value to parse.
+     * @return Parsed native representation of the input value.
      */
     fun parseValue(value: Any): Any {
         return when (value) {
