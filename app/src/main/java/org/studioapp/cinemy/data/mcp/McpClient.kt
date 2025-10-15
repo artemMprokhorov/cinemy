@@ -37,14 +37,37 @@ import org.studioapp.cinemy.data.remote.dto.McpResponseDto
 import org.studioapp.cinemy.data.remote.dto.MovieDetailsDto
 import org.studioapp.cinemy.data.remote.dto.MovieListResponseDto
 
+/**
+ * MCP-backed implementation of [MovieApiService].
+ *
+ * Responsibilities:
+ * - Builds MCP requests and delegates transport to `McpHttpClient`.
+ * - Transforms backend payloads into DTOs or domain models via mappers.
+ * - Loads UI configuration and metadata via `AssetDataLoader` where applicable.
+ *
+ * Error model:
+ * - Public API methods never throw; failures are represented in return types
+ *   (`McpResponseDto.success=false` or `Result.Error`).
+ */
 class McpClient(private val context: Context) : MovieApiService {
     private val assetDataLoader = AssetDataLoader(context)
     private val mcpHttpClient = McpHttpClient(context)
 
     /**
-     * Fetches popular movies from MCP backend
-     * @param page Page number for pagination
-     * @return McpResponseDto containing MovieListResponseDto with movies and UI config
+     * Fetches popular movies from the MCP backend and returns DTOs.
+     *
+     * Behavior:
+     * - Sends `getPopularMovies` MCP request with the provided page.
+     * - Accepts a response where the backend may return a single-element array; the
+     *   first element is used as the payload map.
+     * - Maps payload into `MovieListResponseDto` and attaches UI config loaded from assets.
+     * - Populates `meta` via `AssetDataLoader.loadMetaData` with results count.
+     *
+     * Contract and errors:
+     * - Does not throw; on failure returns `McpResponseDto(success=false, data=null, error=...)`.
+     *
+     * @param page Page number for pagination.
+     * @return `McpResponseDto<MovieListResponseDto>` wrapping the result and UI config.
      */
     override suspend fun getPopularMovies(page: Int): McpResponseDto<MovieListResponseDto> {
         val request = McpRequest(
@@ -109,9 +132,20 @@ class McpClient(private val context: Context) : MovieApiService {
 
 
     /**
-     * Fetches movie details from MCP backend
-     * @param movieId Unique identifier of the movie
-     * @return McpResponseDto containing MovieDetailsDto with complete movie details and UI config
+     * Fetches movie details from the MCP backend and returns DTOs.
+     *
+     * Behavior:
+     * - Sends `getMovieDetails` MCP request with the provided movie id.
+     * - Expects a map payload that contains `movieDetails` at the top level.
+     * - Maps the `movieDetails` section to `MovieDetailsDto` and attaches UI config
+     *   loaded from assets.
+     * - Populates `meta` via `AssetDataLoader.loadMetaData` with the `movieId` context.
+     *
+     * Contract and errors:
+     * - Does not throw; on failure returns `McpResponseDto(success=false, data=null, error=...)`.
+     *
+     * @param movieId Unique identifier of the movie.
+     * @return `McpResponseDto<MovieDetailsDto>` wrapping the result and UI config.
      */
     override suspend fun getMovieDetails(movieId: Int): McpResponseDto<MovieDetailsDto> {
         val request = McpRequest(
@@ -177,9 +211,19 @@ class McpClient(private val context: Context) : MovieApiService {
 
 
     /**
-     * Fetches popular movies using MCP HTTP client and returns domain models
-     * @param page Page number for pagination
-     * @return Result containing MovieListResponse with domain models and UI config
+     * Fetches popular movies via MCP and returns domain models.
+     *
+     * Behavior:
+     * - Sends `getPopularMovies` request; supports array-wrapped responses by
+     *   selecting the first element as the payload.
+     * - Maps to `MovieListResponseDto` then to domain `MovieListResponse`.
+     * - Loads UI configuration from assets and maps it to domain `UiConfiguration`.
+     *
+     * Contract and errors:
+     * - Uses `runCatching`; does not throw. Failures are returned as `Result.Error`.
+     *
+     * @param page Page number for pagination.
+     * @return `Result<MovieListResponse>` with optional domain UI configuration on success.
      */
     suspend fun getPopularMoviesViaMcp(page: Int): Result<MovieListResponse> {
         return runCatching {
@@ -234,9 +278,20 @@ class McpClient(private val context: Context) : MovieApiService {
     }
 
     /**
-     * Fetches movie details using MCP HTTP client and returns domain models
-     * @param movieId Unique identifier of the movie
-     * @return Result containing MovieDetailsResponse with domain models and UI config
+     * Fetches movie details via MCP and returns domain models.
+     *
+     * Behavior:
+     * - Sends `getMovieDetails` request.
+     * - Accepts array-wrapped responses; uses the first element as payload.
+     * - Reads nested structure `data["data"]["movieDetails"]` per backend contract.
+     * - Extracts optional backend `uiConfig` from the same payload and maps it to domain.
+     * - Composes a domain-level `MovieDetailsResponse` with populated `Meta`.
+     *
+     * Contract and errors:
+     * - Uses `runCatching`; does not throw. Failures are returned as `Result.Error`.
+     *
+     * @param movieId Unique identifier of the movie.
+     * @return `Result<MovieDetailsResponse>` with domain models and UI configuration on success.
      */
     suspend fun getMovieDetailsViaMcp(movieId: Int): Result<MovieDetailsResponse> {
         return runCatching {
@@ -325,7 +380,10 @@ class McpClient(private val context: Context) : MovieApiService {
 
 
     /**
-     * Closes MCP HTTP client and cleans up resources
+     * Closes the underlying `McpHttpClient` and releases resources.
+     *
+     * Contract and errors:
+     * - Does not throw; safe to call multiple times.
      */
     fun close() {
         mcpHttpClient.close()

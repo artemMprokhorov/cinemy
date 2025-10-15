@@ -122,16 +122,31 @@ when (result) {
 
 #### McpClient (`McpClient.kt`)
 
-- **Interface Implementation**: Implements `MovieApiService` interface
-- **MCP Integration**: Uses `McpHttpClient` for backend communication
-- **Asset Loading**: Uses `AssetDataLoader` for UI configuration and metadata
+- **Interface Implementation**: Implements `MovieApiService` interface.
+- **MCP Integration**: Delegates transport to `McpHttpClient`.
+- **Asset Loading**: Uses `AssetDataLoader` to source UI configuration and to compose response `meta`.
+- **Array-wrapped Responses**: Tolerates backend responses where payloads are wrapped in a single-element array; the first element is used as the effective payload for list and details flows.
 - **Methods**:
-  - `getPopularMovies(page: Int)` - Fetches popular movies via MCP
-  - `getMovieDetails(movieId: Int)` - Fetches movie details via MCP
-  - `getPopularMoviesViaMcp(page: Int)` - Direct MCP call returning domain models
-  - `getMovieDetailsViaMcp(movieId: Int)` - Direct MCP call returning domain models
-- **Response Processing**: Converts MCP responses to DTOs and domain models
-- **Error Handling**: Comprehensive error handling with fallback configurations
+  - `getPopularMovies(page: Int): McpResponseDto<MovieListResponseDto>`
+    - Sends `getPopularMovies` request with `page`.
+    - Maps the first element payload to `MovieListResponseDto`.
+    - Attaches `uiConfig` from assets and `meta` with results count.
+    - Non-throwing: failures return `success=false`, `data=null`, `error` populated.
+  - `getMovieDetails(movieId: Int): McpResponseDto<MovieDetailsDto>`
+    - Sends `getMovieDetails` request with `movieId`.
+    - Expects map containing `movieDetails` at top level (DTO path).
+    - Attaches `uiConfig` from assets and `meta` with `movieId` context.
+    - Non-throwing: failures return `success=false`, `data=null`, `error` populated.
+  - `getPopularMoviesViaMcp(page: Int): Result<MovieListResponse>`
+    - Same transport as above but maps to domain `MovieListResponse` and domain `UiConfiguration`.
+    - Non-throwing: uses `runCatching`; failures returned as `Result.Error`.
+  - `getMovieDetailsViaMcp(movieId: Int): Result<MovieDetailsResponse>`
+    - Accepts array-wrapped response; reads nested `data["data"]["movieDetails"]` per backend contract.
+    - Extracts backend `uiConfig` when present and maps to domain.
+    - Composes domain `MovieDetailsResponse` with `Meta` (including `version`, `geminiColors`, and `movieRating`).
+    - Non-throwing: uses `runCatching`; failures returned as `Result.Error`.
+- **Response Processing**: Converts MCP responses to DTOs and domain models using `MovieMapper`.
+- **Error Handling**: Non-throwing public API; consistent error representation via `McpResponseDto` and `Result`.
 
 #### Supporting MCP Components
 
