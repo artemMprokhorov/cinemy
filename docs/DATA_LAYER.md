@@ -303,8 +303,16 @@ when (result) {
 - **SentimentReviews**: Sentiment analysis results
   - positive, negative review lists
   - hasPositiveReviews, hasNegativeReviews, hasAnyReviews computed properties
-- **SentimentMetadata**: Sentiment analysis metadata
-  - totalReviews, positiveCount, negativeCount, source, timestamp, apiSuccess
+- **SentimentMetadata**: Sentiment analysis metadata (exact signature)
+  - Purpose: High-level counters and provenance for the sentiment analysis.
+  - Fields:
+    - `totalReviews: Int` — Total number of reviews analyzed.
+    - `positiveCount: Int` — Count of reviews classified as positive.
+    - `negativeCount: Int` — Count of reviews classified as negative.
+    - `source: String` — Free-form origin of the sentiment data (provider/pipeline name).
+    - `timestamp: String` — Backend-provided timestamp string for when analysis was produced.
+    - `apiSuccess: Map<String, Boolean>` — Provider/system identifiers mapped to success flags.
+  - Notes: All counters default to 0 and strings to empty when omitted by backend. The model may be absent (`null`) in `MovieDetailsData` and should be handled safely.
 
 #### Additional Models
 
