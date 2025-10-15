@@ -139,8 +139,41 @@ when (result) {
 - **McpHttpClient** (`McpHttpClient.kt`) - HTTP client for MCP communication
 - **FakeInterceptor** (`FakeInterceptor.kt`) - Network interceptor for testing
 - **MCP Models** (`models/`):
-  - `McpRequest.kt` - MCP request structure
-  - `McpResponse.kt` - MCP response structure
+  - `McpRequest.kt` - MCP request structure with comprehensive documentation
+  - `McpResponse.kt` - Generic MCP response wrapper with success/data/error/message contract
+
+#### MCP Request Model (`McpRequest.kt`)
+
+- **Purpose**: Represents an MCP (Model Context Protocol) request structure for backend communication
+- **Documentation**: Comprehensive KDoc documentation with detailed parameter descriptions
+- **Structure**: 
+  - `method: String` - The method name to be called on the MCP server (e.g., "getPopularMovies", "getMovieDetails")
+  - `params: Map<String, String>` - Parameters as key-value pairs, defaults to empty map
+- **Features**:
+  - Type-safe request structure for MCP communication
+  - Default parameter handling for methods without parameters
+  - Full KDoc documentation with cross-references to related components
+  - Integration with HttpRequestMapper for JSON serialization
+  - Support for all MCP server methods used in the application
+- **Usage**: Used by McpClient and HttpRequestMapper for MCP backend communication
+- **Documentation Quality**: ✅ **FULLY DOCUMENTED** - Complete KDoc with parameter descriptions, usage examples, and cross-references
+
+#### MCP Response Model (`McpResponse.kt`)
+
+- **Purpose**: Generic wrapper representing the outcome of MCP operations.
+- **Structure**:
+  - `success: Boolean` — Indicates whether the operation completed successfully.
+  - `data: T?` — Optional payload (present on success; generic type `T`).
+  - `error: String?` — Optional human-readable error description (present on failure).
+  - `message: String` — Optional diagnostic/info message (e.g., normalized success markers or raw-response notes).
+- **Contract**:
+  - If `success == true`: `data` SHOULD be non-null for payload-bearing operations, `error` SHOULD be null.
+  - If `success == false`: `data` SHOULD be null, `error` SHOULD describe the failure.
+  - `message` may contain auxiliary information and is safe for debugging output.
+- **Exceptions**: The model does not throw; error semantics are expressed via fields.
+- **Integration**: Produced by `HttpResponseMapper` when parsing HTTP/MCP responses and consumed across repositories/data sources.
+- **Generics**: Type parameter `T` denotes the expected payload type when successful.
+- **Documentation Quality**: ✅ **FULLY DOCUMENTED** — Complete KDoc with field-level semantics and usage notes.
 
 ### 3. Domain Models (`model/`)
 
@@ -293,6 +326,7 @@ when (result) {
 - **Success Messages**: `MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL` for parsed responses; `MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE` when returning raw string on parse failure.
 - **Exceptions**: `parseJsonArrayResponse` throws on empty arrays; `org.json` operations may throw `org.json.JSONException`.
 - **Type Casting**: `McpResponse<T>.data` is assigned from parsed maps or raw strings; callers must request the correct `T`.
+ - **Contract Alignment**: When a parse operation succeeds, `success=true`, `error=null`, and `data` carries the payload. On explicit failure paths in callers, prefer `success=false` with `error` populated per `McpResponse` contract.
 
 ### 6. Repository Layer (`repository/`)
 
