@@ -43,13 +43,29 @@ import org.studioapp.cinemy.data.remote.dto.UiConfigurationDto
 import org.studioapp.cinemy.data.util.AssetUtils.loadJsonFromAssets
 
 /**
- * Loads UI configuration and meta data from asset files
+ * Data source for reading locally bundled asset JSON and producing DTOs used by the data layer.
+ *
+ * Responsibilities:
+ * - Load UI configuration, metadata and mock movies from the asset file referenced by
+ *   `ASSET_MOCK_MOVIES`.
+ * - Provide resilient fallbacks: all public methods use `runCatching { ... }` and never throw;
+ *   on any error or missing sections the loader returns sensible defaults or empty collections.
+ *
+ * Threading: all methods are synchronous and CPU-light JSON parsing; callers may choose the
+ * appropriate dispatcher if invoking from coroutines.
  */
 class AssetDataLoader(private val context: Context) {
 
     /**
-     * Loads UI configuration from asset files
-     * @return UiConfigurationDto with theme configuration
+     * Loads UI configuration from the asset file.
+     *
+     * Behavior:
+     * - Reads JSON from assets via `AssetUtils.loadJsonFromAssets` using `ASSET_MOCK_MOVIES`.
+     * - Expects a top-level `uiConfig` object with nested `colors`, `texts`, and `buttons`.
+     * - If the section is missing or any error occurs, returns a default configuration.
+     *
+     * @return UiConfigurationDto Parsed configuration when available, otherwise defaults.
+     * @throws Nothing This function does not throw; errors are handled internally with defaults.
      */
     fun loadUiConfig(): UiConfigurationDto {
         return runCatching {
@@ -74,11 +90,20 @@ class AssetDataLoader(private val context: Context) {
     }
 
     /**
-     * Loads meta data from asset files
-     * @param method API method name
-     * @param resultsCount Number of results returned
-     * @param movieId Movie ID (optional)
-     * @return MetaDto with metadata information
+     * Loads response metadata from the asset file.
+     *
+     * Behavior:
+     * - Reads JSON from assets via `AssetUtils.loadJsonFromAssets` using `ASSET_MOCK_MOVIES`.
+     * - Expects a top-level `meta` object; when present, maps it with the provided contextual
+     *   parameters `method`, `resultsCount`, and optional `movieId`.
+     * - If the section is missing or any error occurs, returns a default metadata instance that
+     *   embeds the provided contextual parameters.
+     *
+     * @param method API method name related to the consuming operation.
+     * @param resultsCount Number of items returned for the related operation.
+     * @param movieId Optional movie identifier relevant to the operation.
+     * @return MetaDto Parsed metadata when available, otherwise defaults composed from inputs.
+     * @throws Nothing This function does not throw; errors are handled internally with defaults.
      */
     fun loadMetaData(method: String, resultsCount: Int = 0, movieId: Int? = null): MetaDto {
         return runCatching {
@@ -101,8 +126,17 @@ class AssetDataLoader(private val context: Context) {
     }
 
     /**
-     * Loads mock movies from asset files
-     * @return List of MovieDto objects from assets
+     * Loads mock movies from the asset file for the dummy build variant and local testing.
+     *
+     * Behavior:
+     * - First attempts to parse the entire asset as a JSON array (new contract). If present,
+     *   looks into the first object for `serializedResults` and maps it to a list of `MovieDto`.
+     * - If the above fails, falls back to the legacy structure: a JSON object containing `data` →
+     *   `movies` or `serializedResults`.
+     * - On any error or if no results are found, returns an empty list.
+     *
+     * @return List<MovieDto> Parsed movies or an empty list if unavailable.
+     * @throws Nothing This function does not throw; errors are handled internally and return empty list.
      */
     fun loadMockMovies(): List<MovieDto> {
         return runCatching {

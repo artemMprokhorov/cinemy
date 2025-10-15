@@ -135,7 +135,22 @@ when (result) {
 
 #### Supporting MCP Components
 
-- **AssetDataLoader** (`AssetDataLoader.kt`) - Loads UI configuration and metadata from assets
+- **AssetDataLoader** (`AssetDataLoader.kt`) - Loads UI configuration, metadata, and mock movies from assets with resilient fallbacks.
+  
+  - Purpose: Synchronous, non-throwing asset reader producing DTOs used upstream by mappers and repositories.
+  - Behavior: All public methods guard execution with `runCatching { ... }` and return defaults/empty lists on any error or missing sections.
+  - Methods:
+    - `loadUiConfig(): UiConfigurationDto`
+      - Reads top-level `uiConfig` with nested `colors`, `texts`, `buttons`; returns default configuration if unavailable.
+      - Never throws; returns defaults on error.
+    - `loadMetaData(method: String, resultsCount: Int = 0, movieId: Int? = null): MetaDto`
+      - Reads top-level `meta`; composes metadata using provided context params when present, otherwise returns default metadata based on inputs.
+      - Never throws; returns defaults on error.
+    - `loadMockMovies(): List<MovieDto>`
+      - New contract: attempts to parse the asset as a JSON array and extract `serializedResults` from the first object.
+      - Legacy contract: falls back to object structure `data.movies` or `data.serializedResults`.
+      - Never throws; returns empty list on error/missing data.
+  - Notes: Threading left to callers; functions are CPU-light JSON parsing and synchronous.
 - **McpHttpClient** (`McpHttpClient.kt`) - HTTP client for MCP communication
 - **FakeInterceptor** (`FakeInterceptor.kt`) - Network interceptor for testing
 - **MCP Models** (`models/`):
