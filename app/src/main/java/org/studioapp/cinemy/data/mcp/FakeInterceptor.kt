@@ -30,11 +30,33 @@ import org.studioapp.cinemy.data.util.AssetUtils.loadJsonFromAssets
 /**
  * Fake interceptor for dummy configuration that provides mock responses
  * based on asset files instead of hardcoded data generation.
+ * 
+ * This interceptor simulates network behavior by adding realistic delays
+ * and returning mock data from asset files for development and testing purposes.
+ * It supports pagination for movie lists and handles both successful responses
+ * and error scenarios.
+ * 
+ * @param context Android context for accessing asset files
  */
 class FakeInterceptor(private val context: Context) {
 
     /**
-     * Intercepts MCP requests and returns mock responses from assets
+     * Intercepts MCP requests and returns mock responses from assets.
+     * 
+     * This method simulates network behavior by adding a random delay and
+     * returning mock data based on the request method. It supports two main
+     * operations: fetching popular movies with pagination and getting movie details.
+     * 
+     * @param T The expected response data type
+     * @param request The MCP request containing method and parameters
+     * @return McpResponse<T> containing mock data or error information
+     * 
+     * @throws No exceptions are thrown; errors are returned as failed McpResponse
+     * 
+     * @see McpRequest for request structure
+     * @see McpResponse for response structure
+     * @see loadMockDataFromAssetsWithPagination for paginated movie data
+     * @see loadMockDataFromAssets for single item data
      */
     suspend fun <T> intercept(request: McpRequest): McpResponse<T> {
         // Simulate realistic network delay
@@ -65,7 +87,17 @@ class FakeInterceptor(private val context: Context) {
     }
 
     /**
-     * Loads mock data from assets with pagination support
+     * Loads mock data from assets with pagination support.
+     * 
+     * This method reads JSON data from assets, parses it, and creates a paginated
+     * response by slicing the data based on the requested page. It handles pagination
+     * metadata including total pages, hasNext, hasPrevious flags.
+     * 
+     * @param fileName The asset file name to load data from
+     * @param page The requested page number (1-based)
+     * @return McpResponse<Any> containing paginated movie data or error response
+     * 
+     * @throws No exceptions are thrown; errors are handled via runCatching
      */
     private fun loadMockDataFromAssetsWithPagination(
         fileName: String,
@@ -117,7 +149,15 @@ class FakeInterceptor(private val context: Context) {
     }
 
     /**
-     * Loads mock data from assets for single item responses
+     * Loads mock data from assets for single item responses.
+     * 
+     * This method reads JSON data from assets and returns it as-is without
+     * pagination processing. Used for single item responses like movie details.
+     * 
+     * @param fileName The asset file name to load data from
+     * @return McpResponse<Any> containing the loaded data or error response
+     * 
+     * @throws No exceptions are thrown; errors are handled via runCatching
      */
     private fun loadMockDataFromAssets(fileName: String): McpResponse<Any> {
         return runCatching {
@@ -141,7 +181,13 @@ class FakeInterceptor(private val context: Context) {
 
 
     /**
-     * Parses JSON string to Map
+     * Parses JSON string to Map.
+     * 
+     * Converts a JSON string into a native Kotlin Map structure for easier
+     * data manipulation and access.
+     * 
+     * @param jsonString The JSON string to parse
+     * @return Map<String, Any> representing the parsed JSON structure
      */
     private fun parseJsonResponse(jsonString: String): Map<String, Any> {
         val jsonObject = JSONObject(jsonString)
@@ -149,7 +195,13 @@ class FakeInterceptor(private val context: Context) {
     }
 
     /**
-     * Converts JSONObject to Map<String, Any>
+     * Converts JSONObject to Map<String, Any>.
+     * 
+     * Recursively converts a JSONObject to a native Kotlin Map, handling
+     * nested objects and arrays appropriately.
+     * 
+     * @param jsonObject The JSONObject to convert
+     * @return Map<String, Any> representing the JSONObject structure
      */
     private fun jsonObjectToMap(jsonObject: JSONObject): Map<String, Any> {
         val map = mutableMapOf<String, Any>()
@@ -167,7 +219,13 @@ class FakeInterceptor(private val context: Context) {
     }
 
     /**
-     * Converts JSONArray to List<Any>
+     * Converts JSONArray to List<Any>.
+     * 
+     * Recursively converts a JSONArray to a native Kotlin List, handling
+     * nested objects and arrays appropriately.
+     * 
+     * @param jsonArray The JSONArray to convert
+     * @return List<Any> representing the JSONArray structure
      */
     private fun jsonArrayToList(jsonArray: org.json.JSONArray): List<Any> {
         val list = mutableListOf<Any>()
@@ -185,7 +243,12 @@ class FakeInterceptor(private val context: Context) {
     }
 
     /**
-     * Creates a fallback response when asset loading fails
+     * Creates a fallback response when asset loading fails.
+     * 
+     * Returns a standardized error response when asset files cannot be loaded
+     * or parsed, providing consistent error handling across the interceptor.
+     * 
+     * @return McpResponse<Any> containing error information
      */
     private fun createFallbackResponse(): McpResponse<Any> {
         return McpResponse(

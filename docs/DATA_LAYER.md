@@ -152,7 +152,44 @@ when (result) {
       - Never throws; returns empty list on error/missing data.
   - Notes: Threading left to callers; functions are CPU-light JSON parsing and synchronous.
 - **McpHttpClient** (`McpHttpClient.kt`) - HTTP client for MCP communication
-- **FakeInterceptor** (`FakeInterceptor.kt`) - Network interceptor for testing
+- **FakeInterceptor** (`FakeInterceptor.kt`) - Network interceptor for testing and development
+
+#### FakeInterceptor (`FakeInterceptor.kt`)
+
+- **Purpose**: Provides mock responses from asset files for development and testing, simulating realistic network behavior with delays and error scenarios.
+- **Behavior**: All public methods guard execution with `runCatching { ... }` and return fallback responses on any error or missing asset files.
+- **Network Simulation**: Adds realistic random delays to simulate network latency for testing purposes.
+- **Methods**:
+  - `intercept<T>(request: McpRequest): McpResponse<T>`
+    - Main public method that intercepts MCP requests and returns mock responses
+    - Supports two operations: `getPopularMovies` with pagination and `getMovieDetails`
+    - Simulates network delay using configurable base and random delay constants
+    - Returns appropriate mock data or error responses based on request method
+    - Never throws exceptions; errors are returned as failed McpResponse
+  - `loadMockDataFromAssetsWithPagination(fileName: String, page: Int): McpResponse<Any>`
+    - Loads and parses JSON data from assets with pagination support
+    - Slices data based on requested page (15 movies per page, 3 total pages)
+    - Creates pagination metadata including totalPages, hasNext, hasPrevious flags
+    - Returns structured response with movies and pagination information
+  - `loadMockDataFromAssets(fileName: String): McpResponse<Any>`
+    - Loads JSON data from assets for single item responses (e.g., movie details)
+    - Returns data as-is without pagination processing
+    - Used for non-paginated responses like individual movie details
+  - `parseJsonResponse(jsonString: String): Map<String, Any>`
+    - Converts JSON string to native Kotlin Map structure
+    - Used internally for parsing asset JSON data
+  - `jsonObjectToMap(jsonObject: JSONObject): Map<String, Any>`
+    - Recursively converts JSONObject to Map, handling nested objects and arrays
+    - Used internally for JSON parsing operations
+  - `jsonArrayToList(jsonArray: JSONArray): List<Any>`
+    - Recursively converts JSONArray to List, handling nested structures
+    - Used internally for JSON parsing operations
+  - `createFallbackResponse(): McpResponse<Any>`
+    - Creates standardized error response when asset loading fails
+    - Provides consistent error handling across the interceptor
+- **Asset Files**: Uses `ASSET_MOCK_MOVIES` and `ASSET_MOCK_MOVIE_DETAILS` for mock data
+- **Error Handling**: Comprehensive error handling with fallback responses for missing or corrupted asset files
+- **Documentation Quality**: ✅ **FULLY DOCUMENTED** - Complete KDoc with parameter descriptions, return types, and cross-references
 - **MCP Models** (`models/`):
   - `McpRequest.kt` - MCP request structure with comprehensive documentation
   - `McpResponse.kt` - Generic MCP response wrapper with success/data/error/message contract
