@@ -6,12 +6,23 @@
 **Status**: ✅ **PRODUCTION READY** - Complete architecture with adaptive ML runtime
 
 > **📚 Layer Documentation**: For detailed implementation status of each layer, see:
-> - [🗄️ Data Layer](./DATA_LAYER.md) - Complete data layer with MCP integration
-> - [🤖 ML Layer](./ML_LAYER.md) - Adaptive ML runtime with LiteRT integration
-> - [🧭 Navigation Layer](./NAVIGATION_LAYER.md) - Type-safe navigation
-> - [🎨 Presentation Layer](./PRESENTATION_LAYER.md) - MVI pattern implementation
-> - [🖼️ UI Components Layer](./UI_COMPONENTS_LAYER.md) - Server-driven UI components
-> - [🔧 Utils Layer](./UTILS_LAYER.md) - Device detection and utilities
+> - [📱 Application Layer](./app_layers/APPLICATION_LAYER.md) - Application layer and entry points
+> - [🗄️ Data Layer](./app_layers/DATA_LAYER.md) - Complete data layer with MCP integration
+> - [🤖 ML Layer](./app_layers/ML_LAYER.md) - Adaptive ML runtime with LiteRT integration
+> - [🧭 Navigation Layer](./app_layers/NAVIGATION_LAYER.md) - Type-safe navigation
+> - [🎨 Presentation Layer](./app_layers/PRESENTATION_LAYER.md) - MVI pattern implementation
+> - [🖼️ UI Components Layer](./app_layers/UI_COMPONENTS_LAYER.md) - Server-driven UI components
+> - [🔧 Utils Layer](./app_layers/UTILS_LAYER.md) - Device detection and utilities
+> 
+> **📖 Guides Documentation**: For comprehensive guides and tutorials, see:
+> - [🏗️ Architecture Guide](./guides/ARCHITECTURE_GUIDE.md) - Complete architecture overview
+> - [🛠️ Development Guide](./guides/DEVELOPMENT_GUIDE.md) - Development workflow and best practices
+> - [📋 Project Guide](./guides/PROJECT_GUIDE.md) - Project overview and AI assistant guide
+> - [🎯 Cursor Integration Guide](./guides/CURSOR_INTEGRATION_GUIDE.md) - Cursor IDE integration
+> - [🧪 QA Testing Guide](./guides/QA_TESTING_GUIDE.md) - Testing strategies and implementation
+> - [🏷️ QA Testing Tags Guide](./guides/QA_TESTING_TAGS_GUIDE.md) - Testing tags and utilities
+> - [♿ Accessibility Guide](./guides/ACCESSIBILITY_GUIDE.md) - Accessibility implementation
+> - [🔗 MCP Integration Guide](./guides/MCP_INTEGRATION_GUIDE.md) - MCP protocol integration
 
 ## 📊 Overall Progress: 100%
 

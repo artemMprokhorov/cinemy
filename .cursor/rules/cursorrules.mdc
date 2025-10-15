@@ -29,23 +29,81 @@ val appModule = module {
 
 ### Dependencies
 - Version catalog: `libs.versions.toml`
-- Check compatibility first
+- Check compatibility first (use Context7 if available)
 - Test after updates
+
+## 📚 Documentation Structure
+
+### Layer Documentation (docs/app_layers/)
+- APPLICATION_LAYER.md - Application layer and entry points
+- DATA_LAYER.md - Data layer with MCP integration
+- ML_LAYER.md - Adaptive ML runtime with LiteRT
+- NAVIGATION_LAYER.md - Type-safe navigation
+- PRESENTATION_LAYER.md - MVI pattern implementation
+- UI_COMPONENTS_LAYER.md - Server-driven UI components
+- UTILS_LAYER.md - Device detection and utilities
+
+### Guides Documentation (docs/guides/)
+- ARCHITECTURE_GUIDE.md - Complete architecture overview
+- DEVELOPMENT_GUIDE.md - Development workflow and best practices
+- PROJECT_GUIDE.md - Project overview and AI assistant guide
+- CURSOR_INTEGRATION_GUIDE.md - Cursor IDE integration
+- QA_TESTING_GUIDE.md - Testing strategies and implementation
+- QA_TESTING_TAGS_GUIDE.md - Testing tags and utilities
+- ACCESSIBILITY_GUIDE.md - Accessibility implementation
+- MCP_INTEGRATION_GUIDE.md - MCP protocol integration
+
+### Project Documentation (docs/)
+- PROJECT_STATUS.md - Current project status and progress
+- PROJECT_RULES.md - Documentation rules and structure
+- DEPENDENCIES_INFO.md - Dependencies and versions
+- ADAPTIVE_ML_RUNTIME.md - ML runtime configuration
+- FOLDABLE_DEVICE_SUPPORT.md - Foldable device support
+- GITHUB_ACTIONS_SETUP.md - CI/CD configuration
+- PROGUARD_CONFIGURATION.md - ProGuard setup
+- SECURITY_AND_GITIGNORE.md - Security and Git configuration
 
 ## 🔄 Cursor AI
 
 ### Workflow
 - Don't auto-build
 - Build only on request
+- Commit only on request
+- Check tests for modified layer before commit
+- Always update method documentation when changes is applied
+- Always update layer documentation when changes is applied
+- Push only on request
 - Split tasks < 125k tokens
 - Confirm each step
 - Update docs on changes
+- Use Context7 when add or update depedndencys
+- Update 
 
 ### Never Update Files
 - README.md
+- CHANGELOG.md
 
 ### Update Files
-- CHANGELOG.md
-- ARCHITECTURE_GUIDE.md
-- DEVELOPMENT_GUIDE.md
-- DEPENDENCIES_INFO.md
+- docs/guides/ARCHITECTURE_GUIDE.md
+- docs/guides/DEVELOPMENT_GUIDE.md
+- docs/DEPENDENCIES_INFO.md
+- docs/guides/PROJECT_GUIDE.md
+- docs/app_layers/APPLICATION_LAYER.md
+- docs/app_layers/DATA_LAYER.md
+- docs/app_layers/ML_LAYER.md
+- docs/app_layers/NAVIGATION_LAYER.md
+- docs/app_layers/PRESENTATION_LAYER.md
+- docs/app_layers/UI_COMPONENTS_LAYER.md
+- docs/app_layers/UTILS_LAYER.md
+- docs/guides/CURSOR_INTEGRATION_GUIDE.md
+- docs/guides/QA_TESTING_GUIDE.md
+- docs/guides/QA_TESTING_TAGS_GUIDE.md
+- docs/guides/ACCESSIBILITY_GUIDE.md
+- docs/guides/MCP_INTEGRATION_GUIDE.md
+- docs/PROJECT_STATUS.md
+- docs/PROJECT_RULES.md
+- docs/ADAPTIVE_ML_RUNTIME.md
+- docs/FOLDABLE_DEVICE_SUPPORT.md
+- docs/GITHUB_ACTIONS_SETUP.md
+- docs/PROGUARD_CONFIGURATION.md
+- docs/SECURITY_AND_GITIGNORE.md

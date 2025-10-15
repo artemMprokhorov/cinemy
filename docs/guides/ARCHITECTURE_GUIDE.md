@@ -5,12 +5,12 @@
 **Version**: 3.0.0
 
 > **📚 Layer-Specific Documentation**: For detailed implementation of each layer, see:
-> - [🗄️ Data Layer](./DATA_LAYER.md) - Data layer architecture and implementation
-> - [🤖 ML Layer](./ML_LAYER.md) - Adaptive ML runtime with LiteRT integration
-> - [🧭 Navigation Layer](./NAVIGATION_LAYER.md) - Navigation and routing system
-> - [🎨 Presentation Layer](./PRESENTATION_LAYER.md) - ViewModels and state management
-> - [🖼️ UI Components Layer](./UI_COMPONENTS_LAYER.md) - UI components and theming
-> - [🔧 Utils Layer](./UTILS_LAYER.md) - Utility classes and helper functions
+> - [🗄️ Data Layer](./app_layers/DATA_LAYER.md) - Data layer architecture and implementation
+> - [🤖 ML Layer](./app_layers/ML_LAYER.md) - Adaptive ML runtime with LiteRT integration
+> - [🧭 Navigation Layer](./app_layers/NAVIGATION_LAYER.md) - Navigation and routing system
+> - [🎨 Presentation Layer](./app_layers/PRESENTATION_LAYER.md) - ViewModels and state management
+> - [🖼️ UI Components Layer](./app_layers/UI_COMPONENTS_LAYER.md) - UI components and theming
+> - [🔧 Utils Layer](./app_layers/UTILS_LAYER.md) - Utility classes and helper functions
 
 ## 🏗️ Architecture Overview
 
@@ -139,6 +139,11 @@ MVI is an architectural pattern that ensures **unidirectional data flow** and **
 - **Model Consistency**: Same BERT model across runtimes
 - **Performance**: Optimized for mobile devices
 - **Fallback System**: Comprehensive error handling
+- **Factory Pattern**: Modular ML component creation
+- **Hardware Detection**: Comprehensive device capability detection
+- **Foldable Support**: Adaptive layouts for foldable devices
+- **Server-Driven UI**: Dynamic theming from backend
+- **QA Testing**: Comprehensive testing utilities
 
 ## 📁 Folder Structure
 
@@ -151,6 +156,14 @@ app/src/main/java/org/studioapp/cinemy/
 │   └── NavigationConstants.kt   # Navigation constants
 ├── ui/                          # UI Layer
 │   ├── components/              # Reusable components
+│   │   ├── AdaptiveLayout.kt    # Adaptive layout for foldable devices
+│   │   ├── ConfigurableMovieCard.kt # Server-driven movie card component
+│   │   ├── ConfigurableText.kt  # Server-driven text component
+│   │   ├── PullToReloadIndicator.kt # Pull-to-reload arrow indicator
+│   │   ├── SentimentAnalysisCard.kt # Sentiment analysis display card
+│   │   └── TestUtils.kt         # QA testing utilities
+│   ├── dualpane/                # Dual pane layout components
+│   │   └── DualPaneScreen.kt    # Dual pane screen implementation
 │   ├── movieslist/              # Movie list screen
 │   ├── moviedetail/             # Movie details screen
 │   ├── splash/                  # Splash screen
@@ -162,17 +175,17 @@ app/src/main/java/org/studioapp/cinemy/
 │   ├── moviedetail/             # MovieDetail ViewModel
 │   └── PresentationConstants.kt # Presentation constants
 ├── data/                        # Data Layer
-│   ├── di/                      # Data DI modules
-│   ├── mcp/                     # MCP client and models
-│   ├── model/                   # Data models
+│   ├── remote/                  # Remote data sources
+│   │   ├── api/                 # API service interfaces
+│   │   └── dto/                 # Data Transfer Objects
+│   ├── mcp/                     # MCP client for backend communication
+│   ├── mapper/                  # Mappers between DTOs and domain models
+│   ├── model/                   # Domain models
 │   │   ├── StringConstants.kt  # Data layer constants
 │   │   └── DefaultData.kt       # Default data classes
-│   ├── mapper/                # Data mappers
-│   │   ├── MovieMapper.kt       # Movie data mapping
-│   │   ├── HttpResponseMapper.kt # HTTP response mapping
-│   │   └── HttpRequestMapper.kt  # HTTP request mapping
-│   ├── remote/                  # Remote data sources
-│   └── repository/              # Repositories
+│   ├── repository/              # Repository interfaces and implementations
+│   ├── util/                    # Utility classes for data processing
+│   └── di/                      # Data DI modules
 ├── ml/                          # ML Layer
 │   ├── model/                   # Data classes and models
 │   │   ├── SentimentResult.kt   # Sentiment analysis result
@@ -197,7 +210,7 @@ app/src/main/java/org/studioapp/cinemy/
 │   ├── di/                      # ML DI modules
 │   │   └── MLModule.kt          # ML dependency injection
 │   ├── SentimentAnalyzer.kt     # Main hybrid analyzer
-│   ├── AdaptiveMLRuntime.kt     # Adaptive runtime selector
+│   ├── AdaptiveMLRuntime.kt   # Adaptive runtime selector
 │   └── MLConstants.kt           # ML constants
 └── utils/                       # Utilities
 ```

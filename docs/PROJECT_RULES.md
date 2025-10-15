@@ -9,12 +9,21 @@
 - **All other documentation files** must be renamed thematically:
 
 #### Thematic Documentation Files:
-- `.github/GITHUB_ACTIONS.md` - GitHub Actions and CI/CD documentation
-- `.github/workflows/WORKFLOWS.md` - Detailed workflows documentation
-- `app/src/main/java/org/studioapp/cinemy/ui/UI_COMPONENTS.md` - UI components documentation
-- `app/src/main/java/org/studioapp/cinemy/utils/UTILITIES.md` - Utilities documentation
-- `app/src/main/java/org/studioapp/cinemy/data/DATA_LAYER.md` - Data layer documentation
-- `app/src/main/java/org/studioapp/cinemy/presentation/PRESENTATION_LAYER.md` - Presentation layer documentation
+- `docs/app_layers/APPLICATION_LAYER.md` - Application layer documentation
+- `docs/app_layers/UI_COMPONENTS_LAYER.md` - UI components documentation
+- `docs/app_layers/UTILS_LAYER.md` - Utilities documentation
+- `docs/app_layers/DATA_LAYER.md` - Data layer documentation
+- `docs/app_layers/PRESENTATION_LAYER.md` - Presentation layer documentation
+- `docs/app_layers/NAVIGATION_LAYER.md` - Navigation layer documentation
+- `docs/app_layers/ML_LAYER.md` - Machine Learning layer documentation
+- `docs/guides/ARCHITECTURE_GUIDE.md` - Architecture guide
+- `docs/guides/DEVELOPMENT_GUIDE.md` - Development guide
+- `docs/guides/PROJECT_GUIDE.md` - Project guide
+- `docs/guides/CURSOR_INTEGRATION_GUIDE.md` - Cursor integration guide
+- `docs/guides/QA_TESTING_GUIDE.md` - QA testing guide
+- `docs/guides/QA_TESTING_TAGS_GUIDE.md` - QA testing tags guide
+- `docs/guides/ACCESSIBILITY_GUIDE.md` - Accessibility guide
+- `docs/guides/MCP_INTEGRATION_GUIDE.md` - MCP integration guide
 
 ### Why This Rule Exists:
 1. **Prevents Confusion** - No duplicate README files
@@ -41,5 +50,5 @@
 
 ---
 
-**Last Updated**: 2025-01-XX  
+**Last Updated**: 2025-01-27  
 **Status**: Active Rule

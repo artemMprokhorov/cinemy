@@ -5,12 +5,12 @@
 **Version**: 3.0.0
 
 > **📚 Layer Documentation**: For detailed implementation of each layer, see:
-> - [🗄️ Data Layer](./DATA_LAYER.md) - Data layer dependencies and MCP integration
-> - [🤖 ML Layer](./ML_LAYER.md) - Adaptive ML runtime dependencies and TensorFlow Lite
-> - [🧭 Navigation Layer](./NAVIGATION_LAYER.md) - Navigation dependencies
-> - [🎨 Presentation Layer](./PRESENTATION_LAYER.md) - ViewModel dependencies
-> - [🖼️ UI Components Layer](./UI_COMPONENTS_LAYER.md) - UI component dependencies
-> - [🔧 Utils Layer](./UTILS_LAYER.md) - Utility dependencies
+> - [🗄️ Data Layer](./app_layers/DATA_LAYER.md) - Data layer dependencies and MCP integration
+> - [🤖 ML Layer](./app_layers/ML_LAYER.md) - Adaptive ML runtime dependencies and TensorFlow Lite
+> - [🧭 Navigation Layer](./app_layers/NAVIGATION_LAYER.md) - Navigation dependencies
+> - [🎨 Presentation Layer](./app_layers/PRESENTATION_LAYER.md) - ViewModel dependencies
+> - [🖼️ UI Components Layer](./app_layers/UI_COMPONENTS_LAYER.md) - UI component dependencies
+> - [🔧 Utils Layer](./app_layers/UTILS_LAYER.md) - Utility dependencies
 
 ## 📦 Dependencies Overview
 
@@ -359,24 +359,3 @@ When updating dependencies:
 | StateFlow | LiveData | Kotlin-first approach |
 | TensorFlow Lite | ML Kit | Local model control |
 
-## 🎯 Future Dependencies
-
-### 📋 Planned Additions
-
-- **Room**: Local database
-- **Hilt**: Koin replacement (if needed)
-- **WorkManager**: Background tasks
-- **DataStore**: SharedPreferences replacement
-- **Navigation Testing**: Navigation testing
-
-### 🔮 Experimental Features
-
-- **Compose Multiplatform**: Cross-platform development
-- **Kotlin Multiplatform**: Shared code for Android and iOS
-- **Jetpack Compose for Desktop**: Desktop applications
-
----
-
-**Last Updated**: 2025-01-27  
-**Document Version**: 3.0.0  
-**Status**: Current

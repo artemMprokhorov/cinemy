@@ -35,10 +35,18 @@ import org.studioapp.cinemy.utils.DeviceUtils.DeviceType.FOLDABLE
 import org.studioapp.cinemy.utils.DeviceUtils.getDeviceType
 import org.studioapp.cinemy.utils.VersionUtils.safeEnableEdgeToEdge
 
+/**
+ * Main application class for Cinemy
+ * Handles dependency injection setup and ML analyzer initialization
+ */
 class CinemyApplication : Application() {
 
     private val sentimentAnalyzer: SentimentAnalyzer by inject()
 
+    /**
+     * Initialize the application and set up dependency injection
+     * Configures Koin modules and initializes ML components
+     */
     override fun onCreate() {
         super.onCreate()
 
@@ -66,7 +74,9 @@ class MainActivity : ComponentActivity() {
 
     /**
      * Initialize the main activity and set up the app
-     * @param savedInstanceState Saved instance state
+     * Enables edge-to-edge display and initializes device type detection
+     * 
+     * @param savedInstanceState Saved instance state from previous activity lifecycle
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,6 +104,9 @@ class MainActivity : ComponentActivity() {
     /**
      * Handle configuration changes for foldable devices
      * This is called when the device is folded/unfolded or orientation changes
+     * Updates device type detection and optimizes UI for different device types
+     * 
+     * @param newConfig New configuration containing updated device state
      */
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
@@ -135,7 +148,9 @@ class MainActivity : ComponentActivity() {
 
 
     /**
-     * Handle orientation changes
+     * Handle orientation changes and optimize UI accordingly
+     * Applies device-specific optimizations based on current device type
+     * 
      * @param isLandscape Whether the device is in landscape orientation
      */
     private fun handleOrientationChange(isLandscape: Boolean) {
@@ -163,6 +178,7 @@ class MainActivity : ComponentActivity() {
 
     /**
      * Set up orientation support for devices that support multi-window
+     * Enables flexible orientation handling for modern Android devices
      */
     private fun setupOrientationSupport() {
         if (SDK_INT >= N) {
@@ -172,6 +188,7 @@ class MainActivity : ComponentActivity() {
 
     /**
      * Optimize UI for foldable devices
+     * Enables multi-window mode support for enhanced foldable device experience
      */
     private fun optimizeForFoldableDevice() {
         // Enable multi-window mode support for foldable devices
@@ -180,6 +197,7 @@ class MainActivity : ComponentActivity() {
 
     /**
      * Optimize UI for desktop devices
+     * Enables window resizing support for desktop-like Android devices
      */
     private fun optimizeForDesktop() {
         // Enable window resizing for desktop devices

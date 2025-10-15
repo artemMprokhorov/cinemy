@@ -5,12 +5,12 @@
 **Version**: 3.0.0
 
 > **📚 Layer Documentation**: For detailed implementation of each layer, see:
-> - [🗄️ Data Layer](./DATA_LAYER.md) - Data layer architecture and implementation
-> - [🤖 ML Layer](./ML_LAYER.md) - Adaptive ML runtime with LiteRT integration
-> - [🧭 Navigation Layer](./NAVIGATION_LAYER.md) - Navigation and routing system
-> - [🎨 Presentation Layer](./PRESENTATION_LAYER.md) - ViewModels and state management
-> - [🖼️ UI Components Layer](./UI_COMPONENTS_LAYER.md) - UI components and theming
-> - [🔧 Utils Layer](./UTILS_LAYER.md) - Utility classes and helper functions
+> - [🗄️ Data Layer](./app_layers/DATA_LAYER.md) - Data layer architecture and implementation
+> - [🤖 ML Layer](./app_layers/ML_LAYER.md) - Adaptive ML runtime with LiteRT integration
+> - [🧭 Navigation Layer](./app_layers/NAVIGATION_LAYER.md) - Navigation and routing system
+> - [🎨 Presentation Layer](./app_layers/PRESENTATION_LAYER.md) - ViewModels and state management
+> - [🖼️ UI Components Layer](./app_layers/UI_COMPONENTS_LAYER.md) - UI components and theming
+> - [🔧 Utils Layer](./app_layers/UTILS_LAYER.md) - Utility classes and helper functions
 
 ## 🆕 Latest Updates (v3.0.0)
 
@@ -25,6 +25,8 @@
 - **Factory Pattern**: Implemented factory patterns for ML component creation
 - **Separation of Concerns**: Clear separation between factories, tools, and models
 - **Scalability**: Easy to add new ML components
+- **Hardware Detection**: Comprehensive device capability detection
+- **Adaptive Runtime**: Intelligent ML runtime selection based on device capabilities
 
 ### 🧹 **Magic Value Elimination** - January 2025
 - **Constants Organization**: All hardcoded values moved to centralized constants
@@ -38,6 +40,14 @@
 - **Testing**: 100% test success rate across all build variants
 - **Build Verification**: Successful compilation and runtime verification
 - **Linter Compliance**: No linter errors after cleanup
+
+### 🎨 **UI Components Enhancement** - January 2025
+- **Adaptive Layout**: Foldable device support with AdaptiveLayout component
+- **Server-Driven UI**: Dynamic theming with ConfigurableText and ConfigurableMovieCard
+- **Dual Pane Support**: Tablet and foldable device layouts with DualPaneScreen
+- **QA Testing**: Comprehensive testing utilities with TestUtils
+- **Sentiment Analysis**: SentimentAnalysisCard for ML results display
+- **Pull-to-Reload**: PullToReloadIndicator for user interaction feedback
 
 ### 🤖 **Adaptive ML Runtime with LiteRT Integration** - January 2025
 - **Hardware Detection**: Automatic detection of GPU, NNAPI, XNNPACK, and LiteRT support
