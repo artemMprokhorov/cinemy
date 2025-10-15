@@ -35,9 +35,11 @@ import org.studioapp.cinemy.ui.theme.SentimentNegative
 import org.studioapp.cinemy.ui.theme.SentimentPositive
 
 /**
- * Card component for displaying sentiment analysis results
- * @param sentimentReviews Sentiment reviews data to display
- * @param error Error message to show if analysis failed
+ * Card component for displaying sentiment analysis results with positive and negative review categorization.
+ * Shows loading states, error messages, and organized review content with visual indicators.
+ *
+ * @param sentimentReviews Sentiment reviews data to display, can be null if not loaded
+ * @param error Error message to show if sentiment analysis failed
  * @param modifier Modifier for the composable
  */
 @Composable
@@ -107,6 +109,13 @@ fun SentimentAnalysisCard(
     }
 }
 
+/**
+ * Internal composable for displaying sentiment reviews content with positive and negative sections.
+ * Shows review counts and scrollable lists of individual reviews with color-coded styling.
+ *
+ * @param reviews Sentiment reviews data containing positive and negative review lists
+ * @param modifier Modifier for the composable
+ */
 @Composable
 private fun SentimentReviewsContent(
     reviews: SentimentReviews,
@@ -164,6 +173,15 @@ private fun SentimentReviewsContent(
     }
 }
 
+/**
+ * Internal composable for displaying individual review items with custom styling.
+ * Creates a card with background color and text color for sentiment visualization.
+ *
+ * @param text Review text content to display
+ * @param backgroundColor Background color for the review card
+ * @param textColor Text color for the review content
+ * @param modifier Modifier for the composable
+ */
 @Composable
 private fun ReviewItem(
     text: String,
@@ -186,6 +204,10 @@ private fun ReviewItem(
 }
 
 
+/**
+ * Preview composable for SentimentAnalysisCard component.
+ * Shows the card in its default state for design system documentation.
+ */
 @Preview
 @Composable
 private fun SentimentAnalysisCardPreview() {

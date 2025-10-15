@@ -12,21 +12,25 @@ import androidx.compose.ui.text.TextStyle
 import org.studioapp.cinemy.data.model.UiConfiguration
 
 /**
- * Configurable text component that supports server-driven styling
+ * Configurable text component that supports server-driven styling with dynamic theming
  *
- * This component accepts UiConfig parameters for dynamic text theming while
- * falling back to Material3 defaults when no configuration is provided.
+ * This component provides server-driven text theming through UiConfiguration while
+ * maintaining Material3 design system compatibility. It implements a color priority
+ * system: explicit color parameter > UiConfig colors > Material3 default colors.
+ * 
+ * The component includes comprehensive accessibility support with content descriptions
+ * and QA testing attributes for automated testing frameworks.
  *
  * @param text The text content to display
- * @param style The text style to apply (Material3 typography)
- * @param uiConfig Optional UI configuration for dynamic styling
- * @param modifier Modifier to apply to the text
- * @param color Override color for the text (takes precedence over UiConfig)
- * @param maxLines Maximum number of lines for the text
+ * @param style The text style to apply (defaults to Material3 bodyMedium typography)
+ * @param uiConfig Optional UI configuration for server-driven dynamic styling
+ * @param modifier Modifier to apply to the text component
+ * @param color Override color for the text (takes highest priority over UiConfig)
+ * @param maxLines Maximum number of lines for text wrapping (defaults to unlimited)
  * @param contentDescription Optional accessibility description for screen readers
- * @param testTag Optional test tag for QA automation
- * @param testId Optional test ID for QA automation
- * @param testData Optional test data attributes for QA automation
+ * @param testTag Optional test tag for QA automation and testing frameworks
+ * @param testId Optional test ID for QA automation and testing frameworks
+ * @param testData Optional test data attributes for QA automation and testing frameworks
  */
 @Composable
 fun ConfigurableText(

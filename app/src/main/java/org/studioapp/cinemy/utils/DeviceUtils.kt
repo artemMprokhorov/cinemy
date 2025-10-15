@@ -14,7 +14,12 @@ import androidx.compose.ui.unit.dp
 object DeviceUtils {
 
     /**
-     * Device type enumeration
+     * Device type enumeration for categorizing Android devices
+     * 
+     * @property PHONE Standard smartphone device
+     * @property TABLET Tablet device with larger screen
+     * @property FOLDABLE Foldable device with flexible screen configuration
+     * @property DESKTOP Desktop mode device (Chrome OS, Samsung DeX)
      */
     enum class DeviceType {
         PHONE,
@@ -24,7 +29,12 @@ object DeviceUtils {
     }
 
     /**
-     * Screen size categories
+     * Screen size categories based on screen width in density-independent pixels
+     * 
+     * @property SMALL Screen width < 600dp (phones and small devices)
+     * @property MEDIUM Screen width 600dp - 840dp (large phones and small tablets)
+     * @property LARGE Screen width 840dp - 1200dp (tablets and small foldable devices)
+     * @property EXTRA_LARGE Screen width > 1200dp (large tablets and unfolded foldable devices)
      */
     enum class ScreenSize {
         SMALL,      // < 600dp
@@ -34,9 +44,13 @@ object DeviceUtils {
     }
 
     /**
-     * Determines if the device is a foldable device
+     * Determines if the device is a foldable device based on screen characteristics
+     * 
+     * Checks for foldable device characteristics including aspect ratio and screen dimensions.
+     * Foldable devices typically have aspect ratios > 2.0 or screen dimensions > 600dp.
+     * 
      * @param context Android context for accessing system services
-     * @return Boolean indicating if the device is foldable
+     * @return true if the device is detected as foldable, false otherwise
      */
     fun isFoldableDevice(context: Context): Boolean {
         val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -54,9 +68,13 @@ object DeviceUtils {
     }
 
     /**
-     * Gets the device type based on screen characteristics
+     * Gets the device type based on screen characteristics and configuration
+     * 
+     * Determines device type using screen width and foldable detection.
+     * Priority: FOLDABLE > DESKTOP (>=1200dp) > TABLET (>=600dp) > PHONE.
+     * 
      * @param context Android context for accessing system services
-     * @return DeviceType enum indicating the device type
+     * @return DeviceType enum indicating the detected device type
      */
     fun getDeviceType(context: Context): DeviceType {
         val configuration = context.resources.configuration
@@ -72,9 +90,13 @@ object DeviceUtils {
     }
 
     /**
-     * Gets the screen size category based on screen dimensions
+     * Gets the screen size category based on screen width in density-independent pixels
+     * 
+     * Categorizes screen size using standard Android breakpoints:
+     * SMALL (<600dp), MEDIUM (600-840dp), LARGE (840-1200dp), EXTRA_LARGE (>1200dp).
+     * 
      * @param context Android context for accessing system services
-     * @return ScreenSize enum indicating the screen size category
+     * @return ScreenSize enum indicating the detected screen size category
      */
     fun getScreenSize(context: Context): ScreenSize {
         val configuration = context.resources.configuration
@@ -90,9 +112,15 @@ object DeviceUtils {
 
 
     /**
-     * Determines if the device supports dual pane layout
+     * Determines if the device supports dual pane layout based on device type and screen size
+     * 
+     * Dual pane support logic:
+     * - FOLDABLE: Only when unfolded (screen width >= 840dp)
+     * - TABLET/DESKTOP: Always supported
+     * - PHONE: Only on extra large screens (>=1200dp)
+     * 
      * @param context Android context for accessing system services
-     * @return Boolean indicating if dual pane is supported
+     * @return true if dual pane layout is supported, false otherwise
      */
     fun supportsDualPane(context: Context): Boolean {
         val deviceType = getDeviceType(context)
@@ -116,9 +144,14 @@ object DeviceUtils {
 
 
     /**
-     * Gets optimal spacing based on device type and screen size
+     * Gets optimal spacing based on device type for responsive UI design
+     * 
+     * Returns device-specific spacing values:
+     * - Large devices (FOLDABLE, TABLET, DESKTOP): 24dp for better visual hierarchy
+     * - Phones: 16dp for compact layout
+     * 
      * @param context Android context for accessing system services
-     * @return Dp value for optimal spacing
+     * @return Dp value representing optimal spacing for the device type
      */
     fun getOptimalSpacing(context: Context): Dp {
         val deviceType = getDeviceType(context)
@@ -131,8 +164,12 @@ object DeviceUtils {
 }
 
 /**
- * Composable function to get device type
- * @return DeviceType enum indicating the device type
+ * Composable function to get device type using LocalContext
+ * 
+ * Provides reactive device type detection in Compose UI.
+ * Automatically updates when device configuration changes.
+ * 
+ * @return DeviceType enum indicating the current device type
  */
 @Composable
 fun getDeviceType(): DeviceUtils.DeviceType {
@@ -142,8 +179,12 @@ fun getDeviceType(): DeviceUtils.DeviceType {
 
 
 /**
- * Composable function to check if device supports dual pane
- * @return Boolean indicating if dual pane is supported
+ * Composable function to check if device supports dual pane layout
+ * 
+ * Provides reactive dual pane support detection in Compose UI.
+ * Automatically updates when device configuration changes.
+ * 
+ * @return true if dual pane layout is supported, false otherwise
  */
 @Composable
 fun supportsDualPane(): Boolean {
@@ -153,8 +194,12 @@ fun supportsDualPane(): Boolean {
 
 
 /**
- * Composable function to get optimal spacing
- * @return Dp value for optimal spacing
+ * Composable function to get optimal spacing for responsive UI design
+ * 
+ * Provides reactive spacing values in Compose UI.
+ * Automatically updates when device configuration changes.
+ * 
+ * @return Dp value representing optimal spacing for the current device type
  */
 @Composable
 fun getOptimalSpacing(): Dp {

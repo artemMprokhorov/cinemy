@@ -27,6 +27,17 @@ import org.studioapp.cinemy.ui.theme.Float2
 
 // PullToReloadIndicator removed - was unused in codebase
 
+/**
+ * Composable that renders a pull-to-reload arrow indicator with curved pull lines.
+ * 
+ * This component draws a vertical arrow pointing down with optional curved lines
+ * that fade in based on the pull progress. The arrow is centered within the provided
+ * size and uses the specified color for all drawing operations.
+ *
+ * @param modifier Modifier to be applied to the Canvas
+ * @param color Color used for drawing the arrow and pull lines
+ * @param size Size of the arrow indicator in density-independent pixels
+ */
 @Composable
 fun PullToReloadArrow(
     modifier: Modifier = Modifier,

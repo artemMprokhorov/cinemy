@@ -65,10 +65,12 @@ import org.studioapp.cinemy.ui.theme.SplashBackground
 
 
 /**
- * Main screen for displaying movie details with sentiment analysis
+ * Main screen for displaying movie details with sentiment analysis and ML-powered review analysis.
+ * Handles loading states, error states, and displays complete movie information with pull-to-refresh functionality.
+ *
  * @param movieId Unique identifier of the movie to display
- * @param viewModel ViewModel for movie detail state management
- * @param onBackClick Callback when back button is pressed
+ * @param viewModel ViewModel for movie detail state management and intent processing
+ * @param onBackClick Callback function triggered when back button is pressed
  */
 @Composable
 fun MovieDetailScreen(
@@ -93,6 +95,13 @@ fun MovieDetailScreen(
     )
 }
 
+/**
+ * Internal content composable that handles the main UI states (loading, error, success) with pull-to-refresh functionality.
+ * Manages state transitions and provides appropriate UI feedback for each state.
+ *
+ * @param state Current movie detail state containing loading status, error information, and movie data
+ * @param onIntent Intent handler for processing user actions and state updates
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MovieDetailContent(
@@ -200,6 +209,14 @@ private fun MovieDetailContent(
     }
 }
 
+/**
+ * Internal composable that renders the complete movie details content including poster, information card, and sentiment analysis.
+ * Displays movie information with server-driven theming and includes ML-powered sentiment analysis results.
+ *
+ * @param movieDetails Complete movie data including title, description, rating, genres, and metadata
+ * @param uiConfig Optional server-driven UI configuration for dynamic theming
+ * @param state Current movie detail state containing sentiment analysis data and errors
+ */
 @Composable
 private fun MovieDetailsContent(
     movieDetails: MovieDetails,
@@ -303,6 +320,10 @@ private fun MovieDetailsContent(
     }
 }
 
+/**
+ * Preview composable for MovieDetailScreen with sample data for design-time preview.
+ * Used for UI development and testing without requiring real movie data.
+ */
 @Preview(showBackground = true)
 @Composable
 private fun MovieDetailScreenPreview() {

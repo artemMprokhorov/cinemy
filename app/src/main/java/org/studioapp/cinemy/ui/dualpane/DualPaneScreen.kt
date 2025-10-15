@@ -24,12 +24,14 @@ import org.studioapp.cinemy.ui.moviedetail.MovieDetailScreen
 import org.studioapp.cinemy.ui.movieslist.MoviesListScreen
 
 /**
- * Dual pane screen that combines movies list and movie details
- * Uses AdaptiveLayout for responsive design across different device types
- * @param selectedMovieId ID of the currently selected movie (optional)
- * @param onMovieSelected Callback when a movie is selected
- * @param onBackClick Callback when back button is pressed
- * @param modifier Modifier for the composable
+ * Dual pane screen that combines movies list and movie details for tablets and foldable devices.
+ * Uses AdaptiveLayout for responsive design across different device types.
+ * Automatically manages ViewModels for both movies list and movie detail screens.
+ * 
+ * @param selectedMovieId ID of the currently selected movie, null if no movie is selected
+ * @param onMovieSelected Callback invoked when a movie is selected from the list
+ * @param onBackClick Callback invoked when back button is pressed in movie detail
+ * @param modifier Modifier to be applied to the composable
  */
 @Composable
 fun DualPaneScreen(

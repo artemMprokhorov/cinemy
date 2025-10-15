@@ -83,9 +83,11 @@ private const val SWIPE_THRESHOLD = 50
 private const val SNACKBAR_DEBOUNCE_MS = 2000
 
 /**
- * Main screen for displaying movies list with pull-to-refresh functionality
- * @param viewModel ViewModel for movies list state management
- * @param onMovieClick Callback when a movie is clicked
+ * Main screen for displaying movies list with pull-to-refresh functionality and pagination support.
+ * Handles back navigation to previous page when available.
+ *
+ * @param viewModel ViewModel for movies list state management and intent processing
+ * @param onMovieClick Callback invoked when a movie is clicked for navigation to details
  */
 @Composable
 fun MoviesListScreen(
@@ -117,11 +119,13 @@ fun MoviesListScreen(
 }
 
 /**
- * Content composable for movies list with pull-to-refresh functionality
- * @param state Current state of the movies list
- * @param onIntent Callback for processing user intents
- * @param onMovieClick Callback when a movie is clicked
- * @param snackbarHostState State for snackbar display
+ * Content composable for movies list with pull-to-refresh functionality.
+ * Displays loading, error, empty, or movies grid states based on current state.
+ *
+ * @param state Current state of the movies list containing movies, loading, error, and pagination info
+ * @param onIntent Callback for processing user intents like pagination and refresh
+ * @param onMovieClick Callback invoked when a movie is clicked for navigation
+ * @param snackbarHostState State for snackbar display with user feedback
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -272,6 +276,18 @@ private fun MoviesListContent(
 }
 
 
+/**
+ * Grid layout for displaying movies with swipe gestures for pagination.
+ * Shows pagination controls when scrolled to bottom and handles swipe navigation.
+ *
+ * @param movies List of movies to display in the grid
+ * @param uiConfig Optional UI configuration for server-driven theming
+ * @param onMovieClick Callback invoked when a movie is clicked
+ * @param pagination Pagination information for navigation controls
+ * @param onNextPage Callback for navigating to next page
+ * @param onPreviousPage Callback for navigating to previous page
+ * @param snackbarHostState State for displaying snackbar messages
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MoviesGrid(
@@ -393,6 +409,14 @@ private fun MoviesGrid(
     }
 }
 
+/**
+ * Pagination controls component with previous/next buttons and page information.
+ * Only shows available navigation buttons based on pagination state.
+ *
+ * @param pagination Pagination information containing page numbers and navigation availability
+ * @param onNextPage Callback for navigating to next page
+ * @param onPreviousPage Callback for navigating to previous page
+ */
 @Composable
 private fun PaginationControls(
     pagination: org.studioapp.cinemy.data.model.Pagination,
@@ -453,6 +477,10 @@ private fun PaginationControls(
     }
 }
 
+/**
+ * Empty state component displayed when no movies are available.
+ * Shows appropriate message and pull-to-refresh instruction.
+ */
 @Composable
 private fun EmptyState() {
     Box(
@@ -477,6 +505,10 @@ private fun EmptyState() {
     }
 }
 
+/**
+ * Preview composable for MoviesListScreen with default state.
+ * Used for Compose preview in Android Studio.
+ */
 @Preview(showBackground = true)
 @Composable
 private fun MoviesListScreenPreview() {

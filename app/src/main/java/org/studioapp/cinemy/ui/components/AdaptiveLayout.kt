@@ -16,12 +16,13 @@ import org.studioapp.cinemy.utils.getOptimalSpacing
 import org.studioapp.cinemy.utils.supportsDualPane
 
 /**
- * Adaptive layout component that adjusts based on device type
- * Supports foldable devices with dual pane layout
- * @param leftPane Content for the left pane
- * @param rightPane Content for the right pane
- * @param modifier Modifier for the composable
- * @param showRightPane Whether to show the right pane
+ * Adaptive layout component that automatically adjusts based on device type and capabilities.
+ * Supports foldable devices with dual pane layout, tablets with standard dual pane, and phones with single pane.
+ * 
+ * @param leftPane Content composable for the left pane (typically movies list)
+ * @param rightPane Content composable for the right pane (typically movie details)
+ * @param modifier Modifier to be applied to the layout container
+ * @param showRightPane Whether to show the right pane in single pane mode (ignored in dual pane modes)
  */
 @Composable
 fun AdaptiveLayout(
@@ -62,8 +63,13 @@ fun AdaptiveLayout(
 }
 
 /**
- * Foldable device specific dual pane layout
- * Optimized for foldable devices with flexible sizing
+ * Foldable device specific dual pane layout with flexible sizing.
+ * Optimized for unfolded foldable devices with 40/60 weight distribution.
+ * 
+ * @param leftPane Content composable for the left pane
+ * @param rightPane Content composable for the right pane
+ * @param modifier Modifier to be applied to the layout container
+ * @param spacing Spacing between panes in dp
  */
 @Composable
 private fun FoldableDualPaneLayout(
@@ -105,8 +111,13 @@ private fun FoldableDualPaneLayout(
 }
 
 /**
- * Standard dual pane layout for tablets and desktop
- * Fixed width for left pane, flexible for right pane
+ * Standard dual pane layout for tablets and desktop devices.
+ * Uses fixed width (320dp) for left pane and flexible width for right pane.
+ * 
+ * @param leftPane Content composable for the left pane
+ * @param rightPane Content composable for the right pane
+ * @param modifier Modifier to be applied to the layout container
+ * @param spacing Spacing between panes in dp
  */
 @Composable
 private fun StandardDualPaneLayout(
@@ -148,8 +159,13 @@ private fun StandardDualPaneLayout(
 }
 
 /**
- * Single pane layout for phones and folded foldable devices
- * Shows the appropriate pane based on navigation state
+ * Single pane layout for phones and folded foldable devices.
+ * Shows either left or right pane based on the showRightPane parameter.
+ * 
+ * @param leftPane Content composable for the left pane
+ * @param rightPane Content composable for the right pane
+ * @param modifier Modifier to be applied to the layout container
+ * @param showRightPane Whether to show the right pane (true) or left pane (false)
  */
 @Composable
 private fun SinglePaneLayout(
