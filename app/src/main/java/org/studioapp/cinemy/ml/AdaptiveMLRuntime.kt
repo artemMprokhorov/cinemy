@@ -27,17 +27,48 @@ import java.lang.ref.WeakReference
 
 /**
  * Adaptive ML Runtime Selector for Cinemy
- * Automatically selects optimal ML runtime based on hardware capabilities
+ * 
+ * Automatically selects and manages the optimal ML runtime based on device hardware
+ * capabilities, providing a unified interface for sentiment analysis across different
+ * ML implementations. This class ensures maximum performance by intelligently choosing
+ * the best available runtime for each device.
  *
- * This class provides a unified interface for ML inference that automatically
- * selects the best available runtime (LiteRT, TensorFlow Lite, or keyword fallback)
- * based on device hardware capabilities.
+ * ## Runtime Selection Priority
  *
- * The runtime selection follows this priority:
- * 1. LiteRT with GPU/NPU acceleration (best performance)
- * 2. TensorFlow Lite with hardware acceleration (good performance)
- * 3. TensorFlow Lite CPU (basic performance)
- * 4. Keyword-based fallback (last resort)
+ * The runtime selection follows this priority order based on hardware capabilities:
+ * 1. **LiteRT with GPU/NPU acceleration** - Best performance, requires Play Services
+ * 2. **TensorFlow Lite with hardware acceleration** - Good performance, no Play Services dependency
+ * 3. **TensorFlow Lite CPU with XNNPACK** - Basic performance, always available
+ * 4. **Keyword-based fallback** - Last resort, ensures functionality is always available
+ *
+ * ## Key Features
+ *
+ * - **Automatic Hardware Detection**: Detects GPU, NNAPI, XNNPACK, LiteRT, and Play Services support
+ * - **Intelligent Runtime Selection**: Chooses optimal runtime based on device capabilities
+ * - **Seamless Fallback**: Automatic fallback to simpler runtimes if preferred ones fail
+ * - **Unified Interface**: Same API regardless of underlying ML implementation
+ * - **Memory Management**: Proper resource cleanup to prevent memory leaks
+ * - **Thread Safety**: Thread-safe singleton pattern with WeakReference
+ *
+ * ## Usage Example
+ *
+ * ```kotlin
+ * val adaptiveRuntime = AdaptiveMLRuntime.getInstance(context)
+ * val initialized = adaptiveRuntime.initialize()
+ * 
+ * if (initialized) {
+ *     val result = adaptiveRuntime.analyzeSentiment("This movie is amazing!")
+ *     println("Sentiment: ${result.sentiment} (${result.confidence})")
+ * }
+ * 
+ * // Clean up when done
+ * adaptiveRuntime.cleanup()
+ * ```
+ *
+ * ## Thread Safety
+ *
+ * This class is thread-safe and uses a singleton pattern with WeakReference to prevent
+ * memory leaks. All public methods are safe to call from any thread.
  *
  * @author Cinemy Team
  * @since 1.0.0
@@ -82,16 +113,27 @@ class AdaptiveMLRuntime private constructor(private val context: Context) {
     }
 
     /**
-     * Initializes adaptive ML runtime
+     * Initializes the adaptive ML runtime with optimal configuration.
      *
-     * This method performs the following steps:
-     * 1. Initializes hardware detection
-     * 2. Detects hardware capabilities
-     * 3. Selects optimal ML runtime
-     * 4. Initializes the selected runtime
-     * 5. Sets up fallback mechanisms
+     * This method performs comprehensive initialization of the ML runtime system:
+     * 1. **Hardware Detection**: Initializes hardware detection system
+     * 2. **Capability Analysis**: Detects GPU, NNAPI, XNNPACK, LiteRT, and Play Services support
+     * 3. **Runtime Selection**: Selects optimal ML runtime based on detected capabilities
+     * 4. **Model Initialization**: Initializes the selected ML model (LiteRT, TensorFlow Lite, or keyword)
+     * 5. **Fallback Setup**: Configures fallback mechanisms for reliability
      *
-     * @return true if initialization was successful, false otherwise
+     * The initialization process is idempotent - calling this method multiple times
+     * is safe and will return true if already initialized.
+     *
+     * **Runtime Selection Logic**:
+     * - LiteRT GPU/NPU: Best performance, requires Play Services
+     * - TensorFlow Lite GPU/NNAPI: Good performance, no Play Services dependency
+     * - TensorFlow Lite CPU: Basic performance, always available
+     * - Keyword Fallback: Last resort, ensures functionality
+     *
+     * @return true if initialization was successful, false if all runtimes failed
+     * @throws Exception if hardware detection fails (handled internally with fallback)
+     * @since 1.0.0
      */
     suspend fun initialize(): Boolean = withContext(Dispatchers.IO) {
         runCatching {
@@ -140,14 +182,29 @@ class AdaptiveMLRuntime private constructor(private val context: Context) {
     }
 
     /**
-     * Analyzes sentiment using adaptive runtime
+     * Analyzes sentiment using the optimal ML runtime for the current device.
      *
-     * This method automatically routes the sentiment analysis request to the
-     * optimal runtime based on hardware capabilities. It provides a unified
-     * interface regardless of the underlying ML implementation.
+     * This method provides a unified interface for sentiment analysis that automatically
+     * routes requests to the best available ML runtime based on hardware capabilities.
+     * The analysis uses the runtime selected during initialization (LiteRT, TensorFlow Lite,
+     * or keyword-based fallback).
      *
-     * @param text Input text to analyze for sentiment
-     * @return SentimentResult with sentiment classification and confidence
+     * **Analysis Process**:
+     * 1. **Validation**: Checks if runtime is initialized and text is valid
+     * 2. **Runtime Selection**: Uses the optimal runtime selected during initialization
+     * 3. **Sentiment Analysis**: Performs analysis using the selected ML model
+     * 4. **Fallback Handling**: Automatically falls back to keyword model if ML models fail
+     * 5. **Result Processing**: Returns standardized SentimentResult with confidence scores
+     *
+     * **Supported Runtimes**:
+     * - **LiteRT**: BERT-based analysis with hardware acceleration (best performance)
+     * - **TensorFlow Lite**: BERT-based analysis with GPU/NNAPI acceleration (good performance)
+     * - **Keyword Model**: Basic keyword matching (fallback, always available)
+     *
+     * @param text Input text to analyze for sentiment (will return neutral if blank)
+     * @return SentimentResult containing sentiment classification, confidence score, and analysis metadata
+     * @throws Exception if analysis fails (handled internally with fallback to keyword model)
+     * @since 1.0.0
      */
     suspend fun analyzeSentiment(text: String): SentimentResult = withContext(Dispatchers.Default) {
         if (!isInitialized) {
@@ -316,10 +373,19 @@ class AdaptiveMLRuntime private constructor(private val context: Context) {
     }
 
     /**
-     * Cleans up resources
+     * Cleans up all ML runtime resources to prevent memory leaks.
      *
-     * Properly cleans up all ML runtime resources to prevent memory leaks.
-     * This should be called when the runtime is no longer needed.
+     * This method performs comprehensive cleanup of all initialized ML components:
+     * - Cleans up LiteRT model resources and clears reference
+     * - Cleans up TensorFlow Lite model resources and clears reference
+     * - Clears keyword model reference
+     * - Resets initialization state and current runtime
+     * - Prepares the runtime for potential re-initialization
+     *
+     * This method should be called when the AdaptiveMLRuntime is no longer needed
+     * to prevent memory leaks and ensure proper resource management.
+     *
+     * @since 1.0.0
      */
     fun cleanup() {
         liteRTModel?.cleanup()

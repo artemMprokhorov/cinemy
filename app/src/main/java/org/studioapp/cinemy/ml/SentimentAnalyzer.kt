@@ -130,8 +130,18 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
     /**
-     * Initializes multilingual production model from assets
-     * Falls back to simple model only if production model fails to load
+     * Initializes multilingual production model from assets with intelligent fallback.
+     * 
+     * This method attempts to load the production multilingual sentiment model from
+     * the assets directory. If the production model file is not found or fails to load,
+     * it falls back to the simple keyword model to ensure sentiment analysis functionality
+     * remains available.
+     * 
+     * The method follows this priority order:
+     * 1. Load production model from multilingual_sentiment_production.json
+     * 2. Fall back to simple keyword model if production model unavailable
+     * 
+     * @throws Exception if both production and simple models fail to initialize
      */
     private suspend fun initializeKeywordModel() {
         val modelJson = runCatching {
@@ -198,9 +208,14 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
     /**
-     * Analyzes sentiment for multiple texts in batch
-     * @param texts List of texts to analyze
-     * @return List of SentimentResult objects
+     * Analyzes sentiment for multiple texts in batch with parallel processing.
+     * 
+     * This method performs sentiment analysis on multiple texts efficiently using
+     * parallel processing. Each text is analyzed using the same hybrid approach
+     * as the single text analysis, with automatic model selection and fallback mechanisms.
+     * 
+     * @param texts List of texts to analyze for sentiment
+     * @return List of SentimentResult objects corresponding to each input text
      */
     suspend fun analyzeBatch(texts: List<String>): List<SentimentResult> =
         withContext(Dispatchers.Default) {
@@ -209,7 +224,16 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
 
     /**
-     * Load model from JSON string
+     * Loads sentiment analysis model from JSON string with format detection.
+     * 
+     * This method automatically detects the JSON format and loads the appropriate
+     * sentiment analysis model. It supports both production model format and enhanced
+     * model format, with intelligent fallback to simple model if parsing fails.
+     * 
+     * @param jsonString The JSON string containing model configuration
+     * @param fileName The name of the model file for format detection
+     * @return KeywordSentimentModel configured from JSON data or simple fallback model
+     * @throws Exception if JSON parsing fails and simple model creation also fails
      */
     private fun loadModelFromJson(jsonString: String, fileName: String): KeywordSentimentModel {
         return runCatching {
@@ -232,7 +256,16 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
 
     /**
-     * Load production model format from multilingual_sentiment_production.json
+     * Loads production model format from multilingual_sentiment_production.json.
+     * 
+     * This method parses the production model JSON format and creates a comprehensive
+     * KeywordSentimentModel with multilingual support, advanced algorithm configuration,
+     * and production-optimized settings. Falls back to simple model if parsing fails.
+     * 
+     * @param json Configured Json instance for parsing
+     * @param jsonString The JSON string containing production model data
+     * @return KeywordSentimentModel configured from production model data or simple fallback
+     * @throws Exception if JSON parsing fails and simple model creation also fails
      */
     private fun loadProductionModel(json: Json, jsonString: String): KeywordSentimentModel {
         return runCatching {
@@ -245,7 +278,16 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
     /**
-     * Load enhanced model format (fallback)
+     * Loads enhanced model format as fallback when production model is unavailable.
+     * 
+     * This method parses the enhanced model JSON format and creates a KeywordSentimentModel
+     * with advanced features including context patterns, intensity modifiers, and custom
+     * algorithm configuration. Used as fallback when production model format is not available.
+     * 
+     * @param json Configured Json instance for parsing
+     * @param jsonString The JSON string containing enhanced model data
+     * @return KeywordSentimentModel configured from enhanced model data
+     * @throws Exception if JSON parsing fails
      */
     private fun loadEnhancedModel(json: Json, jsonString: String): KeywordSentimentModel {
         val modelData = json.decodeFromString<EnhancedModelData>(jsonString)
@@ -274,7 +316,14 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
     /**
-     * Create production model from multilingual_sentiment_production.json
+     * Creates comprehensive production model from multilingual_sentiment_production.json data.
+     * 
+     * This method constructs a production-grade KeywordSentimentModel with multilingual
+     * keyword support, advanced algorithm configuration, intensity modifiers, and
+     * movie-specific context boosters. Uses production-optimized settings for maximum accuracy.
+     * 
+     * @param modelData Parsed production model data from JSON
+     * @return KeywordSentimentModel configured with production settings and multilingual support
      */
     private fun createProductionModel(modelData: ProductionModelData): KeywordSentimentModel {
         val modelInfo = ModelInfo(
@@ -311,7 +360,16 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
 
     /**
-     * Main keyword analysis algorithm with fallback
+     * Main keyword analysis algorithm with intelligent fallback mechanism.
+     * 
+     * This method performs sentiment analysis using keyword-based algorithms with
+     * comprehensive fallback mechanisms. It first attempts enhanced keyword analysis
+     * with all advanced features, then falls back to simple keyword analysis if
+     * the enhanced algorithm encounters any issues.
+     * 
+     * @param text Input text to analyze for sentiment
+     * @param model KeywordSentimentModel containing keywords, modifiers, and algorithm configuration
+     * @return SentimentResult with sentiment classification, confidence, and found keywords
      */
     private fun analyzeWithKeywords(text: String, model: KeywordSentimentModel): SentimentResult {
         return runCatching {
@@ -324,7 +382,18 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
     /**
-     * Enhanced analysis algorithm with support for all new features
+     * Enhanced keyword analysis algorithm with comprehensive sentiment detection features.
+     * 
+     * This method implements advanced keyword-based sentiment analysis with support for:
+     * - Multilingual keyword matching (English, Spanish, Russian)
+     * - Intensity modifiers for sentiment strength adjustment
+     * - Context boosters for movie-specific terminology
+     * - Enhanced context pattern matching for improved accuracy
+     * - Emoji-based keyword tracking for analysis transparency
+     * 
+     * @param text Input text to analyze for sentiment
+     * @param model KeywordSentimentModel with comprehensive configuration
+     * @return SentimentResult with detailed sentiment analysis including found keywords
      */
     private fun analyzeWithEnhancedKeywords(
         text: String,
@@ -460,7 +529,15 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
     /**
-     * Simple algorithm as fallback for backward compatibility
+     * Simple keyword analysis algorithm for backward compatibility and fallback scenarios.
+     * 
+     * This method provides basic keyword-based sentiment analysis as a fallback when
+     * the enhanced algorithm encounters issues. It performs simple positive/negative
+     * keyword matching with basic confidence calculation for reliable sentiment analysis.
+     * 
+     * @param text Input text to analyze for sentiment
+     * @param model KeywordSentimentModel with basic keyword configuration
+     * @return SentimentResult with basic sentiment classification and confidence
      */
     private fun analyzeWithSimpleKeywords(
         text: String,
@@ -509,7 +586,16 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
 
     /**
-     * Clean up resources and clear singleton reference
+     * Cleans up all ML runtime resources and clears singleton reference to prevent memory leaks.
+     * 
+     * This method performs comprehensive cleanup of all initialized ML components including:
+     * - Adaptive ML runtime cleanup
+     * - LiteRT model resource cleanup
+     * - TensorFlow Lite model cleanup
+     * - Keyword model reference clearing
+     * - Singleton reference clearing to prevent memory leaks
+     * 
+     * Safe to call multiple times and prepares the analyzer for re-initialization.
      */
     fun cleanup() {
         adaptiveRuntime?.cleanup()

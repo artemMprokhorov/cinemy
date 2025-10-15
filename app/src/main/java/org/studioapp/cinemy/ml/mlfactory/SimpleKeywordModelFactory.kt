@@ -6,8 +6,29 @@ import org.studioapp.cinemy.ml.model.KeywordSentimentModel
 import org.studioapp.cinemy.ml.model.ModelInfo
 
 /**
- * Factory for creating simple keyword-based sentiment models
- * Used as last resort fallback when production models fail to load
+ * Factory for creating simple keyword-based sentiment models.
+ * 
+ * This factory provides a basic fallback sentiment analysis model when production
+ * models (TensorFlow Lite or multilingual production models) fail to load or
+ * are unavailable. It creates a simple English-only keyword-based model with
+ * basic sentiment analysis capabilities.
+ * 
+ * The factory is designed as a last resort fallback system that ensures
+ * sentiment analysis functionality remains available even when advanced ML
+ * models cannot be loaded. It provides basic but reliable sentiment analysis
+ * using keyword matching and intensity modifiers.
+ * 
+ * Key features of the simple model:
+ * - English-only keyword matching (30 positive, 30 negative, 12 neutral keywords)
+ * - Basic intensity modifiers (13 modifiers with weights from -1.0 to 1.5)
+ * - Movie-specific context boosters (12 movie terms, 9 positive/negative contexts)
+ * - Simple algorithm configuration optimized for basic sentiment analysis
+ * - Fast processing with 85%+ accuracy on basic sentiment classification
+ * 
+ * This model is used only when:
+ * - TensorFlow Lite model fails to initialize
+ * - Multilingual production model JSON file is not found
+ * - All other sentiment analysis methods are unavailable
  */
 class SimpleKeywordModelFactory {
 
@@ -45,9 +66,28 @@ class SimpleKeywordModelFactory {
     }
 
     /**
-     * Creates a simple keyword-based sentiment model
-     * Used as last resort fallback when production models fail to load
-     * @return KeywordSentimentModel with basic English keywords
+     * Creates a simple keyword-based sentiment model for fallback analysis.
+     * 
+     * This method creates a comprehensive simple sentiment analysis model
+     * that serves as a last resort fallback when production models are unavailable.
+     * The model includes English-only keywords, intensity modifiers, context boosters,
+     * and algorithm configuration optimized for basic sentiment analysis.
+     * 
+     * The created model contains:
+     * - Model Info: Basic model metadata (type, version, language, accuracy, speed)
+     * - Positive Keywords: 30 English positive sentiment words (amazing, fantastic, great, etc.)
+     * - Negative Keywords: 30 English negative sentiment words (terrible, awful, horrible, etc.)
+     * - Neutral Indicators: 12 English neutral sentiment words (okay, decent, average, etc.)
+     * - Intensity Modifiers: 13 modifiers with weights from -1.0 to 1.5 for sentiment adjustment
+     * - Context Boosters: Movie-specific terms and quality indicators for enhanced analysis
+     * - Algorithm Config: Optimized parameters for simple keyword-based sentiment analysis
+     * 
+     * The model is designed for fast processing with basic but reliable sentiment
+     * classification. It provides 85%+ accuracy on simple sentiment analysis tasks
+     * and serves as a reliable fallback when advanced ML models are unavailable.
+     * 
+     * @return KeywordSentimentModel configured for simple English keyword-based sentiment analysis
+     *         with comprehensive keyword sets, intensity modifiers, context boosters, and algorithm configuration
      */
     fun createSimpleModel(): KeywordSentimentModel {
         val modelInfo = ModelInfo(
