@@ -90,12 +90,20 @@ when (result) {
 
 #### API Service (`api/MovieApiService.kt`)
 
-- **Interface Definition**: Defines the contract for movie-related API calls
+- **Interface Definition**: Defines the contract for movie-related API operations through MCP backend communication
+- **Documentation Quality**: ✅ **FULLY DOCUMENTED** - Complete KDoc with parameter descriptions, return types, and cross-references
 - **Methods**: 
-  - `getPopularMovies(page: Int)` - Fetches popular movies with pagination
-  - `getMovieDetails(movieId: Int)` - Fetches detailed movie information
-- **Return Type**: All methods return `McpResponseDto<T>` with data and UI configuration
-- **MCP Integration**: Designed for MCP backend communication
+  - `getPopularMovies(page: Int = 1): McpResponseDto<MovieListResponseDto>` - Fetches paginated popular movies with UI configuration
+    - **Parameters**: `page` - Page number to fetch (1-based indexing, defaults to 1)
+    - **Returns**: MCP response with movie list data, pagination metadata, and UI configuration
+    - **Features**: Pagination support, dynamic theming data, error handling via response structure
+  - `getMovieDetails(movieId: Int): McpResponseDto<MovieDetailsDto>` - Fetches comprehensive movie details
+    - **Parameters**: `movieId` - Unique identifier of the movie
+    - **Returns**: MCP response with complete movie information including genres, production companies, sentiment analysis
+    - **Features**: Sentiment analysis data, production details, UI configuration for specific movie
+- **Return Type**: All methods return `McpResponseDto<T>` with success status, data payload, UI configuration, and error information
+- **MCP Integration**: Designed for MCP (Model Context Protocol) backend communication with non-throwing error handling
+- **Error Handling**: No exceptions thrown - all errors returned in response structure with success/error flags
 
 #### DTOs (`dto/MovieDto.kt`)
 
@@ -300,9 +308,17 @@ when (result) {
   - aiGenerated, geminiColors, ratings, version
 - **GeminiColors**: AI-generated color suggestions
   - primary, secondary, accent
-- **SentimentReviews**: Sentiment analysis results
-  - positive, negative review lists
-  - hasPositiveReviews, hasNegativeReviews, hasAnyReviews computed properties
+- **SentimentReviews**: Sentiment analysis results from N8N backend
+  - **Purpose**: Represents categorized sentiment analysis results containing positive and negative review texts
+  - **Fields**: 
+    - `positive: List<String>` - List of positive review texts, defaults to empty list
+    - `negative: List<String>` - List of negative review texts, defaults to empty list
+  - **Computed Properties**:
+    - `hasPositiveReviews: Boolean` - Indicates whether there are any positive reviews available
+    - `hasNegativeReviews: Boolean` - Indicates whether there are any negative reviews available  
+    - `hasAnyReviews: Boolean` - Indicates whether there are any reviews available (positive or negative)
+  - **Usage**: Used to display sentiment analysis data in movie details screen
+  - **Documentation Quality**: ✅ **FULLY DOCUMENTED** - Complete KDoc with parameter descriptions, return types, and usage context
 - **SentimentMetadata**: Sentiment analysis metadata (exact signature)
   - Purpose: High-level counters and provenance for the sentiment analysis.
   - Fields:
