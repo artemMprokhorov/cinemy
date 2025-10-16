@@ -24,8 +24,8 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.studioapp.cinemy.data.di.dataModule
-import org.studioapp.cinemy.ml.di.mlModule
 import org.studioapp.cinemy.ml.SentimentAnalyzer
+import org.studioapp.cinemy.ml.di.mlModule
 import org.studioapp.cinemy.navigation.AppNavigation
 import org.studioapp.cinemy.presentation.di.presentationModule
 import org.studioapp.cinemy.ui.theme.CinemyTheme
@@ -75,7 +75,7 @@ class MainActivity : ComponentActivity() {
     /**
      * Initialize the main activity and set up the app
      * Enables edge-to-edge display and initializes device type detection
-     * 
+     *
      * @param savedInstanceState Saved instance state from previous activity lifecycle
      */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,7 +105,7 @@ class MainActivity : ComponentActivity() {
      * Handle configuration changes for foldable devices
      * This is called when the device is folded/unfolded or orientation changes
      * Updates device type detection and optimizes UI for different device types
-     * 
+     *
      * @param newConfig New configuration containing updated device state
      */
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -150,7 +150,7 @@ class MainActivity : ComponentActivity() {
     /**
      * Handle orientation changes and optimize UI accordingly
      * Applies device-specific optimizations based on current device type
-     * 
+     *
      * @param isLandscape Whether the device is in landscape orientation
      */
     private fun handleOrientationChange(isLandscape: Boolean) {

@@ -2,6 +2,10 @@ package org.studioapp.cinemy.data.mapper
 
 import org.json.JSONArray
 import org.json.JSONObject
+import org.studioapp.cinemy.data.mapper.HttpResponseMapper.jsonArrayToList
+import org.studioapp.cinemy.data.mapper.HttpResponseMapper.jsonObjectToMap
+import org.studioapp.cinemy.data.mapper.HttpResponseMapper.parseJsonObject
+import org.studioapp.cinemy.data.mapper.HttpResponseMapper.parseJsonResponse
 import org.studioapp.cinemy.data.mcp.models.McpResponse
 import org.studioapp.cinemy.data.model.StringConstants.MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE
 import org.studioapp.cinemy.data.model.StringConstants.MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL

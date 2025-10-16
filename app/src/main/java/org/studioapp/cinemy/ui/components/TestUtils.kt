@@ -18,9 +18,9 @@ object TestUtils {
 
         /**
          * Adds multiple test attributes to a Compose modifier for testing automation.
-         * 
+         *
          * @param tag Optional test tag for element identification
-         * @param id Optional test ID for element identification  
+         * @param id Optional test ID for element identification
          * @param data Map of additional test data attributes as key-value pairs
          * @return Modifier with applied test attributes for automation
          */

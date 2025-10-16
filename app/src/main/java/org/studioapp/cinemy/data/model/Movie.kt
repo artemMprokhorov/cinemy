@@ -339,6 +339,7 @@ sealed class Result<out T> {
      * @property uiConfig Optional UI configuration to apply.
      */
     data class Success<T>(val data: T, val uiConfig: UiConfiguration? = null) : Result<T>()
+
     /**
      * Failed operation result.
      *
@@ -346,6 +347,7 @@ sealed class Result<out T> {
      * @property uiConfig Optional UI configuration to apply on error screens.
      */
     data class Error(val message: String, val uiConfig: UiConfiguration? = null) : Result<Nothing>()
+
     /** Loading state sentinel. */
     object Loading : Result<Nothing>()
 }

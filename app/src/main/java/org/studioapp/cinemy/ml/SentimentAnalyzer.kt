@@ -4,36 +4,34 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import org.studioapp.cinemy.ml.model.AlgorithmConfig
-import org.studioapp.cinemy.ml.model.ContextBoosters
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_FAILURE
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_MODIFIER
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_MOVIE
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_NEGATIVE
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_NEGATIVE_PATTERN
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_NEUTRAL
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_PATTERN
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_POSITIVE
+import org.studioapp.cinemy.ml.MLConstants.EMOJI_QUALITY
+import org.studioapp.cinemy.ml.MLConstants.ML_MODELS_PATH
+import org.studioapp.cinemy.ml.MLConstants.NO_MODELS_AVAILABLE_ERROR
+import org.studioapp.cinemy.ml.MLConstants.SENTIMENT_NEGATIVE
+import org.studioapp.cinemy.ml.MLConstants.SENTIMENT_NEUTRAL
+import org.studioapp.cinemy.ml.MLConstants.SENTIMENT_POSITIVE
+import org.studioapp.cinemy.ml.MLConstants.WORD_SPLIT_REGEX_PATTERN
+import org.studioapp.cinemy.ml.mlfactory.Algorithm
+import org.studioapp.cinemy.ml.mlfactory.ContextBoostersFactory.createFromEnhancedModel
+import org.studioapp.cinemy.ml.mlfactory.ContextBoostersFactory.createMovieContextBoosters
+import org.studioapp.cinemy.ml.mlfactory.IntensityModifiersFactory.createIntensityModifiers
+import org.studioapp.cinemy.ml.mlfactory.KeywordFactory.createMultilingualKeywords
+import org.studioapp.cinemy.ml.mlfactory.SimpleKeywordModelFactory
+import org.studioapp.cinemy.ml.mlmodels.LiteRTSentimentModel
+import org.studioapp.cinemy.ml.mlmodels.TensorFlowSentimentModel
 import org.studioapp.cinemy.ml.model.EnhancedModelData
 import org.studioapp.cinemy.ml.model.KeywordSentimentModel
 import org.studioapp.cinemy.ml.model.ModelInfo
 import org.studioapp.cinemy.ml.model.ProductionModelData
 import org.studioapp.cinemy.ml.model.SentimentResult
-import org.studioapp.cinemy.ml.MLConstants.NO_MODELS_AVAILABLE_ERROR
-import org.studioapp.cinemy.ml.MLConstants.ML_MODELS_PATH
-import org.studioapp.cinemy.ml.MLConstants.WORD_SPLIT_REGEX_PATTERN
-import org.studioapp.cinemy.ml.MLConstants.EMOJI_POSITIVE
-import org.studioapp.cinemy.ml.MLConstants.EMOJI_NEGATIVE
-import org.studioapp.cinemy.ml.MLConstants.EMOJI_NEUTRAL
-import org.studioapp.cinemy.ml.MLConstants.EMOJI_MODIFIER
-import org.studioapp.cinemy.ml.MLConstants.EMOJI_MOVIE
-import org.studioapp.cinemy.ml.MLConstants.EMOJI_QUALITY
-import org.studioapp.cinemy.ml.MLConstants.EMOJI_FAILURE
-import org.studioapp.cinemy.ml.MLConstants.EMOJI_PATTERN
-import org.studioapp.cinemy.ml.MLConstants.EMOJI_NEGATIVE_PATTERN
-import org.studioapp.cinemy.ml.MLConstants.SENTIMENT_POSITIVE
-import org.studioapp.cinemy.ml.MLConstants.SENTIMENT_NEGATIVE
-import org.studioapp.cinemy.ml.MLConstants.SENTIMENT_NEUTRAL
-import org.studioapp.cinemy.ml.mlfactory.KeywordFactory.createMultilingualKeywords
-import org.studioapp.cinemy.ml.mlfactory.ContextBoostersFactory.createMovieContextBoosters
-import org.studioapp.cinemy.ml.mlfactory.ContextBoostersFactory.createFromEnhancedModel
-import org.studioapp.cinemy.ml.mlfactory.IntensityModifiersFactory.createIntensityModifiers
-import org.studioapp.cinemy.ml.mlfactory.SimpleKeywordModelFactory
-import org.studioapp.cinemy.ml.mlfactory.Algorithm
-import org.studioapp.cinemy.ml.mlmodels.LiteRTSentimentModel
-import org.studioapp.cinemy.ml.mlmodels.TensorFlowSentimentModel
 import java.lang.ref.WeakReference
 import kotlin.math.abs
 
@@ -131,23 +129,24 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
     /**
      * Initializes multilingual production model from assets with intelligent fallback.
-     * 
+     *
      * This method attempts to load the production multilingual sentiment model from
      * the assets directory. If the production model file is not found or fails to load,
      * it falls back to the simple keyword model to ensure sentiment analysis functionality
      * remains available.
-     * 
+     *
      * The method follows this priority order:
      * 1. Load production model from multilingual_sentiment_production.json
      * 2. Fall back to simple keyword model if production model unavailable
-     * 
+     *
      * @throws Exception if both production and simple models fail to initialize
      */
     private suspend fun initializeKeywordModel() {
         val modelJson = runCatching {
-            context.assets.open("$ML_MODELS_PATH$MLConstants.KEYWORD_MODEL_FILE").use { inputStream ->
-                inputStream.bufferedReader().readText()
-            }
+            context.assets.open("$ML_MODELS_PATH$MLConstants.KEYWORD_MODEL_FILE")
+                .use { inputStream ->
+                    inputStream.bufferedReader().readText()
+                }
         }.getOrNull()
 
         keywordModel = if (modelJson != null) {
@@ -209,11 +208,11 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
     /**
      * Analyzes sentiment for multiple texts in batch with parallel processing.
-     * 
+     *
      * This method performs sentiment analysis on multiple texts efficiently using
      * parallel processing. Each text is analyzed using the same hybrid approach
      * as the single text analysis, with automatic model selection and fallback mechanisms.
-     * 
+     *
      * @param texts List of texts to analyze for sentiment
      * @return List of SentimentResult objects corresponding to each input text
      */
@@ -225,11 +224,11 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
     /**
      * Loads sentiment analysis model from JSON string with format detection.
-     * 
+     *
      * This method automatically detects the JSON format and loads the appropriate
      * sentiment analysis model. It supports both production model format and enhanced
      * model format, with intelligent fallback to simple model if parsing fails.
-     * 
+     *
      * @param jsonString The JSON string containing model configuration
      * @param fileName The name of the model file for format detection
      * @return KeywordSentimentModel configured from JSON data or simple fallback model
@@ -257,11 +256,11 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
     /**
      * Loads production model format from multilingual_sentiment_production.json.
-     * 
+     *
      * This method parses the production model JSON format and creates a comprehensive
      * KeywordSentimentModel with multilingual support, advanced algorithm configuration,
      * and production-optimized settings. Falls back to simple model if parsing fails.
-     * 
+     *
      * @param json Configured Json instance for parsing
      * @param jsonString The JSON string containing production model data
      * @return KeywordSentimentModel configured from production model data or simple fallback
@@ -279,11 +278,11 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
     /**
      * Loads enhanced model format as fallback when production model is unavailable.
-     * 
+     *
      * This method parses the enhanced model JSON format and creates a KeywordSentimentModel
      * with advanced features including context patterns, intensity modifiers, and custom
      * algorithm configuration. Used as fallback when production model format is not available.
-     * 
+     *
      * @param json Configured Json instance for parsing
      * @param jsonString The JSON string containing enhanced model data
      * @return KeywordSentimentModel configured from enhanced model data
@@ -317,11 +316,11 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
     /**
      * Creates comprehensive production model from multilingual_sentiment_production.json data.
-     * 
+     *
      * This method constructs a production-grade KeywordSentimentModel with multilingual
      * keyword support, advanced algorithm configuration, intensity modifiers, and
      * movie-specific context boosters. Uses production-optimized settings for maximum accuracy.
-     * 
+     *
      * @param modelData Parsed production model data from JSON
      * @return KeywordSentimentModel configured with production settings and multilingual support
      */
@@ -358,15 +357,14 @@ class SentimentAnalyzer private constructor(private val context: Context) {
     }
 
 
-
     /**
      * Main keyword analysis algorithm with intelligent fallback mechanism.
-     * 
+     *
      * This method performs sentiment analysis using keyword-based algorithms with
      * comprehensive fallback mechanisms. It first attempts enhanced keyword analysis
      * with all advanced features, then falls back to simple keyword analysis if
      * the enhanced algorithm encounters any issues.
-     * 
+     *
      * @param text Input text to analyze for sentiment
      * @param model KeywordSentimentModel containing keywords, modifiers, and algorithm configuration
      * @return SentimentResult with sentiment classification, confidence, and found keywords
@@ -383,14 +381,14 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
     /**
      * Enhanced keyword analysis algorithm with comprehensive sentiment detection features.
-     * 
+     *
      * This method implements advanced keyword-based sentiment analysis with support for:
      * - Multilingual keyword matching (English, Spanish, Russian)
      * - Intensity modifiers for sentiment strength adjustment
      * - Context boosters for movie-specific terminology
      * - Enhanced context pattern matching for improved accuracy
      * - Emoji-based keyword tracking for analysis transparency
-     * 
+     *
      * @param text Input text to analyze for sentiment
      * @param model KeywordSentimentModel with comprehensive configuration
      * @return SentimentResult with detailed sentiment analysis including found keywords
@@ -448,7 +446,7 @@ class SentimentAnalyzer private constructor(private val context: Context) {
                         negativeScore *= multiplier
                     }
                 }
-                    foundWords.add("$EMOJI_MODIFIER$modifier")
+                foundWords.add("$EMOJI_MODIFIER$modifier")
             }
         }
 
@@ -530,11 +528,11 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
     /**
      * Simple keyword analysis algorithm for backward compatibility and fallback scenarios.
-     * 
+     *
      * This method provides basic keyword-based sentiment analysis as a fallback when
      * the enhanced algorithm encounters issues. It performs simple positive/negative
      * keyword matching with basic confidence calculation for reliable sentiment analysis.
-     * 
+     *
      * @param text Input text to analyze for sentiment
      * @param model KeywordSentimentModel with basic keyword configuration
      * @return SentimentResult with basic sentiment classification and confidence
@@ -587,14 +585,14 @@ class SentimentAnalyzer private constructor(private val context: Context) {
 
     /**
      * Cleans up all ML runtime resources and clears singleton reference to prevent memory leaks.
-     * 
+     *
      * This method performs comprehensive cleanup of all initialized ML components including:
      * - Adaptive ML runtime cleanup
      * - LiteRT model resource cleanup
      * - TensorFlow Lite model cleanup
      * - Keyword model reference clearing
      * - Singleton reference clearing to prevent memory leaks
-     * 
+     *
      * Safe to call multiple times and prepares the analyzer for re-initialization.
      */
     fun cleanup() {

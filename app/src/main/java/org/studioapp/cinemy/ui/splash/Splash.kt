@@ -34,11 +34,11 @@ private const val SPLASH_DISPLAY_DURATION_MS = 3000L
 
 /**
  * Splash screen for the Cinemy app that displays app branding and initializes the application.
- * 
+ *
  * This composable shows the app title, subtitle, and TMDB disclaimer for a fixed duration
  * before calling the completion callback. The screen uses a centered layout with proper
  * theming and system bar padding.
- * 
+ *
  * @param onSplashComplete Callback function invoked when splash animation completes (default: empty lambda)
  */
 @Composable
@@ -98,7 +98,7 @@ fun MovieAppSplashScreen(
 
 /**
  * Preview composable for the MovieAppSplashScreen.
- * 
+ *
  * This preview function wraps the splash screen in a MaterialTheme for proper
  * theming display in Android Studio's preview pane.
  */

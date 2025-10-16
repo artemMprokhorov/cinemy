@@ -21,17 +21,17 @@ object StringConstants {
 
     // Language
     const val LANGUAGE_EN = "en"
-    
+
     // Movie Colors Keys
     const val MOVIE_COLORS_METADATA = "metadata"
     const val MOVIE_COLORS_CATEGORY = "category"
     const val MOVIE_COLORS_MODEL_USED = "model_used"
-    
+
     // Default Movie Colors
     const val DEFAULT_MOVIE_ACCENT_COLOR = "#3AA1EF"
     const val DEFAULT_MOVIE_PRIMARY_COLOR = "#1278D4"
     const val DEFAULT_MOVIE_SECONDARY_COLOR = "#238EE5"
-    
+
     // Default UI Values
     const val DEFAULT_APP_TITLE = "TmdbAi - Movie Details"
     const val DEFAULT_LOADING_TEXT = "Loading details..."
@@ -90,11 +90,11 @@ object StringConstants {
     const val MCP_MESSAGE_REAL_REQUEST_SUCCESSFUL = "Real request successful"
     const val MCP_MESSAGE_REAL_REQUEST_RAW_RESPONSE = "Real request successful (raw response)"
     const val MCP_MESSAGE_MOCK_DATA_LOADED_SUCCESSFULLY = "Mock data loaded successfully"
-    
+
     // HTTP Client Error Messages
     const val HTTP_ERROR_NETWORK_ERROR = "Network error: %s"
     const val HTTP_ERROR_UNABLE_TO_CONNECT = "Unable to connect to server"
-    
+
     // Default Data Constants
     const val DEFAULT_MOVIE_ID = 1
     const val DEFAULT_MOVIE_RATING_VALUE = 5.0
@@ -109,13 +109,13 @@ object StringConstants {
     const val DEFAULT_GENRE_ACTION_ID = 1
     const val DEFAULT_GENRE_DRAMA_ID = 2
     const val DEFAULT_PRODUCTION_COMPANY_ID = 1
-    
+
     // Default Color Hex Values
     const val DEFAULT_PRIMARY_COLOR_HEX_VALUE = 0xFF6200EE
     const val DEFAULT_SECONDARY_COLOR_HEX_VALUE = 0xFF03DAC6
     const val DEFAULT_WHITE_COLOR_HEX_VALUE = 0xFFFFFFFF
     const val DEFAULT_BLACK_COLOR_HEX_VALUE = 0xFF000000
-    
+
     // Pagination Constants
     const val DEFAULT_MOCK_TOTAL_PAGES = 3
     const val DEFAULT_MOCK_TOTAL_RESULTS = 30
@@ -259,16 +259,16 @@ object StringConstants {
 
     // Parameter Names
     const val PARAM_MOVIE_ID = "movieId"
-    
+
     // JSON Response Field Names
     const val JSON_FIELD_DATA = "data"
     const val JSON_FIELD_UI_CONFIG = "uiConfig"
     const val JSON_FIELD_COLORS = "colors"
     const val JSON_FIELD_TEXTS = "texts"
-    
+
     // Category Values
     const val CATEGORY_MEDIUM = "MEDIUM"
-    
+
     // Default Movie Values
     const val DEFAULT_MOVIE_TITLE = "Default Movie"
     const val DEFAULT_MOVIE_DESCRIPTION = "Default description"
@@ -277,14 +277,14 @@ object StringConstants {
     const val DEFAULT_MOVIE_RELEASE_DATE = "2024-01-01"
     const val DEFAULT_GENRE_ACTION = "Action"
     const val DEFAULT_GENRE_DRAMA = "Drama"
-    
+
     // Default Color Values (Hex)
     const val DEFAULT_PRIMARY_COLOR_HEX = "#6200EE"
     const val DEFAULT_SECONDARY_COLOR_HEX = "#03DAC6"
     const val DEFAULT_ACCENT_COLOR_HEX = "#FF6B6B"
     const val DEFAULT_WHITE_COLOR_HEX = "#FFFFFF"
     const val DEFAULT_BLACK_COLOR_HEX = "#000000"
-    
+
     // Default Meta Values
     const val DEFAULT_METHOD = "mock"
     const val DEFAULT_RESULTS_COUNT = 1
@@ -386,7 +386,7 @@ object StringConstants {
     const val SERIALIZED_UI_CONFIG = "ui_config"
     const val SERIALIZED_ERROR = "error"
     const val SERIALIZED_META = "meta"
-    
+
     // Hardcoded color values from McpClient
     const val DEFAULT_BACKEND_PRIMARY_COLOR = "#DC3528"
     const val DEFAULT_BACKEND_SECONDARY_COLOR = "#E64539"
@@ -396,7 +396,7 @@ object StringConstants {
     const val DEFAULT_BACKEND_ON_SECONDARY_COLOR = "#FFFFFF"
     const val DEFAULT_BACKEND_ON_BACKGROUND_COLOR = "#FFFFFF"
     const val DEFAULT_BACKEND_ON_SURFACE_COLOR = "#FFFFFF"
-    
+
     // Hardcoded text values from McpClient
     const val DEFAULT_BACKEND_APP_TITLE = "TmdbAi - Movie Details"
     const val DEFAULT_BACKEND_LOADING_TEXT = "Loading details..."
@@ -405,10 +405,10 @@ object StringConstants {
     const val DEFAULT_BACKEND_RETRY_BUTTON = "Retry"
     const val DEFAULT_BACKEND_BACK_BUTTON = "Back to list"
     const val DEFAULT_BACKEND_PLAY_BUTTON = "Watch"
-    
+
     // Hardcoded button values from McpClient
     const val DEFAULT_BACKEND_BUTTON_CORNER_RADIUS = 12
-    
+
     // JSON field names
     const val JSON_FIELD_BUTTONS = "buttons"
     const val JSON_FIELD_PRIMARY = "primary"

@@ -10,9 +10,9 @@ import org.studioapp.cinemy.data.model.Result
 import org.studioapp.cinemy.data.repository.MovieRepository
 import org.studioapp.cinemy.ml.SentimentAnalyzer
 import org.studioapp.cinemy.ml.model.SentimentResult
-import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_MOVIE_ID
-import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_BOOLEAN_TRUE
 import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_BOOLEAN_FALSE
+import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_BOOLEAN_TRUE
+import org.studioapp.cinemy.presentation.PresentationConstants.DEFAULT_MOVIE_ID
 
 /**
  * ViewModel for Movie Detail screen following MVI pattern

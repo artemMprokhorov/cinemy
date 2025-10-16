@@ -25,7 +25,7 @@ object HttpRequestMapper {
         if (!validateRequest(request)) {
             throw IllegalArgumentException("Invalid MCP request: method and params must be provided")
         }
-        
+
         return buildString {
             append(JSON_OPEN_BRACE)
             append(JSON_METHOD_FIELD.format(request.method))

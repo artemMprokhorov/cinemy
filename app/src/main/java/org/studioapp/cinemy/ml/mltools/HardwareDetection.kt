@@ -2,12 +2,12 @@ package org.studioapp.cinemy.ml.mltools
 
 import android.content.Context
 import android.os.Build
+import org.studioapp.cinemy.ml.MLConstants.GOOGLE_PLAY_SERVICES_PACKAGE
+import org.studioapp.cinemy.ml.MLConstants.MIN_PLAY_SERVICES_VERSION
+import org.studioapp.cinemy.ml.MLConstants.MLKIT_DOWNLOAD_CONDITIONS_CLASS
+import org.studioapp.cinemy.ml.MLConstants.MLKIT_EXCEPTION_CLASS
 import org.studioapp.cinemy.ml.MLConstants.TENSORFLOW_LITE_NNAPI_DELEGATE_CLASS
 import org.studioapp.cinemy.ml.MLConstants.TENSORFLOW_LITE_XNNPACK_DELEGATE_CLASS
-import org.studioapp.cinemy.ml.MLConstants.GOOGLE_PLAY_SERVICES_PACKAGE
-import org.studioapp.cinemy.ml.MLConstants.MLKIT_EXCEPTION_CLASS
-import org.studioapp.cinemy.ml.MLConstants.MLKIT_DOWNLOAD_CONDITIONS_CLASS
-import org.studioapp.cinemy.ml.MLConstants.MIN_PLAY_SERVICES_VERSION
 import java.lang.ref.WeakReference
 
 /**

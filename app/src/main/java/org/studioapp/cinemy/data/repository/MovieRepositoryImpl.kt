@@ -94,11 +94,11 @@ class MovieRepositoryImpl(
 
     /**
      * Loads mock popular movies with pagination for dummy mode
-     * 
+     *
      * This method simulates network behavior by adding a delay and loads mock movie data
      * from assets. It creates pagination metadata and UI configuration for the response.
      * Used when BuildConfig.USE_MOCK_DATA is true.
-     * 
+     *
      * @param page Page number for pagination (1-based indexing)
      * @return Result.Success containing MovieListResponse with mock movies, pagination metadata, and UI configuration
      * @throws No exceptions thrown - uses runCatching for error handling
@@ -131,11 +131,11 @@ class MovieRepositoryImpl(
 
     /**
      * Loads mock movie details for dummy mode
-     * 
+     *
      * This method simulates network behavior by adding a delay and loads mock movie details
      * from assets. It creates a complete MovieDetailsResponse with metadata and UI configuration.
      * Used when BuildConfig.USE_MOCK_DATA is true.
-     * 
+     *
      * @param movieId Movie ID (ignored in mock mode, always returns the same mock data)
      * @return Result.Success containing MovieDetailsResponse with mock movie details, UI configuration, and metadata
      * @throws No exceptions thrown - uses runCatching for error handling
@@ -166,10 +166,10 @@ class MovieRepositoryImpl(
 
     /**
      * Loads mock movie details from assets
-     * 
+     *
      * This method creates a default MovieDetails object using the DefaultMovieDetails class.
      * It provides a complete set of mock movie information for testing and development.
-     * 
+     *
      * @return Default MovieDetails object with all required fields populated
      * @throws No exceptions thrown - uses default data generation
      */
@@ -179,10 +179,10 @@ class MovieRepositoryImpl(
 
     /**
      * Creates default UI configuration for mock data
-     * 
+     *
      * This method generates a default UI configuration using the DefaultUiConfiguration class.
      * It provides color schemes, text content, and button styling for the mock data mode.
-     * 
+     *
      * @return UiConfiguration object with default theme values including colors, texts, and button configuration
      * @throws No exceptions thrown - uses default configuration generation
      */
@@ -192,10 +192,10 @@ class MovieRepositoryImpl(
 
     /**
      * Creates default meta information for mock data
-     * 
+     *
      * This method generates default metadata using the DefaultMeta class.
      * It provides timestamp, method information, and other metadata for mock responses.
-     * 
+     *
      * @return Meta object with default metadata values including timestamp, method, and AI generation flags
      * @throws No exceptions thrown - uses default metadata generation
      */

@@ -3,31 +3,31 @@ package org.studioapp.cinemy.ml
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.studioapp.cinemy.ml.model.KeywordSentimentModel
-import org.studioapp.cinemy.ml.model.SentimentResult
-import org.studioapp.cinemy.ml.mltools.HardwareDetection
-import org.studioapp.cinemy.ml.mltools.HardwareDetection.MLRuntime.LITERT_GPU
-import org.studioapp.cinemy.ml.mltools.HardwareDetection.MLRuntime.LITERT_NPU
-import org.studioapp.cinemy.ml.mltools.HardwareDetection.MLRuntime.TENSORFLOW_LITE_GPU
-import org.studioapp.cinemy.ml.mltools.HardwareDetection.MLRuntime.TENSORFLOW_LITE_NNAPI
-import org.studioapp.cinemy.ml.mltools.HardwareDetection.MLRuntime.TENSORFLOW_LITE_CPU
-import org.studioapp.cinemy.ml.mltools.HardwareDetection.MLRuntime.KEYWORD_FALLBACK
+import org.studioapp.cinemy.ml.MLConstants.DEFAULT_SCORE
+import org.studioapp.cinemy.ml.MLConstants.KEYWORD_MODEL_NOT_AVAILABLE_ERROR
+import org.studioapp.cinemy.ml.MLConstants.LITERT_MODEL_NOT_AVAILABLE_ERROR
+import org.studioapp.cinemy.ml.MLConstants.MIN_CONFIDENCE_THRESHOLD
+import org.studioapp.cinemy.ml.MLConstants.ML_RUNTIME_NOT_INITIALIZED_ERROR
+import org.studioapp.cinemy.ml.MLConstants.SCORE_INCREMENT
+import org.studioapp.cinemy.ml.MLConstants.TENSORFLOW_LITE_MODEL_NOT_AVAILABLE_ERROR
+import org.studioapp.cinemy.ml.MLConstants.WORD_SPLIT_REGEX
 import org.studioapp.cinemy.ml.mlfactory.SimpleKeywordModelFactory
 import org.studioapp.cinemy.ml.mlmodels.LiteRTSentimentModel
 import org.studioapp.cinemy.ml.mlmodels.TensorFlowSentimentModel
-import org.studioapp.cinemy.ml.MLConstants.ML_RUNTIME_NOT_INITIALIZED_ERROR
-import org.studioapp.cinemy.ml.MLConstants.LITERT_MODEL_NOT_AVAILABLE_ERROR
-import org.studioapp.cinemy.ml.MLConstants.TENSORFLOW_LITE_MODEL_NOT_AVAILABLE_ERROR
-import org.studioapp.cinemy.ml.MLConstants.KEYWORD_MODEL_NOT_AVAILABLE_ERROR
-import org.studioapp.cinemy.ml.MLConstants.WORD_SPLIT_REGEX
-import org.studioapp.cinemy.ml.MLConstants.DEFAULT_SCORE
-import org.studioapp.cinemy.ml.MLConstants.SCORE_INCREMENT
-import org.studioapp.cinemy.ml.MLConstants.MIN_CONFIDENCE_THRESHOLD
+import org.studioapp.cinemy.ml.mltools.HardwareDetection
+import org.studioapp.cinemy.ml.mltools.HardwareDetection.MLRuntime.KEYWORD_FALLBACK
+import org.studioapp.cinemy.ml.mltools.HardwareDetection.MLRuntime.LITERT_GPU
+import org.studioapp.cinemy.ml.mltools.HardwareDetection.MLRuntime.LITERT_NPU
+import org.studioapp.cinemy.ml.mltools.HardwareDetection.MLRuntime.TENSORFLOW_LITE_CPU
+import org.studioapp.cinemy.ml.mltools.HardwareDetection.MLRuntime.TENSORFLOW_LITE_GPU
+import org.studioapp.cinemy.ml.mltools.HardwareDetection.MLRuntime.TENSORFLOW_LITE_NNAPI
+import org.studioapp.cinemy.ml.model.KeywordSentimentModel
+import org.studioapp.cinemy.ml.model.SentimentResult
 import java.lang.ref.WeakReference
 
 /**
  * Adaptive ML Runtime Selector for Cinemy
- * 
+ *
  * Automatically selects and manages the optimal ML runtime based on device hardware
  * capabilities, providing a unified interface for sentiment analysis across different
  * ML implementations. This class ensures maximum performance by intelligently choosing
@@ -55,12 +55,12 @@ import java.lang.ref.WeakReference
  * ```kotlin
  * val adaptiveRuntime = AdaptiveMLRuntime.getInstance(context)
  * val initialized = adaptiveRuntime.initialize()
- * 
+ *
  * if (initialized) {
  *     val result = adaptiveRuntime.analyzeSentiment("This movie is amazing!")
  *     println("Sentiment: ${result.sentiment} (${result.confidence})")
  * }
- * 
+ *
  * // Clean up when done
  * adaptiveRuntime.cleanup()
  * ```
@@ -348,8 +348,10 @@ class AdaptiveMLRuntime private constructor(private val context: Context) {
             }
 
             val totalWords = words.size.toDouble()
-            val positiveConfidence = if (totalWords > 0) positiveScore / totalWords else DEFAULT_SCORE
-            val negativeConfidence = if (totalWords > 0) negativeScore / totalWords else DEFAULT_SCORE
+            val positiveConfidence =
+                if (totalWords > 0) positiveScore / totalWords else DEFAULT_SCORE
+            val negativeConfidence =
+                if (totalWords > 0) negativeScore / totalWords else DEFAULT_SCORE
 
             when {
                 positiveConfidence > negativeConfidence && positiveConfidence > MIN_CONFIDENCE_THRESHOLD -> {

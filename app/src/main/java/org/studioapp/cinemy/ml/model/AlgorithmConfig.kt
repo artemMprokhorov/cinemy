@@ -2,16 +2,16 @@ package org.studioapp.cinemy.ml.model
 
 /**
  * Configuration class for sentiment analysis algorithms.
- * 
+ *
  * This data class provides comprehensive configuration parameters for sentiment analysis
  * algorithms used across different ML models in the Cinemy application. It serves as
  * the central configuration for algorithm behavior, including confidence thresholds,
  * weight distributions, and sentiment classification parameters.
- * 
+ *
  * The configuration supports both production-optimized settings and dynamic configuration
  * from enhanced model data, allowing for flexible algorithm tuning based on model
  * requirements and performance characteristics.
- * 
+ *
  * @param baseConfidence Base confidence level for sentiment analysis (0.0-1.0)
  * @param keywordWeight Weight multiplier for keyword matching influence (default: 1.0)
  * @param contextWeight Weight multiplier for context analysis influence (default: 0.3)
