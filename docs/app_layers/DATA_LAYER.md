@@ -1,6 +1,6 @@
 # Data Layer Implementation
 
-**Tech Stack**: Kotlin 1.9.22, Koin 3.5.3, Ktor, Jetpack Compose  
+**Tech Stack**: Kotlin 2.1.0, Koin 3.5.6, Ktor 3.1.0, Jetpack Compose  
 **Architecture**: Clean Architecture + MVI Pattern  
 **Build Variants**: `dummy` (mock), `prod` (MCP backend)
 

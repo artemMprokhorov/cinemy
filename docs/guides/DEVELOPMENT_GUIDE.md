@@ -73,11 +73,11 @@
 
 ### 📋 Prerequisites
 
-- **Android Studio**: Hedgehog (2023.1.1) or newer
+- **Android Studio**: Ladybug (2024.2.1) or newer
 - **JDK**: 17 or newer
-- **Android SDK**: API 36 (Android 14)
-- **Gradle**: 8.10.2
-- **Kotlin**: 1.9.22
+- **Android SDK**: API 36 (Android 15)
+- **Gradle**: 8.11.1
+- **Kotlin**: 2.1.0
 
 ### ⚙️ Project Setup
 

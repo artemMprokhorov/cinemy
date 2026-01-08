@@ -66,7 +66,7 @@ fun AppNavigation(navController: NavHostController) {
 
 ### Dependencies
 - Jetpack Compose Navigation 2.9.3
-- Koin 3.5.3 for ViewModel injection
+- Koin 3.5.6 for ViewModel injection
 - DeviceUtils for capability detection
 
 ## FAQ

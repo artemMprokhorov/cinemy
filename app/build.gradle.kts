@@ -104,9 +104,7 @@ android {
         jvmTarget = "11"
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
+    // composeOptions removed - Compose Compiler is now integrated into Kotlin 2.0+
 }
 
 dependencies {
@@ -130,8 +128,8 @@ dependencies {
     implementation("androidx.navigation:navigation-runtime-ktx:2.9.3")
 
     // ViewModel & State Management
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
 
     // Dependency Injection - Koin (using version catalog)
     implementation(libs.koin.android)
@@ -150,10 +148,11 @@ dependencies {
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.auth)
 
-    // Image Loading - Coil (using version catalog)
+    // Image Loading - Coil 3.x (using version catalog)
     implementation(libs.coil.compose)
     implementation(libs.coil.gif)
     implementation(libs.coil.svg)
+    implementation(libs.coil.network)
 
     // JSON Processing - Kotlinx Serialization for MCP (using version catalog)
     implementation(libs.kotlinx.serialization.json)
@@ -161,13 +160,12 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
 
     // Date/Time
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
 
     // Splash Screen
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.core:core-splashscreen:1.2.0-alpha02")
 
-    // SystemUI Controller (using version catalog)
-    implementation(libs.accompanist.systemuicontroller)
+    // SystemUI Controller - REMOVED (deprecated, using native enableEdgeToEdge instead)
 
     // Permissions (using version catalog)
     implementation(libs.accompanist.permissions)
@@ -186,6 +184,9 @@ dependencies {
     implementation(libs.timber)
 
     // TensorFlow Lite for ML sentiment analysis
+    // Note: LiteRT removed due to duplicate class conflicts with TensorFlow Lite
+    // Migration to LiteRT requires removing tensorflow-lite dependencies first
+    implementation("org.tensorflow:tensorflow-lite:2.13.0")
     implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
 
     // Testing dependencies (using version catalog)
@@ -204,8 +205,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation("androidx.navigation:navigation-testing:2.9.3")
     androidTestImplementation(libs.koin.test)
-    androidTestImplementation("androidx.test:runner:1.5.2")
-    androidTestImplementation("androidx.test:rules:1.5.0")
+    androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation("androidx.test:rules:1.6.1")
 
     // Debug dependencies
     debugImplementation(libs.androidx.ui.tooling)

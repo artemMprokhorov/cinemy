@@ -1,28 +1,29 @@
 [versions]
-agp = "8.6.0"
-kotlin = "2.0.21"
-compose-compiler = "1.5.15"
-coreKtx = "1.12.0"
+agp = "8.7.3"
+kotlin = "2.1.0"
+# compose-compiler removed - integrated into Kotlin 2.0+
+coreKtx = "1.15.0"
 junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.7.0"
-activityCompose = "1.8.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+lifecycleRuntimeKtx = "2.8.7"
+activityCompose = "1.9.3"
 composeBom = "2025.01.00"
 navigationCompose = "2.9.3"
-ktor = "2.0.3"
-coil = "2.5.0"
+ktor = "3.1.0"
+coil = "3.1.0"
 kotlinxSerialization = "1.7.3"
-kotlinxCoroutines = "1.8.0"
-koin = "3.5.3"
-paging = "3.2.1"
-datastore = "1.0.0"
-accompanist = "0.34.0"
+kotlinxCoroutines = "1.9.0"
+koin = "3.5.6"
+paging = "3.3.5"
+datastore = "1.1.1"
+accompanist = "0.37.0"
 timber = "5.0.1"
-mockk = "1.13.8"
-turbine = "1.0.0"
+mockk = "1.13.14"
+turbine = "1.2.0"
 tensorflow-lite = "2.13.0"
 tensorflow-lite-support = "0.4.4"
+litert = "2.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,10 +50,11 @@ ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serializatio
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor" }
 
-# Image loading with Coil
-coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
-coil-gif = { group = "io.coil-kt", name = "coil-gif", version.ref = "coil" }
-coil-svg = { group = "io.coil-kt", name = "coil-svg", version.ref = "coil" }
+# Image loading with Coil 3.x (new package: io.coil-kt.coil3)
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-gif = { group = "io.coil-kt.coil3", name = "coil-gif", version.ref = "coil" }
+coil-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil" }
+coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 
 # JSON serialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
@@ -76,8 +78,7 @@ paging-compose = { group = "androidx.paging", name = "paging-compose", version.r
 # DataStore
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
-# Accompanist
-accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
+# Accompanist (systemuicontroller removed - deprecated, using native enableEdgeToEdge)
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 
 # Testing
@@ -87,9 +88,12 @@ turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine
 # Logging
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
-# TensorFlow Lite for ML
+# TensorFlow Lite for ML (legacy, keeping for fallback)
 tensorflow-lite = { group = "org.tensorflow", name = "tensorflow-lite", version.ref = "tensorflow-lite" }
 tensorflow-lite-support = { group = "org.tensorflow", name = "tensorflow-lite-support", version.ref = "tensorflow-lite-support" }
+
+# LiteRT (Google AI Edge - new TensorFlow Lite runtime)
+litert = { group = "com.google.ai.edge.litert", name = "litert", version.ref = "litert" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -31,7 +31,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import org.studioapp.cinemy.R
 import org.studioapp.cinemy.data.model.Movie
 import org.studioapp.cinemy.data.model.UiConfiguration
