@@ -66,7 +66,7 @@ android {
             buildConfigField(
                 "String",
                 "MCP_SERVER_URL",
-                "\"https://grand-beagle-reliably.ngrok-free.app/webhook/tmdbai-enhanced\""
+                "\"https://your-server.example.com/webhook/tmdbai-enhanced\""
             )
             buildConfigField("String", "FLAVOR_NAME", "\"Production\"")
             buildConfigField("String", "TMDB_IMAGE_BASE_URL", "\"https://image.tmdb.org/t/p/\"")
